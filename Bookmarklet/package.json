@@ -2,7 +2,7 @@
   "name": "ongekiscorelog",
   "version": "1.0.0",
   "description": "",
-  "main": "Bookmarklet/src/main.js",
+  "main": "Bookmarklet/bin/main.js",
   "dependencies": {
     "axios": "^0.18",
     "@types/jquery": "^3.3.5"
