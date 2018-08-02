@@ -4,6 +4,7 @@
   "description": "",
   "main": "Bookmarklet/src/main.js",
   "dependencies": {
+    "axios": "^0.18",
     "@types/jquery": "^3.3.5"
   },
   "devDependencies": {
