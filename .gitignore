@@ -437,3 +437,5 @@ ASALocalRun/
 
 
 # End of https://www.gitignore.io/api/laravel,visualstudio,visualstudiocode,node
+
+.vsls.json
