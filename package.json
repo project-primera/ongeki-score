@@ -1,0 +1,17 @@
+{
+  "name": "ongekiscorelog",
+  "version": "1.0.0",
+  "description": "",
+  "main": "ScoreGetter/src/main.js",
+  "dependencies": {
+    "@types/jquery": "^3.3.5"
+  },
+  "devDependencies": {
+    "typescript": "3.0.1"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Slime_hatena",
+  "license": "MIT"
+}
