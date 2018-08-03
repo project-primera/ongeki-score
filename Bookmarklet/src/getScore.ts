@@ -2,29 +2,36 @@
 import axios from './../node_modules/axios/lib/axios.js';
 
 (function () {
-  var NET_URL = "https://ongeki-net.com/ongeki-mobile/";
-  var NET_MUSICGENRE_URL = "https://ongeki-net.com/ongeki-mobile/record/musicGenre/";
+  const NET_URL = "https://ongeki-net.com/ongeki-mobile/";
+  const NET_MUSICGENRE_URL = "https://ongeki-net.com/ongeki-mobile/record/musicGenre/";
 
-  var TOOL_URL = "https://example.net/";
+  const TOOL_URL = "https://example.net/";
 
-  var PRODUCT_NAME = "Project Primera - getScore";
-  var VERSION = 1.0;
+  const DIFFICULT_LENGTH = 3;
 
+  const PRODUCT_NAME = "Project Primera - getScore";
+  const VERSION = 1.0;
+  
   console.log("run");
 
-  axios.get(NET_MUSICGENRE_URL + 'search/', {
-    params: {
-      genre: 99,
-      diff: 1
+  function getAllDifficultScoreDataFromNet(){
+    for (let i = 0; i <= DIFFICULT_LENGTH; ++i) {
+      getScoreHtmlFromNet(i)
     }
-  })
-  .then(function (response) {
-    parseScoreData(response.data);
-    // console.log(response.data);
-  })
-  .catch(function (error) {
-    console.log(error);
-  });
+  }
+  
+  function getScoreHtmlFromNet(difficult: number){
+    axios.get(NET_MUSICGENRE_URL + 'search/', {
+      params: {
+        genre: 99,
+        diff: difficult
+      }
+    }).then(function (response) {
+      parseScoreData(response.data);
+    }).catch(function (error) {
+      //TODO: エラー処理書く
+    });
+  }
 
   function parseScoreData(html: string) {
     var scoreDataArray = [];
@@ -48,5 +55,7 @@ import axios from './../node_modules/axios/lib/axios.js';
 
     console.log(scoreDataArray);
   }
+
+  getAllDifficultScoreDataFromNet();
 
 })();
