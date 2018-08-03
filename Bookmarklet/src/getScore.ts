@@ -7,7 +7,7 @@ import axios from '../node_modules/axios/index';
 
   const TOOL_URL = "https://example.net/";
 
-  const DIFFICULT_LENGTH = 4;
+  const DIFFICULTY_LENGTH = 4;
 
   const PRODUCT_NAME = "Project Primera - getScore";
   const VERSION = 1.0;
@@ -16,26 +16,26 @@ import axios from '../node_modules/axios/index';
 
   console.log("run");
 
-  function getAllDifficultScoreDataFromNet(){
-    for (let i = 0; i <= DIFFICULT_LENGTH; ++i) {
+  function getAllDifficultyScoreDataFromNet(){
+    for (let i = 0; i <= DIFFICULTY_LENGTH; ++i) {
       getScoreHtmlFromNet(i)
     }
   }
   
-  function getScoreHtmlFromNet(difficult: number){
+  function getScoreHtmlFromNet(difficulty: number){
     axios.get(NET_MUSICGENRE_URL + 'search/', {
       params: {
         genre: 99,
-        diff: difficult
+        diff: difficulty
       }
     }).then(function (response) {
-      parseScoreData(response.data, difficult);
+      parseScoreData(response.data, difficulty);
     }).catch(function (error) {
       //TODO: エラー処理書く
     });
   }
 
-  function parseScoreData(html: string, difficult: number) {
+  function parseScoreData(html: string, difficulty: number) {
     var parseHTML = $.parseHTML(html);
     var $innerContainer3 = $(parseHTML).find(".basic_btn");
     var array = [];
@@ -54,10 +54,10 @@ import axios from '../node_modules/axios/index';
       });
     });
 
-    scoreDataArray[difficult] = array;
+    scoreDataArray[difficulty] = array;
 
   }
 
-  getAllDifficultScoreDataFromNet();
+  getAllDifficultyScoreDataFromNet();
   console.log(scoreDataArray);
 })();
