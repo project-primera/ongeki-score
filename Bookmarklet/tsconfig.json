@@ -1,15 +1,18 @@
 {
     "compilerOptions": {
         "target": "ES5",
-        "module": "amd",
+        "module": "es2015",
+        "moduleResolution": "node",
         "sourceMap": true,
         "removeComments": true,
-        "outFile": "./bin/main.js",
         "lib": [
             "dom",
 			"es5",
 			"scripthost",
 			"es2015.promise"
         ]
-    }
+    },
+    "exclude": [
+      "node_modules"
+    ]
 }
