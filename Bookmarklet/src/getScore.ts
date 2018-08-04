@@ -10,42 +10,62 @@ import axios from '../node_modules/axios/index';
 
   console.log("run");
 
-  function getPlayerDataFromNet() {
-    axios.get(NET_URL + 'home/playerDataDetail/', {
-    }).then(function (response) {
-      parsePlayerData(response.data);
-    }).catch(function (error) {
-      //TODO: エラー処理書く
-    });
+  class PlayerData{
+    trophy: string;
+    level: number;
+    name: string;
+    battle_point: number;
+    rating: number;
+    rating_max: number;
+    money: number;
+    total_money: number;
+    total_play: number;
+    comment: string;
+    friend_code: number;
+
+    constructor(){
+      this.getPlayerDataFromNet();
+      this.getFriendCodeDataFromNet();
+    }
+
+    private getPlayerDataFromNet(){
+      axios.get(NET_URL + 'home/playerDataDetail/', {
+      }).then((response) => {
+        this.parsePlayerData(response.data);
+      }).catch(function (error) {
+        //TODO: エラー処理書く
+      });
+    }
+
+    private parsePlayerData(html: string) {
+      var parseHTML = $.parseHTML(html);
+      this.trophy = $(parseHTML).find(".trophy_block").find("span").text();
+      this.level = +$(parseHTML).find(".lv_block").find("span").text();
+      this.name = $(parseHTML).find(".name_block").find("span").text();
+      this.battle_point = +$(parseHTML).find(".battle_rank_block").find("div").text().replace(/,/g, "");
+      this.rating = +$(parseHTML).find(".rating_block").find(".rating_field").find("[class^='rating_']").eq(0).text();
+      this.rating_max = +$(parseHTML).find(".rating_block").find(".rating_field").find(".f_11").text().replace(/（MAX /g, "").replace(/）/g, "");
+      this.money = +$(parseHTML).find(".user_data_detail_block").find("td").eq(2).text().split("（")[0].replace(/,/g, "");
+      this.total_money = +$(parseHTML).find(".user_data_detail_block").find("td").eq(2).text().split("（")[1].replace(/累計 /g, "").replace(/）/g, "").replace(/,/g, "");
+      this.total_play = +$(parseHTML).find(".user_data_detail_block").find("td").eq(5).text();
+      this.comment = $(parseHTML).find(".comment_block").parent().text().replace(/	/g, "").replace("\n", "").replace("\n", "");
+      }
+
+    private getFriendCodeDataFromNet(){
+      axios.get(NET_URL + 'friend/userFriendCode/', {
+      }).then((response) => {
+        this.parseUserFriendCodeData(response.data);
+      }).catch(function (error) {
+        //TODO: エラー処理書く
+      });
+    }
+
+    private parseUserFriendCodeData(html: string) {
+      var parseHTML = $.parseHTML(html);
+      this.friend_code = +$(parseHTML).find(".friendcode_block").text();
+    }
   }
 
-  function parsePlayerData(html: string) {
-    var parseHTML = $.parseHTML(html);
-    playerDataArray['trophy'] = $(parseHTML).find(".trophy_block").find("span").text();
-    playerDataArray['level'] = $(parseHTML).find(".lv_block").find("span").text();
-    playerDataArray['name'] = $(parseHTML).find(".name_block").find("span").text();
-    playerDataArray['battle_point'] = $(parseHTML).find(".battle_rank_block").find("div").text().replace(/,/g, "");
-    playerDataArray['rating'] = $(parseHTML).find(".rating_block").find(".rating_field").find("[class^='rating_']").eq(0).text();
-    playerDataArray['rating_max'] = $(parseHTML).find(".rating_block").find(".rating_field").find(".f_11").text().replace(/（MAX /g, "").replace(/）/g, "");
-    playerDataArray['money'] = $(parseHTML).find(".user_data_detail_block").find("td").eq(2).text().split("（")[0].replace(/,/g, "");
-    playerDataArray['total_money'] = $(parseHTML).find(".user_data_detail_block").find("td").eq(2).text().split("（")[1].replace(/累計 /g, "").replace(/）/g, "").replace(/,/g, "");
-    playerDataArray['total_play'] = $(parseHTML).find(".user_data_detail_block").find("td").eq(5).text();
-    playerDataArray['comment'] = $(parseHTML).find(".comment_block").parent().text().replace(/	/g, "").replace("\n", "").replace("\n", "");
-  }
-
-  function getFriendCodeDataFromNet(){
-    axios.get(NET_URL + 'friend/userFriendCode/', {
-    }).then(function (response) {
-      parseUserFriendCodeData(response.data);
-    }).catch(function (error) {
-      //TODO: エラー処理書く
-    });
-  }
-
-  function parseUserFriendCodeData(html: string) {
-    var parseHTML = $.parseHTML(html);
-    playerDataArray['friend_code'] = $(parseHTML).find(".friendcode_block").text();
-  }
 
   function getAllDifficultyScoreDataFromNet(){
     [0, 1, 2, 3, 10].forEach(function(value, index, array){
@@ -84,7 +104,7 @@ import axios from '../node_modules/axios/index';
         }
       });
     });
-    scoreDataArray[difficulty] = scoreArray;
+    scoreDataObject[difficulty] = scoreArray;
   }
 
   function getAllRankTrophyDataFromNet(){
@@ -108,7 +128,7 @@ import axios from '../node_modules/axios/index';
         var trophyDetail = $($(v).find(".detailText")).text();
         trophyArray[trophyName] = trophyDetail;
       })
-      trophyDataArray[value] = trophyArray;
+      trophyDataObject[value] = trophyArray;
    });
   }
 
@@ -131,10 +151,10 @@ import axios from '../node_modules/axios/index';
       var friendlyTensPlace = $(value).find(".character_friendly_conainer").find("img").eq(1).attr('src').replace("https://ongeki-net.com/ongeki-mobile/img/friendly/num_", "").replace("0.png", "");
       var friendlyUnitsPlace  = $(value).find(".character_friendly_conainer").find("img").eq(2).attr('src').replace("https://ongeki-net.com/ongeki-mobile/img/friendly/num_", "").replace(".png", "");
 
-      characterFriendlyDataArray[characterID] = friendlyTensPlace + friendlyUnitsPlace;
+      characterFriendlyDataObject[characterID] = friendlyTensPlace + friendlyUnitsPlace;
     });
 
-    playerDataArray['comment'] = $(parseHTML).find(".comment_block").parent().text().replace(/	/g, "").replace("\n", "").replace("\n", "");
+    playerDataObject['comment'] = $(parseHTML).find(".comment_block").parent().text().replace(/	/g, "").replace("\n", "").replace("\n", "");
   }
 
   function getRatingRecentMusicDataFromNet() {
@@ -155,7 +175,7 @@ import axios from '../node_modules/axios/index';
       if ($(value).html().match(/TECHNICAL SCORE/)) {
         var title = $(value).find(".music_label").text();
         var technicalScore = $(value).find(".score_value").text();
-        ratingRecentMusicArray[count++] = {
+        ratingRecentMusicObject[count++] = {
           title: title,
           technical_score: technicalScore,
         };
@@ -163,33 +183,26 @@ import axios from '../node_modules/axios/index';
     });
   }
 
-  var playerDataArray = [];
-  var scoreDataArray = [[]];
-  var trophyDataArray = [[]];
-  var characterFriendlyDataArray = [];
-  var ratingRecentMusicArray = [];
+  var playerDataObject: Object = {};
+  var scoreDataObject: Object = {};
+  var trophyDataObject: Object = {};
+  var characterFriendlyDataObject: Object = {};
+  var ratingRecentMusicObject: Object = {};
 
-  getPlayerDataFromNet();
-  getFriendCodeDataFromNet();
-  getAllDifficultyScoreDataFromNet();
-  getAllRankTrophyDataFromNet();
-  getCharacterFriendlyDataFromNet();
-  getRatingRecentMusicDataFromNet();
-  
-  console.log(playerDataArray);
-  console.log(scoreDataArray);
-  console.log(trophyDataArray);
-  console.log(characterFriendlyDataArray);
-  console.log(ratingRecentMusicArray);
+  var playerData: PlayerData = new PlayerData();
+  console.log(playerData);
 
+  /*
   var allData = {
-    player: playerDataArray,
-    score: scoreDataArray,
-    trophy: trophyDataArray,
-    character: characterFriendlyDataArray,
+    player: playerDataObject,
+    score: scoreDataObject,
+    trophy: trophyDataObject,
+    character: characterFriendlyDataObject,
+    recent: ratingRecentMusicObject,
   }
   var json = JSON.stringify(allData);
 
   console.log(allData);
   console.log(json);
+  */
 })();
