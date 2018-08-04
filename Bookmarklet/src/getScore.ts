@@ -137,21 +137,50 @@ import axios from '../node_modules/axios/index';
     playerDataArray['comment'] = $(parseHTML).find(".comment_block").parent().text().replace(/	/g, "").replace("\n", "").replace("\n", "");
   }
 
+  function getRatingRecentMusicDataFromNet() {
+    axios.get(NET_URL + 'home/ratingTargetMusic/', {
+    }).then(function (response) {
+      parseRatingRecentMusicData(response.data);
+    }).catch(function (error) {
+      //TODO: エラー処理書く
+    }); 
+  }
+
+  function parseRatingRecentMusicData(html: string) {
+    var parseHTML = $.parseHTML(html);
+    var $basic_btn = $(parseHTML).find(".basic_btn");
+    var count: number = 0;
+
+    $basic_btn.each(function (key, value) {
+      if ($(value).html().match(/TECHNICAL SCORE/)) {
+        var title = $(value).find(".music_label").text();
+        var technicalScore = $(value).find(".score_value").text();
+        ratingRecentMusicArray[count++] = {
+          title: title,
+          technical_score: technicalScore,
+        };
+      }
+    });
+  }
+
   var playerDataArray = [];
   var scoreDataArray = [[]];
   var trophyDataArray = [[]];
   var characterFriendlyDataArray = [];
+  var ratingRecentMusicArray = [];
 
   getPlayerDataFromNet();
   getFriendCodeDataFromNet();
   getAllDifficultyScoreDataFromNet();
   getAllRankTrophyDataFromNet();
   getCharacterFriendlyDataFromNet();
+  getRatingRecentMusicDataFromNet();
   
   console.log(playerDataArray);
   console.log(scoreDataArray);
   console.log(trophyDataArray);
   console.log(characterFriendlyDataArray);
+  console.log(ratingRecentMusicArray);
 
   var allData = {
     player: playerDataArray,
