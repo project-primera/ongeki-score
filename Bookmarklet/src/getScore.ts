@@ -3,10 +3,7 @@ import axios from '../node_modules/axios/index';
 
 (function () {
   const NET_URL = "https://ongeki-net.com/ongeki-mobile/";
-
   const TOOL_URL = "https://example.net/";
-
-  const DIFFICULTY_LENGTH = 4;
 
   const PRODUCT_NAME = "Project Primera - getScore";
   const VERSION = 1.0;
@@ -155,4 +152,15 @@ import axios from '../node_modules/axios/index';
   console.log(scoreDataArray);
   console.log(trophyDataArray);
   console.log(characterFriendlyDataArray);
+
+  var allData = {
+    player: playerDataArray,
+    score: scoreDataArray,
+    trophy: trophyDataArray,
+    character: characterFriendlyDataArray,
+  }
+  var json = JSON.stringify(allData);
+
+  console.log(allData);
+  console.log(json);
 })();
