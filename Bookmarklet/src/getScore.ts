@@ -3,7 +3,6 @@ import axios from '../node_modules/axios/index';
 
 (function () {
   const NET_URL = "https://ongeki-net.com/ongeki-mobile/";
-  const NET_MUSICGENRE_URL = "https://ongeki-net.com/ongeki-mobile/record/musicGenre/";
 
   const TOOL_URL = "https://example.net/";
 
@@ -13,6 +12,7 @@ import axios from '../node_modules/axios/index';
   const VERSION = 1.0;
 
   var scoreDataArray = [[]];
+  var trophyDataArray = [[]];
 
   console.log("run");
 
@@ -23,7 +23,7 @@ import axios from '../node_modules/axios/index';
   }
   
   function getScoreHtmlFromNet(difficulty: number){
-    axios.get(NET_MUSICGENRE_URL + 'search/', {
+    axios.get(NET_URL + 'record/musicGenre/search/', {
       params: {
         genre: 99,
         diff: difficulty
@@ -38,7 +38,7 @@ import axios from '../node_modules/axios/index';
   function parseScoreData(html: string, difficulty: number) {
     var parseHTML = $.parseHTML(html);
     var $innerContainer3 = $(parseHTML).find(".basic_btn");
-    var array = [];
+    var scoreArray = [];
 
     $innerContainer3.each(function (key, value) {
       $(value).each(function (k, v) {
@@ -46,18 +46,45 @@ import axios from '../node_modules/axios/index';
         var overDamageHighScore = $($(v).find(".score_value")[0]).text();
         var battleHighScore = $($(v).find(".score_value")[1]).text();
         var technicalHighScore = $($(v).find(".score_value")[2]).text();
-        array[songTitle] = {
+        scoreArray[songTitle] = {
           OverDamageHighScore: overDamageHighScore,
           BattleHighScore: battleHighScore,
           TechnicalHighScore: technicalHighScore,
         }
       });
     });
+    scoreDataArray[difficulty] = scoreArray;
+  }
 
-    scoreDataArray[difficulty] = array;
+  function getAllRankTrophyDataFromNet(){
+    axios.get(NET_URL + 'collection/trophy/', {
+    }).then(function (response) {
+      parseAllTrophyData(response.data);
+    }).catch(function (error) {
+      //TODO: エラー処理書く
+    });    
+  }
 
+  function parseAllTrophyData(html: string){
+    var parseHTML = $.parseHTML(html);
+
+    ["Normal", "Silver", "Gold", "Platinum"].forEach(function(value, index, array){
+      var trophyArray = [];
+
+      var $listDiv = $(parseHTML).find("#" + value + "List");
+      $listDiv.find(".m_10").each(function (key, v) {
+        var trophyName = $($(v).find(".f_14")).text();
+        var trophyDetail = $($(v).find(".detailText")).text();
+
+        trophyArray[trophyName] = trophyDetail;
+      })
+      trophyDataArray[value] = trophyArray;
+   });
   }
 
   getAllDifficultyScoreDataFromNet();
+  getAllRankTrophyDataFromNet();
+  
   console.log(scoreDataArray);
+  console.log(trophyDataArray);
 })();
