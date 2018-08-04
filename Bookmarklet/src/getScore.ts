@@ -11,10 +11,30 @@ import axios from '../node_modules/axios/index';
   const PRODUCT_NAME = "Project Primera - getScore";
   const VERSION = 1.0;
 
-  var scoreDataArray = [[]];
-  var trophyDataArray = [[]];
-
   console.log("run");
+
+  function getPlayerDataFromNet() {
+    axios.get(NET_URL + 'home/playerDataDetail/', {
+    }).then(function (response) {
+      parsePlayerData(response.data);
+    }).catch(function (error) {
+      //TODO: エラー処理書く
+    });
+  }
+
+  function parsePlayerData(html: string) {
+    var parseHTML = $.parseHTML(html);
+    playerDataArray['trophy'] = $(parseHTML).find(".trophy_block").find("span").text();
+    playerDataArray['level'] = $(parseHTML).find(".lv_block").find("span").text();
+    playerDataArray['name'] = $(parseHTML).find(".name_block").find("span").text();
+    playerDataArray['battle_point'] = $(parseHTML).find(".battle_rank_block").find("div").text().replace(/,/g, "");
+    playerDataArray['rating'] = $(parseHTML).find(".rating_block").find(".rating_field").find("[class^='rating_']").eq(0).text();
+    playerDataArray['rating_max'] = $(parseHTML).find(".rating_block").find(".rating_field").find(".f_11").text().replace(/（MAX /g, "").replace(/）/g, "");
+    playerDataArray['money'] = $(parseHTML).find(".user_data_detail_block").find("td").eq(2).text().split("（")[0].replace(/,/g, "");
+    playerDataArray['total_money'] = $(parseHTML).find(".user_data_detail_block").find("td").eq(2).text().split("（")[1].replace(/累計 /g, "").replace(/）/g, "").replace(/,/g, "");
+    playerDataArray['total_play'] = $(parseHTML).find(".user_data_detail_block").find("td").eq(5).text();
+    playerDataArray['comment'] = $(parseHTML).find(".comment_block").parent().text().replace(/	/g, "").replace("\n", "").replace("\n", "");
+  }
 
   function getAllDifficultyScoreDataFromNet(){
     [0, 1, 2, 3, 10].forEach(function(value, index, array){
@@ -75,16 +95,21 @@ import axios from '../node_modules/axios/index';
       $listDiv.find(".m_10").each(function (key, v) {
         var trophyName = $($(v).find(".f_14")).text();
         var trophyDetail = $($(v).find(".detailText")).text();
-
         trophyArray[trophyName] = trophyDetail;
       })
       trophyDataArray[value] = trophyArray;
    });
   }
 
+  var playerDataArray = [];
+  var scoreDataArray = [[]];
+  var trophyDataArray = [[]];
+
+  getPlayerDataFromNet();
   getAllDifficultyScoreDataFromNet();
   getAllRankTrophyDataFromNet();
   
+  console.log(playerDataArray);
   console.log(scoreDataArray);
   console.log(trophyDataArray);
 })();
