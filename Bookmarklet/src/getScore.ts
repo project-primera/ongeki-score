@@ -17,9 +17,9 @@ import axios from '../node_modules/axios/index';
   console.log("run");
 
   function getAllDifficultyScoreDataFromNet(){
-    for (let i = 0; i <= DIFFICULTY_LENGTH; ++i) {
-      getScoreHtmlFromNet(i)
-    }
+    [0, 1, 2, 3, 10].forEach(function(value, index, array){
+      getScoreHtmlFromNet(value);
+    });
   }
   
   function getScoreHtmlFromNet(difficulty: number){
