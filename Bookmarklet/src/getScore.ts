@@ -36,6 +36,20 @@ import axios from '../node_modules/axios/index';
     playerDataArray['comment'] = $(parseHTML).find(".comment_block").parent().text().replace(/	/g, "").replace("\n", "").replace("\n", "");
   }
 
+  function getFriendCodeDataFromNet(){
+    axios.get(NET_URL + 'friend/userFriendCode/', {
+    }).then(function (response) {
+      parseUserFriendCodeData(response.data);
+    }).catch(function (error) {
+      //TODO: エラー処理書く
+    });
+  }
+
+  function parseUserFriendCodeData(html: string) {
+    var parseHTML = $.parseHTML(html);
+    playerDataArray['friend_code'] = $(parseHTML).find(".friendcode_block").text();
+  }
+
   function getAllDifficultyScoreDataFromNet(){
     [0, 1, 2, 3, 10].forEach(function(value, index, array){
       getScoreHtmlFromNet(value);
@@ -132,6 +146,7 @@ import axios from '../node_modules/axios/index';
   var characterFriendlyDataArray = [];
 
   getPlayerDataFromNet();
+  getFriendCodeDataFromNet();
   getAllDifficultyScoreDataFromNet();
   getAllRankTrophyDataFromNet();
   getCharacterFriendlyDataFromNet();
