@@ -132,107 +132,152 @@ import axios from '../node_modules/axios/index';
       });
     }
   }
-/*
-  function getAllRankTrophyDataFromNet(){
-    axios.get(NET_URL + 'collection/trophy/', {
-    }).then(function (response) {
-      parseAllTrophyData(response.data);
-    }).catch(function (error) {
-      //TODO: エラー処理書く
-    });    
+
+  class TrophyInfo{
+    name: string;
+    detail: string;
+
+    constructor(name: string, detail: string){
+      this.name = name;
+      this.detail = detail;
+    }
   }
 
-  function parseAllTrophyData(html: string){
-    var parseHTML = $.parseHTML(html);
+  class TrophyData{
+    normalTrophyInfos: Array<TrophyInfo> = new Array<TrophyInfo>();
+    silverTrophyInfos: Array<TrophyInfo> = new Array<TrophyInfo>();
+    goldTrophyInfos: Array<TrophyInfo> = new Array<TrophyInfo>();
+    platinumTrophyInfo: Array<TrophyInfo> = new Array<TrophyInfo>();
 
-    ["Normal", "Silver", "Gold", "Platinum"].forEach(function(value, index, array){
-      var trophyArray = [];
+    constructor(){
+      this.getAllRankTrophyDataFromNet();
+    }
 
-      var $listDiv = $(parseHTML).find("#" + value + "List");
-      $listDiv.find(".m_10").each(function (key, v) {
-        var trophyName = $($(v).find(".f_14")).text();
-        var trophyDetail = $($(v).find(".detailText")).text();
-        trophyArray[trophyName] = trophyDetail;
-      })
-      trophyDataObject[value] = trophyArray;
-   });
+    private getAllRankTrophyDataFromNet(){
+      axios.get(NET_URL + 'collection/trophy/', {
+      }).then((response) => {
+        this.parseAllTrophyData(response.data);
+      }).catch(function (error) {
+        //TODO: エラー処理書く
+      });    
+    }
+
+    private parseAllTrophyData(html: string){
+      var parseHTML = $.parseHTML(html);
+  
+      ["Normal", "Silver", "Gold", "Platinum"].forEach((value, index, array) => {
+        var trophyArray = [];
+  
+        var $listDiv = $(parseHTML).find("#" + value + "List");
+        $listDiv.find(".m_10").each((key, v) => {
+          var trophy = new TrophyInfo(
+            $($(v).find(".f_14")).text(),
+            $($(v).find(".detailText")).text()
+          );
+          switch (value) {
+            case "Normal":    this.normalTrophyInfos.push(trophy);  break;
+            case "Silver":    this.silverTrophyInfos.push(trophy);  break;
+            case "Gold":      this.goldTrophyInfos.push(trophy);    break;
+            case "Platinum":  this.platinumTrophyInfo.push(trophy); break;
+          }
+        });
+     });
+    }
   }
 
-  function getCharacterFriendlyDataFromNet(){
-    axios.get(NET_URL + 'character/', {
-    }).then(function (response) {
-      parseCharacterFriendlyData(response.data);
-    }).catch(function (error) {
-      //TODO: エラー処理書く
-    });
+  class CharacterFriendlyData{
+    friendly: { [key: string]: number} = {};
+    constructor(){
+      this.getCharacterFriendlyDataFromNet();
+    }
+
+    private getCharacterFriendlyDataFromNet(){
+      axios.get(NET_URL + 'character/', {
+      }).then((response) => {
+        this.parseCharacterFriendlyData(response.data);
+      }).catch(function (error) {
+        //TODO: エラー処理書く
+      });
+    }
+
+    private parseCharacterFriendlyData(html: string) {
+      var parseHTML = $.parseHTML(html);
+      var $chara_btn = $(parseHTML).find(".chara_btn");
+      $chara_btn.each((key, value) => {
+        var characterID: string = $(value).find("input").val() as string || "";
+  
+        var friendlyTensPlace: string = ($(value).find(".character_friendly_conainer").find("img").eq(1).attr('src') || "0").replace("https://ongeki-net.com/ongeki-mobile/img/friendly/num_", "").replace("0.png", "") ;
+        var friendlyUnitsPlace: string = ($(value).find(".character_friendly_conainer").find("img").eq(2).attr('src') || "0").replace("https://ongeki-net.com/ongeki-mobile/img/friendly/num_", "").replace(".png", "");
+  
+        this.friendly[characterID] = +(friendlyTensPlace + friendlyUnitsPlace);
+      });
+    }
   }
 
-  function parseCharacterFriendlyData(html: string) {
-    var parseHTML = $.parseHTML(html);
-    var $chara_btn = $(parseHTML).find(".chara_btn");
-    $chara_btn.each(function (key, value) {
-      var characterID = $(value).find("input").val().toString();
-      // characterFriendlyDataArray[characterID]
+  class RecentMusicInfo{
+    title: string = "";
+    technicalScore: number = 0;
 
-      var friendlyTensPlace = $(value).find(".character_friendly_conainer").find("img").eq(1).attr('src').replace("https://ongeki-net.com/ongeki-mobile/img/friendly/num_", "").replace("0.png", "");
-      var friendlyUnitsPlace  = $(value).find(".character_friendly_conainer").find("img").eq(2).attr('src').replace("https://ongeki-net.com/ongeki-mobile/img/friendly/num_", "").replace(".png", "");
-
-      characterFriendlyDataObject[characterID] = friendlyTensPlace + friendlyUnitsPlace;
-    });
-
-    playerDataObject['comment'] = $(parseHTML).find(".comment_block").parent().text().replace(/	/g, "").replace("\n", "").replace("\n", "");
+    constructor(title: string, technicalScore: number){
+      this.title = title;
+      this.technicalScore = technicalScore;
+    }
   }
 
-  function getRatingRecentMusicDataFromNet() {
-    axios.get(NET_URL + 'home/ratingTargetMusic/', {
-    }).then(function (response) {
-      parseRatingRecentMusicData(response.data);
-    }).catch(function (error) {
-      //TODO: エラー処理書く
-    }); 
+  class RatingRecentMusicData{
+    ratingRecentMusicObject: Array<RecentMusicInfo> = new Array<RecentMusicInfo>();
+
+    constructor(){
+      this.getRatingRecentMusicDataFromNet();
+    }
+
+    private getRatingRecentMusicDataFromNet() {
+      axios.get(NET_URL + 'home/ratingTargetMusic/', {
+      }).then((response) => {
+        this.parseRatingRecentMusicData(response.data);
+      }).catch(function (error) {
+        //TODO: エラー処理書く
+      }); 
+    }
+
+    private parseRatingRecentMusicData(html: string) {
+      var parseHTML = $.parseHTML(html);
+      var $basic_btn = $(parseHTML).find(".basic_btn");
+      var count: number = 0;
+  
+      $basic_btn.each((key, value) => {
+        if ($(value).html().match(/TECHNICAL SCORE/)) {
+          var info: RecentMusicInfo = new RecentMusicInfo(
+            $(value).find(".music_label").text(),
+            +$(value).find(".score_value").text().replace(/,/g, "")
+          );
+          this.ratingRecentMusicObject.push(info);
+        }
+      });
+    }
   }
-
-  function parseRatingRecentMusicData(html: string) {
-    var parseHTML = $.parseHTML(html);
-    var $basic_btn = $(parseHTML).find(".basic_btn");
-    var count: number = 0;
-
-    $basic_btn.each(function (key, value) {
-      if ($(value).html().match(/TECHNICAL SCORE/)) {
-        var title = $(value).find(".music_label").text();
-        var technicalScore = $(value).find(".score_value").text();
-        ratingRecentMusicObject[count++] = {
-          title: title,
-          technical_score: technicalScore,
-        };
-      }
-    });
-  }
-
-  var playerDataObject: Object = {};
-  var scoreDataObject: Object = {};
-  var trophyDataObject: Object = {};
-  var characterFriendlyDataObject: Object = {};
-  var ratingRecentMusicObject: Object = {};
-  */
 
   var playerData: PlayerData = new PlayerData();
   var scoreData: ScoreData = new ScoreData();
+  var trophyData: TrophyData= new TrophyData();
+  var characterFriendlyData: CharacterFriendlyData = new CharacterFriendlyData();
+  var ratingRecentMusicData: RatingRecentMusicData = new RatingRecentMusicData();
 
   console.log(playerData);
   console.log(scoreData);
+  console.log(trophyData);
+  console.log(characterFriendlyData);
+  console.log(ratingRecentMusicData);
 
-  /*
   var allData = {
-    player: playerDataObject,
-    score: scoreDataObject,
-    trophy: trophyDataObject,
-    character: characterFriendlyDataObject,
-    recent: ratingRecentMusicObject,
+    player: playerData,
+    score: scoreData,
+    trophy: trophyData,
+    character: characterFriendlyData,
+    recent: ratingRecentMusicData,
   }
   var json = JSON.stringify(allData);
 
   console.log(allData);
   console.log(json);
-  */
 })();
