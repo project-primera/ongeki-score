@@ -101,15 +101,43 @@ import axios from '../node_modules/axios/index';
    });
   }
 
+  function getCharacterFriendlyDataFromNet(){
+    axios.get(NET_URL + 'character/', {
+    }).then(function (response) {
+      parseCharacterFriendlyData(response.data);
+    }).catch(function (error) {
+      //TODO: エラー処理書く
+    });
+  }
+
+  function parseCharacterFriendlyData(html: string) {
+    var parseHTML = $.parseHTML(html);
+    var $chara_btn = $(parseHTML).find(".chara_btn");
+    $chara_btn.each(function (key, value) {
+      var characterID = $(value).find("input").val().toString();
+      // characterFriendlyDataArray[characterID]
+
+      var friendlyTensPlace = $(value).find(".character_friendly_conainer").find("img").eq(1).attr('src').replace("https://ongeki-net.com/ongeki-mobile/img/friendly/num_", "").replace("0.png", "");
+      var friendlyUnitsPlace  = $(value).find(".character_friendly_conainer").find("img").eq(2).attr('src').replace("https://ongeki-net.com/ongeki-mobile/img/friendly/num_", "").replace(".png", "");
+
+      characterFriendlyDataArray[characterID] = friendlyTensPlace + friendlyUnitsPlace;
+    });
+
+    playerDataArray['comment'] = $(parseHTML).find(".comment_block").parent().text().replace(/	/g, "").replace("\n", "").replace("\n", "");
+  }
+
   var playerDataArray = [];
   var scoreDataArray = [[]];
   var trophyDataArray = [[]];
+  var characterFriendlyDataArray = [];
 
   getPlayerDataFromNet();
   getAllDifficultyScoreDataFromNet();
   getAllRankTrophyDataFromNet();
+  getCharacterFriendlyDataFromNet();
   
   console.log(playerDataArray);
   console.log(scoreDataArray);
   console.log(trophyDataArray);
+  console.log(characterFriendlyDataArray);
 })();
