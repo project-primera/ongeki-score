@@ -11,17 +11,17 @@ import axios from '../node_modules/axios/index';
   console.log("run");
 
   class PlayerData{
-    trophy: string;
-    level: number;
-    name: string;
-    battle_point: number;
-    rating: number;
-    rating_max: number;
-    money: number;
-    total_money: number;
-    total_play: number;
-    comment: string;
-    friend_code: number;
+    trophy: string = "";
+    level: number = 0;
+    name: string = "";
+    battle_point: number = 0;
+    rating: number = 0;
+    rating_max: number = 0;
+    money: number = 0;
+    total_money: number = 0;
+    total_play: number = 0;
+    comment: string = "";
+    friend_code: number = 0;
 
     constructor(){
       this.getPlayerDataFromNet();
@@ -66,47 +66,73 @@ import axios from '../node_modules/axios/index';
     }
   }
 
-
-  function getAllDifficultyScoreDataFromNet(){
-    [0, 1, 2, 3, 10].forEach(function(value, index, array){
-      getScoreHtmlFromNet(value);
-    });
-  }
-  
-  function getScoreHtmlFromNet(difficulty: number){
-    axios.get(NET_URL + 'record/musicGenre/search/', {
-      params: {
-        genre: 99,
-        diff: difficulty
-      }
-    }).then(function (response) {
-      parseScoreData(response.data, difficulty);
-    }).catch(function (error) {
-      //TODO: エラー処理書く
-    });
+  class SongInfo{
+    title: string;
+    over_damage_high_score: number;
+    battle_high_score: number;
+    technical_high_score: number;
+    
+    constructor(title: string, over_damage_high_score: number, battle_high_score: number, technical_high_score: number){
+      this.title = title;
+      this.over_damage_high_score = over_damage_high_score;
+      this.battle_high_score = battle_high_score;
+      this.technical_high_score = technical_high_score;
+    }
   }
 
-  function parseScoreData(html: string, difficulty: number) {
-    var parseHTML = $.parseHTML(html);
-    var $innerContainer3 = $(parseHTML).find(".basic_btn");
-    var scoreArray = [];
+  class ScoreData{
+    basicSongInfos = new Array<SongInfo>();
+    advancedSongInfos = new Array<SongInfo>();
+    expertInfos = new Array<SongInfo>();
+    masterSongInfos = new Array<SongInfo>();
+    lunaticSongInfos = new Array<SongInfo>();
 
-    $innerContainer3.each(function (key, value) {
-      $(value).each(function (k, v) {
-        var songTitle = $(v).find(".music_label").text();
-        var overDamageHighScore = $($(v).find(".score_value")[0]).text();
-        var battleHighScore = $($(v).find(".score_value")[1]).text();
-        var technicalHighScore = $($(v).find(".score_value")[2]).text();
-        scoreArray[songTitle] = {
-          OverDamageHighScore: overDamageHighScore,
-          BattleHighScore: battleHighScore,
-          TechnicalHighScore: technicalHighScore,
-        }
+    constructor(){
+      this.getAllDifficultyScoreDataFromNet();
+    }
+    private getAllDifficultyScoreDataFromNet(){
+      [0, 1, 2, 3, 10].forEach((value, index, array) => {
+        this.getScoreHtmlFromNet(value);
       });
-    });
-    scoreDataObject[difficulty] = scoreArray;
-  }
+    }
 
+    private getScoreHtmlFromNet(difficulty: number){
+      axios.get(NET_URL + 'record/musicGenre/search/', {
+        params: {
+          genre: 99,
+          diff: difficulty
+        }
+      }).then((response) => {
+        this.parseScoreData(response.data, difficulty);
+      }).catch(function (error) {
+        //TODO: エラー処理書く
+      });
+    }
+
+    private parseScoreData(html: string, difficulty: number) {
+      var parseHTML = $.parseHTML(html);
+      var $innerContainer3 = $(parseHTML).find(".basic_btn");
+  
+      $innerContainer3.each((key, value) => {
+        $(value).each((k, v) => {
+          var song = new SongInfo(
+            $(v).find(".music_label").text(),
+            +$($(v).find(".score_value")[0]).text(),
+            +$($(v).find(".score_value")[1]).text(),
+            +$($(v).find(".score_value")[2]).text()
+          );
+          switch (difficulty) {
+            case 0: this.basicSongInfos.push(song); break;
+            case 1: this.advancedSongInfos.push(song); break;
+            case 2: this.expertInfos.push(song); break;
+            case 3: this.masterSongInfos.push(song); break;
+            case 10: this.lunaticSongInfos.push(song); break;
+          }
+        });
+      });
+    }
+  }
+/*
   function getAllRankTrophyDataFromNet(){
     axios.get(NET_URL + 'collection/trophy/', {
     }).then(function (response) {
@@ -188,9 +214,13 @@ import axios from '../node_modules/axios/index';
   var trophyDataObject: Object = {};
   var characterFriendlyDataObject: Object = {};
   var ratingRecentMusicObject: Object = {};
+  */
 
   var playerData: PlayerData = new PlayerData();
+  var scoreData: ScoreData = new ScoreData();
+
   console.log(playerData);
+  console.log(scoreData);
 
   /*
   var allData = {
