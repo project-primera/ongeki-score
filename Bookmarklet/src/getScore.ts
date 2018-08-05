@@ -23,22 +23,6 @@ import axios from '../node_modules/axios/index';
     comment: string = "";
     friend_code: number = 0;
 
-    toJSON() {
-      return {
-        trophy: this.trophy,
-        level: this.level,
-        name: this.name,
-        battle_point: this.battle_point,
-        rating: this.rating,
-        rating_max: this.rating,
-        money: this.money,
-        total_money: this.total_money,
-        total_play: this.total_play,
-        comment: this.comment,
-        friend_code: this.friend_code,
-      }
-    }
-
     async getData() {
       await this.getPlayerDataFromNet();
       await this.getFriendCodeDataFromNet();
@@ -102,16 +86,6 @@ import axios from '../node_modules/axios/index';
     expertInfos = new Array<SongInfo>();
     masterSongInfos = new Array<SongInfo>();
     lunaticSongInfos = new Array<SongInfo>();
-
-    toJSON(){
-      return {
-        basicSongInfos: this.basicSongInfos,
-        advancedSongInfos: this.advancedSongInfos,
-        expertInfos: this.expertInfos,
-        masterSongInfos: this.masterSongInfos,
-        lunaticSongInfos: this.lunaticSongInfos,
-      };
-    }
 
     async getData() {
       await this.getAllDifficultyScoreDataFromNet();
@@ -300,7 +274,6 @@ import axios from '../node_modules/axios/index';
     await allData.characterFriendlyData.getData();
     await allData.ratingRecentMusicData.getData();
 
-    console.log(allData.scoreData.expertInfos[3]);
     var json = JSON.stringify(allData);
 
     console.log(json);
