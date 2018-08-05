@@ -5,7 +5,7 @@ import axios from '../node_modules/axios/index';
   console.log("run");
 
   const NET_URL = "https://ongeki-net.com/ongeki-mobile/";
-  const TOOL_URL = "https://example.net/";
+  const TOOL_URL = "http://127.0.0.1:8000/api/user/update";
 
   const PRODUCT_NAME = "Project Primera - getScore";
   const VERSION = 1.0;
@@ -277,6 +277,7 @@ import axios from '../node_modules/axios/index';
     var json = JSON.stringify(allData);
 
     console.log(json);
+    axios.post(TOOL_URL, json);
   }
 
   main();
