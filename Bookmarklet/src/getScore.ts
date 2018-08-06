@@ -277,7 +277,9 @@ import axios from '../node_modules/axios/index';
     var json = JSON.stringify(allData);
 
     console.log(json);
-    axios.post(TOOL_URL, json);
+    axios.post(TOOL_URL, json).then(response => {
+      console.log('body:', response.data);
+    });
   }
 
   main();
