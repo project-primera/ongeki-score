@@ -25,6 +25,6 @@ Route::get('/home', 'HomeController@index')->name('home');
 Route::get('/user_status', function () {
     $status = App\UserStatus::all();
     foreach ($status as $state) {
-        echo $state;
+        var_dump($state);
     }
 });
