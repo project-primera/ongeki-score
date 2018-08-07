@@ -1,5 +1,6 @@
 // import axios from  'axios'だと通らない・・・ なんで・・・
-import axios from '../node_modules/axios/index';
+import axios from 'axios';
+import * as qs from 'qs';
 
 (function () {
   console.log("run");
@@ -274,10 +275,10 @@ import axios from '../node_modules/axios/index';
     await allData.characterFriendlyData.getData();
     await allData.ratingRecentMusicData.getData();
 
-    var json = JSON.stringify(allData);
+    let params = new URLSearchParams();
+    params.append("text", "test");
 
-    console.log(json);
-    axios.post(TOOL_URL, json).then(response => {
+    axios.post(TOOL_URL, qs.stringify(allData)).then(response => {
       console.log('body:', response.data);
     });
   }

@@ -4,8 +4,11 @@
   "description": "",
   "main": "Bookmarklet/bin/main.js",
   "dependencies": {
+    "@types/axios": "^0.14.0",
     "@types/jquery": "^3.3.5",
+    "@types/qs": "^6.5.1",
     "axios": "^0.18",
+    "qs": "^6.5.2",
     "ts-loader": "^4.4.2",
     "webpack": "^4.16.4"
   },
