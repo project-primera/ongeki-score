@@ -258,6 +258,7 @@ import * as qs from 'qs';
     }
   }
   class AllData {
+    token: string = "";
     playerData: PlayerData = new PlayerData();
     scoreData: ScoreData = new ScoreData();
     trophyData: TrophyData = new TrophyData();
@@ -265,10 +266,30 @@ import * as qs from 'qs';
     ratingRecentMusicData: RatingRecentMusicData = new RatingRecentMusicData();
   }
 
+  var getToken = (function() {
+    // document: HTMLScriptElement;
+    let url: string;
+    if (document.currentScript) {
+      // need to fix: TS2339: Property 'src' does not exist on type 'HTMLScriptElement | SVGScriptElement'.
+      // Property 'src' does not exist on type 'SVGScriptElement'.
+      url = document.currentScript.src;
+    } else {
+        var scripts = document.getElementsByTagName('script'),
+        script = scripts[scripts.length-1];
+        if (script.src) {
+          url = script.src;
+        }else{
+          url = "";
+        }
+    }
+    return url.slice(url.indexOf("?") + 1)
+});
+
 
   let main = async () => {
     let allData: AllData = new AllData();
 
+    allData.token = getToken();
     await allData.playerData.getData();
     await allData.scoreData.getData();
     await allData.trophyData.getData();
