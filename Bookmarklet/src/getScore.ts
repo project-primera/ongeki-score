@@ -68,10 +68,10 @@ import * as qs from 'qs';
   }
 
   class SongInfo {
-    title: string;
-    over_damage_high_score: number;
-    battle_high_score: number;
-    technical_high_score: number;
+    title: string = "";
+    over_damage_high_score: number = 0;
+    battle_high_score: number = 0;
+    technical_high_score: number = 0;
 
     constructor(title: string, over_damage_high_score: number, battle_high_score: number, technical_high_score: number) {
       this.title = title;
@@ -295,9 +295,6 @@ import * as qs from 'qs';
     await allData.trophyData.getData();
     await allData.characterFriendlyData.getData();
     await allData.ratingRecentMusicData.getData();
-
-    let params = new URLSearchParams();
-    params.append("text", "test");
 
     axios.post(TOOL_URL, qs.stringify(allData)).then(response => {
       console.log('body:', response.data);
