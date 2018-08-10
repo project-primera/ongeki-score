@@ -258,12 +258,11 @@ import * as qs from 'qs';
     }
   }
   class AllData {
-    token: string = "";
-    playerData: PlayerData = new PlayerData();
-    scoreData: ScoreData = new ScoreData();
-    trophyData: TrophyData = new TrophyData();
-    characterFriendlyData: CharacterFriendlyData = new CharacterFriendlyData();
-    ratingRecentMusicData: RatingRecentMusicData = new RatingRecentMusicData();
+    PlayerData: PlayerData = new PlayerData();
+    ScoreData: ScoreData = new ScoreData();
+    TrophyData: TrophyData = new TrophyData();
+    CharacterFriendlyData: CharacterFriendlyData = new CharacterFriendlyData();
+    RatingRecentMusicData: RatingRecentMusicData = new RatingRecentMusicData();
   }
 
   var getToken = (function() {
@@ -289,14 +288,17 @@ import * as qs from 'qs';
   let main = async () => {
     let allData: AllData = new AllData();
 
-    allData.token = getToken();
-    await allData.playerData.getData();
-    await allData.scoreData.getData();
-    await allData.trophyData.getData();
-    await allData.characterFriendlyData.getData();
-    await allData.ratingRecentMusicData.getData();
+    let token: string = getToken();
+    await allData.PlayerData.getData();
+    await allData.ScoreData.getData();
+    await allData.TrophyData.getData();
+    await allData.CharacterFriendlyData.getData();
+    await allData.RatingRecentMusicData.getData();
 
-    axios.post(TOOL_URL, qs.stringify(allData)).then(response => {
+    console.log(allData);
+    axios.post(TOOL_URL, qs.stringify(allData), {
+      headers: { Authorization: "Bearer " + token }
+  }).then(response => {
       console.log('body:', response.data);
     });
   }
