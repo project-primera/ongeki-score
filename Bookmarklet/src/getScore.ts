@@ -1,4 +1,3 @@
-// import axios from  'axios'だと通らない・・・ なんで・・・
 import axios from 'axios';
 import * as qs from 'qs';
 
@@ -266,12 +265,9 @@ import * as qs from 'qs';
   }
 
   var getToken = (function() {
-    // document: HTMLScriptElement;
     let url: string;
     if (document.currentScript) {
-      // need to fix: TS2339: Property 'src' does not exist on type 'HTMLScriptElement | SVGScriptElement'.
-      // Property 'src' does not exist on type 'SVGScriptElement'.
-      url = document.currentScript.src;
+      url = (document.currentScript as HTMLScriptElement).src;
     } else {
         var scripts = document.getElementsByTagName('script'),
         script = scripts[scripts.length-1];
@@ -281,7 +277,7 @@ import * as qs from 'qs';
           url = "";
         }
     }
-    return url.slice(url.indexOf("?") + 1)
+    return url.slice(url.indexOf("?t=") + 1);
 });
 
 
@@ -297,7 +293,9 @@ import * as qs from 'qs';
 
     console.log(allData);
     axios.post(TOOL_URL, qs.stringify(allData), {
-      headers: { Authorization: "Bearer " + token }
+      headers: { 
+        Authorization: "Bearer " + token,
+     }
   }).then(response => {
       console.log('body:', response.data);
     });

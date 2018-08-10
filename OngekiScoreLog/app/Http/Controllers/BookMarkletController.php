@@ -17,10 +17,10 @@ class BookmarkletController extends Controller
         }
         
 
-        $tokenobj = $user->createToken('OngekiScoreLog Personal Access Client');
+        $tokenobj = $user->createToken('OngekiScoreLog Personal Access Client', ['*']);
         $token = $tokenobj->accessToken;
         $token_id = $tokenobj->token->id;
-        return "javascript:(function(d,s){s=d.createElement('script');s.src='http://127.0.0.1:8001/main.js?" . $token . "';d.getElementsByTagName('head')[0].appendChild(s);})(document);";
+        return "javascript:(function(d,s){s=d.createElement('script');s.src='http://127.0.0.1:8001/main.js?t=" . $token . "';d.getElementsByTagName('head')[0].appendChild(s);})(document);";
         
     }
 }
