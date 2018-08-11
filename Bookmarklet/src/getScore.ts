@@ -7,6 +7,7 @@ import * as qs from 'qs';
   const NET_URL = "https://ongeki-net.com/ongeki-mobile/";
   const TOOL_URL = "http://127.0.0.1:8000/api/user/update";
 
+  const REQUEST_KEY = "?t="
   const PRODUCT_NAME = "Project Primera - getScore";
   const VERSION = 1.0;
 
@@ -277,7 +278,7 @@ import * as qs from 'qs';
           url = "";
         }
     }
-    return url.slice(url.indexOf("?t=") + 1);
+    return url.slice(url.indexOf(REQUEST_KEY) + REQUEST_KEY.length);
 });
 
 
