@@ -51,7 +51,7 @@ https://github.com/ljharb/qs/blob/master/LICENSE
 MIT License  
 https://github.com/DefinitelyTyped/DefinitelyTyped/blob/master/LICENSE
 
-### @types/jquery
+#### @types/jquery
 MIT License  
 https://github.com/DefinitelyTyped/DefinitelyTyped/blob/master/LICENSE
 
