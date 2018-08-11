@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use App\UserStatus;
+use Log;
 
 class ApiController extends Controller
 {
@@ -15,17 +16,12 @@ class ApiController extends Controller
 
     public function postUserUpdate(Request $request)
     {
-        if (!Auth::check()) {
-            return [
-                "status" => "error",
-                "message" => env("APP_NAME") . "にログインを行ってからブックマークレットを実行してください。",
-                "location" => "https://" . $_SERVER['SERVER_NAME'],
-            ];
+        $userStatus = UserStatus::find(Auth::id());
+        if(is_null($userStatus)){
+            $userStatus = new UserStatus();
+            $userStatus->id = Auth::id();
         }
-        
-        $userStatus = new UserStatus();
-        $userStatus->fill($request['playerData']);
-        $userStatus->id = Auth::id();
+        $userStatus->fill($request['PlayerData']);
         $userStatus->save();
 
         return "saved";

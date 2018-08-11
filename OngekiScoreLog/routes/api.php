@@ -18,4 +18,4 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 });
 
 Route::middleware('cors')->get('/user/update', 'ApiController@getUserUpdate');
-Route::middleware('cors')->post('/user/update', 'ApiController@postUserUpdate');
+Route::middleware('cors')->match(['post', 'options'],'/user/update', 'ApiController@postUserUpdate')->middleware('auth:api');
