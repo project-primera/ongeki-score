@@ -30,6 +30,10 @@ MIT License
 MIT license
 https://github.com/laravel/laravel/blob/master/readme.md
 
+#### barryvdh/laravel-cors
+MIT license  
+https://github.com/barryvdh/laravel-cors/blob/master/LICENSE
+
 ### Bookmarklet
 #### axios
 MIT License  
