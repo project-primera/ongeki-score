@@ -27,6 +27,7 @@ class CreateMusicDatasTable extends Migration
             $table->decimal('expert_extra_level', 4, 2)->nullable();
             $table->decimal('master_extra_level', 4, 2)->nullable();
             $table->decimal('lunatic_extra_level', 4, 2)->nullable();
+            $table->string('unique_id');
             $table->timestamps();
         });
     }

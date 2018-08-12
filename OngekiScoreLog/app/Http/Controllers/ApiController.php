@@ -12,6 +12,7 @@ use App\RatingRecentMusic;
 use App\UserTrophy;
 use App\UniqueIDForRequest;
 use App\MusicData;
+use App\ScoreData;
 
 use Log;
 
@@ -102,6 +103,7 @@ class ApiController extends Controller
                         $def = $value . "_level";
                         $userStatus->$def = $v['level'];
                         $userStatus->genre = $v['genre'];
+                        $userStatus->unique_id = $uniqueID;
                         $userStatus->save();
                     }
                 }
