@@ -74,18 +74,18 @@ import * as qs from 'qs';
     over_damage_high_score: number = 0;
     battle_high_score: number = 0;
     technical_high_score: number = 0;
-    isFullBell: boolean = false;
-    isAllBreak: boolean = false;
+    full_bell: boolean = false;
+    all_break: boolean = false;
 
-    constructor(title: string, genre: string, level: number, over_damage_high_score: number, battle_high_score: number, technical_high_score: number, isFullBell: boolean, isAllBreak: boolean) {
+    constructor(title: string, genre: string, level: number, over_damage_high_score: number, battle_high_score: number, technical_high_score: number, full_bell: boolean, all_break: boolean) {
       this.title = title;
       this.genre = genre;
       this.level = level;
       this.over_damage_high_score = over_damage_high_score;
       this.battle_high_score = battle_high_score;
       this.technical_high_score = technical_high_score;
-      this.isFullBell = isFullBell;
-      this.isAllBreak = isAllBreak;
+      this.full_bell = full_bell;
+      this.all_break = all_break;
     }
   }
 
