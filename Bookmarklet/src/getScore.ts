@@ -217,10 +217,12 @@ import * as qs from 'qs';
 
   class RecentMusicInfo {
     title: string = "";
+    difficulty: number = 0;
     technicalScore: number = 0;
 
-    constructor(title: string, technicalScore: number) {
+    constructor(title: string, difficulty:number, technicalScore: number) {
       this.title = title;
+      this.difficulty = difficulty;
       this.technicalScore = technicalScore;
     }
   }
@@ -248,8 +250,22 @@ import * as qs from 'qs';
 
       await $basic_btn.each((key, value) => {
         if ($(value).html().match(/TECHNICAL SCORE/)) {
+          var difficulty:number = -1;
+          if($(value).hasClass('lunatic_score_back')){
+            difficulty = 10;
+          }else if($(value).hasClass('master_score_back')){
+            difficulty = 3;
+          }else if($(value).hasClass('expert_score_back')){
+            difficulty = 2;
+          }else if($(value).hasClass('advanced_score_back')){
+            difficulty = 1;
+          }else if($(value).hasClass('basic_score_back')){
+            difficulty = 0;
+          }
+
           var info: RecentMusicInfo = new RecentMusicInfo(
             $(value).find(".music_label").text(),
+            difficulty,
             +$(value).find(".score_value").text().replace(/,/g, "")
           );
           this.ratingRecentMusicObject.push(info);
@@ -293,6 +309,7 @@ import * as qs from 'qs';
     await allData.RatingRecentMusicData.getData();
 
     console.log(allData);
+
     axios.post(TOOL_URL, qs.stringify(allData), {
       headers: { 
         Authorization: "Bearer " + token,
