@@ -15,6 +15,7 @@ class CreateUserStatusTable extends Migration
     {
         Schema::create('user_status', function (Blueprint $table) {
             $table->increments('id');
+            $table->integer('user_id');
             $table->string('trophy');
             $table->integer("level");
             $table->string('name');
@@ -26,6 +27,7 @@ class CreateUserStatusTable extends Migration
             $table->integer("total_play");
             $table->string('comment');
             $table->bigInteger("friend_code");
+            $table->string('unique_id');
             $table->timestamps();
         });
     }

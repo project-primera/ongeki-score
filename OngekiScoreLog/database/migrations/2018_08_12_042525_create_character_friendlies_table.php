@@ -18,6 +18,7 @@ class CreateCharacterFriendliesTable extends Migration
             $table->integer("user_id");
             $table->string('character_id');
             $table->integer("value");
+            $table->string('unique_id');
             $table->timestamps();
         });
     }

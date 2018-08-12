@@ -19,6 +19,7 @@ class CreateUserTrophiesTable extends Migration
             $table->integer("grade");
             $table->string('name');
             $table->string('detail');
+            $table->string('unique_id');
             $table->timestamps();
             
         });

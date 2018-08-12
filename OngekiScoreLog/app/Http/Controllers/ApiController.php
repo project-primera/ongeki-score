@@ -10,6 +10,7 @@ use App\UserStatus;
 use App\CharacterFriendly;
 use App\RatingRecentMusic;
 use App\UserTrophy;
+use App\UniqueIDForRequest;
 
 use Log;
 
@@ -23,12 +24,18 @@ class ApiController extends Controller
     public function postUserUpdate(Request $request)
     {
         try{
-            $userStatus = UserStatus::find(Auth::id());
-            if(is_null($userStatus)){
-                $userStatus = new UserStatus();
-                $userStatus->id = Auth::id();
-            }
+            $uniqueID = md5(uniqid(rand(),1));
+
+            $uniqueIDForRequest = new UniqueIDForRequest();
+            $uniqueIDForRequest->ip_address = \Request::ip();
+            $uniqueIDForRequest->unique_id =$uniqueID;
+            $uniqueIDForRequest->save();
+
+
+            $userStatus = new UserStatus();
+            $userStatus->user_id = Auth::id();
             $userStatus->fill($request['PlayerData']);
+            $userStatus->unique_id =$uniqueID;
             $userStatus->save();
 
 
@@ -37,6 +44,7 @@ class ApiController extends Controller
                 $characterFriendly->user_id = Auth::id();
                 $characterFriendly->character_id = $key;
                 $characterFriendly->value = $value;
+                $characterFriendly->unique_id =$uniqueID;
                 $characterFriendly->save();
             }
 
@@ -48,6 +56,7 @@ class ApiController extends Controller
                 $ratingRecentMusic->title = $value['title'];
                 $ratingRecentMusic->difficulty = $value['difficulty'];
                 $ratingRecentMusic->technical_score = $value['technicalScore'];
+                $ratingRecentMusic->unique_id =$uniqueID;
                 $ratingRecentMusic->save();
             }
 
@@ -67,6 +76,7 @@ class ApiController extends Controller
                     $userTrophy->grade = $trophyGrade[$key];
                     $userTrophy->name = $v['name'];
                     $userTrophy->detail = $v['detail'];
+                    $userTrophy->unique_id =$uniqueID;
                     $userTrophy->save();
                 }
             }
