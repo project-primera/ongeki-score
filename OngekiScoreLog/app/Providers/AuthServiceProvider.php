@@ -27,5 +27,25 @@ class AuthServiceProvider extends ServiceProvider
         $this->registerPolicies();
 
         Passport::routes();
+
+
+        /* Laravel Gate Setting
+         * 10: 
+         *  9: 
+         *  8: 
+         *  7: 管理者
+         *  6: 
+         *  5: 
+         *  4: 
+         *  3: 
+         *  2: 
+         *  1:  
+         *  0: 一般ユーザー
+         */
+        /*
+        Gate::define('higher_admin', function ($user) {
+            return ($user->role >= 8);
+        });
+        */
     }
 }
