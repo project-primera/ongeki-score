@@ -109,6 +109,41 @@ class ApiController extends Controller
                 }
             }
 
+          
+            $difficultyArrayKey = [
+                "basicSongInfos" => "basic",
+                "advancedSongInfos" => "advanced",
+                "expertSongInfos" => "expert",
+                "masterSongInfos" => "master",
+                "lunaticSongInfos" => "lunatic",
+            ];
+            $difficultyValue = [
+                "basicSongInfos" => 0,
+                "advancedSongInfos" => 1,
+                "expertSongInfos" => 2,
+                "masterSongInfos" => 3,
+                "lunaticSongInfos" => 10,
+            ];
+            foreach ($difficultyArrayKey as $key => $value) {
+                foreach ($request['ScoreData'][$key] as $k => $v) {
+                    $userStatus = MusicData::where("title", "=", $v['title'])->first();
+                    if(!is_null($userStatus)){
+                        $scoreData = new ScoreData();
+                        $scoreData->user_id = Auth::id();
+                        $scoreData->song_id = $userStatus->id;
+                        $scoreData->difficulty = $difficultyValue[$key];
+                        $scoreData->over_damage_high_score = $v['over_damage_high_score'];
+                        $scoreData->battle_high_score = $v['battle_high_score'];
+                        $scoreData->technical_high_score = $v['technical_high_score'];
+                        $scoreData->full_bell = $v['full_bell'] === "true" ? 1 : 0;
+                        $scoreData->all_break = $v['all_break'] === "true" ? 1 : 0;
+                        $scoreData->unique_id = $uniqueID;
+                        $scoreData->save();
+                    }
+                    
+                }
+            }
+
             return "saved";
 
         }catch(\PDOException $e){
