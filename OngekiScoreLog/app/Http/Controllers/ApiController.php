@@ -4,7 +4,10 @@ namespace App\Http\Controllers;
 
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
+
 use App\UserStatus;
+use App\CharacterFriendly;
+
 use Log;
 
 class ApiController extends Controller
@@ -23,6 +26,16 @@ class ApiController extends Controller
         }
         $userStatus->fill($request['PlayerData']);
         $userStatus->save();
+
+        foreach ($request['CharacterFriendlyData']['friendly'] as $key => $value) {
+            $characterFriendly = new CharacterFriendly();
+            $characterFriendly->user_id = Auth::id();
+            $characterFriendly->character_id = $key;
+            $characterFriendly->value = $value;
+            $characterFriendly->save();
+        }
+
+        
 
         return "saved";
     }
