@@ -69,6 +69,7 @@ import * as qs from 'qs';
 
   class SongInfo {
     title: string = "";
+    genre: string = "";
     level: number = 0;
     over_damage_high_score: number = 0;
     battle_high_score: number = 0;
@@ -76,8 +77,9 @@ import * as qs from 'qs';
     isFullBell: boolean = false;
     isAllBreak: boolean = false;
 
-    constructor(title: string,level: number, over_damage_high_score: number, battle_high_score: number, technical_high_score: number, isFullBell: boolean, isAllBreak: boolean) {
+    constructor(title: string, genre: string, level: number, over_damage_high_score: number, battle_high_score: number, technical_high_score: number, isFullBell: boolean, isAllBreak: boolean) {
       this.title = title;
+      this.genre = genre;
       this.level = level;
       this.over_damage_high_score = over_damage_high_score;
       this.battle_high_score = battle_high_score;
@@ -119,28 +121,34 @@ import * as qs from 'qs';
 
     private async parseScoreData(html: string, difficulty: number) {
       var parseHTML = $.parseHTML(html);
-      var $innerContainer3 = $(parseHTML).find(".basic_btn");
+      var $innerContainer3 = $(parseHTML).find(".container3").find("div");
 
+      var genre: string = "";
       await $innerContainer3.each((key, value) => {
-        $(value).each((k, v) => {
-
-        var song = new SongInfo(
-            $(v).find(".music_label").text(),
-            +($(v).find(".score_level").text().replace("+", ".5")),
-            +$($(v).find(".score_value")[0]).text().replace(/,/g, "").replace(/%/g, ""),
-            +$($(v).find(".score_value")[1]).text().replace(/,/g, ""),
-            +$($(v).find(".score_value")[2]).text().replace(/,/g, ""),
-            $(v).find("[src*='music_icon_fb.png']").length > 0,
-            $(v).find("[src*='music_icon_ab.png']").length > 0,
-          );
-          switch (difficulty) {
-            case 0: this.basicSongInfos.push(song); break;
-            case 1: this.advancedSongInfos.push(song); break;
-            case 2: this.expertInfos.push(song); break;
-            case 3: this.masterSongInfos.push(song); break;
-            case 10: this.lunaticSongInfos.push(song); break;
-          }
-        });
+        if($(value).hasClass("p_5 f_20")){
+          genre = $(value).text();
+          
+        }else if($(value).hasClass("basic_btn")){
+          $(value).each((k, v) => {
+            var song = new SongInfo(
+              $(v).find(".music_label").text(),
+              genre,
+              +($(v).find(".score_level").text().replace("+", ".5")),
+              +$($(v).find(".score_value")[0]).text().replace(/,/g, "").replace(/%/g, ""),
+              +$($(v).find(".score_value")[1]).text().replace(/,/g, ""),
+              +$($(v).find(".score_value")[2]).text().replace(/,/g, ""),
+              $(v).find("[src*='music_icon_fb.png']").length > 0,
+              $(v).find("[src*='music_icon_ab.png']").length > 0,
+            );
+            switch (difficulty) {
+              case 0: this.basicSongInfos.push(song); break;
+              case 1: this.advancedSongInfos.push(song); break;
+              case 2: this.expertInfos.push(song); break;
+              case 3: this.masterSongInfos.push(song); break;
+              case 10: this.lunaticSongInfos.push(song); break;
+            }
+          }); 
+        }
       });
     }
   }
