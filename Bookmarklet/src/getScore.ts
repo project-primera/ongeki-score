@@ -92,7 +92,7 @@ import * as qs from 'qs';
   class ScoreData {
     basicSongInfos = new Array<SongInfo>();
     advancedSongInfos = new Array<SongInfo>();
-    expertInfos = new Array<SongInfo>();
+    expertSongInfos = new Array<SongInfo>();
     masterSongInfos = new Array<SongInfo>();
     lunaticSongInfos = new Array<SongInfo>();
 
@@ -143,7 +143,7 @@ import * as qs from 'qs';
             switch (difficulty) {
               case 0: this.basicSongInfos.push(song); break;
               case 1: this.advancedSongInfos.push(song); break;
-              case 2: this.expertInfos.push(song); break;
+              case 2: this.expertSongInfos.push(song); break;
               case 3: this.masterSongInfos.push(song); break;
               case 10: this.lunaticSongInfos.push(song); break;
             }
