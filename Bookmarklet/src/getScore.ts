@@ -69,15 +69,21 @@ import * as qs from 'qs';
 
   class SongInfo {
     title: string = "";
+    level: number = 0;
     over_damage_high_score: number = 0;
     battle_high_score: number = 0;
     technical_high_score: number = 0;
+    isFullBell: boolean = false;
+    isAllBreak: boolean = false;
 
-    constructor(title: string, over_damage_high_score: number, battle_high_score: number, technical_high_score: number) {
+    constructor(title: string,level: number, over_damage_high_score: number, battle_high_score: number, technical_high_score: number, isFullBell: boolean, isAllBreak: boolean) {
       this.title = title;
+      this.level = level;
       this.over_damage_high_score = over_damage_high_score;
       this.battle_high_score = battle_high_score;
       this.technical_high_score = technical_high_score;
+      this.isFullBell = isFullBell;
+      this.isAllBreak = isAllBreak;
     }
   }
 
@@ -117,11 +123,15 @@ import * as qs from 'qs';
 
       await $innerContainer3.each((key, value) => {
         $(value).each((k, v) => {
-          var song = new SongInfo(
+
+        var song = new SongInfo(
             $(v).find(".music_label").text(),
+            +($(v).find(".score_level").text().replace("+", ".5")),
             +$($(v).find(".score_value")[0]).text().replace(/,/g, "").replace(/%/g, ""),
             +$($(v).find(".score_value")[1]).text().replace(/,/g, ""),
-            +$($(v).find(".score_value")[2]).text().replace(/,/g, "")
+            +$($(v).find(".score_value")[2]).text().replace(/,/g, ""),
+            $(v).find("[src*='music_icon_fb.png']").length > 0,
+            $(v).find("[src*='music_icon_ab.png']").length > 0,
           );
           switch (difficulty) {
             case 0: this.basicSongInfos.push(song); break;
