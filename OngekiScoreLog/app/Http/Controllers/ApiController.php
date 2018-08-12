@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use App\UserStatus;
 use App\CharacterFriendly;
 use App\RatingRecentMusic;
+use App\UserTrophy;
 
 use Log;
 
@@ -50,9 +51,30 @@ class ApiController extends Controller
                 $ratingRecentMusic->save();
             }
 
+            $trophyGrade = ["normalTrophyInfos" => 0,"bronzeTrophyInfo" => 1, "silverTrophyInfos" => 2, "goldTrophyInfos" => 3, "platinumTrophyInfo" => 4];
+            foreach ($request['TrophyData'] as $key => $value) {
+                foreach ($value as $k => $v) {
+                    $record = DB::table('user_trophies')->where([
+                        ['user_id', '=', Auth::id()],
+                        ['name', '=', $v['name']],
+                    ])->get();
+                    if(count($record) > 0){
+                        continue;
+                    }
+  
+                    $userTrophy = new UserTrophy();
+                    $userTrophy->user_id = Auth::id();
+                    $userTrophy->grade = $trophyGrade[$key];
+                    $userTrophy->name = $v['name'];
+                    $userTrophy->detail = $v['detail'];
+                    $userTrophy->save();
+                }
+            }
+
             return "saved";
 
         }catch(\PDOException $e){
+            Log::error($e);
             return "error";
         }
         
