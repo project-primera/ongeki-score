@@ -11,6 +11,7 @@ use App\CharacterFriendly;
 use App\RatingRecentMusic;
 use App\UserTrophy;
 use App\UniqueIDForRequest;
+use App\MusicData;
 
 use Log;
 
@@ -48,6 +49,7 @@ class ApiController extends Controller
                 $characterFriendly->save();
             }
 
+            
             DB::table('rating_recent_musics')->where('user_id', '=', Auth::id())->delete();
             foreach ($request['RatingRecentMusicData']['ratingRecentMusicObject'] as $key => $value) {
                 $ratingRecentMusic = new RatingRecentMusic();
@@ -59,6 +61,7 @@ class ApiController extends Controller
                 $ratingRecentMusic->unique_id =$uniqueID;
                 $ratingRecentMusic->save();
             }
+
 
             $trophyGrade = ["normalTrophyInfos" => 0,"bronzeTrophyInfo" => 1, "silverTrophyInfos" => 2, "goldTrophyInfos" => 3, "platinumTrophyInfo" => 4];
             foreach ($request['TrophyData'] as $key => $value) {
@@ -78,6 +81,29 @@ class ApiController extends Controller
                     $userTrophy->detail = $v['detail'];
                     $userTrophy->unique_id =$uniqueID;
                     $userTrophy->save();
+                }
+            }
+
+            if(Auth::user()->role >= 7){
+                $difficultyArrayKey = [
+                    "basicSongInfos" => "basic",
+                    "advancedSongInfos" => "advanced",
+                    "expertSongInfos" => "expert",
+                    "masterSongInfos" => "master",
+                    "lunaticSongInfos" => "lunatic",
+                ];
+                foreach ($difficultyArrayKey as $key => $value) {
+                    foreach ($request['ScoreData'][$key] as $k => $v) {
+                        $userStatus = MusicData::where("title", "=", $v['title'])->first();
+                        if(is_null($userStatus)){
+                            $userStatus = new MusicData();
+                            $userStatus->title = $v['title'];
+                        }
+                        $def = $value . "_level";
+                        $userStatus->$def = $v['level'];
+                        $userStatus->genre = $v['genre'];
+                        $userStatus->save();
+                    }
                 }
             }
 
