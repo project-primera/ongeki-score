@@ -11,9 +11,30 @@
               },
               "dependsOn": [
                 "Watch webpack files",
+                "Watch sass files",
                 "Run Bookmarklet server",
                 "Run OngekiScoreLog server",
               ],
+        },
+        {
+            "label": "Watch webpack files",
+            "type": "shell",
+            "command": "cd Bookmarklet& node_modules\\.bin\\webpack --watch",
+            "presentation": {
+                "reveal": "always",
+                "panel": "new",
+                "echo": true
+            }
+        },
+        {
+            "label": "Watch sass files",
+            "type": "shell",
+            "command": "cd OngekiScoreLog& node-sass scss/style.scss public/css/style.css -w --output-style expanded --source-map true",
+            "presentation": {
+                "reveal": "always",
+                "panel": "new",
+                "echo": true
+            }
         },
         {
             "label": "Run Bookmarklet server",
@@ -22,16 +43,6 @@
             "args": [
                 "-S", "127.0.0.1:8001", "-t", "Bookmarklet/bin"
             ],
-            "presentation": {
-                "reveal": "always",
-                "panel": "new",
-                "echo": true
-            }
-        },
-        {
-            "label": "Watch webpack files",
-            "type": "shell",
-            "command": "cd Bookmarklet& node_modules\\.bin\\webpack --watch",
             "presentation": {
                 "reveal": "always",
                 "panel": "new",
