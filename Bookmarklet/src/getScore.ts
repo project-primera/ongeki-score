@@ -168,6 +168,7 @@ import * as qs from 'qs';
     silverTrophyInfos: Array<TrophyInfo> = new Array<TrophyInfo>();
     goldTrophyInfos: Array<TrophyInfo> = new Array<TrophyInfo>();
     platinumTrophyInfo: Array<TrophyInfo> = new Array<TrophyInfo>();
+    rainbowTrophyInfo: Array<TrophyInfo> = new Array<TrophyInfo>();
 
     async getData() {
       await this.getAllRankTrophyDataFromNet();
@@ -185,7 +186,8 @@ import * as qs from 'qs';
     private async parseAllTrophyData(html: string) {
       var parseHTML = $.parseHTML(html);
 
-      await ["Normal", "Silver", "Gold", "Platinum"].forEach(async (value, index, array) => {
+      // 虹称号未検証 流石に獲得できない
+      await ["Normal", "Silver", "Gold", "Platinum", "Rainbow"].forEach(async (value, index, array) => {
         var $listDiv = $(parseHTML).find("#" + value + "List");
         $listDiv.find(".m_10").each((key, v) => {
           var trophy = new TrophyInfo(
@@ -197,6 +199,7 @@ import * as qs from 'qs';
             case "Silver": this.silverTrophyInfos.push(trophy); break;
             case "Gold": this.goldTrophyInfos.push(trophy); break;
             case "Platinum": this.platinumTrophyInfo.push(trophy); break;
+            case "Rainbow": this.rainbowTrophyInfo.push(trophy); break;
           }
         });
       });
