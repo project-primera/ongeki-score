@@ -64,7 +64,7 @@ class ApiController extends Controller
             }
 
 
-            $trophyGrade = ["normalTrophyInfos" => 0,"bronzeTrophyInfo" => 1, "silverTrophyInfos" => 2, "goldTrophyInfos" => 3, "platinumTrophyInfo" => 4];
+            $trophyGrade = ["normalTrophyInfos" => 0,"silverTrophyInfos" => 1, "goldTrophyInfos" => 2, "platinumTrophyInfo" => 3, "rainbowTrophyInfo" => 4];
             foreach ($request['TrophyData'] as $key => $value) {
                 foreach ($value as $k => $v) {
                     $record = DB::table('user_trophies')->where([
