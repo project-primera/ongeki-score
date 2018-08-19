@@ -4,6 +4,18 @@
     "version": "2.0.0",
     "tasks": [
         {
+            "label": "Run all tasks",
+            "group": {
+                "kind": "build",
+                "isDefault": true
+              },
+              "dependsOn": [
+                "Watch webpack files",
+                "Run Bookmarklet server",
+                "Run OngekiScoreLog server",
+              ],
+        },
+        {
             "label": "Run Bookmarklet server",
             "type": "shell",
             "command": "php",
@@ -15,18 +27,6 @@
                 "panel": "new",
                 "echo": true
             }
-        },
-        {
-            "label": "Run all tasks",
-            "group": {
-                "kind": "build",
-                "isDefault": true
-              },
-              "dependsOn": [
-                "Watch webpack files",
-                "Run Bookmarklet server",
-                "Run OngekiScoreLog server",
-              ],
         },
         {
             "label": "Watch webpack files",
