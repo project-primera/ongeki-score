@@ -10,14 +10,14 @@
                 "isDefault": true
               },
               "dependsOn": [
-                "Watch webpack files",
-                "Watch sass files",
+                "Watch Bookmarklet webpack files",
+                "Watch OngekiScoreLog webpack mix files",
                 "Run Bookmarklet server",
                 "Run OngekiScoreLog server",
               ],
         },
         {
-            "label": "Watch webpack files",
+            "label": "Watch Bookmarklet webpack files",
             "type": "shell",
             "command": "cd Bookmarklet& node_modules\\.bin\\webpack --watch",
             "presentation": {
@@ -27,9 +27,9 @@
             }
         },
         {
-            "label": "Watch sass files",
+            "label": "Watch OngekiScoreLog webpack mix files",
             "type": "shell",
-            "command": "cd OngekiScoreLog& node-sass scss/style.scss public/css/style.css -w --output-style expanded --source-map true",
+            "command": "cd OngekiScoreLog& npm run watch",
             "presentation": {
                 "reveal": "always",
                 "panel": "new",
