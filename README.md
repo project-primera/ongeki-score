@@ -34,6 +34,10 @@ https://github.com/laravel/laravel/blob/master/readme.md
 MIT license  
 https://github.com/barryvdh/laravel-cors/blob/master/LICENSE
 
+#### pure-css/pure
+Yahoo! Inc. BSD license.  
+https://github.com/pure-css/pure/blob/master/LICENSE
+
 ### Bookmarklet
 #### axios
 MIT License  
