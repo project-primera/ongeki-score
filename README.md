@@ -38,6 +38,10 @@ https://github.com/barryvdh/laravel-cors/blob/master/LICENSE
 Yahoo! Inc. BSD license.  
 https://github.com/pure-css/pure/blob/master/LICENSE
 
+#### sass/node-sass
+MIT license  
+https://github.com/sass/node-sass/blob/master/LICENSE
+
 ### Bookmarklet
 #### axios
 MIT License  
