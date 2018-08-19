@@ -1,13 +1,55 @@
 {
-    "version": "0.1.0",
-    "command": "bookmarklet\\node_modules\\.bin\\webpack",
-    "isShellCommand": true,
-    "args": [""],
+    // See https://go.microsoft.com/fwlink/?LinkId=733558
+    // for the documentation about the tasks.json format
+    "version": "2.0.0",
     "tasks": [
         {
-          "taskName": "Build WebPack",
-          "isBuildCommand": true,
-          "showOutput": "always"
-        }
+            "label": "Run Bookmarklet server",
+            "type": "shell",
+            "command": "php",
+            "args": [
+                "-S", "127.0.0.1:8001", "-t", "Bookmarklet/bin"
+            ],
+            "presentation": {
+                "reveal": "always",
+                "panel": "new",
+                "echo": true
+            }
+        },
+        {
+            "label": "Run all tasks",
+            "group": {
+                "kind": "build",
+                "isDefault": true
+              },
+              "dependsOn": [
+                "Watch webpack files",
+                "Run Bookmarklet server",
+                "Run OngekiScoreLog server",
+              ],
+        },
+        {
+            "label": "Watch webpack files",
+            "type": "shell",
+            "command": "cd Bookmarklet& node_modules\\.bin\\webpack --watch",
+            "presentation": {
+                "reveal": "always",
+                "panel": "new",
+                "echo": true
+            }
+        },
+        {
+            "label": "Run OngekiScoreLog server",
+            "type": "shell",
+            "command": "php",
+            "args": [
+                "-S", "127.0.0.1:8000", "-t", "OngekiScoreLog\\public"
+            ],
+            "presentation": {
+                "reveal": "always",
+                "panel": "new",
+                "echo": true
+            }
+        },
     ]
 }
