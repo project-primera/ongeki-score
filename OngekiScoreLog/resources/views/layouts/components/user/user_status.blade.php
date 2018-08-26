@@ -6,7 +6,7 @@
             </tr>
             <tr>
                 <th>トロフィー</th>
-            <td>{{$trophy}}</td>
+                <td>{{$trophy}}</td>
             </tr>
             <tr>
                 <th>レベル</th>
@@ -30,7 +30,7 @@
             </tr>
             <tr>
                 <th>フレンドコード</th>
-            <td>{{$friend_code}}</td>
+                <td>{{$friend_code}}</td>
             </tr>
             <tr>
                 <th>コメント</th>
