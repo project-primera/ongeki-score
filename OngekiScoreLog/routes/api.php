@@ -17,5 +17,5 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::middleware('cors')->get('/user/update', 'ApiController@getUserUpdate');
-Route::middleware('cors')->match(['post', 'options'],'/user/update', 'ApiController@postUserUpdate')->middleware('auth:api');
+Route::middleware('cors')->get('/user/update', 'BookmarkletAccessController@getUserUpdate');
+Route::middleware('cors')->match(['post', 'options'],'/user/update', 'BookmarkletAccessController@postUserUpdate')->middleware('auth:api');
