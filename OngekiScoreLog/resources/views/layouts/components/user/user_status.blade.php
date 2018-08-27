@@ -1,4 +1,5 @@
-<table class="table is-striped">
+<article class="box">
+    <table class="table is-striped">
         <tbody>
             <tr>
                 <th>プレイヤーネーム</th>
@@ -38,3 +39,4 @@
             </tr>
         </tbody>
     </table>
+</article>

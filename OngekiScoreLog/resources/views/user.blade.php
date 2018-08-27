@@ -43,4 +43,8 @@
             18/08/15 レート15
         @endslot
     @endcomponent
+
+    @component('layouts/components/user/song_status')
+    @endcomponent
+
 @endsection
