@@ -15,7 +15,7 @@
             69
         @endslot
         @slot('battle_point')
-            9219
+            9219 (5段)
         @endslot
         @slot('rating')
             15.04
