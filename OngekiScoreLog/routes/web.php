@@ -32,4 +32,4 @@ Route::get('/user_status', function () {
 });
 
 // http://127.0.0.1:8000/bookmarklet
-Route::get('/bookmarklet', 'BookmarkletController@getIndex');
+Route::get('/bookmarklet', 'BookMarkletGenerateController@getIndex');
