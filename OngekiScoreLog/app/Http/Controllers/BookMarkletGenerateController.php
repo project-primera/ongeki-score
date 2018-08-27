@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\User;
 use Illuminate\Http\Request;
 
-class BookMarkletGenerateController extends Controller
+class BookmarkletGenerateController extends Controller
 {
     //
     function getIndex(){
