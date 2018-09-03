@@ -318,16 +318,36 @@ import * as qs from 'qs';
     return url.slice(url.indexOf(REQUEST_KEY) + REQUEST_KEY.length);
 });
 
+function sleep(milliseconds: number) {
+  return new Promise<void>(resolve => {
+    setTimeout(() => resolve(), milliseconds);
+  });
+}
+
 
   let main = async () => {
     let allData: AllData = new AllData();
 
     let token: string = getToken();
     await allData.PlayerData.getData();
+    console.log("get PlayerData");
+    await sleep(1000);
+
     await allData.ScoreData.getData();
+    console.log("get ScoreData");
+    await sleep(1000);
+
     await allData.TrophyData.getData();
+    console.log("get TrophyData");
+    await sleep(1000);
+
     await allData.CharacterFriendlyData.getData();
+    console.log("get CharacterFriendlyData");
+    await sleep(1000);
+
     await allData.RatingRecentMusicData.getData();
+    console.log("get RatingRecentMusicData");
+    await sleep(1000);
 
     console.log(allData);
 
