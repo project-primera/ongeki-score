@@ -40,7 +40,7 @@
         @endslot
     @endcomponent
 
-    @component('layouts/components/user/song_status')
+    @component('layouts/components/user/song_status', ['score' => $score])
     @endcomponent
 
 @endsection

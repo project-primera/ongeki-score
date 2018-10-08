@@ -14,7 +14,10 @@ class ViewUserController extends Controller
         $status = $userStatus->getRecentUserData($id);
 
         $scoreData = new ScoreData();
-        $score = $scoreData->getRecentUserScore($id);
+        $scoreData->getRecentUserScore($id);
+        $scoreData->addMusicData();
+        $scoreData->addDetailedData();
+        $score = $scoreData->value;
 
         return view('user', compact('id', 'status', 'score'));
     }

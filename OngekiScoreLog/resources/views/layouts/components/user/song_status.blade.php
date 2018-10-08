@@ -34,23 +34,55 @@
             </tr>
         </tfoot>
         <tbody>
-            <tr>
-                <th>Everlasting Today</th>
-                <th>オンゲキ</th>
-                <th>Mas</th>
-                <th>14</th>
-                <th>FB</th>
-                <th>FC</th>
-                <th>AB</th>
-                <th>可</th>
-                <th>SS</th>
-                <th>8,019,738</th>
-                <th>9.99%</th>
-                <th>-90.01%</th>
-                <th>993,492</th>
-                <th>-6,508</th>
-                <th>2018-08-26 01:26:20</th>
-            </tr>
+            @foreach ($score as $s)
+                @component('layouts/components/user/song_status_record')
+                    @slot('title')
+                        {{$s->title}}
+                    @endslot
+                    @slot('genre')
+                        {{$s->genre}}
+                    @endslot
+                    @slot('difficulty')
+                        {{substr($s->difficulty_str, 0, 3)}}
+                    @endslot
+                    @slot('level')
+                        {{$s->level_str}}
+                    @endslot
+                    @slot('fullBell')
+                        {{$s->full_bell ? "FB" : ""}}
+                    @endslot
+                    @slot('fullCombo')
+                        {{$s->full_combo ? "FC" : ""}}
+                    @endslot
+                    @slot('allBreak')
+                        {{$s->all_break ? "AB" : ""}}
+                    @endslot
+                    @slot('battleRank')
+                        {{$s->over_damage_high_score_rank}}
+                    @endslot
+                    @slot('technicalRank')
+                        {{$s->technical_high_score_rank}}
+                    @endslot
+                    @slot('battleScore')
+                        {{number_format($s->battle_high_score)}}
+                    @endslot
+                    @slot('overDamage')
+                        {{$s->over_damage_high_score . "%"}}
+                    @endslot
+                    @slot('nextOverDamage')
+                        {{$s->over_damage_high_score_next . "%"}}
+                    @endslot
+                    @slot('technicalHighScore')
+                        {{number_format($s->technical_high_score)}}
+                    @endslot
+                    @slot('nextTechnicalScore')
+                        {{number_format($s->technical_high_score_next)}}
+                    @endslot
+                    @slot('updatedAt')
+                        {{$s->updated_at}}
+                    @endslot
+                @endcomponent
+            @endforeach
         </tbody>
     </table>
 </article>
