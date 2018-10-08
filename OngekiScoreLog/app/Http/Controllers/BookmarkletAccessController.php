@@ -133,6 +133,7 @@ class BookmarkletAccessController extends Controller
                         $scoreData->battle_high_score = $v['battle_high_score'];
                         $scoreData->technical_high_score = $v['technical_high_score'];
                         $scoreData->full_bell = $v['full_bell'] === "true" ? 1 : 0;
+                        $scoreData->full_combo = $v['full_combo'] === "true" ? 1 : 0;
                         $scoreData->all_break = $v['all_break'] === "true" ? 1 : 0;
                         $scoreData->unique_id = $uniqueID;
 
@@ -171,6 +172,12 @@ class BookmarkletAccessController extends Controller
                                 $isUpdate = true;
                             }else{
                                 $scoreData->full_bell = $recentSong->full_bell;
+                            }
+
+                            if($scoreData->full_combo > $recentSong->full_combo){
+                                $isUpdate = true;
+                            }else{
+                                $scoreData->full_combo = $recentSong->full_combo;
                             }
 
                             if($scoreData->all_break > $recentSong->all_break){

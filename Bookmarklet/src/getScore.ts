@@ -75,9 +75,10 @@ import * as qs from 'qs';
     battle_high_score: number = 0;
     technical_high_score: number = 0;
     full_bell: boolean = false;
+    full_combo: boolean = false;
     all_break: boolean = false;
 
-    constructor(title: string, genre: string, level: number, over_damage_high_score: number, battle_high_score: number, technical_high_score: number, full_bell: boolean, all_break: boolean) {
+    constructor(title: string, genre: string, level: number, over_damage_high_score: number, battle_high_score: number, technical_high_score: number, full_bell: boolean, full_combo: boolean, all_break: boolean) {
       this.title = title;
       this.genre = genre;
       this.level = level;
@@ -85,6 +86,7 @@ import * as qs from 'qs';
       this.battle_high_score = battle_high_score;
       this.technical_high_score = technical_high_score;
       this.full_bell = full_bell;
+      this.full_combo = full_combo;
       this.all_break = all_break;
     }
   }
@@ -138,6 +140,7 @@ import * as qs from 'qs';
               +$($(v).find(".score_value")[1]).text().replace(/,/g, ""),
               +$($(v).find(".score_value")[2]).text().replace(/,/g, ""),
               $(v).find("[src*='music_icon_fb.png']").length > 0,
+              $(v).find("[src*='music_icon_fc.png']").length > 0 || $(v).find("[src*='music_icon_ab.png']").length > 0,
               $(v).find("[src*='music_icon_ab.png']").length > 0,
             );
             switch (difficulty) {
