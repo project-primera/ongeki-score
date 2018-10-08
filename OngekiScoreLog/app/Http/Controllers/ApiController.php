@@ -18,4 +18,21 @@ use Log;
 
 class ApiController extends Controller
 {
+    function getUserMusic($id){
+        $scoreData = new ScoreData();
+        $value = $scoreData->getRecentUserScore($id);
+        return $value;
+    }
+
+    function getRecentGenerationOfScoreData($id, $songID, $difficulty){
+        $scoreData = new ScoreData();
+        $value = $scoreData->getRecentGenerationOfScoreData($id, $songID, $difficulty);
+        return json_encode($value);
+    }
+
+    function getRecentGenerationOfScoreDataAll($id){
+        $scoreData = new ScoreData();
+        $value = $scoreData->getRecentGenerationOfScoreDataAll($id);
+        return $value;
+    }
 }
