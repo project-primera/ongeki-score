@@ -5,60 +5,91 @@ namespace App;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
+use App\MusicData;
 
 class ScoreData extends Model
 {
     //
     protected $table = "score_datas";
     protected $guarded = ['id', 'user_id'];
+    public $value;
+
+    function addMusicData(){
+        $musicData = new MusicData();
+        $temp = $musicData->getAllMusicData();
+        
+        foreach ($temp as $key => $value) {
+            $title[$value->id] = $value;
+        }
+
+        foreach ($this->value as $key => $value) {
+            // song_id
+            $this->value[$key]->title = $title[$value->song_id]->title;
+            $this->value[$key]->genre = $title[$value->song_id]->genre;
+
+            switch (true) {
+                case ($this->value[$key]->difficulty === 0):
+                    $this->value[$key]->difficulty_str = "Basic";
+                    $this->value[$key]->level_str = $title[$value->song_id]->basic_level;
+                    $this->value[$key]->level = (float)$title[$value->song_id]->basic_level;
+                    break;
+                case ($this->value[$key]->difficulty === 1):
+                    $this->value[$key]->difficulty_str = "Advanced";
+                    $this->value[$key]->level_str = $title[$value->song_id]->advanced_level;
+                    $this->value[$key]->level = (float)$title[$value->song_id]->advanced_level;
+                    break;
+                case ($this->value[$key]->difficulty === 2):
+                    $this->value[$key]->difficulty_str = "Expert";
+                    $this->value[$key]->level_str = $title[$value->song_id]->expert_level;
+                    $this->value[$key]->level = (float)$title[$value->song_id]->expert_level;
+                    break;
+                case ($this->value[$key]->difficulty === 3):
+                    $this->value[$key]->difficulty_str = "Master";
+                    $this->value[$key]->level_str = $title[$value->song_id]->master_level;
+                    $this->value[$key]->level = (float)$title[$value->song_id]->master_level;
+                    break;
+                case ($this->value[$key]->difficulty === 10):
+                    $this->value[$key]->difficulty_str = "Lunatic";
+                    $this->value[$key]->level_str = $title[$value->song_id]->lunatic_level;
+                    $this->value[$key]->level = (float)$title[$value->song_id]->lunatic_level;
+                    break;
+            }
+
+            // $this->value[$key]->level % 1.0 === 0.0
+            if(strpos($this->value[$key]->level_str, '.5') === false){
+                $this->value[$key]->level_str = (string)$this->value[$key]->level;
+            }else{
+                $this->value[$key]->level_str = (string)(int)$this->value[$key]->level . "+";
+            }
+        }
+
+        return $this->value;
+    }
 
     function getRecentGenerationOfScoreData($id, $songID, $difficulty){
         $sql = DB::table($this->table)->select('*')
         ->from($this->table . ' AS t1')->where('user_id', $id)->where('song_id', $songID)->where('difficulty', $difficulty)->whereNotExists(function ($query) {
 			$query->select(DB::raw('1'))->from($this->table . ' AS t2')->whereRaw('t1.user_id = t2.user_id')->whereRaw('t1.song_id = t2.song_id')->whereRaw('t1.difficulty = t2.difficulty')->whereRaw('t1.generation < t2.generation');
         });
-        return $sql->first();
+
+        $this->value = $sql->first();
+        return $this->value;
     }
 
     function getRecentGenerationOfScoreDataAll($id){
         $sql = DB::table($this->table)->
-        select('user_id', 'song_id', 'difficulty')->
-        selectRaw('MAX(generation)')->
-        where('user_id', $id)->
-        groupBy('user_id', 'song_id', 'difficulty');
-        return $sql->get();
+            select('user_id', 'song_id', 'difficulty')->
+            selectRaw('MAX(generation)')->
+            where('user_id', $id)->
+            groupBy('user_id', 'song_id', 'difficulty');
+
+        $this->value = $sql->get();
+
+        return $this->value;
     }
 
     function getRecentUserScore($id){
-        /*
-        特定ユーザーの最新データを取得する
-        ScoreDataを複数持つクラスを作成してそれのメソッドとかで取得したら良さげ
-        https://qiita.com/zaburo/items/e8e786624f88c253c87d
-
-        SELECT *
-        FROM ongeki_score_tool.score_datas AS t1
-        WHERE user_id = 1
-        AND NOT EXISTS (
-            SELECT *
-            FROM ongeki_score_tool.score_datas AS t2
-            WHERE t1.user_id = t2.user_id
-            AND t1.song_id = t2.song_id
-            AND t1.difficulty = t2.difficulty
-            AND t1.updated_at < t2.updated_at
-        );
-
-        この方法だと世代取得が厳しいのでこのテーブルに世代をint値で保存すればいいと想う
-        取得もめっちゃ楽だし
-        */
-        DB::enableQueryLog();
-
-        /*
-        $value = DB::table($this->table)->select('*')->from($this->table . ' AS t1')->where('user_id', $id)->whereNotExists(function ($query) {
-            $query->select(DB::raw('1'))->from($this->table . ' AS t2')->whereRaw('t1.user_id = t2.user_id')->whereRaw('t1.song_id = t2.song_id')->whereRaw('t1.difficulty = t2.difficulty')->whereRaw('t1.updated_at < t2.updated_at');
-        });
-        */
-		
-        $value = DB::select('SELECT * FROM score_datas AS t1
+        $this->value = DB::select('SELECT * FROM score_datas AS t1
         WHERE user_id = ? AND NOT EXISTS (
             SELECT * FROM score_datas AS t2
             WHERE t1.user_id = t2.user_id
@@ -66,7 +97,7 @@ class ScoreData extends Model
                 AND t1.difficulty = t2.difficulty
                 AND t1.updated_at < t2.updated_at
         );', [$id]);
-        
-        return $value;
+
+        return $this->value;
     }
 }
