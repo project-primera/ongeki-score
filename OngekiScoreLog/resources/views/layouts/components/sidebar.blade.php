@@ -7,7 +7,7 @@
     </p>
     <ul class="menu-list">
         <li><a href="/" class="@yield('sidemark_top')">トップページ</a></li>
-        <li><a href="/user" class="@yield('sidemark_user')">ユーザー</a></li>
+        <li><a href="/user/1" class="@yield('sidemark_user')">ユーザー</a></li>
         <li><a href="#">使い方</a></li>
         <li><a href="#">ランダムアクセス</a></li>
         <li><a href="#">ランキング</a></li>
