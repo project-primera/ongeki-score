@@ -66,6 +66,60 @@ class ScoreData extends Model
         return $this->value;
     }
 
+    function addDetailedData(){
+        foreach ($this->value as $key => $value) {
+            $this->value[$key]->over_damage_high_score_next = floor(fmod($this->value[$key]->over_damage_high_score, 100.0) - 100.0 * pow(10, 3)) / pow(10, 3);
+
+            if($this->value[$key]->over_damage_high_score <= 0){
+                $this->value[$key]->over_damage_high_score_rank = "不可";
+            }else if($this->value[$key]->over_damage_high_score < 100){
+                $this->value[$key]->over_damage_high_score_rank = "可";
+            }else if($this->value[$key]->over_damage_high_score < 200){
+                $this->value[$key]->over_damage_high_score_rank = "良";
+            }else if($this->value[$key]->over_damage_high_score < 300){
+                $this->value[$key]->over_damage_high_score_rank = "優";
+            }else if($this->value[$key]->over_damage_high_score < 400){
+                $this->value[$key]->over_damage_high_score_rank = "秀";
+            }else{
+                $this->value[$key]->over_damage_high_score_rank = "極";
+                $this->value[$key]->over_damage_high_score_next = 0.0;
+            }
+
+            // TODO: A以下未検証
+            if($this->value[$key]->technical_high_score < 850000){
+                $this->value[$key]->technical_high_score_rank = "B";
+            $this->value[$key]->technical_high_score_next = $this->value[$key]->technical_high_score - 850000;
+
+            }else if($this->value[$key]->technical_high_score < 900000){
+                $this->value[$key]->technical_high_score_rank = "A";            $this->value[$key]->technical_high_score_next = $this->value[$key]->technical_high_score - 900000;
+
+            }else if($this->value[$key]->technical_high_score < 940000){
+                $this->value[$key]->technical_high_score_rank = "AA";            $this->value[$key]->technical_high_score_next = $this->value[$key]->technical_high_score - 940000;
+
+            }else if($this->value[$key]->technical_high_score < 970000){
+                $this->value[$key]->technical_high_score_rank = "AAA";            $this->value[$key]->technical_high_score_next = $this->value[$key]->technical_high_score - 970000;
+
+            }else if($this->value[$key]->technical_high_score < 990000){
+                $this->value[$key]->technical_high_score_rank = "S";            $this->value[$key]->technical_high_score_next = $this->value[$key]->technical_high_score - 990000;
+
+            }else if($this->value[$key]->technical_high_score < 1000000){
+                $this->value[$key]->technical_high_score_rank = "SS";            $this->value[$key]->technical_high_score_next = $this->value[$key]->technical_high_score - 1000000;
+
+            }else if($this->value[$key]->technical_high_score < 1007500){
+                $this->value[$key]->technical_high_score_rank = "SSS";            $this->value[$key]->technical_high_score_next = $this->value[$key]->technical_high_score - 1007500;
+
+            }else if($this->value[$key]->technical_high_score < 1010000){
+                $this->value[$key]->technical_high_score_rank = "SSS+";            $this->value[$key]->technical_high_score_next = 0;
+
+            }else{
+                $this->value[$key]->technical_high_score_rank = "P";            $this->value[$key]->technical_high_score_next = 0;
+
+            }
+        }
+
+        return $this->value;
+    }
+
     function getRecentGenerationOfScoreData($id, $songID, $difficulty){
         $sql = DB::table($this->table)->select('*')
         ->from($this->table . ' AS t1')->where('user_id', $id)->where('song_id', $songID)->where('difficulty', $difficulty)->whereNotExists(function ($query) {
