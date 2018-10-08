@@ -135,20 +135,23 @@ class BookmarkletAccessController extends Controller
                         $scoreData->full_bell = $v['full_bell'] === "true" ? 1 : 0;
                         $scoreData->all_break = $v['all_break'] === "true" ? 1 : 0;
                         $scoreData->unique_id = $uniqueID;
+                        
+                        info((bool)$recentSong);
 
-                        if(
-                            $recentSong->over_damage_high_score < $scoreData->over_damage_high_score ||
-                            $recentSong->battle_high_score < $scoreData->battle_high_score ||
-                            $recentSong->technical_high_score < $scoreData->technical_high_score ||
-                            $recentSong->full_bell < $scoreData->full_bell ||
-                            $recentSong->all_break < $scoreData->all_break
-                        ){
-							$scoreData->save();
+                        if((bool)$recentSong === true){
+                            if(!(
+                                $recentSong->over_damage_high_score < $scoreData->over_damage_high_score ||
+                                $recentSong->battle_high_score < $scoreData->battle_high_score ||
+                                $recentSong->technical_high_score < $scoreData->technical_high_score ||
+                                $recentSong->full_bell < $scoreData->full_bell ||
+                                $recentSong->all_break < $scoreData->all_break
+                            )){
+                                continue;
+                            }
                         }
 
-                        
+                        $scoreData->save();
                     }
-                    
                 }
             }
             return "saved";
