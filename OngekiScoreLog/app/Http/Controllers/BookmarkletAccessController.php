@@ -124,6 +124,8 @@ class BookmarkletAccessController extends Controller
                     $userStatus = MusicData::where("title", "=", $v['title'])->first();
                     if(!is_null($userStatus)){
                         $scoreData = new ScoreData();
+                        $recentSong = $scoreData->getRecentGenerationOfScoreData(Auth::id(), $userStatus->id, $difficultyValue[$key]);
+                        $scoreData->generation = (!isset($recentSong->generation)) ? 0 : ($recentSong->generation + 1);
                         $scoreData->user_id = Auth::id();
                         $scoreData->song_id = $userStatus->id;
                         $scoreData->difficulty = $difficultyValue[$key];
@@ -133,7 +135,18 @@ class BookmarkletAccessController extends Controller
                         $scoreData->full_bell = $v['full_bell'] === "true" ? 1 : 0;
                         $scoreData->all_break = $v['all_break'] === "true" ? 1 : 0;
                         $scoreData->unique_id = $uniqueID;
-                        $scoreData->save();
+
+                        if(
+                            $recentSong->over_damage_high_score < $scoreData->over_damage_high_score ||
+                            $recentSong->battle_high_score < $scoreData->battle_high_score ||
+                            $recentSong->technical_high_score < $scoreData->technical_high_score ||
+                            $recentSong->full_bell < $scoreData->full_bell ||
+                            $recentSong->all_break < $scoreData->all_break
+                        ){
+							$scoreData->save();
+                        }
+
+                        
                     }
                     
                 }
