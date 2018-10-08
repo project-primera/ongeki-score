@@ -6,41 +6,37 @@
 @section('content')
     @component('layouts/components/user/user_status')
         @slot('name')
-            Ａｋｉ．１４２ｓ
+            {{$status[0]->name}}
         @endslot
         @slot('trophy')
-            タテマエと本心の大乱闘
+            {{$status[0]->trophy}}
         @endslot
         @slot('level')
-            69
+            {{$status[0]->level}}
         @endslot
         @slot('battle_point')
-            9219 (5段)
+            {{$status[0]->battle_point}}
         @endslot
         @slot('rating')
-            15.04
+            {{$status[0]->rating}}
         @endslot
         @slot('rating_max')
-            15.04
+            {{$status[0]->rating_max}}
         @endslot
         @slot('money')
-            13,404
+            {{$status[0]->money}}
         @endslot
         @slot('money_max')
-            79,004
+            {{$status[0]->total_money}}
         @endslot
         @slot('total_play')
-            552
+            {{$status[0]->total_play}}
         @endslot
         @slot('friend_code')
-            1012895587066
+            {{$status[0]->friend_code}}
         @endslot
         @slot('comment')
-            当面の目標は全曲全難易度プレイ<br>
-            お財布壊れない程度に頑張ります。<br>
-            <br>
-            申請お気軽にどうぞ。@2xAki<br>
-            18/08/15 レート15
+            {!! nl2br(e($status[0]->comment)) !!}
         @endslot
     @endcomponent
 

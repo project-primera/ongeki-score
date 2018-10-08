@@ -15,9 +15,9 @@ Route::get('/', function () {
     return view('top');
 });
 
-Route::get('/user', function () {
-    return view('user');
-});
+Route::get('/user/{id}', 'ViewUserController@getUserPage')->where(['id' => '\d+']);
+
+
 
 Auth::routes();
 
