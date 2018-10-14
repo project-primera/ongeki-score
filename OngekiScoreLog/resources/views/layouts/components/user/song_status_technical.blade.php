@@ -52,7 +52,7 @@
                         {{number_format($s->technical_high_score)}}
                     @endslot
                     @slot('nextTechnicalScore')
-                        {{number_format($s->technical_high_score_next)}}
+                        {{($s->technical_high_score_next != 0) ? number_format($s->technical_high_score_next) : "-"}}
                     @endslot
                     @slot('updatedAt')
                         {{date('Y-m-d', strtotime($s->updated_at))}}
