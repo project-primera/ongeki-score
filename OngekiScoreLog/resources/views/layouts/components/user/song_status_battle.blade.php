@@ -46,7 +46,7 @@
                         {{$s->over_damage_high_score . "%"}}
                     @endslot
                     @slot('nextOverDamage')
-                        {{$s->over_damage_high_score_next . "%"}}
+                        {{($s->over_damage_high_score < 500) ? $s->over_damage_high_score_next . "%" : "-"}}
                     @endslot
                     @slot('updatedAt')
                         {{date('Y-m-d', strtotime($s->updated_at))}}
