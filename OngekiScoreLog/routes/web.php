@@ -15,7 +15,7 @@ Route::get('/', function () {
     return view('top');
 });
 
-Route::get('/user/{id}', 'ViewUserController@getUserPage')->where(['id' => '\d+']);
+Route::get('/user/{id}/{mode?}', 'ViewUserController@getUserPage')->where(['id' => '\d+']);
 
 
 

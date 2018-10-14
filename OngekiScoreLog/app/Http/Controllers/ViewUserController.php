@@ -9,7 +9,7 @@ use App\ScoreData;
 
 class ViewUserController extends Controller
 {
-    public function getUserPage($id){
+    public function getUserPage($id, $mode = null){
         $userStatus = new UserStatus();
         $status = $userStatus->getRecentUserData($id);
 
@@ -19,6 +19,15 @@ class ViewUserController extends Controller
         $scoreData->addDetailedData();
         $score = $scoreData->value;
 
-        return view('user', compact('id', 'status', 'score'));
+        switch (true) {
+            case ($mode === "battle"):
+                $mode = "song_status_battle";
+                break;
+            default:
+                $mode = "song_status";
+                break;
+        }
+
+        return view('user', compact('id', 'status', 'score', 'mode'));
     }
 }
