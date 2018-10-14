@@ -30,8 +30,8 @@
         <div class="hero is-info is-bold">
             <div class="hero-body">
                 <div class="container">
-                    <h2 class="subtitle">タテマエと本心の大乱闘</h2>
-                    <h1 class="title">Ａｋｉ．１４２ｓ</h1>
+                    <h2 class="subtitle">@yield('hero_subtitle')</h2>
+                    <h1 class="title">@yield('hero_title')</h1>
                 </div>
             </div>
         </div>
@@ -40,14 +40,14 @@
             <div class="level-right">
                 <div class="level-item tabs">
                     <ul>
-                        <li class="is-active"><a>簡易表示</a></li>
-                        <li><a>詳細表示</a></li>
+                        @section('submenu')
+                        @show
                     </ul>
                 </div>
             </div>
             <div class="level-right">
                 <div class="level-item">
-                    <a class="button is-greylight">フォロー</a>
+                    &nbsp;
                 </div>
             </div>
         </section>
