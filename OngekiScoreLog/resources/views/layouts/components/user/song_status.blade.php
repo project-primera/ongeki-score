@@ -10,9 +10,7 @@
                 <th colspan="2">Rank</th>
                 <th><abbr title="Battle Score">BS</abbr></th>
                 <th><abbr title="Over Damage">OD</abbr></th>
-                <th><abbr title="Next Over Damage">Next</abbr></th>
                 <th><abbr title="Technical Score">TS</abbr></th>
-                <th><abbr title="Next Technical Score">Next</abbr></th>
                 <th>Update</th>
             </tr>
         </thead>
@@ -68,17 +66,11 @@
                     @slot('overDamage')
                         {{$s->over_damage_high_score . "%"}}
                     @endslot
-                    @slot('nextOverDamage')
-                        {{$s->over_damage_high_score_next . "%"}}
-                    @endslot
                     @slot('technicalHighScore')
                         {{number_format($s->technical_high_score)}}
                     @endslot
-                    @slot('nextTechnicalScore')
-                        {{number_format($s->technical_high_score_next)}}
-                    @endslot
                     @slot('updatedAt')
-                        {{$s->updated_at}}
+                        {{date('Y-m-d', strtotime($s->updated_at))}}
                     @endslot
                 @endcomponent
             @endforeach

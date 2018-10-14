@@ -2,6 +2,15 @@
 
 @section('title', 'Page Title')
 @section('sidemark_user', "is-active")
+@section('hero_subtitle', $status[0]->trophy)
+@section('hero_title', $status[0]->name)
+
+@section('submenu')
+    <li class="{{$submenuActive[0]}}"><a href="/user/{{$id}}">簡易</a></li>
+    <li class="{{$submenuActive[1]}}"><a href="/user/{{$id}}/details">詳細</a></li>
+    <li class="{{$submenuActive[2]}}"><a href="/user/{{$id}}/battle">Battle</a></li>
+    <li class="{{$submenuActive[3]}}"><a href="/user/{{$id}}/technical">Technical</a></li>
+@endsection
 
 @section('content')
     @component('layouts/components/user/user_status')

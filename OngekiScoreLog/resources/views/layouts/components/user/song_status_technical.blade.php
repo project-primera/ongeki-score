@@ -5,10 +5,10 @@
                 <th>Title</th>
                 <th><abbr title="Difficulty">Dif</abbr></th>
                 <th>Lv</th>
+                <th colspan="3">Lamp</th>
                 <th colspan="1">Rank</th>
-                <th><abbr title="Battle Score">BS</abbr></th>
-                <th><abbr title="Over Damage">OD</abbr></th>
-                <th><abbr title="Next Over Damage">Next</abbr></th>
+                <th><abbr title="Technical Score">TS</abbr></th>
+                <th><abbr title="Next Technical Score">Next</abbr></th>
                 <th>Update</th>
             </tr>
         </thead>
@@ -17,16 +17,16 @@
                 <th>Title</th>
                 <th><abbr title="Difficulty">Dif</abbr></th>
                 <th>Lv</th>
+                <th colspan="3">Lamp</th>
                 <th colspan="1">Rank</th>
-                <th><abbr title="Battle Score">BS</abbr></th>
-                <th><abbr title="Over Damage">OD</abbr></th>
-                <th><abbr title="Next Over Damage">Next</abbr></th>
+                <th><abbr title="Technical Score">TS</abbr></th>
+                <th><abbr title="Next Technical Score">Next</abbr></th>
                 <th>Update</th>
             </tr>
         </tfoot>
         <tbody>
             @foreach ($score as $s)
-                @component('layouts/components/user/song_status_battle_record')
+                @component('layouts/components/user/song_status_technical_record')
                     @slot('title')
                         {{$s->title}}
                     @endslot
@@ -36,17 +36,23 @@
                     @slot('level')
                         {{$s->level_str}}
                     @endslot
-                    @slot('battleRank')
-                        {{$s->over_damage_high_score_rank}}
+                    @slot('fullBell')
+                        {{$s->full_bell ? "FB" : ""}}
                     @endslot
-                    @slot('battleScore')
-                        {{number_format($s->battle_high_score)}}
+                    @slot('fullCombo')
+                        {{$s->full_combo ? "FC" : ""}}
                     @endslot
-                    @slot('overDamage')
-                        {{$s->over_damage_high_score . "%"}}
+                    @slot('allBreak')
+                        {{$s->all_break ? "AB" : ""}}
                     @endslot
-                    @slot('nextOverDamage')
-                        {{$s->over_damage_high_score_next . "%"}}
+                    @slot('technicalRank')
+                        {{$s->technical_high_score_rank}}
+                    @endslot
+                    @slot('technicalHighScore')
+                        {{number_format($s->technical_high_score)}}
+                    @endslot
+                    @slot('nextTechnicalScore')
+                        {{number_format($s->technical_high_score_next)}}
                     @endslot
                     @slot('updatedAt')
                         {{date('Y-m-d', strtotime($s->updated_at))}}

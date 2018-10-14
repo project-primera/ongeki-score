@@ -10,6 +10,8 @@
     <th>{{$technicalRank}}</th>
     <th>{{$battleScore}}</th>
     <th>{{$overDamage}}</th>
+    <th>{{$nextOverDamage}}</th>
     <th>{{$technicalHighScore}}</th>
+    <th>{{$nextTechnicalScore}}</th>
     <th>{{$updatedAt}}</th>
 </tr>
