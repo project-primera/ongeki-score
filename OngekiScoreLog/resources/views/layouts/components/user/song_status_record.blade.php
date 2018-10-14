@@ -1,15 +1,15 @@
 <tr>
-    <th>{{$title}}</th>
-    <th>{{$genre}}</th>
-    <th>{{$difficulty}}</th>
-    <th>{{$level}}</th>
-    <th>{{$fullBell}}</th>
-    <th>{{$fullCombo}}</th>
-    <th>{{$allBreak}}</th>
-    <th>{{$battleRank}}</th>
-    <th>{{$technicalRank}}</th>
-    <th>{{$battleScore}}</th>
-    <th>{{$overDamage}}</th>
-    <th>{{$technicalHighScore}}</th>
-    <th>{{$updatedAt}}</th>
+    <td>{{$title}}</td>
+    <td>{{$genre}}</td>
+    <td>{{$difficulty}}</td>
+    <td>{{$level}}</td>
+    <td>{{$fullBell}}</td>
+    <td>{{$fullCombo}}</td>
+    <td>{{$allBreak}}</td>
+    <td>{{$battleRank}}</td>
+    <td>{{$technicalRank}}</td>
+    <td>{{$battleScore}}</td>
+    <td>{{$overDamage}}</td>
+    <td>{{$technicalHighScore}}</td>
+    <td>{{$updatedAt}}</td>
 </tr>

@@ -1,12 +1,12 @@
 <tr>
-    <th>{{$title}}</th>
-    <th>{{$difficulty}}</th>
-    <th>{{$level}}</th>
-    <th>{{$fullBell}}</th>
-    <th>{{$fullCombo}}</th>
-    <th>{{$allBreak}}</th>
-    <th>{{$technicalRank}}</th>
-    <th>{{$technicalHighScore}}</th>
-    <th>{{$nextTechnicalScore}}</th>
-    <th>{{$updatedAt}}</th>
+    <td>{{$title}}</td>
+    <td>{{$difficulty}}</td>
+    <td>{{$level}}</td>
+    <td>{{$fullBell}}</td>
+    <td>{{$fullCombo}}</td>
+    <td>{{$allBreak}}</td>
+    <td>{{$technicalRank}}</td>
+    <td>{{$technicalHighScore}}</td>
+    <td>{{$nextTechnicalScore}}</td>
+    <td>{{$updatedAt}}</td>
 </tr>

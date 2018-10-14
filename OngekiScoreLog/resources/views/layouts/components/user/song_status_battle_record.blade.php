@@ -1,10 +1,10 @@
 <tr>
-    <th>{{$title}}</th>
-    <th>{{$difficulty}}</th>
-    <th>{{$level}}</th>
-    <th>{{$battleRank}}</th>
-    <th>{{$battleScore}}</th>
-    <th>{{$overDamage}}</th>
-    <th>{{$nextOverDamage}}</th>
-    <th>{{$updatedAt}}</th>
+    <td>{{$title}}</td>
+    <td>{{$difficulty}}</td>
+    <td>{{$level}}</td>
+    <td>{{$battleRank}}</td>
+    <td>{{$battleScore}}</td>
+    <td>{{$overDamage}}</td>
+    <td>{{$nextOverDamage}}</td>
+    <td>{{$updatedAt}}</td>
 </tr>
