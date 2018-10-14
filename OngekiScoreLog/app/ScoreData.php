@@ -80,8 +80,10 @@ class ScoreData extends Model
                 $this->value[$key]->over_damage_high_score_rank = "優";
             }else if($this->value[$key]->over_damage_high_score < 400){
                 $this->value[$key]->over_damage_high_score_rank = "秀";
-            }else{
+            }else if($this->value[$key]->over_damage_high_score < 500){
                 $this->value[$key]->over_damage_high_score_rank = "極";
+            }else{
+                $this->value[$key]->over_damage_high_score_rank = "極+";
                 $this->value[$key]->over_damage_high_score_next = 0.0;
             }
 
@@ -91,28 +93,36 @@ class ScoreData extends Model
             $this->value[$key]->technical_high_score_next = $this->value[$key]->technical_high_score - 850000;
 
             }else if($this->value[$key]->technical_high_score < 900000){
-                $this->value[$key]->technical_high_score_rank = "A";            $this->value[$key]->technical_high_score_next = $this->value[$key]->technical_high_score - 900000;
+                $this->value[$key]->technical_high_score_rank = "A";
+                $this->value[$key]->technical_high_score_next = $this->value[$key]->technical_high_score - 900000;
 
             }else if($this->value[$key]->technical_high_score < 940000){
-                $this->value[$key]->technical_high_score_rank = "AA";            $this->value[$key]->technical_high_score_next = $this->value[$key]->technical_high_score - 940000;
+                $this->value[$key]->technical_high_score_rank = "AA";
+                $this->value[$key]->technical_high_score_next = $this->value[$key]->technical_high_score - 940000;
 
             }else if($this->value[$key]->technical_high_score < 970000){
-                $this->value[$key]->technical_high_score_rank = "AAA";            $this->value[$key]->technical_high_score_next = $this->value[$key]->technical_high_score - 970000;
+                $this->value[$key]->technical_high_score_rank = "AAA";
+                $this->value[$key]->technical_high_score_next = $this->value[$key]->technical_high_score - 970000;
 
             }else if($this->value[$key]->technical_high_score < 990000){
-                $this->value[$key]->technical_high_score_rank = "S";            $this->value[$key]->technical_high_score_next = $this->value[$key]->technical_high_score - 990000;
+                $this->value[$key]->technical_high_score_rank = "S";
+                $this->value[$key]->technical_high_score_next = $this->value[$key]->technical_high_score - 990000;
 
             }else if($this->value[$key]->technical_high_score < 1000000){
-                $this->value[$key]->technical_high_score_rank = "SS";            $this->value[$key]->technical_high_score_next = $this->value[$key]->technical_high_score - 1000000;
+                $this->value[$key]->technical_high_score_rank = "SS"; 
+                $this->value[$key]->technical_high_score_next = $this->value[$key]->technical_high_score - 1000000;
 
             }else if($this->value[$key]->technical_high_score < 1007500){
-                $this->value[$key]->technical_high_score_rank = "SSS";            $this->value[$key]->technical_high_score_next = $this->value[$key]->technical_high_score - 1007500;
+                $this->value[$key]->technical_high_score_rank = "SSS";
+                $this->value[$key]->technical_high_score_next = $this->value[$key]->technical_high_score - 1007500;
 
             }else if($this->value[$key]->technical_high_score < 1010000){
-                $this->value[$key]->technical_high_score_rank = "SSS+";            $this->value[$key]->technical_high_score_next = 0;
+                $this->value[$key]->technical_high_score_rank = "SSS+";
+                $this->value[$key]->technical_high_score_next = 0;
 
             }else{
-                $this->value[$key]->technical_high_score_rank = "P";            $this->value[$key]->technical_high_score_next = 0;
+                $this->value[$key]->technical_high_score_rank = "P";
+                $this->value[$key]->technical_high_score_next = 0;
 
             }
         }
