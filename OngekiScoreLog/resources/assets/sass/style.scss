@@ -1,3 +1,31 @@
 main {
     background-color: #eeeeee;
 }
+
+div.column{
+    display: block;
+    width: 100%;
+    min-width: 0%;
+    max-width: 100%;
+}
+
+.table_wrap{
+    width: 100%;
+
+    overflow-x: scroll;
+
+    &::-webkit-scrollbar {
+        height: 10px;
+    }
+
+    &::-webkit-scrollbar-track {
+        margin: 0 2px;
+        background: #ccc;
+        border-radius: 5px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+        border-radius: 5px;
+        background: #666;
+    }
+}
