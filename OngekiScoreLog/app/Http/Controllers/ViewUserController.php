@@ -19,6 +19,8 @@ class ViewUserController extends Controller
         $scoreData->addDetailedData();
         $score = $scoreData->value;
 
+        array_multisort(array_column($score, 'updated_at'), SORT_DESC, $score);
+
         $submenuActive = [0 => "", 1 => "", 2 => "", 3 => ""];
 
         switch (true) {
