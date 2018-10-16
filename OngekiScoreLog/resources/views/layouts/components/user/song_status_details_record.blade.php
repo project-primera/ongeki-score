@@ -3,9 +3,9 @@
     <td>{{$genre}}</td>
     <td>{{$difficulty}}</td>
     <td>{{$level}}</td>
-    <td>{{$fullBell}}</td>
-    <td>{{$fullCombo}}</td>
-    <td>{{$allBreak}}</td>
+    <td class="table-tag">{{$fullBell}}</td>
+    <td class="table-tag">{{$fullCombo}}</td>
+    <td class="table-tag">{{$allBreak}}</td>
     <td>{{$battleRank}}</td>
     <td>{{$technicalRank}}</td>
     <td>{{$battleScore}}</td>

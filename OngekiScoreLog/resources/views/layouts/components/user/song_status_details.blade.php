@@ -49,13 +49,13 @@
                             {{$s->level_str}}
                         @endslot
                         @slot('fullBell')
-                            {{$s->full_bell ? "FB" : ""}}
+                            {!! $s->full_bell ? '<span class="tag full-bell">FB</span>' : "" !!}
                         @endslot
                         @slot('fullCombo')
-                            {{$s->full_combo ? "FC" : ""}}
+                            {!! $s->full_combo ? '<span class="tag full-combo">FC</span>' : "" !!}
                         @endslot
                         @slot('allBreak')
-                            {{$s->all_break ? "AB" : ""}}
+                            {!! $s->all_break ? '<span class="tag all-break">AB</span>' : "" !!}
                         @endslot
                         @slot('battleRank')
                             {{$s->over_damage_high_score_rank}}

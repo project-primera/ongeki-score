@@ -2,6 +2,28 @@ main {
     background-color: #eeeeee;
 }
 
+td.table-tag{
+    padding-left: 0.15em;
+    padding-right: 0.15em;
+}
+
+.tag{
+    &.full-bell{
+        background-color: #eec900;
+        color: #fff; 
+    }
+
+    &.full-combo{
+        background-color: #227223;
+        color: #fff;
+    }
+
+    &.all-break{
+        background-color: #e8822a;
+        color: #fff;
+    }
+}
+
 div.column{
     display: block;
     width: 100%;
