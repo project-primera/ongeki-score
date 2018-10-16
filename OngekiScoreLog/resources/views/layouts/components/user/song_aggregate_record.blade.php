@@ -1,0 +1,23 @@
+<tr>
+	<td>{{$key}}</td>
+    <td>{{$p}}</td>
+    <td>{{$ssss}}</td>
+    <td>{{$sss}}</td>
+    <td>{{$ss}}</td>
+    <td>{{$s}}</td>
+    <td>{{$aaa}}</td>
+    <td>{{$aa}}</td>
+    <td>{{$a}}</td>
+    <td>{{$b}}</td>
+    <td>{{$np}}</td>
+    <td>{{$fb}}</td>
+    <td>{{$fc}}</td>
+    <td>{{$ab}}</td>
+	<td>{{$b0}}</td>
+    <td>{{$b1}}</td>
+    <td>{{$b2}}</td>
+    <td>{{$b3}}</td>
+    <td>{{$b4}}</td>
+    <td>{{$b5}}</td>
+    <td>{{$b6}}</td>
+</tr>
