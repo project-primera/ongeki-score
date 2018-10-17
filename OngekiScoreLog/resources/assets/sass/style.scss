@@ -2,6 +2,20 @@ main {
     background-color: #eeeeee;
 }
 
+.sort{
+    &.desc:after {
+        content:"▼";
+    }
+
+    &.asc:after {
+        content:"▲";
+    }
+}
+
+.sort-key{
+    display: none;
+}
+
 td.table-tag{
     padding-left: 0.15em;
     padding-right: 0.15em;

@@ -1,35 +1,41 @@
 <article class="box">
-    <div class="table_wrap">
+    <div id="sort_table" class="table_wrap">
         <table class="table">
             <thead>
                 <tr>
-                    <th>Title</th>
-                    <th>Category</th>
-                    <th><abbr title="Difficulty">Dif</abbr></th>
-                    <th>Lv</th>
-                    <th colspan="3">Lamp</th>
-                    <th colspan="2">Rank</th>
-                    <th><abbr title="Battle Score">BS</abbr></th>
-                    <th><abbr title="Over Damage">OD</abbr></th>
-                    <th><abbr title="Technical Score">TS</abbr></th>
-                    <th>Update</th>
+                    <th class="sort" data-sort="sort_title">Title</th>
+                    <th class="sort" data-sort="sort_genre">Category</th>
+                    <th class="sort" data-sort="sort_difficulty"><abbr title="Difficulty">Dif</abbr></th>
+                    <th class="sort" data-sort="sort_lv">Lv</th>
+                    <th class="sort" data-sort="sort_fb">FB</th>
+                    <th class="sort" data-sort="sort_fc">FC</th>
+                    <th class="sort" data-sort="sort_ab">AB</th>
+                    <th class="sort" data-sort="sort_rank0">評価</th>
+                    <th class="sort" data-sort="sort_rank1">Rank</th>
+                    <th class="sort" data-sort="sort_bs"><abbr title="Battle Score">BS</abbr></th>
+                    <th class="sort" data-sort="sort_od"><abbr title="Over Damage">OD</abbr></th>
+                    <th class="sort" data-sort="sort_ts"><abbr title="Technical Score">TS</abbr></th>
+                    <th class="sort desc" data-sort="sort_update">Update</th>
                 </tr>
             </thead>
             <tfoot>
                 <tr>
-                    <th>Title</th>
-                    <th>Category</th>
-                    <th><abbr title="Difficulty">Dif</abbr></th>
-                    <th>Lv</th>
-                    <th colspan="3">Lamp</th>
-                    <th colspan="2">Rank</th>
-                    <th><abbr title="Battle Score">BS</abbr></th>
-                    <th><abbr title="Over Damage">OD</abbr></th>
-                    <th><abbr title="Technical Score">TS</abbr></th>
-                    <th>Update</th>
+                    <th class="sort" data-sort="sort_title">Title</th>
+                    <th class="sort" data-sort="sort_genre">Category</th>
+                    <th class="sort" data-sort="sort_difficulty"><abbr title="Difficulty">Dif</abbr></th>
+                    <th class="sort" data-sort="sort_lv">Lv</th>
+                    <th class="sort" data-sort="sort_fb">FB</th>
+                    <th class="sort" data-sort="sort_fc">FC</th>
+                    <th class="sort" data-sort="sort_ab">AB</th>
+                    <th class="sort" data-sort="sort_rank0">評価</th>
+                    <th class="sort" data-sort="sort_rank1">Rank</th>
+                    <th class="sort" data-sort="sort_bs"><abbr title="Battle Score">BS</abbr></th>
+                    <th class="sort" data-sort="sort_od"><abbr title="Over Damage">OD</abbr></th>
+                    <th class="sort" data-sort="sort_ts"><abbr title="Technical Score">TS</abbr></th>
+                    <th class="sort desc" data-sort="sort_update">Update</th>
                 </tr>
             </tfoot>
-            <tbody>
+            <tbody class="list">
                 @foreach ($score as $s)
                     @component('layouts/components/user/song_status_record')
                         @slot('title')
@@ -39,6 +45,7 @@
                             {{$s->genre}}
                         @endslot
                         @slot('difficulty')
+                            <span class="sort-key">{{$s->difficulty}}</span>
                             {{substr($s->difficulty_str, 0, 3)}}
                         @endslot
                         @slot('level')
@@ -54,18 +61,22 @@
                             {!! $s->all_break ? '<span class="tag all-break">AB</span>' : "" !!}
                         @endslot
                         @slot('battleRank')
+                            <span class="sort-key">{{$s->over_damage_high_score}}</span>
                             {{$s->over_damage_high_score_rank}}
                         @endslot
                         @slot('technicalRank')
+                            <span class="sort-key">{{$s->technical_high_score}}</span>
                             {{$s->technical_high_score_rank}}
                         @endslot
                         @slot('battleScore')
+                            <span class="sort-key">{{$s->battle_high_score}}</span>
                             {{number_format($s->battle_high_score)}}
                         @endslot
                         @slot('overDamage')
                             {{$s->over_damage_high_score . "%"}}
                         @endslot
                         @slot('technicalHighScore')
+                            <span class="sort-key">{{$s->technical_high_score}}</span>
                             {{number_format($s->technical_high_score)}}
                         @endslot
                         @slot('updatedAt')
