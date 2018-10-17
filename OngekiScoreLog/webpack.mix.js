@@ -15,3 +15,5 @@ mix.sourceMaps()
     .js('resources/assets/js/app.js', 'public/js')
     .sass('resources/assets/sass/laravel/app.scss', 'public/css')
     .sass('resources/assets/sass/style.scss', 'public/css');   
+
+mix.copy('node_modules/list.js/dist/list.min.js', 'public/js/list.min.js');
