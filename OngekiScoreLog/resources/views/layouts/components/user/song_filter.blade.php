@@ -1,0 +1,24 @@
+<article class="box">
+    <p class="title is-4">Level</p>
+    <a class="button filter_level_button">1</a>
+    <a class="button filter_level_button">2</a>
+    <a class="button filter_level_button">3</a>
+    <a class="button filter_level_button">4</a>
+    <a class="button filter_level_button">5</a>
+    <a class="button filter_level_button">6</a>
+    <a class="button filter_level_button">7</a>
+    <a class="button filter_level_button">7+</a>
+    <a class="button filter_level_button">8</a>
+    <a class="button filter_level_button">8+</a>
+    <a class="button filter_level_button">9</a>
+    <a class="button filter_level_button">9+</a>
+    <a class="button filter_level_button">10</a>
+    <a class="button filter_level_button">10+</a>
+    <a class="button filter_level_button">11</a>
+    <a class="button filter_level_button">11+</a>
+    <a class="button filter_level_button">12</a>
+    <a class="button filter_level_button">12+</a>
+    <a class="button filter_level_button">13</a>
+    <a class="button filter_level_button">13+</a>
+    <a class="button filter_level_button">14</a>
+</article>

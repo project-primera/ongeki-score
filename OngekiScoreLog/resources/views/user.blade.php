@@ -52,6 +52,9 @@
     @component('layouts/components/user/song_aggregate', ['stat' => $stat])
     @endcomponent
 
+    @component('layouts/components/user/song_filter')
+    @endcomponent
+
     @component('layouts/components/user/' . $mode, ['score' => $score])
     @endcomponent
 
