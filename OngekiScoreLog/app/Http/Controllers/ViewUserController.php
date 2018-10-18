@@ -53,27 +53,27 @@ class ViewUserController extends Controller
         ];
         if($mode == "song_status_details"){
             $stat += [
-                "1" => [],
-                "2" => [],
-                "3" => [],
-                "4" => [],
-                "5" => [],
-                "6" => [],
-                "7" => [],
-                "7+" => [],
-                "8" => [],
-                "8+" => [],
-                "9" => [],
-                "9+" => [],
-                "10" => [],
-                "10+" => [],
-                "11" => [],
-                "11+" => [],
-                "12" => [],
-                "12+" => [],
-                "13" => [],
-                "13+" => [],
-                "14" => [],
+                "Lv.1" => [],
+                "Lv.2" => [],
+                "Lv.3" => [],
+                "Lv.4" => [],
+                "Lv.5" => [],
+                "Lv.6" => [],
+                "Lv.7" => [],
+                "Lv.7+" => [],
+                "Lv.8" => [],
+                "Lv.8+" => [],
+                "Lv.9" => [],
+                "Lv.9+" => [],
+                "Lv.10" => [],
+                "Lv.10+" => [],
+                "Lv.11" => [],
+                "Lv.11+" => [],
+                "Lv.12" => [],
+                "Lv.12+" => [],
+                "Lv.13" => [],
+                "Lv.13+" => [],
+                "Lv.14" => [],
             ];
         }
 
@@ -122,30 +122,30 @@ class ViewUserController extends Controller
                 }else{
                     $key = $value->technical_high_score_rank;
                 }
-                if(!isset($stat[$value->level_str][$key])){
-                    $stat[$value->level_str][$key] = 0;
+                if(!isset($stat["Lv." . $value->level_str][$key])){
+                    $stat["Lv." . $value->level_str][$key] = 0;
                 }
-                $stat[$value->level_str][$key] += 1;
+                $stat["Lv." . $value->level_str][$key] += 1;
 
-                if(!isset($stat[$value->level_str][$value->over_damage_high_score_rank])){
-                    $stat[$value->level_str][$value->over_damage_high_score_rank] = 0;
+                if(!isset($stat["Lv." . $value->level_str][$value->over_damage_high_score_rank])){
+                    $stat["Lv." . $value->level_str][$value->over_damage_high_score_rank] = 0;
                 }
-                $stat[$value->level_str][$value->over_damage_high_score_rank] += 1;
+                $stat["Lv." . $value->level_str][$value->over_damage_high_score_rank] += 1;
 
-                if(!isset($stat[$value->level_str]["fc"])){
-                    $stat[$value->level_str]["fc"] = 0;
+                if(!isset($stat["Lv." . $value->level_str]["fc"])){
+                    $stat["Lv." . $value->level_str]["fc"] = 0;
                 }
-                $stat[$value->level_str]["fc"] += $value->full_combo;
+                $stat["Lv." . $value->level_str]["fc"] += $value->full_combo;
                 
-                if(!isset($stat[$value->level_str]["ab"])){
-                    $stat[$value->level_str]["ab"] = 0;
+                if(!isset($stat["Lv." . $value->level_str]["ab"])){
+                    $stat["Lv." . $value->level_str]["ab"] = 0;
                 }
-                $stat[$value->level_str]["ab"] += $value->all_break;
+                $stat["Lv." . $value->level_str]["ab"] += $value->all_break;
                 
-                if(!isset($stat[$value->level_str]["fb"])){
-                    $stat[$value->level_str]["fb"] = 0;
+                if(!isset($stat["Lv." . $value->level_str]["fb"])){
+                    $stat["Lv." . $value->level_str]["fb"] = 0;
                 }
-                $stat[$value->level_str]["fb"] += $value->full_bell;
+                $stat["Lv." . $value->level_str]["fb"] += $value->full_bell;
             }
         }
 
