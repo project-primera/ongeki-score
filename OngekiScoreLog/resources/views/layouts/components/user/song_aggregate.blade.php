@@ -13,7 +13,6 @@
                     <th>AA</th>
                     <th>A</th>
                     <th>under A</th>
-                    <th>NP</th>
                     <th>FB</th>
                     <th>FC</th>
                     <th>AB</th>
@@ -24,6 +23,7 @@
                     <th>良</th>
                     <th>可</th>
                     <th>不可</th>
+                    <th>NoPlay</th>
                 </tr>
             </thead>
             <tbody>

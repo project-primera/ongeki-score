@@ -9,7 +9,6 @@
     <td>{{$aa}}</td>
     <td>{{$a}}</td>
     <td>{{$b}}</td>
-    <td>{{$np}}</td>
     <td>{{$fb}}</td>
     <td>{{$fc}}</td>
     <td>{{$ab}}</td>
@@ -20,4 +19,5 @@
     <td>{{$b4}}</td>
     <td>{{$b5}}</td>
     <td>{{$b6}}</td>
+    <td>{{$np}}</td>
 </tr>
