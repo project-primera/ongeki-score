@@ -69,8 +69,10 @@ class ScoreData extends Model
     function addDetailedData(){
         foreach ($this->value as $key => $value) {
             $this->value[$key]->over_damage_high_score_next = floor(fmod($this->value[$key]->over_damage_high_score, 100.0) - 100.0 * pow(10, 3)) / pow(10, 3);
-
-            if($this->value[$key]->over_damage_high_score <= 0){
+            
+            if($this->value[$key]->battle_high_score == 0){
+                $this->value[$key]->over_damage_high_score_rank = "-";
+            }else if($this->value[$key]->over_damage_high_score <= 0){
                 $this->value[$key]->over_damage_high_score_rank = "不可";
             }else if($this->value[$key]->over_damage_high_score < 100){
                 $this->value[$key]->over_damage_high_score_rank = "可";
@@ -88,9 +90,14 @@ class ScoreData extends Model
             }
 
             // TODO: A以下未検証
-            if($this->value[$key]->technical_high_score < 850000){
+            if($this->value[$key]->technical_high_score == 0){
+                $this->value[$key]->technical_high_score_rank = "-";
+            $this->value[$key]->technical_high_score_next = 0;
+
+            }else if($this->value[$key]->technical_high_score < 850000){
                 $this->value[$key]->technical_high_score_rank = "B";
-            $this->value[$key]->technical_high_score_next = $this->value[$key]->technical_high_score - 850000;
+                $this->value[$key]->technical_high_score_next = $this->value[$key]->technical_high_score - 850000;
+
 
             }else if($this->value[$key]->technical_high_score < 900000){
                 $this->value[$key]->technical_high_score_rank = "A";
