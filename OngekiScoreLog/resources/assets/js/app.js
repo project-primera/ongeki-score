@@ -23,7 +23,7 @@ const app = new Vue({
 */
 
 var options = {
-    valueNames: ['sort_title', 'sort_genre', 'sort_difficulty', 'sort_lv', 'sort_fb', 'sort_fc', 'sort_ab', 'sort_rank0', 'sort_rank1', 'sort_bs', 'sort_od', 'sort_ts', 'sort_update']
+    valueNames: ['sort_title', 'sort_genre', 'sort_difficulty', 'sort_lv', 'sort_fb', 'sort_fc', 'sort_ab', 'sort_rank0', 'sort_rank1', 'sort_bs', 'sort_od', 'sort_ts', 'sort_update', 'sort_raw_battle_rank']
 };
 var sortTable = new List('sort_table', options);
 
@@ -40,6 +40,7 @@ function DeleteFilterList(key, value){
 }
 
 function SortTable(){
+    console.log(filterList);
     var cnt = 0;
     sortTable.filter(function(item) {
         if(filterList.length == 0){
@@ -71,6 +72,20 @@ $('.filter_level_button').on('click',function(){
     }
     SortTable();
 });
+
+$('.filter_battle_rank_button').on('click',function(){
+    var $text = $(this).text();
+    if($(this).hasClass('is-info')){
+        DeleteFilterList('sort_raw_battle_rank', $text);
+        $(this).removeClass('is-info');
+
+    } else {
+        AddFilterList('sort_raw_battle_rank', $text);
+        $(this).addClass('is-info');
+    }
+    SortTable();
+});
+
 
 
 

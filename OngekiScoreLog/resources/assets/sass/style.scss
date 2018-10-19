@@ -2,6 +2,14 @@ main {
     background-color: #eeeeee;
 }
 
+.filter-content{
+    padding-bottom: 2em;
+
+    .title.is-4{
+        margin-bottom: 0.3em;   
+    }
+}
+
 .sort{
     &.desc:after {
         content:"▼";
@@ -43,6 +51,10 @@ div.column{
     width: 100%;
     min-width: 0%;
     max-width: 100%;
+}
+
+.table-hidden-data{
+    display: none;
 }
 
 .table_wrap{

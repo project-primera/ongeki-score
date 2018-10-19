@@ -82,6 +82,9 @@
                         @slot('updatedAt')
                             {{date('Y-m-d', strtotime($s->updated_at))}}
                         @endslot
+                        @slot('rawBattleRank')
+                            {{$s->over_damage_high_score_rank}}
+                        @endslot
                     @endcomponent
                 @endforeach
             </tbody>
