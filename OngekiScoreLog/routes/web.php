@@ -15,6 +15,11 @@ Route::get('/', function () {
     return view('top');
 });
 
+Route::get('/logout', function () {
+    Auth::logout();
+    return view('logout');
+});
+
 Route::get('/user/{id}/{mode?}', 'ViewUserController@getUserPage')->where(['id' => '\d+']);
 
 

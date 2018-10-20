@@ -22,7 +22,9 @@
                     </div>
                 </span>
                 <span class="nav-item">
-                    <a href="/login"><i class="fas fa-user"></i>&nbsp;ログイン</a>
+                    <a href="/register"><i class="fas fa-user"></i>&nbsp;新規登録&nbsp;</a>
+                    <a href="/login">&nbsp;ログイン&nbsp;</a>
+                    <a href="/logout">&nbsp;ログアウト&nbsp;</a>
                 </span>
             </div>
         </header>
