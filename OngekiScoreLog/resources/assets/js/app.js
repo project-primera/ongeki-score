@@ -99,33 +99,51 @@ $('.filter_technical_rank_button').on('click',function(){
     SortTable();
 });
 
+class ClearLamp {
+    constructor (){
+        this.NoLamp = false;
+        this.FB = false;
+        this.FC = false;
+        this.AB = false;
+    }
+
+    get() {
+        if(this.FB && this.AB){
+            return "FB+FC+AB";
+        }else if(this.FB && this.FC){
+            return "FB+FC";
+        }else if(this.AB){
+            return "FC+AB";
+        }else if(this.FC){
+            return "FC";
+        }else if(this.FB){
+            return "FB";
+        }else if(this.NoLamp){
+            return "-";
+        }else{
+            return false;
+        }
+    }
+}
+
+clearLamp = new ClearLamp();
+
 $('.filter_lamp_button').on('click',function(){
     var $text = $(this).text();
+
     if($(this).hasClass('is-info')){
-        DeleteFilterList('sort_raw_lamp', $text);
+        DeleteFilterList('sort_raw_lamp', clearLamp.get());
+        clearLamp[$text] = false;
+        if(clearLamp.get() !== false){
+            AddFilterList('sort_raw_lamp', clearLamp.get());
+        }
         $(this).removeClass('is-info');
 
     } else {
-        AddFilterList('sort_raw_lamp', $text);
+        DeleteFilterList('sort_raw_lamp', clearLamp.get());
+        clearLamp[$text] = true;
+        AddFilterList('sort_raw_lamp', clearLamp.get());
         $(this).addClass('is-info');
     }
     SortTable();
 });
-
-
-
-/*
-$('.filter_level_button').on('click',function(){
-    var $text = $(this).text();
-    if($(this).hasClass('is-info')){
-        sortTable.filter();
-        $(this).removeClass('is-info');
-
-    } else {
-        sortTable.filter(function(item) {
-        return (item.values().sort_lv == $text);
-      });
-      $(this).addClass('is-info');
-    }
-});
-*/

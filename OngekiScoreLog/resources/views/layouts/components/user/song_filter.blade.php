@@ -50,13 +50,11 @@
     </div>
 
     <div class="filter-content">
-        <p class="title is-4">Technical Rank</p>
-        <a class="button filter_lamp_button">-</a>
+        <p class="title is-4">Clear Lamp</p>
+        <a class="button filter_lamp_button">NoLamp</a>
         <a class="button filter_lamp_button">FB</a>
         <a class="button filter_lamp_button">FC</a>
-        <a class="button filter_lamp_button">FC+AB</a>
-        <a class="button filter_lamp_button">FB+FC</a>
-        <a class="button filter_lamp_button">FB+FC+AB</a>
+        <a class="button filter_lamp_button">AB</a>
     </div>
 
 
