@@ -23,7 +23,7 @@ const app = new Vue({
 */
 
 var options = {
-    valueNames: ['sort_title', 'sort_genre', 'sort_difficulty', 'sort_lv', 'sort_fb', 'sort_fc', 'sort_ab', 'sort_rank0', 'sort_rank1', 'sort_bs', 'sort_od', 'sort_ts', 'sort_update', 'sort_raw_battle_rank']
+    valueNames: ['sort_title', 'sort_genre', 'sort_difficulty', 'sort_lv', 'sort_fb', 'sort_fc', 'sort_ab', 'sort_rank0', 'sort_rank1', 'sort_bs', 'sort_od', 'sort_ts', 'sort_update', 'sort_raw_battle_rank', 'sort_raw_technical_rank', 'sort_raw_lamp']
 };
 var sortTable = new List('sort_table', options);
 
@@ -86,6 +86,31 @@ $('.filter_battle_rank_button').on('click',function(){
     SortTable();
 });
 
+$('.filter_technical_rank_button').on('click',function(){
+    var $text = $(this).text();
+    if($(this).hasClass('is-info')){
+        DeleteFilterList('sort_raw_technical_rank', $text);
+        $(this).removeClass('is-info');
+
+    } else {
+        AddFilterList('sort_raw_technical_rank', $text);
+        $(this).addClass('is-info');
+    }
+    SortTable();
+});
+
+$('.filter_lamp_button').on('click',function(){
+    var $text = $(this).text();
+    if($(this).hasClass('is-info')){
+        DeleteFilterList('sort_raw_lamp', $text);
+        $(this).removeClass('is-info');
+
+    } else {
+        AddFilterList('sort_raw_lamp', $text);
+        $(this).addClass('is-info');
+    }
+    SortTable();
+});
 
 
 

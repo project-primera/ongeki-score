@@ -51,11 +51,12 @@
 
     <div class="filter-content">
         <p class="title is-4">Technical Rank</p>
-        <a class="button filter_ramp_button">FB</a>
-        <a class="button filter_ramp_button">FC</a>
-        <a class="button filter_ramp_button">AB</a>
-        <a class="button filter_ramp_button">FB+FC</a>
-        <a class="button filter_ramp_button">FB+AB</a>
+        <a class="button filter_lamp_button">-</a>
+        <a class="button filter_lamp_button">FB</a>
+        <a class="button filter_lamp_button">FC</a>
+        <a class="button filter_lamp_button">FC+AB</a>
+        <a class="button filter_lamp_button">FB+FC</a>
+        <a class="button filter_lamp_button">FB+FC+AB</a>
     </div>
 
 

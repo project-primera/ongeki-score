@@ -13,4 +13,6 @@
     <td class="sort_ts">{{$technicalHighScore}}</td>
     <td class="sort_update">{{$updatedAt}}</td>
     <td class="table-hidden-data sort_raw_battle_rank">{{$rawBattleRank}}</td>
+    <td class="table-hidden-data sort_raw_technical_rank">{{$rawTechnicalRank}}</td>
+    <td class="table-hidden-data sort_raw_lamp">{{$rawLamp}}</td>
 </tr>

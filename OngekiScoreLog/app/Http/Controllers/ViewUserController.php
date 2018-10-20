@@ -81,6 +81,21 @@ class ViewUserController extends Controller
 		
 
         foreach ($score as $key => $value) {
+            if($value->full_bell && $value->all_break){
+                $score[$key]->rawLamp = "FB+FC+AB";
+            }else if($value->full_bell && $value->full_combo){
+                $score[$key]->rawLamp = "FB+FC";
+            }else if($value->all_break){
+                $score[$key]->rawLamp = "FC+AB";
+            }else if($value->full_combo){
+                $score[$key]->rawLamp = "FC";
+            }else if($value->full_bell){
+                $score[$key]->rawLamp = "FB";
+            }else{
+                $score[$key]->rawLamp = "-";
+            }
+            
+
             if($value->technical_high_score == 0){
                 $key = "NP";
             }else if($value->technical_high_score < 850000){
