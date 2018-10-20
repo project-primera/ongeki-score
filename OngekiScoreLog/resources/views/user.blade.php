@@ -4,6 +4,9 @@
 @section('sidemark_user', "is-active")
 @section('hero_subtitle', $status[0]->trophy)
 @section('hero_title', $status[0]->name)
+@section('additional_footer')
+    <script type="text/javascript" src="/js/sortTable.js"></script>
+@endsection
 
 @section('submenu')
     <li class="{{$submenuActive[0]}}"><a href="/user/{{$id}}">簡易</a></li>
