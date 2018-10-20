@@ -40,7 +40,6 @@ function DeleteFilterList(key, value){
 }
 
 function SortTable(){
-    console.log(filterList);
     var cnt = 0;
     var allCnt = 0;
     sortTable.filter(function(item) {
