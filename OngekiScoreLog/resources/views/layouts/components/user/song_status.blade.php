@@ -86,7 +86,7 @@
                             {{$s->over_damage_high_score_rank}}
                         @endslot
                         @slot('rawTechnicalRank')
-                            {{($s->technical_high_score < 850000) ? "under A" : $s->technical_high_score_rank}}
+                            {{$s->rawTechnicalRank}}
                         @endslot
                         @slot('rawLamp')
                             {{$s->rawLamp}}

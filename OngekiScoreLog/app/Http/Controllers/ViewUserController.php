@@ -94,6 +94,15 @@ class ViewUserController extends Controller
             }else{
                 $score[$key]->rawLamp = "-";
             }
+
+
+            if($value->technical_high_score == 0){
+                $score[$key]->rawTechnicalRank = "-";
+            }else if($value->technical_high_score < 850000){
+                $score[$key]->rawTechnicalRank = "under A";
+            }else{
+                $score[$key]->rawTechnicalRank = $value->technical_high_score_rank;
+            }
             
 
             if($value->technical_high_score == 0){
