@@ -42,7 +42,9 @@ function DeleteFilterList(key, value){
 function SortTable(){
     console.log(filterList);
     var cnt = 0;
+    var allCnt = 0;
     sortTable.filter(function(item) {
+        ++allCnt;
         if(filterList.length == 0){
             return true;
         }
@@ -57,7 +59,11 @@ function SortTable(){
         });
         return isVisible;
     });
-    console.log(cnt + "件表示");
+    if(filterList.length == 0){
+        $('.filter_cases').html(allCnt);
+    }else{
+        $('.filter_cases').html(cnt);
+    }
 }
 
 $('.filter_level_button').on('click',function(){
@@ -147,3 +153,5 @@ $('.filter_lamp_button').on('click',function(){
     }
     SortTable();
 });
+
+SortTable();

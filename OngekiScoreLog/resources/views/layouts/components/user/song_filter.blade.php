@@ -57,5 +57,6 @@
         <a class="button filter_lamp_button">AB</a>
     </div>
 
+    <p class="title is-4"><span class="filter_cases"></span>件表示</p>
 
 </article>
