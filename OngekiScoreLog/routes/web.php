@@ -11,9 +11,19 @@
 |
 */
 
+Auth::routes();
+
 Route::get('/', function () {
     return view('top');
 });
+
+Route::get('/howto', function () {
+    return view('howto');
+});
+
+Route::get('/bookmarklet', 'BookmarkletGenerateController@getIndex');
+Route::get('/bookmarklet/agree', 'BookmarkletGenerateController@getBookmarklet');
+
 
 Route::get('/logout', function () {
     Auth::logout();
@@ -24,7 +34,6 @@ Route::get('/user/{id}/{mode?}', 'ViewUserController@getUserPage')->where(['id' 
 
 
 
-Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
 
@@ -35,6 +44,3 @@ Route::get('/user_status', function () {
     $status = App\UserStatus::all();
     return $status;
 });
-
-// http://127.0.0.1:8000/bookmarklet
-Route::get('/bookmarklet', 'BookmarkletGenerateController@getIndex');
