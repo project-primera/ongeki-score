@@ -29,6 +29,10 @@ Route::get('/howto', function () {
     return view('howto');
 });
 
+Route::get('/eula', function () {
+    return view('eula');
+});
+
 
 
 Route::get('/home', 'HomeController@index')->name('home');

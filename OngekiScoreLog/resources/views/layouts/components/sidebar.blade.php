@@ -24,6 +24,6 @@
         </li>
     </ul>
     <ul class="menu-list">
-        <li><a href="#">License</a></li>
+        <li><a href="/eula" class="@yield('sidemark_eula')">利用規約 / プライバシーポリシー</a></li>
     </ul>
 </aside>

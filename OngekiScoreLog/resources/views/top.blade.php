@@ -9,7 +9,7 @@
     <div class="box">
         <h3 class="title is-3">このサイトについて</h3>
         <p class="space-bottom">
-                OngekiScoreLogはSEGAのアーケード音楽ゲーム「オンゲキ」のスコアを集計し、見やすくソートしたりできるツールです。<br>
+            OngekiScoreLogはSEGAのアーケード音楽ゲーム「オンゲキ」のスコアを集計し、見やすくソートしたりできるツールです。<br>
             他のユーザーにスコアを共有することが出来ます。
         </p>
         <p class="space-bottom">
@@ -23,6 +23,9 @@
     </div>
     <div class="box">
         <h3 class="title is-3">簡単な使い方</h3>
+        <p class="space-bottom">
+            <a href="/eula">利用規約</a>を一読した上でご利用ください。
+        </p>
         <p class="space-bottom">
             スコアの取得はブックマークレットを使用します。<br>
             詳細な使い方は<a href="/howto">こちら</a>をご覧ください。
