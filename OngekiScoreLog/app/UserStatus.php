@@ -11,9 +11,13 @@ class UserStatus extends Model
     protected $guarded = ['id', 'user_id'];
 
     function getRecentUserData($id){
-        // SELECT * FROM ongeki_score_tool.user_status WHERE user_id = 1 ORDER BY id DESC LIMIT 1
         $sql = DB::table($this->table)->select('*')
             ->from($this->table)->where('user_id', $id)->orderBy('id', 'desc')->limit(1);
         return $sql->get();
+    }
+
+    function getRecentAllUserData(){
+        $sql = DB::select('SELECT * FROM user_status AS t1 WHERE created_at = (SELECT MAX(created_at) FROM user_status AS t2 WHERE t1.user_id = t2.user_id);');
+        return $sql;
     }
 }

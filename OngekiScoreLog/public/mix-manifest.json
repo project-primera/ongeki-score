@@ -3,5 +3,6 @@
     "/css/app.css": "/css/app.css",
     "/css/style.css": "/css/style.css",
     "/js/sortTable.js": "/js/sortTable.js",
+    "/js/sortAllUserTable.js": "/js/sortAllUserTable.js",
     "/js/list.min.js": "/js/list.min.js"
 }
