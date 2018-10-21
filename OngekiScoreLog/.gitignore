@@ -15,3 +15,4 @@ yarn-error.log
 # User files
 /public/css/*
 /public/js/*
+/public/img/*
