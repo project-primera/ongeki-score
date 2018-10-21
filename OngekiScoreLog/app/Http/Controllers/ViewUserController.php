@@ -14,6 +14,16 @@ class ViewUserController extends Controller
         return redirect("/user/" . rand(1, count(User::all())));
     }
 
+    public function getMyUserPage(){
+        $user = \Auth::user();
+
+        if($user == null){
+            return view('require');
+        }
+
+        return redirect("/user/" . $user->id);
+    }
+
     public function getUserPage($id, $mode = null){
         $userStatus = new UserStatus();
         $status = $userStatus->getRecentUserData($id);

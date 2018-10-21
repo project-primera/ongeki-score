@@ -18,8 +18,9 @@ Route::get('/', function () {
 });
 
 Route::get('/user/{id}/{mode?}', 'ViewUserController@getUserPage')->where(['id' => '\d+']);
-
 Route::get('/random', 'ViewUserController@redirectRandomUserPage');
+Route::get('/mypage', 'ViewUserController@getMyUserPage');
+Route::get('/alluser', 'ViewAllUserController@getIndex');
 
 Route::get('/bookmarklet', 'BookmarkletGenerateController@getIndex');
 Route::get('/bookmarklet/agree', 'BookmarkletGenerateController@getBookmarklet');
