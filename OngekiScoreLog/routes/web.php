@@ -17,28 +17,25 @@ Route::get('/', function () {
     return view('top');
 });
 
-Route::get('/howto', function () {
-    return view('howto');
-});
+Route::get('/user/{id}/{mode?}', 'ViewUserController@getUserPage')->where(['id' => '\d+']);
+
+Route::get('/random', 'ViewUserController@redirectRandomUserPage');
 
 Route::get('/bookmarklet', 'BookmarkletGenerateController@getIndex');
 Route::get('/bookmarklet/agree', 'BookmarkletGenerateController@getBookmarklet');
 
+Route::get('/howto', function () {
+    return view('howto');
+});
+
+
+
+Route::get('/home', 'HomeController@index')->name('home');
 
 Route::get('/logout', function () {
     Auth::logout();
     return view('logout');
 });
-
-Route::get('/user/{id}/{mode?}', 'ViewUserController@getUserPage')->where(['id' => '\d+']);
-
-
-
-
-Route::get('/home', 'HomeController@index')->name('home');
-
-
-Route::get('/home', 'HomeController@index')->name('home');
 
 Route::get('/user_status', function () {
     $status = App\UserStatus::all();

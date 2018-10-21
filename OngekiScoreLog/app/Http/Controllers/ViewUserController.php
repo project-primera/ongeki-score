@@ -4,11 +4,16 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
+use App\User;
 use App\UserStatus;
 use App\ScoreData;
 
 class ViewUserController extends Controller
 {
+    public function redirectRandomUserPage(){
+        return redirect("/user/" . rand(1, count(User::all())));
+    }
+
     public function getUserPage($id, $mode = null){
         $userStatus = new UserStatus();
         $status = $userStatus->getRecentUserData($id);
