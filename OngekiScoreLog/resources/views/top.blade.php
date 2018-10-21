@@ -22,10 +22,10 @@
         </p>
     </div>
     <div class="box">
-        <h3 class="title is-3">利用方法</h3>
+        <h3 class="title is-3">簡単な使い方</h3>
         <p class="space-bottom">
             スコアの取得はブックマークレットを使用します。<br>
-            詳細な使い方はこちらをご覧ください。
+            詳細な使い方は<a href="/howto">こちら</a>をご覧ください。
             <ol>
                 <li>サイトに登録します。</li>
                 <li>オンゲキNETにログインします。</li>

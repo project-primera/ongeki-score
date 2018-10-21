@@ -1,7 +1,6 @@
 @extends('layouts.app')
 
 @section('title', 'Page Title')
-@section('sidemark_user', "is-active")
 @section('hero_subtitle', $status[0]->trophy)
 @section('hero_title', $status[0]->name)
 @section('additional_footer')
