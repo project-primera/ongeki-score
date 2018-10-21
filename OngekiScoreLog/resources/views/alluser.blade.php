@@ -1,6 +1,7 @@
 @extends('layouts.app')
 
 @section('title', 'Page Title')
+@section('sidemark_alluser', "is-active")
 @section('hero_title', "すべてのユーザー")
 @section('additional_footer')
     <script type="text/javascript" src="/js/sortAllUserTable.js"></script>

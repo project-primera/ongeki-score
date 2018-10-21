@@ -1,8 +1,8 @@
 @extends('layouts.app')
 
-@section('title', 'ログインページ')
+@section('title', '要ログイン')
 @section('hero_subtitle', '')
-@section('hero_title', '使い方')
+@section('hero_title', '要ログインページ')
 
 @section('content')
 <div class="container">
