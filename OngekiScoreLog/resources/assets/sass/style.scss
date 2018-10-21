@@ -2,6 +2,19 @@ main {
     background-color: #eeeeee;
 }
 
+h1.title
+h2.subtitle{
+    padding-left: 3em;
+}
+
+
+.menu-list-dummy{
+    border-radius: 2px;
+    color: #69707a;
+    display: block;
+    padding: 5px 10px;
+}
+
 ol{
     padding-left: 2em;
 }

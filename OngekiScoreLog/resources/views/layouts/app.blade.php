@@ -12,14 +12,14 @@
         <header class="nav">
             <div class="nav-left">
                 <span class="nav-item">
-                    <i class="fas fa-chart-line"></i>&nbsp;OngekiScoreLog</span>
+                    <i class="fas fa-chart-line"></i>&nbsp;ongeki-score.net</span>
             </div>
             <div class="nav-right">
                 <span class="nav-item">
-                    <div class="control has-addons">
+                    <!-- <div class="control has-addons">
                         <input class="input" type="search" name="search" placeholder="キーワード検索">
                         <a class="button is-info"><i class="fas fa-search"></i>&nbsp;検索</a>
-                    </div>
+                    </div> -->
                 </span>
                 <span class="nav-item">
                     <a href="/register"><i class="fas fa-user"></i>&nbsp;新規登録&nbsp;</a>
