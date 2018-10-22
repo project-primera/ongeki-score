@@ -2,6 +2,8 @@
 
 namespace App;
 
+use DateTime;
+use DateTimeZone;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 
@@ -38,7 +40,7 @@ class ApplicationVersion extends Model
             $applicationVersion->tag_name = $value['tag_name'];
             $applicationVersion->name = $value['name'];
             $applicationVersion->body = $value['body'];
-            $applicationVersion->published_at = $value['published_at'];
+            $applicationVersion->published_at = (new DateTime($value['published_at']))->setTimeZone(new DateTimeZone('Asia/Tokyo'))->format('Y-m-d H:i:s');
             $applicationVersion->save();
         }
     }
