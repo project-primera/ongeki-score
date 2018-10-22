@@ -33,6 +33,15 @@ Route::get('/eula', function () {
     return view('eula');
 });
 
+Route::get('/ver', function () {
+    $v = new App\ApplicationVersion();
+    return $v->fetchAllVersion();
+});
+
+Route::get('/v', function () {
+    $v = new App\ApplicationVersion();
+    return $v->getLatestVersion();
+});
 
 
 Route::get('/home', 'HomeController@index')->name('home');
