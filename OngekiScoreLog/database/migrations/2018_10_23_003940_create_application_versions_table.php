@@ -14,7 +14,8 @@ class CreateApplicationVersionsTable extends Migration
     public function up()
     {
         Schema::create('application_versions', function (Blueprint $table) {
-            $table->increments('tag_name');
+            $table->increments('id');
+            $table->string('tag_name');
             $table->string('name');
             $table->string('body');
             $table->string('published_at');
