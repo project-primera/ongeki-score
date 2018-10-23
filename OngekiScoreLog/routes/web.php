@@ -39,25 +39,9 @@ Route::get('/changelog', function () {
     return view('changelog', compact('version'));
 });
 
-Route::get('/ver', function () {
-    $v = new App\ApplicationVersion();
-    return $v->fetchAllVersion();
-});
-
-Route::get('/v', function () {
-    $v = new App\ApplicationVersion();
-    return $v->getLatestVersion();
-});
-
-
 Route::get('/home', 'HomeController@index')->name('home');
 
 Route::get('/logout', function () {
     Auth::logout();
     return view('logout');
-});
-
-Route::get('/user_status', function () {
-    $status = App\UserStatus::all();
-    return $status;
 });
