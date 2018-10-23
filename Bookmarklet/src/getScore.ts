@@ -5,13 +5,15 @@ import * as qs from 'qs';
   console.log("run");
 
   const NET_DOMAIN = "ongeki-net.com";
-  const NET_URL = "https://" + NET_DOMAIN + "/ongeki-net.com/ongeki-mobile/";
+  const NET_URL = "https://" + NET_DOMAIN + "/ongeki-mobile/";
   const TOOL_URL = "http://127.0.0.1:8000";
   const API_URL = TOOL_URL + "/api/user/update";
 
   const REQUEST_KEY = "?t="
   const PRODUCT_NAME = "Project Primera - getScore";
   const VERSION = 1.0;
+
+  const SLEEP_MSEC = 2000;
 
   class PlayerData {
     trophy: string = "";
@@ -28,6 +30,7 @@ import * as qs from 'qs';
 
     async getData() {
       await this.getPlayerDataFromNet();
+      await sleep(SLEEP_MSEC);
       await this.getFriendCodeDataFromNet();
     }
 
@@ -107,6 +110,7 @@ import * as qs from 'qs';
     private async getAllDifficultyScoreDataFromNet() {
       await [0, 1, 2, 3, 10].forEach(async (value, index, array) => {
         await this.getScoreHtmlFromNet(value);
+        await sleep(SLEEP_MSEC);
       });
     }
 
@@ -346,33 +350,34 @@ let main = async () => {
 
   $textarea.append("プレイヤーデータを取得します・・・(1/5)<br>");
   let token: string = getToken();
+
   await allData.PlayerData.getData();
   if(allData.PlayerData.level == 0){
     $textarea.append("プレイヤー情報を取得できませんでした。<br>オンゲキNETにログインしてもう一度実行してください。<br><a href='https://ongeki-net.com'  style='color:#222'>オンゲキNET</a><br><br>ログインしている場合は時間を開けてお試しください。(一定期間にアクセスをしすぎると制限が掛かります)");
     return;
   }
   $textarea.append("完了(1/5)<br>");
-  await sleep(1000);
+  await sleep(SLEEP_MSEC);
 
   $textarea.append("スコアデータを取得します・・・(2/5)<br>");
   await allData.ScoreData.getData();
   $textarea.append("完了(2/5)<br>");
-  await sleep(1000);
+  await sleep(SLEEP_MSEC);
 
   $textarea.append("称号データを取得します・・・(3/5)<br>");
   await allData.TrophyData.getData();
   $textarea.append("完了(3/5)<br>");
-  await sleep(1000);
+  await sleep(SLEEP_MSEC);
 
   $textarea.append("キャラクターデータを取得します・・・(4/5)<br>");
   await allData.CharacterFriendlyData.getData();
   $textarea.append("完了(4/5)<br>");
-  await sleep(1000);
+  await sleep(SLEEP_MSEC);
 
   $textarea.append("レーティングデータを取得します・・・(5/5)<br>");
   await allData.RatingRecentMusicData.getData();
   $textarea.append("完了(5/5)<br>");
-  await sleep(1000);
+  await sleep(SLEEP_MSEC);
 
   console.log(allData);
 
