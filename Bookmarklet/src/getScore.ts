@@ -2,11 +2,10 @@ import axios from 'axios';
 import * as qs from 'qs';
 
 (function () {
-  console.log("run");
-
   const NET_DOMAIN = "ongeki-net.com";
   const NET_URL = "https://" + NET_DOMAIN + "/ongeki-mobile/";
-  const TOOL_URL = "http://127.0.0.1:8000";
+  // const TOOL_URL = "http://127.0.0.1:8000";
+  const TOOL_URL = "https://ongeki-score.net";
   const API_URL = TOOL_URL + "/api/user/update";
 
   const REQUEST_KEY = "?t="
@@ -379,8 +378,6 @@ let main = async () => {
   $textarea.append("完了(5/5)<br>");
   await sleep(SLEEP_MSEC);
 
-  console.log(allData);
-
   $textarea.append("スコアデータを送信します・・・<br><br>");
   axios.post(API_URL, qs.stringify(allData), {
     headers: { 
@@ -393,7 +390,6 @@ let main = async () => {
       return;
     }
   }).catch(error => {
-    console.log(error);
     $textarea.append("データ送信に失敗しました。お手数をおかけしますが以下のリンクまで以下のデータを添えてご報告をお願い致します。<br><a href='https://twitter.com/ongeki_score' style='color:#222'>Twitter</a> / <a href='https://github.com/Slime-hatena/ProjectPrimera/issues' style='color:#222'>Github issue</a><br>");
     $textarea.append(error);
     return;
