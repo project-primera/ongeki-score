@@ -58,7 +58,14 @@
             <div class="submenu column is-3">
                 @component('layouts/components/sidebar')
                     @slot('box')
-                        🍣🍣🍣🍣🍣🍣🍣🍣🍣🍣🍣🍣🍣🍣🍣🍣🍣🍣
+                        @php
+                            $applicationVersion =  new App\ApplicationVersion();
+                            $version = $applicationVersion->getLatestVersion();
+                            echo '<p class="title is-4 clear-margin-bottom" style="margin-bottom: 0.2em;">更新情報</p>';
+                            echo '<strong>' . $version[0]->name . '</strong><br>';
+                            echo $version[0]->tag_name . '(' . date('Y/m/d', strtotime($version[0]->published_at)) . ')<br>';
+                            echo nl2br($version[0]->body);
+                        @endphp
                     @endslot
                 @endcomponent
             </div>
