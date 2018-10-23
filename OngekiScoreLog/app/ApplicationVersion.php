@@ -16,6 +16,10 @@ class ApplicationVersion extends Model
         return DB::table("application_versions")->orderBy('id', 'desc')->limit(1)->get();
     }
 
+    public function getAllVersion(){
+        return DB::table("application_versions")->orderBy('id', 'desc')->get();
+    }
+
     public function fetchAllVersion(){
         $opts = [
             'http' => [

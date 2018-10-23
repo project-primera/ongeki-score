@@ -33,6 +33,12 @@ Route::get('/eula', function () {
     return view('eula');
 });
 
+Route::get('/changelog', function () {
+    $v = new App\ApplicationVersion();
+    $version = $v->getAllVersion();
+    return view('changelog', compact('version'));
+});
+
 Route::get('/ver', function () {
     $v = new App\ApplicationVersion();
     return $v->fetchAllVersion();
