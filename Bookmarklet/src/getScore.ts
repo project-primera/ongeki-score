@@ -4,7 +4,8 @@ import * as qs from 'qs';
 (function () {
   console.log("run");
 
-  const NET_URL = "https://ongeki-net.com/ongeki-mobile/";
+  const NET_DOMAIN = "ongeki-net.com";
+  const NET_URL = "https://" + NET_DOMAIN + "/ongeki-net.com/ongeki-mobile/";
   const TOOL_URL = "http://127.0.0.1:8000";
   const API_URL = TOOL_URL + "/api/user/update";
 
@@ -330,18 +331,26 @@ function sleep(milliseconds: number) {
 
 
 let main = async () => {
-  let $overlay = $("<div>").addClass("ongeki-net").attr("style","color:#222; font-size: 1em; padding-top: 120px; width: 100%; height:100%; position: fixed; top: 0; z-index: 100; background: rgba(0,0,0,0.3);");
+  let $overlay = $("<div>").addClass("ongeki_score").attr("style","color:#222; font-size: 1em; padding-top: 120px; width: 100%; height:100%; position: fixed; top: 0; z-index: 100; background: rgba(0,0,0,0.3);");
   $("body").append($overlay);
   var $textarea = $("<div>").attr("style","background-color: #eee; width:480px; height:calc(100% - 120px); margin:0 auto; padding: 0.5em 1em;")
   $overlay.append($textarea);
 
   $textarea.append(PRODUCT_NAME + " v." + VERSION.toFixed(2) + "<br>");
   $textarea.append("スコアを取得します。しばらくお待ち下さい・・・<br><br>");
+  if(NET_DOMAIN != window.location.hostname){
+    $textarea.append("<a href='https://ongeki-net.com'>オンゲキNET</a>で実行してください・・・");
+    return;
+  }
   let allData: AllData = new AllData();
 
   $textarea.append("プレイヤーデータを取得します・・・(1/5)<br>");
   let token: string = getToken();
   await allData.PlayerData.getData();
+  if(allData.PlayerData.level == 0){
+    $textarea.append("プレイヤー情報を取得できませんでした。<br>オンゲキNETにログインしてもう一度実行してください。<br><a href='https://ongeki-net.com'  style='color:#222'>オンゲキNET</a><br><br>ログインしている場合は時間を開けてお試しください。(一定期間にアクセスをしすぎると制限が掛かります)");
+    return;
+  }
   $textarea.append("完了(1/5)<br>");
   await sleep(1000);
 
