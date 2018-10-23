@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'ログインページ')
+@section('title', 'ブックマークレットを生成')
 @section('hero_subtitle', '')
 @section('hero_title', 'ブックマークレットを生成')
 @section('sidemark_bookmarklet', "is-active")

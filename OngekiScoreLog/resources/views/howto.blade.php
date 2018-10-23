@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'ログインページ')
+@section('title', '使い方')
 @section('hero_subtitle', '')
 @section('hero_title', '使い方')
 @section('sidemark_howto', "is-active")

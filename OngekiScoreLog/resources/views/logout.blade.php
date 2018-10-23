@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'ログインページ')
+@section('title', 'ログアウト')
 @section('hero_subtitle', '')
 @section('hero_title', 'ログアウト')
 

@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Page Title')
+@section('title', $status[0]->name)
 @section('hero_subtitle', $status[0]->trophy)
 @section('hero_title', $status[0]->name)
 @section('additional_footer')

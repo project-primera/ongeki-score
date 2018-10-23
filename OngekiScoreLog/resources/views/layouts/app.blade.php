@@ -12,7 +12,7 @@
         <header class="nav">
             <div class="nav-left">
                 <span class="nav-item">
-                    <i class="fas fa-chart-line"></i>&nbsp;ongeki-score.net</span>
+                    <a href="/"><i class="fas fa-chart-line"></i>&nbsp;ongeki-score.net</span></a>
             </div>
             <div class="nav-right">
                 <span class="nav-item">
@@ -61,11 +61,12 @@
                         @php
                             $applicationVersion =  new App\ApplicationVersion();
                             $version = $applicationVersion->getLatestVersion();
-                            echo '<p class="title is-4 clear-margin-bottom" style="margin-bottom: 0.2em;">更新情報</p>';
+                            echo '<p class="title is-4 clear-margin-bottom" style="margin-bottom: 0.2em;">更新情報</p><p class="space-bottom">';
                             echo '<strong>' . $version[0]->name . '</strong><br>';
                             echo $version[0]->tag_name . '(' . date('Y/m/d', strtotime($version[0]->published_at)) . ')<br>';
-                            echo nl2br($version[0]->body);
+                            echo nl2br($version[0]->body) . '</p>';
                         @endphp
+                    <a href="/changelog">過去の更新</a>
                     @endslot
                 @endcomponent
             </div>

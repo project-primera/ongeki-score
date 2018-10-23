@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Page Title')
+@section('title', 'すべてのユーザー')
 @section('sidemark_alluser', "is-active")
 @section('hero_title', "すべてのユーザー")
 @section('additional_footer')
