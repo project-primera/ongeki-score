@@ -38,4 +38,24 @@
             </ol>
         </p>
     </div>
+
+    <div class="box">
+        <h3 class="title is-3">バグ報告・御意見・機能提案</h3>
+        <p class="space-bottom">
+            バグ報告などは以下でお受けしております。<br>
+            こんな機能が欲しい、こういう機能があったらいいのに、なども大歓迎です。<br>
+            全てに返信は致しかねますので予めご了承ください。<br>
+            Twitterへの御意見はGitHub issueへ引用させていただくこともあります。
+        </p>
+        <p class="space-bottom">
+            <a href="https://github.com/Slime-hatena/ProjectPrimera/issues" target="_blank">GitHub issue</a><br>
+            <a href="https://twitter.com/ongeki_score" target="_blank">Twitter@ongeki_score</a>
+        </p>
+        <p class="space-bottom">
+            <h3 class="title is-3">既知の不具合・追加予定の機能</h3>
+            以下にまとまっています。<br>
+            既知の不具合: <a href="https://github.com/Slime-hatena/ProjectPrimera/issues?q=is%3Aopen+is%3Aissue+label%3Abug" target="_blank">GitHub issue - bug</a><br>
+            追加予定の機能: <a href="https://github.com/Slime-hatena/ProjectPrimera/issues?q=is%3Aopen+is%3Aissue+label%3Aenhancement" target="_blank">GitHub issue - enhancement</a>
+        </p>
+    </div>
 @endsection
