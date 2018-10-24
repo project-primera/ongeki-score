@@ -17,6 +17,7 @@ mix.sourceMaps()
     .js('resources/assets/js/sortAllUserTable.js', 'public/js')
     .sass('resources/assets/sass/laravel/app.scss', 'public/css')
     .sass('resources/assets/sass/style.scss', 'public/css')
-    .copyDirectory('resources/assets/img', 'public/img');
+    .copyDirectory('resources/assets/img', 'public/img')
+    .copy('../Bookmarklet/bin/main.js', 'public/bookmarklet/main.js');
 
 mix.copy('node_modules/list.js/dist/list.min.js', 'public/js/list.min.js');
