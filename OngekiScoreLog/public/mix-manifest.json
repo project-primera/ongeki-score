@@ -4,6 +4,6 @@
     "/css/style.css": "/css/style.css",
     "/js/sortTable.js": "/js/sortTable.js",
     "/js/sortAllUserTable.js": "/js/sortAllUserTable.js",
-    "/bookmarklet/main.js": "/bookmarklet/main.js",
+    "/bookmarklets/main.js": "/bookmarklets/main.js",
     "/js/list.min.js": "/js/list.min.js"
 }

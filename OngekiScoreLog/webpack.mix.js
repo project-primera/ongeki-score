@@ -18,6 +18,6 @@ mix.sourceMaps()
     .sass('resources/assets/sass/laravel/app.scss', 'public/css')
     .sass('resources/assets/sass/style.scss', 'public/css')
     .copyDirectory('resources/assets/img', 'public/img')
-    .copy('../Bookmarklet/bin/main.js', 'public/bookmarklet/main.js');
+    .copy('../Bookmarklet/bin/main.js', 'public/bookmarklets/main.js');
 
 mix.copy('node_modules/list.js/dist/list.min.js', 'public/js/list.min.js');
