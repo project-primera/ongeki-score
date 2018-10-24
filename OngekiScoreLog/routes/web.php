@@ -45,3 +45,8 @@ Route::get('/logout', function () {
     Auth::logout();
     return view('logout');
 });
+
+Route::get('/ver', function () {
+    $v = new App\ApplicationVersion();
+    return $v->fetchAllVersion();
+});
