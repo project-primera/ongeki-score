@@ -33,7 +33,7 @@ class BookmarkletGenerateController extends Controller
         $tokenobj = $user->createToken('OngekiScoreLog Personal Access Client', ['*']);
         $token = $tokenobj->accessToken;
         $token_id = $tokenobj->token->id;
-        $content = 'http://127.0.0.1:8001/main.js';
+        $content = 'https://ongeki-score.net/bookmarklets/main.js';
         $content = "javascript:(function(d,s){s=d.createElement('script');s.src='" . $content . "?t=" . $token . "';d.getElementsByTagName('head')[0].appendChild(s);})(document);";
         $content = 'ブックマークレットを生成しました。<div class="control"><textarea class="textarea is-info is-small" type="text" readonly>' . $content . '</textarea></div>';
         
