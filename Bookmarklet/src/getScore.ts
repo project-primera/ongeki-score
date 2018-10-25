@@ -378,24 +378,35 @@ let main = async () => {
   $textarea.append("完了(5/5)<br>");
   await sleep(SLEEP_MSEC);
 
+  console.log(allData);
+
   $textarea.append("スコアデータを送信します・・・<br><br>");
-  axios.post(API_URL, qs.stringify(allData), {
+  let result = await axios.post(API_URL, qs.stringify(allData), {
     headers: { 
       Authorization: "Bearer " + token,
     }
-  }).then(response => {
-    if(response.status != 200){
-      $textarea.append("データ送信に失敗しました。お手数をおかけしますが以下のリンクまで以下のデータを添えてご報告をお願い致します。<br><a href='https://twitter.com/ongeki_score' style='color:#222'>Twitter</a> / <a href='https://github.com/Slime-hatena/ProjectPrimera/issues' style='color:#222'>Github issue</a>");
-      $textarea.append(response.data);
-      return;
-    }
   }).catch(error => {
     $textarea.append("データ送信に失敗しました。お手数をおかけしますが以下のリンクまで以下のデータを添えてご報告をお願い致します。<br><a href='https://twitter.com/ongeki_score' style='color:#222'>Twitter</a> / <a href='https://github.com/Slime-hatena/ProjectPrimera/issues' style='color:#222'>Github issue</a><br>");
-    $textarea.append(error);
-    return;
+    $textarea.append(error + "<br>");
+    let now = new Date();
+    let today = new Date();
+    $textarea.append((today.getFullYear() + "/" +  (today.getMonth() + 1) + "/" + today.getDate()) + " " + now.toLocaleTimeString() + "<br>");
   });
 
-  $textarea.append("スコア登録に成功しました！<br><a href='" + TOOL_URL + "/mypage' style='color:#222'>こちらからプロフィールページを閲覧できます</a>。<br>");
+  if(result === void 0){
+    // catch errorで処理済み
+    return;
+  }
+
+  if(result['data'] == "error"){
+    $textarea.append("データ送信に失敗しました。お手数をおかけしますが以下のリンクまで以下のデータを添えてご報告をお願い致します。<br><a href='https://twitter.com/ongeki_score' style='color:#222'>Twitter</a> / <a href='https://github.com/Slime-hatena/ProjectPrimera/issues' style='color:#222'>Github issue</a><br>");
+    $textarea.append("data: " + result['data'] + "<br>status: " + result['status'] + "<br>");
+    let now = new Date();
+    let today = new Date();
+    $textarea.append((today.getFullYear() + "/" +  (today.getMonth() + 1) + "/" + today.getDate()) + " " + now.toLocaleTimeString() + "<br>");
+  }else{
+    $textarea.append("スコア登録に成功しました！<br><a href='" + TOOL_URL + "/mypage' style='color:#222'>こちらからプロフィールページを閲覧できます</a>。<br>");
+  }
 }
 
 main();
