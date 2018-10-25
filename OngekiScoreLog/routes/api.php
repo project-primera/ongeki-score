@@ -24,5 +24,4 @@ Route::get('/user/music/{id}', 'ApiController@getUserMusic')->where(['id' => '\d
 
 
 // From Bookmarklet
-Route::middleware('cors')->get('/user/update', 'BookmarkletAccessController@getUserUpdate');
 Route::middleware('cors')->match(['post', 'options'],'/user/update', 'BookmarkletAccessController@postUserUpdate')->middleware('auth:api');
