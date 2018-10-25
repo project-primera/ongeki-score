@@ -17,7 +17,8 @@
     "webpack-cli": "^3.1.0"
   },
   "scripts": {
-    "build": "webpack --mode=production"
+    "build": "webpack --mode=production",
+    "dev": "webpack --devtool source-map"
   },
   "author": "Slime_hatena",
   "license": "MIT"
