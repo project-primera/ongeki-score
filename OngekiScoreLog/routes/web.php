@@ -13,9 +13,7 @@
 
 Auth::routes();
 
-Route::get('/', function () {
-    return view('top');
-});
+Route::get('/', 'SimpleViewController@getIndex');
 
 Route::get('/user/{id}/{mode?}', 'ViewUserController@getUserPage')->where(['id' => '\d+']);
 Route::get('/random', 'ViewUserController@redirectRandomUserPage');
@@ -25,23 +23,10 @@ Route::get('/alluser', 'ViewAllUserController@getIndex');
 Route::get('/bookmarklet', 'BookmarkletGenerateController@getIndex');
 Route::get('/bookmarklet/agree', 'BookmarkletGenerateController@getBookmarklet');
 
-Route::get('/howto', function () {
-    return view('howto');
-});
+Route::get('/howto', 'SimpleViewController@getHowto');
+Route::get('/eula', 'SimpleViewController@getEula');
 
-Route::get('/eula', function () {
-    return view('eula');
-});
-
-Route::get('/changelog', function () {
-    $v = new App\ApplicationVersion();
-    $version = $v->getAllVersion();
-    return view('changelog', compact('version'));
-});
+Route::get('/changelog', 'SimpleViewController@getChangelog');
 
 Route::get('/home', 'HomeController@index')->name('home');
-
-Route::get('/logout', function () {
-    Auth::logout();
-    return view('logout');
-});
+Route::get('/logout', 'SimpleViewController@getLogout');

@@ -16,4 +16,4 @@ yarn-error.log
 /public/css/*
 /public/js/*
 /public/img/*
-/public/bookmarklet/*
+/public/bookmarklets/*
