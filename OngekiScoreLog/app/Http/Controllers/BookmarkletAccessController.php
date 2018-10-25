@@ -31,12 +31,12 @@ class BookmarkletAccessController extends Controller
 
             $userStatus = new UserStatus();
             $userStatus->user_id = Auth::id();
-            $userStatus->fill($request['PlayerData']);
+            $userStatus->fill($request->input('PlayerData'));
             $userStatus->unique_id =$uniqueID;
             $userStatus->save();
 
 
-            foreach ($request['CharacterFriendlyData']['friendly'] as $key => $value) {
+            foreach ($request->input('CharacterFriendlyData')['friendly'] as $key => $value) {
                 $characterFriendly = new CharacterFriendly();
                 $characterFriendly->user_id = Auth::id();
                 $characterFriendly->character_id = $key;
@@ -47,7 +47,7 @@ class BookmarkletAccessController extends Controller
 
             
             DB::table('rating_recent_musics')->where('user_id', '=', Auth::id())->delete();
-            foreach ($request['RatingRecentMusicData']['ratingRecentMusicObject'] as $key => $value) {
+            foreach ($request->input('RatingRecentMusicData')['ratingRecentMusicObject'] as $key => $value) {
                 $ratingRecentMusic = new RatingRecentMusic();
                 $ratingRecentMusic->user_id = Auth::id();
                 $ratingRecentMusic->rank = $key;
@@ -60,7 +60,7 @@ class BookmarkletAccessController extends Controller
 
 
             $trophyGrade = ["normalTrophyInfos" => 0,"silverTrophyInfos" => 1, "goldTrophyInfos" => 2, "platinumTrophyInfo" => 3, "rainbowTrophyInfo" => 4];
-            foreach ($request['TrophyData'] as $key => $value) {
+            foreach ($request->input('TrophyData') as $key => $value) {
                 foreach ($value as $k => $v) {
                     $record = DB::table('user_trophies')->where([
                         ['user_id', '=', Auth::id()],
@@ -89,7 +89,7 @@ class BookmarkletAccessController extends Controller
                     "lunaticSongInfos" => "lunatic",
                 ];
                 foreach ($difficultyArrayKey as $key => $value) {
-                    foreach ($request['ScoreData'][$key] as $k => $v) {
+                    foreach ($request->input('ScoreData')[$key] as $k => $v) {
                         $userStatus = MusicData::where("title", "=", $v['title'])->first();
                         if(is_null($userStatus)){
                             $userStatus = new MusicData();
@@ -120,7 +120,7 @@ class BookmarkletAccessController extends Controller
                 "lunaticSongInfos" => 10,
             ];
             foreach ($difficultyArrayKey as $key => $value) {
-                foreach ($request['ScoreData'][$key] as $k => $v) {
+                foreach ($request->input('ScoreData')[$key] as $k => $v) {
                     $userStatus = MusicData::where("title", "=", $v['title'])->first();
                     if(!is_null($userStatus)){
                         $scoreData = new ScoreData();
