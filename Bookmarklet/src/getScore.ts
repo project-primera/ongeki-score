@@ -10,7 +10,7 @@ import * as qs from 'qs';
 
   const REQUEST_KEY = "?t="
   const PRODUCT_NAME = "Project Primera - getScore";
-  const VERSION = 1.0;
+  const VERSION = "20181027";
 
   const SLEEP_MSEC = 2000;
 
@@ -339,7 +339,7 @@ let main = async () => {
   var $textarea = $("<div>").attr("style","background-color: #eee; width:480px; height:calc(100% - 120px); margin:0 auto; padding: 0.5em 1em;")
   $overlay.append($textarea);
 
-  $textarea.append(PRODUCT_NAME + " v." + VERSION.toFixed(2) + "<br>");
+  $textarea.append(PRODUCT_NAME + " v." + VERSION + "<br>");
   $textarea.append("スコアを取得します。しばらくお待ち下さい・・・<br><br>");
   if(NET_DOMAIN != window.location.hostname){
     $textarea.append("<a href='https://ongeki-net.com'>オンゲキNET</a>で実行してください・・・");
@@ -363,17 +363,17 @@ let main = async () => {
   $textarea.append("完了(2/5)<br>");
   await sleep(SLEEP_MSEC);
 
-  $textarea.append("称号データを取得します・・・(3/5)<br>");
+  $textarea.append("称号獲得状況を取得します・・・(3/5)<br>");
   await allData.TrophyData.getData();
   $textarea.append("完了(3/5)<br>");
   await sleep(SLEEP_MSEC);
 
-  $textarea.append("キャラクターデータを取得します・・・(4/5)<br>");
+  $textarea.append("キャラクターの親密度情報を取得します・・・(4/5)<br>");
   await allData.CharacterFriendlyData.getData();
   $textarea.append("完了(4/5)<br>");
   await sleep(SLEEP_MSEC);
 
-  $textarea.append("レーティングデータを取得します・・・(5/5)<br>");
+  $textarea.append("レーティング対象曲情報を取得します・・・(5/5)<br>");
   await allData.RatingRecentMusicData.getData();
   $textarea.append("完了(5/5)<br>");
   await sleep(SLEEP_MSEC);
@@ -405,7 +405,8 @@ let main = async () => {
     let today = new Date();
     $textarea.append((today.getFullYear() + "/" +  (today.getMonth() + 1) + "/" + today.getDate()) + " " + now.toLocaleTimeString() + "<br>");
   }else{
-    $textarea.append("スコア登録に成功しました！<br><a href='" + TOOL_URL + "/mypage' style='color:#222'>こちらからプロフィールページを閲覧できます</a>。<br>");
+    $textarea.append(result['data'] + "<br>");
+    $textarea.append("スコア登録に成功しました！<br><a href='" + TOOL_URL + "/mypage' style='color:#222'>こちらからプロフィールページを閲覧できます</a><br><a href='" + NET_URL + "' style='color:#222'>オンゲキNETに戻る</a><br>");
   }
 }
 
