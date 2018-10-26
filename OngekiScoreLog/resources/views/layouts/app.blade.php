@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
     <head>
+        @include('layouts/components/assets/google_analytics')
         <meta charset="utf-8">
         <title>OngekiScoreLog - @yield('title')</title>
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.1.2/css/bulma.css">
