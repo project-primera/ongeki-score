@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Top Page')
+@section('title', 'オンゲキ非公式スコアツール')
 @section('sidemark_top', "is-active")
 @section('hero_subtitle', "")
 @section('hero_title', "OngekiScoreLog")
