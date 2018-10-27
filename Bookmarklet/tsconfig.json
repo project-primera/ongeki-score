@@ -1,6 +1,5 @@
 {
     "compilerOptions": {
-        "strict": true,
         "target": "ES5",
         "module": "es2015",
         "moduleResolution": "node",
