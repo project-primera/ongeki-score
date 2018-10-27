@@ -21,7 +21,7 @@
                         <th class="sort" data-sort="sort_rating">Rating</th>
                         <th class="sort" data-sort="sort_max">(Max)</th>
                         <th class="sort" data-sort="sort_bp">BP</th>
-                        <th class="sort desc" data-sort="sort_update">Update</th>
+                        <th class="sort" data-sort="sort_update">Update</th>
                     </tr>
                 </thead>
                 <tfoot>
@@ -33,7 +33,7 @@
                         <th class="sort" data-sort="sort_rating">Rating</th>
                         <th class="sort" data-sort="sort_max">(Max)</th>
                         <th class="sort" data-sort="sort_bp">BP</th>
-                        <th class="sort desc" data-sort="sort_update">Update</th>
+                        <th class="sort" data-sort="sort_update">Update</th>
                     </tr>
                 </tfoot>
                 <tbody class="list">
@@ -46,7 +46,7 @@
                             <td class="sort_rating">{{$item->rating}}</td>
                             <td class="sort_max">{{$item->rating_max}}</td>
                             <td class="sort_bp">{{$item->battle_point}}</td>
-                            <td class="sort_update">{{date('Y-m-d', strtotime($item->updated_at))}}</td>
+                            <td class="sort_update">{{date('Y-m-d', strtotime($item->updated_at))}}<span class="sort-key">{{date('H:i:s', strtotime($item->updated_at))}}</span></td>
                         </tr>
                     @endforeach
                 </tbody>
