@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "cc4422cc8963af4f9f32f63af5f3528c",
+    "content-hash": "77e909deacd234e9e78204191011e0df",
     "packages": [
         {
             "name": "asm89/stack-cors",
@@ -1468,6 +1468,121 @@
             "time": "2017-06-19T01:22:40+00:00"
         },
         {
+            "name": "mpyw/co",
+            "version": "v1.5.4",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/mpyw/co.git",
+                "reference": "e61114ca578dbe78476cc6768300001a5b9eb0fb"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/mpyw/co/zipball/e61114ca578dbe78476cc6768300001a5b9eb0fb",
+                "reference": "e61114ca578dbe78476cc6768300001a5b9eb0fb",
+                "shasum": ""
+            },
+            "require": {
+                "ext-reflection": "*",
+                "lib-curl": ">=7.20.0",
+                "php": ">=5.5.0",
+                "react/promise": "^2.4"
+            },
+            "require-dev": {
+                "codeception/aspect-mock": "^2.0",
+                "codeception/codeception": "^2.2",
+                "codeception/specify": "*",
+                "mpyw/privator": "^2.0",
+                "php": ">=7.0.0",
+                "satooshi/php-coveralls": "^1.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "mpyw\\Co\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "mpyw",
+                    "email": "ryosuke_i_628@yahoo.co.jp"
+                }
+            ],
+            "description": "Asynchronous cURL executor simply based on resource and Generator",
+            "keywords": [
+                "asynchronous",
+                "curl",
+                "generator",
+                "http",
+                "parallel"
+            ],
+            "time": "2016-08-28T14:02:56+00:00"
+        },
+        {
+            "name": "mpyw/cowitter",
+            "version": "v1.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/mpyw/cowitter.git",
+                "reference": "1668ef4c0411ab11a3fbc954f288c5c5e928aee2"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/mpyw/cowitter/zipball/1668ef4c0411ab11a3fbc954f288c5c5e928aee2",
+                "reference": "1668ef4c0411ab11a3fbc954f288c5c5e928aee2",
+                "shasum": ""
+            },
+            "require": {
+                "ext-hash": "*",
+                "ext-json": "*",
+                "ext-openssl": "*",
+                "lib-curl": ">=7.20.0",
+                "mpyw/co": "^1.5",
+                "php": ">=5.5.0"
+            },
+            "require-dev": {
+                "codeception/aspect-mock": "^2.0",
+                "codeception/codeception": "^2.2",
+                "codeception/specify": "*",
+                "mpyw/privator": "^2.0",
+                "php": ">=7.0.0",
+                "satooshi/php-coveralls": "^1.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "mpyw\\Cowitter\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "mpyw",
+                    "email": "ryosuke_i_628@yahoo.co.jp"
+                }
+            ],
+            "description": "Asynchronous Twitter client compatible with mpyw/co Generator-based flows.",
+            "keywords": [
+                "api",
+                "async",
+                "asynchronous",
+                "image",
+                "oauth",
+                "paralell",
+                "streaming",
+                "twitter",
+                "upload",
+                "video"
+            ],
+            "time": "2016-08-27T13:11:56+00:00"
+        },
+        {
             "name": "nesbot/carbon",
             "version": "1.25.0",
             "source": {
@@ -2055,6 +2170,52 @@
                 "uuid"
             ],
             "time": "2018-07-19T23:38:55+00:00"
+        },
+        {
+            "name": "react/promise",
+            "version": "v2.7.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/reactphp/promise.git",
+                "reference": "f4edc2581617431aea50430749db55cc3fc031b3"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/reactphp/promise/zipball/f4edc2581617431aea50430749db55cc3fc031b3",
+                "reference": "f4edc2581617431aea50430749db55cc3fc031b3",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.4.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "~4.8"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "React\\Promise\\": "src/"
+                },
+                "files": [
+                    "src/functions_include.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Jan Sorgalla",
+                    "email": "jsorgalla@gmail.com"
+                }
+            ],
+            "description": "A lightweight implementation of CommonJS Promises/A for PHP",
+            "keywords": [
+                "promise",
+                "promises"
+            ],
+            "time": "2018-06-13T15:59:06+00:00"
         },
         {
             "name": "swiftmailer/swiftmailer",
