@@ -386,7 +386,14 @@ let main = async () => {
       Authorization: "Bearer " + token,
     }
   }).catch(error => {
-    if(error.response.status === 401){
+    if(error.response){
+      $textarea.append("データ送信に失敗しました。お手数をおかけしますが以下のリンクまで以下のデータを添えてご報告をお願い致します。<br><a href='https://twitter.com/ongeki_score' style='color:#222'>Twitter</a> / <a href='https://github.com/Slime-hatena/ProjectPrimera/issues' style='color:#222'>Github issue</a><br>");
+      $textarea.append(error + "<br>");
+      let now = new Date();
+      let today = new Date();
+      $textarea.append((today.getFullYear() + "/" +  (today.getMonth() + 1) + "/" + today.getDate()) + " " + now.toLocaleTimeString() + "<br>");
+      console.log(error.response);
+    }else if(error.response.status === 401){
       $textarea.append("ユーザー認証に失敗しました。<br>ブックマークレットを再生成してもう一度実行してください。<br><a href='https://ongeki-score.net/bookmarklet' style='color:#222'>ブックマークレットを生成する</a>");
     }else{
       $textarea.append("データ送信に失敗しました。お手数をおかけしますが以下のリンクまで以下のデータを添えてご報告をお願い致します。<br><a href='https://twitter.com/ongeki_score' style='color:#222'>Twitter</a> / <a href='https://github.com/Slime-hatena/ProjectPrimera/issues' style='color:#222'>Github issue</a><br>");
