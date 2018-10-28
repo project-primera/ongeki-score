@@ -20,7 +20,8 @@ class AdminTweet extends Model
                 env("TWITTER_CONSUMER_SECRET"),
                 env("TWITTER_ADMIN_ACCOUNT_ACCESS_TOKEN"),
                 env("TWITTER_ADMIN_ACCOUNT_ACCESS_TOKEN_SECRET")         
-            ], [CURLOPT_CAINFO => __DIR__ . '/../resources/cacert.pem']);
+            // ], [CURLOPT_CAINFO => __DIR__ . '/../resources/cacert.pem']);
+            ]);
             
             $v = new ApplicationVersion();
             $v->fetchAllVersion();
