@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App;
+use Auth;
 use Illuminate\Http\Request;
 
 class SimpleViewController extends Controller
