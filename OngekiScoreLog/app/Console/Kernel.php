@@ -28,7 +28,7 @@ class Kernel extends ConsoleKernel
         $schedule->call(function () {
             $v = new ApplicationVersion();
             $v->fetchAllVersion();
-        })->everyMinute();
+        })->everyFiveMinutes();
     }
 
     /**
