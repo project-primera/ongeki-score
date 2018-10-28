@@ -1,12 +1,14 @@
 <!DOCTYPE html>
 <html>
-    <head>
+    <head prefix="og: http://ogp.me/ns# fb: http://ogp.me/ns/fb# article: http://ogp.me/ns/article#">
         @include('layouts/components/assets/google_analytics')
         <meta charset="utf-8">
         <title>OngekiScoreLog - @yield('title')</title>
+        <meta name="description" content="SEGAのアーケード音楽ゲーム「オンゲキ」のスコアを集計し、見やすくソートしたりできる非公式ツールです。他のユーザーにスコアを共有することが出来ます。">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.1.2/css/bulma.css">
         <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.2.0/css/all.css" integrity="sha384-hWVjflwFxL6sNzntih27bfxkr27PmbbK/iSvJ+a4+0owXq79v+lsFkW54bOGbiDQ" crossorigin="anonymous">
         <link rel="stylesheet" href="/css/style.css">
+        <!-- favicons -->
         <meta name="msapplication-TileColor" content="#2d88ef">
         <meta name="msapplication-TileImage" content="/mstile-144x144.png">
         <link rel="shortcut icon" type="image/vnd.microsoft.icon" href="favicons/favicon.ico">
@@ -48,6 +50,16 @@
         <link rel="icon" type="image/png" sizes="24x24" href="favicons/icon-24x24.png">
         <link rel="icon" type="image/png" sizes="32x32" href="favicons/icon-32x32.png">
         <link rel="manifest" href="favicons/manifest.json">
+        <!-- Open Graph protocol -->
+        <meta property="og:title" content="@yield('title')" />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="{{(empty($_SERVER["HTTPS"]) ? "http://" : "https://") . $_SERVER["HTTP_HOST"] . $_SERVER["REQUEST_URI"]}}" />
+        <meta property="og:image" content="https://ongeki-score.net/favicons/icon-256x256.png" />
+        <meta property="og:site_name" content="OngekiScoreLog" />
+        <meta property="og:description" content="SEGAのアーケード音楽ゲーム「オンゲキ」のスコアを集計し、見やすくソートしたりできる非公式ツールです。他のユーザーにスコアを共有することが出来ます。" />
+        <meta name="twitter:card" content="summary"/>
+        <meta name="twitter:site" content="@ongeki_score" />
+        <!--<meta property="fb:app_id" content="***************" />-->
     </head>
 
     <body>
