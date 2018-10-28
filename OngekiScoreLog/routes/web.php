@@ -30,3 +30,5 @@ Route::get('/changelog', 'SimpleViewController@getChangelog');
 
 Route::get('/home', 'HomeController@index')->name('home');
 Route::get('/logout', 'SimpleViewController@getLogout');
+
+// Route::get('/twitter/login', 'TweetController@getUserAccountRequest');
