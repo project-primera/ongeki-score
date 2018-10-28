@@ -1,0 +1,5 @@
+<div style="text-align: right; margin-right: 1em;">
+    <a href="https://twitter.com/share?ref_src=twsrc%5Etfw" class="twitter-share-button" data-text="OngekiScoreLog - @yield('title')" data-url="{{(empty($_SERVER["HTTPS"]) ? "http://" : "https://") . $_SERVER["HTTP_HOST"] . $_SERVER["REQUEST_URI"]}}" data-hashtags="OngekiScoreLog" data-related="ongeki_score,Slime_hatena" data-show-count="false">Tweet</a><script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+    <div class="line-it-button" data-lang="ja" data-type="share-a" data-url="{{(empty($_SERVER["HTTPS"]) ? "http://" : "https://") . $_SERVER["HTTP_HOST"] . $_SERVER["REQUEST_URI"]}}" style="display: none;"></div>
+    <script src="https://d.line-scdn.net/r/web/social-plugin/js/thirdparty/loader.min.js" async="async" defer="defer"></script>
+</div>

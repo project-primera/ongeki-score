@@ -113,6 +113,7 @@
                 @endcomponent
             </div>
             <div class="column">
+                @include('layouts/components/assets/share_buttons')
                 @yield('content')
             </div>
 
