@@ -1,12 +1,17 @@
 # ProjectPrimera
 Ongeki Score Tool  
-以下書きかけ
 
 ## 概要
+OngekiScoreLogはSEGAのアーケード音楽ゲーム「オンゲキ」のスコアを集計し、見やすくソートしたりできる非公式ツールです。  
+他のユーザーにスコアを共有することが出来ます。  
+このツールはファンメイドであり、SEGA様及び関係各社には一切関係ございません。
 
 ## 開発環境
-Visual Studio Code  
-PHP 7.2.7
+Visual Studio Code
+
+## 動作環境
+PHP 7.2.7  
+MariaDB 10.0.36  
 
 ## コミット時のプレフィックスルール
 - feat: 機能追加
@@ -23,50 +28,3 @@ PHP 7.2.7
 
 ## ライセンス
 MIT License
-
-## ライブラリ
-### OngekiScoreLog
-#### laravel
-MIT license
-https://github.com/laravel/laravel/blob/master/readme.md
-
-#### barryvdh/laravel-cors
-MIT license  
-https://github.com/barryvdh/laravel-cors/blob/master/LICENSE
-
-#### pure-css/pure
-Yahoo! Inc. BSD license.  
-https://github.com/pure-css/pure/blob/master/LICENSE
-
-#### sass/node-sass
-MIT license  
-https://github.com/sass/node-sass/blob/master/LICENSE
-
-### Bookmarklet
-#### axios
-MIT License  
-https://github.com/axios/axios/blob/master/LICENSE
-
-#### @types/axios
-MIT License  
-https://www.npmjs.com/package/@types/axios
-
-#### qs
-BSD-3-Clause License  
-https://github.com/ljharb/qs/blob/master/LICENSE
-
-#### @types/qs
-MIT License  
-https://github.com/DefinitelyTyped/DefinitelyTyped/blob/master/LICENSE
-
-#### @types/jquery
-MIT License  
-https://github.com/DefinitelyTyped/DefinitelyTyped/blob/master/LICENSE
-
-#### ts-loader
-MIT License  
-https://github.com/TypeStrong/ts-loader/blob/master/LICENSE
-
-#### webpack
-MIT License  
-https://github.com/webpack/webpack/blob/master/LICENSE
