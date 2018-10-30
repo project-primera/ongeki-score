@@ -58,7 +58,7 @@ class ViewUserController extends Controller
         }
 
         
-        $stat = [
+        $stat['difficulty'] = [
             "Basic" => [],
             "Advanced" => [],
             "Expert" => [],
@@ -66,31 +66,29 @@ class ViewUserController extends Controller
             "Lunatic" => [],
 
         ];
-        if($mode == "song_status_details"){
-            $stat += [
-                "Lv.1" => [],
-                "Lv.2" => [],
-                "Lv.3" => [],
-                "Lv.4" => [],
-                "Lv.5" => [],
-                "Lv.6" => [],
-                "Lv.7" => [],
-                "Lv.7+" => [],
-                "Lv.8" => [],
-                "Lv.8+" => [],
-                "Lv.9" => [],
-                "Lv.9+" => [],
-                "Lv.10" => [],
-                "Lv.10+" => [],
-                "Lv.11" => [],
-                "Lv.11+" => [],
-                "Lv.12" => [],
-                "Lv.12+" => [],
-                "Lv.13" => [],
-                "Lv.13+" => [],
-                "Lv.14" => [],
-            ];
-        }
+        $stat['level'] = [
+            "Lv.1" => [],
+            "Lv.2" => [],
+            "Lv.3" => [],
+            "Lv.4" => [],
+            "Lv.5" => [],
+            "Lv.6" => [],
+            "Lv.7" => [],
+            "Lv.7+" => [],
+            "Lv.8" => [],
+            "Lv.8+" => [],
+            "Lv.9" => [],
+            "Lv.9+" => [],
+            "Lv.10" => [],
+            "Lv.10+" => [],
+            "Lv.11" => [],
+            "Lv.11+" => [],
+            "Lv.12" => [],
+            "Lv.12+" => [],
+            "Lv.13" => [],
+            "Lv.13+" => [],
+            "Lv.14" => [],
+        ];
 
 
 		
@@ -127,65 +125,63 @@ class ViewUserController extends Controller
             }else{
                 $key = $value->technical_high_score_rank;
             }
-            if(!isset($stat[$value->difficulty_str][$key])){
-				$stat[$value->difficulty_str][$key] = 0;
+            if(!isset($stat['difficulty'][$value->difficulty_str][$key])){
+				$stat['difficulty'][$value->difficulty_str][$key] = 0;
             }
-            $stat[$value->difficulty_str][$key] += 1;
+            $stat['difficulty'][$value->difficulty_str][$key] += 1;
             
-            if(!isset($stat[$value->difficulty_str][$value->over_damage_high_score_rank])){
-				$stat[$value->difficulty_str][$value->over_damage_high_score_rank] = 0;
+            if(!isset($stat['difficulty'][$value->difficulty_str][$value->over_damage_high_score_rank])){
+				$stat['difficulty'][$value->difficulty_str][$value->over_damage_high_score_rank] = 0;
             }
-            $stat[$value->difficulty_str][$value->over_damage_high_score_rank] += 1;
+            $stat['difficulty'][$value->difficulty_str][$value->over_damage_high_score_rank] += 1;
 
-            if(!isset($stat[$value->difficulty_str]["fc"])){
-				$stat[$value->difficulty_str]["fc"] = 0;
+            if(!isset($stat['difficulty'][$value->difficulty_str]["fc"])){
+				$stat['difficulty'][$value->difficulty_str]["fc"] = 0;
             }
-            $stat[$value->difficulty_str]["fc"] += $value->full_combo;
+            $stat['difficulty'][$value->difficulty_str]["fc"] += $value->full_combo;
             
-            if(!isset($stat[$value->difficulty_str]["ab"])){
-				$stat[$value->difficulty_str]["ab"] = 0;
+            if(!isset($stat['difficulty'][$value->difficulty_str]["ab"])){
+				$stat['difficulty'][$value->difficulty_str]["ab"] = 0;
             }
-            $stat[$value->difficulty_str]["ab"] += $value->all_break;
+            $stat['difficulty'][$value->difficulty_str]["ab"] += $value->all_break;
             
-            if(!isset($stat[$value->difficulty_str]["fb"])){
-				$stat[$value->difficulty_str]["fb"] = 0;
+            if(!isset($stat['difficulty'][$value->difficulty_str]["fb"])){
+				$stat['difficulty'][$value->difficulty_str]["fb"] = 0;
             }
-			$stat[$value->difficulty_str]["fb"] += $value->full_bell;
+			$stat['difficulty'][$value->difficulty_str]["fb"] += $value->full_bell;
+        
+
+            if($value->technical_high_score == 0){
+                $key = "NP";
+            }else if($value->technical_high_score < 850000){
+                $key = "B";
+            }else{
+                $key = $value->technical_high_score_rank;
+            }
+            if(!isset($stat['level']["Lv." . $value->level_str][$key])){
+                $stat['level']["Lv." . $value->level_str][$key] = 0;
+            }
+            $stat['level']["Lv." . $value->level_str][$key] += 1;
+
+            if(!isset($sta['level']["Lv." . $value->level_str][$value->over_damage_high_score_rank])){
+                $stat['level']["Lv." . $value->level_str][$value->over_damage_high_score_rank] = 0;
+            }
+            $stat['level']["Lv." . $value->level_str][$value->over_damage_high_score_rank] += 1;
+
+            if(!isset($stat['level']["Lv." . $value->level_str]["fc"])){
+                $stat['level']["Lv." . $value->level_str]["fc"] = 0;
+            }
+            $stat['level']["Lv." . $value->level_str]["fc"] += $value->full_combo;
             
-
-            if($mode == "song_status_details"){
-                if($value->technical_high_score == 0){
-                    $key = "NP";
-                }else if($value->technical_high_score < 850000){
-                    $key = "B";
-                }else{
-                    $key = $value->technical_high_score_rank;
-                }
-                if(!isset($stat["Lv." . $value->level_str][$key])){
-                    $stat["Lv." . $value->level_str][$key] = 0;
-                }
-                $stat["Lv." . $value->level_str][$key] += 1;
-
-                if(!isset($stat["Lv." . $value->level_str][$value->over_damage_high_score_rank])){
-                    $stat["Lv." . $value->level_str][$value->over_damage_high_score_rank] = 0;
-                }
-                $stat["Lv." . $value->level_str][$value->over_damage_high_score_rank] += 1;
-
-                if(!isset($stat["Lv." . $value->level_str]["fc"])){
-                    $stat["Lv." . $value->level_str]["fc"] = 0;
-                }
-                $stat["Lv." . $value->level_str]["fc"] += $value->full_combo;
-                
-                if(!isset($stat["Lv." . $value->level_str]["ab"])){
-                    $stat["Lv." . $value->level_str]["ab"] = 0;
-                }
-                $stat["Lv." . $value->level_str]["ab"] += $value->all_break;
-                
-                if(!isset($stat["Lv." . $value->level_str]["fb"])){
-                    $stat["Lv." . $value->level_str]["fb"] = 0;
-                }
-                $stat["Lv." . $value->level_str]["fb"] += $value->full_bell;
+            if(!isset($stat['level']["Lv." . $value->level_str]["ab"])){
+                $stat['level']["Lv." . $value->level_str]["ab"] = 0;
             }
+            $stat['level']["Lv." . $value->level_str]["ab"] += $value->all_break;
+            
+            if(!isset($stat['level']["Lv." . $value->level_str]["fb"])){
+                $stat['level']["Lv." . $value->level_str]["fb"] = 0;
+            }
+            $stat['level']["Lv." . $value->level_str]["fb"] += $value->full_bell;
         }
 
         return view('user', compact('id', 'status', 'score', 'stat', 'mode', 'submenuActive'));
