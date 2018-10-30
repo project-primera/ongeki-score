@@ -110,6 +110,10 @@
         </section>
 
         <main class="columns">
+            <div class="column">
+                @include('layouts/components/assets/share_buttons')
+                @yield('content')
+            </div>
             <div class="submenu column is-3">
                 @component('layouts/components/sidebar')
                     @slot('box')
@@ -125,11 +129,6 @@
                     @endslot
                 @endcomponent
             </div>
-            <div class="column">
-                @include('layouts/components/assets/share_buttons')
-                @yield('content')
-            </div>
-
         </main>
         <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha256-3edrmyuQ0w65f8gfBsqowzjJe2iM6n0nKciPUp8y+7E=" crossorigin="anonymous"></script>
         <script type="text/javascript" src="{{ mix('/js/list.min.js') }}"></script>
