@@ -233,16 +233,7 @@
                             <td>{{array_key_exists("Expert", $value) ? number_format(floor($value['Expert']['score'] / $value['Expert']['count'])) : "-"}}</td>
                             <td>{{array_key_exists("Master", $value) ? number_format(floor($value['Master']['score'] / $value['Master']['count'])) : "-"}}</td>
                             <td>{{array_key_exists("Lunatic", $value) ? number_format(floor($value['Lunatic']['score'] / $value['Lunatic']['count'])) : "-"}}</td>
-                            <td>{{number_format(floor(((array_key_exists("Basic", $value) ? $value['Basic']['score'] : 0) 
-                                + (array_key_exists("Advanced", $value) ? $value['Advanced']['score'] : 0)
-                                + (array_key_exists("Expert", $value) ? $value['Expert']['score'] : 0)
-                                + (array_key_exists("Master", $value) ? $value['Master']['score'] : 0)
-                                + (array_key_exists("Lunatic", $value) ? $value['Lunatic']['score'] : 0))
-                                / ((array_key_exists("Basic", $value) ? $value['Basic']['count'] : 0) 
-                                + (array_key_exists("Advanced", $value) ? $value['Advanced']['count'] : 0)
-                                + (array_key_exists("Expert", $value) ? $value['Expert']['count'] : 0)
-                                + (array_key_exists("Master", $value) ? $value['Master']['count'] : 0)
-                                + (array_key_exists("Lunatic", $value) ? $value['Lunatic']['count'] : 0))))}}</td>
+                            <td>{{array_key_exists("total", $value) ? number_format(floor($value['total']['score'] / $value['total']['count'])) : 0}}</td>
                         </tr>
                         @endforeach
                     </tbody>
@@ -276,16 +267,7 @@
                             <td>{{array_key_exists("Expert", $value) ? number_format(floor($value['Expert']['score'] / $value['Expert']['count'])) : "-"}}</td>
                             <td>{{array_key_exists("Master", $value) ? number_format(floor($value['Master']['score'] / $value['Master']['count'])) : "-"}}</td>
                             <td>{{array_key_exists("Lunatic", $value) ? number_format(floor($value['Lunatic']['score'] / $value['Lunatic']['count'])) : "-"}}</td>
-                            <td>{{number_format(floor(((array_key_exists("Basic", $value) ? $value['Basic']['score'] : 0) 
-                                + (array_key_exists("Advanced", $value) ? $value['Advanced']['score'] : 0)
-                                + (array_key_exists("Expert", $value) ? $value['Expert']['score'] : 0)
-                                + (array_key_exists("Master", $value) ? $value['Master']['score'] : 0)
-                                + (array_key_exists("Lunatic", $value) ? $value['Lunatic']['score'] : 0))
-                                / ((array_key_exists("Basic", $value) ? $value['Basic']['count'] : 0) 
-                                + (array_key_exists("Advanced", $value) ? $value['Advanced']['count'] : 0)
-                                + (array_key_exists("Expert", $value) ? $value['Expert']['count'] : 0)
-                                + (array_key_exists("Master", $value) ? $value['Master']['count'] : 0)
-                                + (array_key_exists("Lunatic", $value) ? $value['Lunatic']['count'] : 0))))}}</td>
+                            <td>{{array_key_exists("total", $value) ? number_format(floor($value['total']['score'] / $value['total']['count'])) : 0}}</td>
                         </tr>
                         @endforeach
                     </tbody>

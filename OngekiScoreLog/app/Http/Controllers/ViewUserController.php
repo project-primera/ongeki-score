@@ -194,6 +194,17 @@ class ViewUserController extends Controller
             }
             $stat['average']["Lv." . $value->level_str][$value->difficulty_str]['score'] += $value->technical_high_score;
 
+            if(!isset($stat['average']["Lv." . $value->level_str]["total"]["count"])){
+                $stat['average']["Lv." . $value->level_str]["total"]['count'] = 0;
+            }
+            $stat['average']["Lv." . $value->level_str]["total"]['count']++;
+    
+            if(!isset($stat['average']["Lv." . $value->level_str]["total"]["score"])){
+                $stat['average']["Lv." . $value->level_str]["total"]['score'] = 0;
+            }
+            $stat['average']["Lv." . $value->level_str]["total"]['score'] += $value->technical_high_score;
+
+
             if($value->technical_high_score !== 0){
                 if(!isset($stat['averageExist']["Lv." . $value->level_str][$value->difficulty_str]["count"])){
                     $stat['averageExist']["Lv." . $value->level_str][$value->difficulty_str]['count'] = 0;
@@ -204,6 +215,16 @@ class ViewUserController extends Controller
                     $stat['averageExist']["Lv." . $value->level_str][$value->difficulty_str]['score'] = 0;
                 }
                 $stat['averageExist']["Lv." . $value->level_str][$value->difficulty_str]['score'] += $value->technical_high_score;
+
+                if(!isset($stat['averageExist']["Lv." . $value->level_str]["total"]["count"])){
+                    $stat['averageExist']["Lv." . $value->level_str]["total"]['count'] = 0;
+                }
+                $stat['averageExist']["Lv." . $value->level_str]["total"]['count']++;
+    
+                if(!isset($stat['averageExist']["Lv." . $value->level_str]["total"]["score"])){
+                    $stat['averageExist']["Lv." . $value->level_str]["total"]['score'] = 0;
+                }
+                $stat['averageExist']["Lv." . $value->level_str]["total"]['score'] += $value->technical_high_score;
             }
             
         }
