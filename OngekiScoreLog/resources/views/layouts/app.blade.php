@@ -3,6 +3,7 @@
     <head prefix="og: http://ogp.me/ns# fb: http://ogp.me/ns/fb# article: http://ogp.me/ns/article#">
         @include('layouts/components/assets/google_analytics')
         <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width,initial-scale=1">
         <title>OngekiScoreLog - @yield('title')</title>
         <meta name="description" content="SEGAのアーケード音楽ゲーム「オンゲキ」のスコアを集計し、見やすくソートしたりできる非公式ツールです。他のユーザーにスコアを共有することが出来ます。">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.1.2/css/bulma.css">
