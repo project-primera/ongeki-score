@@ -90,8 +90,8 @@ class ViewUserController extends Controller
             "Lv.14" => [],
         ];
 
-
-		
+        $stat['average'] = $stat['level'];
+        $stat['averageExist'] = $stat['level'];
 
         foreach ($score as $key => $value) {
             if($value->full_bell && $value->all_break){
@@ -182,6 +182,30 @@ class ViewUserController extends Controller
                 $stat['level']["Lv." . $value->level_str]["fb"] = 0;
             }
             $stat['level']["Lv." . $value->level_str]["fb"] += $value->full_bell;
+
+
+            if(!isset($stat['average']["Lv." . $value->level_str][$value->difficulty_str]["count"])){
+                $stat['average']["Lv." . $value->level_str][$value->difficulty_str]['count'] = 0;
+            }
+            $stat['average']["Lv." . $value->level_str][$value->difficulty_str]['count']++;
+    
+            if(!isset($stat['average']["Lv." . $value->level_str][$value->difficulty_str]["score"])){
+                $stat['average']["Lv." . $value->level_str][$value->difficulty_str]['score'] = 0;
+            }
+            $stat['average']["Lv." . $value->level_str][$value->difficulty_str]['score'] += $value->technical_high_score;
+
+            if($value->technical_high_score !== 0){
+                if(!isset($stat['averageExist']["Lv." . $value->level_str][$value->difficulty_str]["count"])){
+                    $stat['averageExist']["Lv." . $value->level_str][$value->difficulty_str]['count'] = 0;
+                }
+                $stat['averageExist']["Lv." . $value->level_str][$value->difficulty_str]['count']++;
+    
+                if(!isset($stat['averageExist']["Lv." . $value->level_str][$value->difficulty_str]["score"])){
+                    $stat['averageExist']["Lv." . $value->level_str][$value->difficulty_str]['score'] = 0;
+                }
+                $stat['averageExist']["Lv." . $value->level_str][$value->difficulty_str]['score'] += $value->technical_high_score;
+            }
+            
         }
 
         return view('user', compact('id', 'status', 'score', 'stat', 'mode', 'submenuActive'));
