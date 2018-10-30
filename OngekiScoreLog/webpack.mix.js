@@ -11,14 +11,18 @@ let mix = require('laravel-mix');
  |
  */
 
-mix.sourceMaps()
-    .js('resources/assets/js/app.js', 'public/js')
+mix.js('resources/assets/js/app.js', 'public/js')
     .js('resources/assets/js/sortTable.js', 'public/js')
     .js('resources/assets/js/sortAllUserTable.js', 'public/js')
     .sass('resources/assets/sass/laravel/app.scss', 'public/css')
     .sass('resources/assets/sass/style.scss', 'public/css')
+    .copy('node_modules/list.js/dist/list.min.js', 'public/js/list.min.js')
+    .copy('../Bookmarklet/bin/main.js', 'public/bookmarklets/main.js')
     .copyDirectory('resources/assets/img', 'public/img')
-    .copyDirectory('resources/assets/favicons', 'public/favicons')
-    .copy('../Bookmarklet/bin/main.js', 'public/bookmarklets/main.js');
+    .copyDirectory('resources/assets/favicons', 'public/favicons');
 
-mix.copy('node_modules/list.js/dist/list.min.js', 'public/js/list.min.js');
+if (mix.inProduction()) {
+    mix.version();
+}else{
+    mix.sourceMaps(); 
+}

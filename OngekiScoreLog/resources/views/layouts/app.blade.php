@@ -7,7 +7,7 @@
         <meta name="description" content="SEGAのアーケード音楽ゲーム「オンゲキ」のスコアを集計し、見やすくソートしたりできる非公式ツールです。他のユーザーにスコアを共有することが出来ます。">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.1.2/css/bulma.css">
         <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.2.0/css/all.css" integrity="sha384-hWVjflwFxL6sNzntih27bfxkr27PmbbK/iSvJ+a4+0owXq79v+lsFkW54bOGbiDQ" crossorigin="anonymous">
-        <link rel="stylesheet" href="/css/style.css">
+        <link rel="stylesheet" href="{{ mix('/css/style.css') }}">
         <!-- favicons -->
         <meta name="msapplication-TileColor" content="#2d88ef">
         <meta name="msapplication-TileImage" content="/mstile-144x144.png">
@@ -131,8 +131,8 @@
 
         </main>
         <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha256-3edrmyuQ0w65f8gfBsqowzjJe2iM6n0nKciPUp8y+7E=" crossorigin="anonymous"></script>
-        <script type="text/javascript" src="/js/list.min.js"></script>
-        <script type="text/javascript" src="/js/app.js"></script>
+        <script type="text/javascript" src="{{ mix('/js/list.min.js') }}"></script>
+        <script type="text/javascript" src="{{ mix('/js/app.js') }}"></script>
         @section('additional_footer')
         @show
     </body>
