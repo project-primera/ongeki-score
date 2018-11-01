@@ -21,3 +21,7 @@ const app = new Vue({
     el: '#app'
 });
 */
+
+document.addEventListener('DOMContentLoaded', () => {
+    const sweetScroll = new SweetScroll({ /* some options */ });
+}, false);

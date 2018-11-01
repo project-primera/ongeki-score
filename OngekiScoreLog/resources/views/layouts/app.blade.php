@@ -64,7 +64,7 @@
     </head>
 
     <body>
-        <a href="#side_menu" class="round_button is-hidden-tablet"><i class="fas fa-bars"></i></a>
+        <a href="#side_menu" class="round_button is-hidden-tablet" data-scroll><i class="fas fa-bars"></i></a>
         <header class="nav">
             <div class="nav-left">
                 <span class="nav-item">
@@ -133,6 +133,7 @@
         </main>
         <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha256-3edrmyuQ0w65f8gfBsqowzjJe2iM6n0nKciPUp8y+7E=" crossorigin="anonymous"></script>
         <script type="text/javascript" src="{{ mix('/js/list.min.js') }}"></script>
+        <script type="text/javascript" src="{{ mix('/js/sweet-scroll.min.js') }}"></script>
         <script type="text/javascript" src="{{ mix('/js/app.js') }}"></script>
         @section('additional_footer')
         @show
