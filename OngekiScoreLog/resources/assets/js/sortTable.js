@@ -1,5 +1,5 @@
 var options = {
-    valueNames: ['sort_title', 'sort_genre', 'sort_difficulty', 'sort_lv', 'sort_fb', 'sort_fc', 'sort_ab', 'sort_rank0', 'sort_rank1', 'sort_bs', 'sort_od', 'sort_ts', 'sort_nod', 'sort_nts', 'sort_update', 'sort_raw_battle_rank', 'sort_raw_technical_rank', 'sort_raw_lamp']
+    valueNames: ['sort_title', 'sort_genre', 'sort_difficulty', 'sort_lv', 'sort_fb', 'sort_fc', 'sort_ab', 'sort_rank0', 'sort_rank1', 'sort_bs', 'sort_od', 'sort_ts', 'sort_nod', 'sort_nts', 'sort_update', 'sort_raw_battle_rank', 'sort_raw_technical_rank', 'sort_raw_lamp', 'sort_raw_difficulty']
 };
 var sortTable = new List('sort_table', options);
 
@@ -51,6 +51,20 @@ $('.filter_level_button').on('click',function(){
         AddFilterList('sort_lv', $text);
         $(this).addClass('is-info');
     }
+    SortTable();
+});
+
+$('.filter_difficulty_button').on('click',function(){
+    var $text = $(this).text();
+    if($(this).hasClass('is-info')){
+        DeleteFilterList('sort_raw_difficulty', $text);
+        $(this).removeClass('is-info');
+
+    } else {
+        AddFilterList('sort_raw_difficulty', $text);
+        $(this).addClass('is-info');
+    }
+    console.log(filterList);
     SortTable();
 });
 

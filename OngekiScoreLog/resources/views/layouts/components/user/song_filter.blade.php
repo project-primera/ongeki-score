@@ -27,6 +27,16 @@
                 <a class="button filter_level_button">13+</a>
                 <a class="button filter_level_button">14</a>
             </div>
+
+            <div class="filter-content">
+                    <p class="title is-4">Difficulty</p>
+                    <a class="button filter_difficulty_button">Basic</a>
+                    <a class="button filter_difficulty_button">Advanced</a>
+                    <a class="button filter_difficulty_button">Expert</a>
+                    <a class="button filter_difficulty_button">Master</a>
+                    <a class="button filter_difficulty_button">Lunatic</a>
+                </div>
+
             <div class="filter-content">
                 <p class="title is-4">Battle Rank</p>
                 <a class="button filter_battle_rank_button">-</a>

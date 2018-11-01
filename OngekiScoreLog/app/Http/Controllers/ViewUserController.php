@@ -117,6 +117,7 @@ class ViewUserController extends Controller
                 $score[$key]->rawTechnicalRank = $value->technical_high_score_rank;
             }
             
+            $score[$key]->rawDifficulty = $score[$key]->difficulty_str;
 
             if($value->technical_high_score == 0){
                 $key = "NP";
