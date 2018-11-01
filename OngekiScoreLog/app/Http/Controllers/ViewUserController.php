@@ -184,6 +184,7 @@ class ViewUserController extends Controller
             $stat['level']["Lv." . $value->level_str]["fb"] += $value->full_bell;
 
 
+
             if(!isset($stat['average']["Lv." . $value->level_str][$value->difficulty_str]["count"])){
                 $stat['average']["Lv." . $value->level_str][$value->difficulty_str]['count'] = 0;
             }
@@ -203,6 +204,27 @@ class ViewUserController extends Controller
                 $stat['average']["Lv." . $value->level_str]["total"]['score'] = 0;
             }
             $stat['average']["Lv." . $value->level_str]["total"]['score'] += $value->technical_high_score;
+
+
+            if(!isset($stat['average']["All"][$value->difficulty_str]["count"])){
+                $stat['average']["All"][$value->difficulty_str]['count'] = 0;
+            }
+            $stat['average']["All"][$value->difficulty_str]['count']++;
+    
+            if(!isset($stat['average']["All"][$value->difficulty_str]["score"])){
+                $stat['average']["All"][$value->difficulty_str]['score'] = 0;
+            }
+            $stat['average']["All"][$value->difficulty_str]['score'] += $value->technical_high_score;
+
+            if(!isset($stat['average']["All"]["total"]["count"])){
+                $stat['average']["All"]["total"]['count'] = 0;
+            }
+            $stat['average']["All"]["total"]['count']++;
+    
+            if(!isset($stat['average']["All"]["total"]["score"])){
+                $stat['average']["All"]["total"]['score'] = 0;
+            }
+            $stat['average']["All"]["total"]['score'] += $value->technical_high_score;
 
 
             if($value->technical_high_score !== 0){
@@ -225,6 +247,26 @@ class ViewUserController extends Controller
                     $stat['averageExist']["Lv." . $value->level_str]["total"]['score'] = 0;
                 }
                 $stat['averageExist']["Lv." . $value->level_str]["total"]['score'] += $value->technical_high_score;
+
+                if(!isset($stat['averageExist']["All"][$value->difficulty_str]["count"])){
+                    $stat['averageExist']["All"][$value->difficulty_str]['count'] = 0;
+                }
+                $stat['averageExist']["All"][$value->difficulty_str]['count']++;
+        
+                if(!isset($stat['averageExist']["All"][$value->difficulty_str]["score"])){
+                    $stat['averageExist']["All"][$value->difficulty_str]['score'] = 0;
+                }
+                $stat['averageExist']["All"][$value->difficulty_str]['score'] += $value->technical_high_score;
+    
+                if(!isset($stat['averageExist']["All"]["total"]["count"])){
+                    $stat['averageExist']["All"]["total"]['count'] = 0;
+                }
+                $stat['averageExist']["All"]["total"]['count']++;
+        
+                if(!isset($stat['averageExist']["All"]["total"]["score"])){
+                    $stat['averageExist']["All"]["total"]['score'] = 0;
+                }
+                $stat['averageExist']["All"]["total"]['score'] += $value->technical_high_score;
             }
             
         }
