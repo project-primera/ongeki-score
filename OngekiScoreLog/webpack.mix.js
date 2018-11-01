@@ -17,6 +17,7 @@ mix.js('resources/assets/js/app.js', 'public/js')
     .sass('resources/assets/sass/laravel/app.scss', 'public/css')
     .sass('resources/assets/sass/style.scss', 'public/css')
     .copy('node_modules/list.js/dist/list.min.js', 'public/js/list.min.js')
+    .copy('node_modules/sweet-scroll/sweet-scroll.min.js', 'public/js/sweet-scroll.min.js')
     .copy('../Bookmarklet/bin/main.js', 'public/bookmarklets/main.js')
     .copyDirectory('resources/assets/img', 'public/img')
     .copyDirectory('resources/assets/favicons', 'public/favicons');
