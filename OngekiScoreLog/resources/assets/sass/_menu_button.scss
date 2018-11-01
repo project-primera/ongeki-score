@@ -1,0 +1,20 @@
+.round_button{
+    display: inline-block;
+    color: #fff;
+    background-color: #ef5350;
+    font-size: 2rem;
+    width: 4rem;
+    height: 4rem;
+    line-height: 4rem;
+    border-radius: 50%;
+    text-align: center;
+    vertical-align: middle;
+    overflow: hidden;
+
+    position: fixed;
+    bottom: 1rem;
+    right: 1rem;
+    &:hover{
+        color: #fff;
+    }
+}

@@ -2,7 +2,7 @@
         {{ $box }}
 </aside>
 <aside class="box menu">
-    <p class="menu-label">
+    <p class="menu-label" id="side_menu">
         メニュー
     </p>
     <ul class="menu-list">

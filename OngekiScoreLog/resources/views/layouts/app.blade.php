@@ -64,6 +64,7 @@
     </head>
 
     <body>
+        <a href="#side_menu" class="round_button is-hidden-tablet"><i class="fas fa-bars"></i></a>
         <header class="nav">
             <div class="nav-left">
                 <span class="nav-item">
