@@ -1,5 +1,12 @@
 @import "accordion";
 
+body{
+    box-sizing: border-box;
+    margin: 0;
+    overflow-x: hidden;
+    overflow-y: scroll;
+}
+
 main {
     background-color: #eeeeee;
 }
