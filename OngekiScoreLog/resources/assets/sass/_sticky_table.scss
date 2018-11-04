@@ -4,7 +4,6 @@
 
 .table_wrap{
     width: 100%;
-
     overflow-x: scroll;
 
     &::-webkit-scrollbar {
@@ -20,5 +19,20 @@
     &::-webkit-scrollbar-thumb {
         border-radius: 5px;
         background: #666;
+    }
+
+    thead{
+        position: sticky;
+        top: 0px;
+        z-index: 2;
+    }
+
+    th:first-child,
+    td:first-child {
+        position: sticky;
+        top: 0;
+        left: 0;
+        z-index: 2;
+        background-color: #fff;
     }
 }
