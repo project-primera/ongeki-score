@@ -1,5 +1,6 @@
 @import "accordion";
 @import "menu_button";
+@import "sticky_table";
 
 body{
     box-sizing: border-box;
@@ -82,29 +83,4 @@ div.column{
     width: 100%;
     min-width: 0%;
     max-width: 100%;
-}
-
-.table-hidden-data{
-    display: none;
-}
-
-.table_wrap{
-    width: 100%;
-
-    overflow-x: scroll;
-
-    &::-webkit-scrollbar {
-        height: 10px;
-    }
-
-    &::-webkit-scrollbar-track {
-        margin: 0 2px;
-        background: #ccc;
-        border-radius: 5px;
-    }
-
-    &::-webkit-scrollbar-thumb {
-        border-radius: 5px;
-        background: #666;
-    }
 }
