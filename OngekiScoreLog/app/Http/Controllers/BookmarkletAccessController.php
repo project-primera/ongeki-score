@@ -137,13 +137,14 @@ class BookmarkletAccessController extends Controller
                     "masterSongInfos" => 3,
                     "lunaticSongInfos" => 10,
                 ];
+                $generation = (new ScoreData())->getMaxGeneration(Auth::id());
                 foreach ($difficultyArrayKey as $key => $value) {
                     foreach ($request->input('ScoreData')[$key] as $k => $v) {
                         $userStatus = MusicData::where("title", "=", $v['title'])->first();
                         if(!is_null($userStatus)){
                             $scoreData = new ScoreData();
                             $recentSong = $scoreData->getRecentGenerationOfScoreData(Auth::id(), $userStatus->id, $difficultyValue[$key]);
-                            $scoreData->generation = (!isset($recentSong->generation)) ? 0 : ($recentSong->generation + 1);
+                            $scoreData->generation = $generation;
                             $scoreData->user_id = Auth::id();
                             $scoreData->song_id = $userStatus->id;
                             $scoreData->difficulty = $difficultyValue[$key];

@@ -171,4 +171,8 @@ class ScoreData extends Model
 
         return $this->value;
     }
+
+    function getMaxGeneration($id){
+        return DB::select('SELECT MAX(generation) FROM score_datas WHERE user_id = ?;', [$id])[0]->{"MAX(generation)"};
+    }
 }
