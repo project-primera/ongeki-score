@@ -111,13 +111,13 @@ class BookmarkletAccessController extends Controller
                             if(is_null($userStatus)){
                                 $userStatus = new MusicData();
                                 $userStatus->title = $v['title'];
+                                $message .=  "[追加] ". $v['title'] . " - " . $value . "<br>";
                             }
                             $def = $value . "_level";
                             $userStatus->$def = $v['level'];
                             $userStatus->genre = $v['genre'];
                             $userStatus->unique_id = $uniqueID;
                             $userStatus->save();
-                            $message .=  "[追加] ". $v['title'] . " - " . $value . "<br>";
                         }
                     }
                 }
