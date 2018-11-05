@@ -117,9 +117,9 @@ class BookmarkletAccessController extends Controller
                             $userStatus->genre = $v['genre'];
                             $userStatus->unique_id = $uniqueID;
                             $userStatus->save();
+                            $message .=  "[追加] ". $v['title'] . " - " . $value . "<br>";
                         }
                     }
-                    $message .= "楽曲情報の追加を行いました。<br>";
                 }
 
           
