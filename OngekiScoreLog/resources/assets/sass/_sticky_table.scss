@@ -4,7 +4,8 @@
 
 .table_wrap{
     width: 100%;
-    overflow-x: scroll;
+    max-height: 100vh;
+    overflow: scroll;
 
     &::-webkit-scrollbar {
         height: 10px;
@@ -24,11 +25,23 @@
     thead{
         position: sticky;
         top: 0px;
-        z-index: 2;
+        z-index: 1;
     }
 
-    th:first-child,
+    th{
+        position: sticky;
+        top: 0;
+        left: 0;
+        z-index: 2;
+        background-color: #fff;
+        &:first-child{
+            z-index: 3;
+        }
+    }
+
     td:first-child {
+        max-width: 30vw;
+        word-break: break-all;
         position: sticky;
         top: 0;
         left: 0;
