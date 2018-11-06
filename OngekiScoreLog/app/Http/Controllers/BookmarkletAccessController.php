@@ -137,7 +137,7 @@ class BookmarkletAccessController extends Controller
                     "masterSongInfos" => 3,
                     "lunaticSongInfos" => 10,
                 ];
-                $generation = (new ScoreData())->getMaxGeneration(Auth::id());
+                $generation = (new ScoreData())->getMaxGeneration(Auth::id()) + 1;
                 foreach ($difficultyArrayKey as $key => $value) {
                     foreach ($request->input('ScoreData')[$key] as $k => $v) {
                         $userStatus = MusicData::where("title", "=", $v['title'])->first();
