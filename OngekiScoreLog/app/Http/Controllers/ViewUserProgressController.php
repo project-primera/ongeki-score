@@ -210,8 +210,6 @@ class ViewUserProgressController extends Controller
 
         $date['new'] = date("Y/m/d H:i" ,$date['new']);
         $date['old'] = date("Y/m/d H:i" ,$date['old']);
-
-        var_dump($progress);
         return view('user_progress', compact('status', 'progress', 'date', 'score'));
     }
 }
