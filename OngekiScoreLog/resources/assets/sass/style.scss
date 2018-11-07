@@ -1,6 +1,9 @@
 @import "accordion";
 @import "menu_button";
 @import "sticky_table";
+@import "user_progress";
+
+
 
 body{
     box-sizing: border-box;
@@ -63,8 +66,8 @@ td.table-tag{
 
 .tag{
     &.full-bell{
-        background-color: #eec900;
-        color: #fff; 
+        background-color: #ffd700;
+        color: #000; 
     }
 
     &.full-combo{
@@ -74,6 +77,11 @@ td.table-tag{
 
     &.all-break{
         background-color: #e8822a;
+        color: #fff;
+    }
+
+    &.not-light{
+        background-color: #666;
         color: #fff;
     }
 }

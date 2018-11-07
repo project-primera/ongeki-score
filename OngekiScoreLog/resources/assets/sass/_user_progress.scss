@@ -1,0 +1,78 @@
+.user-progress-total-table{
+    width: auto;
+
+    .right{
+        text-align: right;
+    }
+
+    .difference{
+        color: #22f;
+    }
+}
+
+.music{
+    .node{
+        padding: 0 0 1em 1.5em;
+        
+        .song-info{
+            font-size:  1.5em;
+            .difficulty{
+                display: inline-block;
+                width: 2.5em;
+    
+                &.Basic{
+                    color: #1aa41c;
+                }
+                &.Advanced{
+                    color: #ffb700;
+                }
+                &.Expert{
+                    color: #f00e8d;
+                }
+                &.Master{
+                    color: #a337d3;
+                }
+                &.Lunatic{
+                    color: #d1c5d8;
+                }
+            }
+            .song-level{
+                display: inline-block;
+                width: 4em;
+            }
+        }
+
+        .score-info{
+            font-size: 1.2em;
+
+            .score-title{
+                display: inline-block;
+                width: 7.5em;
+            }
+
+            .score{
+                display: inline-block;
+                width: 6em;
+                text-align: right;
+            }
+
+            .difference{
+                display: inline-block;
+                width: 6.5em;
+                text-align: right;
+                color: #22f;
+            }
+
+            .score-rank{
+                &.update{
+                    color: #d22;
+                }
+                display: inline-block;
+                padding-left: 2em;
+            }
+        }
+        
+    }
+
+    
+}
