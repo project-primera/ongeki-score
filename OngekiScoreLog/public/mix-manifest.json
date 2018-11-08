@@ -2,9 +2,11 @@
     "/js/app.js": "/js/app.js",
     "/css/app.css": "/css/app.css",
     "/css/style.css": "/css/style.css",
+    "/js/userProgress.js": "/js/userProgress.js",
     "/js/sortTable.js": "/js/sortTable.js",
     "/js/sortAllUserTable.js": "/js/sortAllUserTable.js",
     "/js/list.min.js": "/js/list.min.js",
     "/js/sweet-scroll.min.js": "/js/sweet-scroll.min.js",
+    "/js/html2canvas.min.js": "/js/html2canvas.min.js",
     "/bookmarklets/main.js": "/bookmarklets/main.js"
 }
