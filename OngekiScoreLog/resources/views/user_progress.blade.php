@@ -26,7 +26,8 @@
 
             <div class="notification">
                     <span class="title is-5">{{$status[0]->trophy}}</span><br>
-                <span class="title is-5">BP: {{$status[0]->battle_point}}&nbsp;/&nbsp;
+                <span class="title is-5">Lv.{{$status[0]->level}}&nbsp;/&nbsp;
+                    BP: {{$status[0]->battle_point}}&nbsp;/&nbsp;
                     Rate: {{$status[0]->rating}}&nbsp;(MAX:&nbsp;{{$status[0]->rating_max}})</span><br>
                 <span class="title is-3">{{$status[0]->name}}</span>
             </div>
