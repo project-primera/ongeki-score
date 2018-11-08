@@ -20,6 +20,7 @@
         "vue": "^2.5.7"
     },
     "dependencies": {
+        "html2canvas": "^1.0.0-alpha.12",
         "list.js": "^1.5.0",
         "node-sass": "^4.9.3",
         "sweet-scroll": "^3.0.1"
