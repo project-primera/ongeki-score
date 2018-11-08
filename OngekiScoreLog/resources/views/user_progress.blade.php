@@ -13,6 +13,17 @@
         <button class="convert-to-image-button">画像化</button>
 
         <div id="user-progress">
+            <div class="info">
+                <div class="left">
+                    <span class="update">Update&nbsp;{{$date['new']}}</span>
+                </div>
+                <div class="right">
+                    <span class="site-name">{{env("APP_NAME")}}</span>&nbsp;
+                    <span class="version">({{$version}})</span>&nbsp;
+                    <span class="url">{{env("APP_URL")}}</span>
+                </div>
+            </div>
+
             <div class="notification">
                     <span class="title is-5">{{$status[0]->trophy}}</span><br>
                 <span class="title is-5">BP: {{$status[0]->battle_point}}&nbsp;/&nbsp;

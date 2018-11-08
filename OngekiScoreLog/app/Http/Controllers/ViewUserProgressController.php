@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\UserStatus;
 use App\ScoreData;
+use App\ApplicationVersion;
 
 class ViewUserProgressController extends Controller
 {
@@ -16,6 +17,9 @@ class ViewUserProgressController extends Controller
             }
             return $ret;
         }
+
+        $version = (new ApplicationVersion())->getLatestVersion();
+        $version = isset($version[0]->tag_name) ? $version[0]->tag_name : "";
 
         $userStatus = new UserStatus();
         $status = $userStatus->getRecentUserData($id);
@@ -210,6 +214,8 @@ class ViewUserProgressController extends Controller
 
         $date['new'] = date("Y/m/d H:i" ,$date['new']);
         $date['old'] = date("Y/m/d H:i" ,$date['old']);
-        return view('user_progress', compact('status', 'progress', 'date', 'score'));
+
+        var_dump($version);
+        return view('user_progress', compact('status', 'progress', 'date', 'score', 'version'));
     }
 }
