@@ -46,7 +46,10 @@ class AdminTweet extends Model
 
         $id = null;
         foreach ($tweets as $key => $value) {
-            $id = $this->tweet($value, $id)->id_str;
+            $response = $this->tweet($value, $id);
+            if(!is_null($response) && array_key_exists("id_str", $response)){
+                $id = $response->id_str;
+            }
         }
     }
 
