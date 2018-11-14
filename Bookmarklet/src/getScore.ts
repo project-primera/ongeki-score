@@ -1,3 +1,4 @@
+import * as $ from 'jquery';
 import axios from 'axios';
 import * as qs from 'qs';
 
