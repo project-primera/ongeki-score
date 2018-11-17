@@ -55,7 +55,7 @@ class SettingController extends Controller
                 ], [CURLOPT_CAINFO => __DIR__ . '/../../../resources/cacert.pem']);
                     
                 // $_SESSION['client'] = $_SESSION['client']->oauthForRequestToken('http://127.0.0.1:8000/setting/twitter');
-                $_SESSION['client'] = $_SESSION['client']->oauthForRequestToken('https://ongeki-score.net/twitter/login');
+                $_SESSION['client'] = $_SESSION['client']->oauthForRequestToken('https://ongeki-score.net/setting/twitter');
                 
                 $_SESSION['state'] = 'pending';
 
