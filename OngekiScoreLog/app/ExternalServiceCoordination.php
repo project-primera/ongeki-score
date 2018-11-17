@@ -32,6 +32,5 @@ class ExternalServiceCoordination extends Model{
         }catch(\RuntimeException $ignore){
             return null;
         }
-        
     }
 }
