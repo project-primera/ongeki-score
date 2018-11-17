@@ -91,6 +91,11 @@ div.column{
     max-width: 100%;
 }
 
+.table_wrap{
+    width: 100%;
+    overflow-y: scroll;
+}
+
 .table-hidden-data{
     display: none;
 }
