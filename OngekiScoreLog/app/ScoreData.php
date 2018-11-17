@@ -171,4 +171,22 @@ class ScoreData extends Model
 
         return $this->value;
     }
+
+    function getSpecifiedGenerationUserScore($id, $generation){
+        $this->value = DB::select('SELECT * FROM score_datas AS t1 
+            WHERE user_id = ? AND generation < ? AND NOT EXISTS (
+            SELECT * FROM score_datas AS t2
+                WHERE generation < ?
+                    AND t1.user_id = t2.user_id
+                    AND t1.song_id = t2.song_id
+                    AND t1.difficulty = t2.difficulty
+                    AND t1.updated_at < t2.updated_at
+        );', [$id, $generation, $generation]);
+
+        return $this->value;
+    }
+
+    function getMaxGeneration($id){
+        return DB::select('SELECT MAX(generation) FROM score_datas WHERE user_id = ?;', [$id])[0]->{"MAX(generation)"};
+    }
 }

@@ -19,7 +19,7 @@
         <li><span class="menu-list-dummy">設定</span>
             <ul>
                 <li><a href="/bookmarklet" class="@yield('sidemark_bookmarklet')">ブックマークレットを取得する</a></li>
-                <li><span class="menu-list-dummy">公開範囲(未実装)</span></a></li>
+                <li><a href="/setting" class="@yield('sidemark_setting')">設定</a></a></li>
             </ul>
         </li>
     </ul>

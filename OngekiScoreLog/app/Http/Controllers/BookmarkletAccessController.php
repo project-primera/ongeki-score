@@ -22,9 +22,10 @@ class BookmarkletAccessController extends Controller
     public function postUserUpdate(Request $request)
     {
         try{
-            $message = "";
-            $uniqueID = md5(uniqid(rand(),1));
+            $message['info'] = "";
+            $message['id'] = Auth::id();
 
+            $uniqueID = md5(uniqid(rand(),1));
             $uniqueIDForRequest = new UniqueIDForRequest();
             $uniqueIDForRequest->ip_address = \Request::ip();
             $uniqueIDForRequest->unique_id =$uniqueID;
@@ -51,7 +52,7 @@ class BookmarkletAccessController extends Controller
                     $characterFriendly->save();
                 }
             }else{
-                $message .= "キャラクターの親密度情報が取得できませんでした。<br>";
+                $message['info'] .= "キャラクターの親密度情報が取得できませんでした。<br>";
             }
             
             if(!is_null($request->input('RatingRecentMusicData'))){
@@ -67,7 +68,7 @@ class BookmarkletAccessController extends Controller
                     $ratingRecentMusic->save();
                 }
             }else{
-                $message .= "レーティング対象曲情報が取得できませんでした。<br>";
+                $message['info'] .= "レーティング対象曲情報が取得できませんでした。<br>";
             }
 
             if(!is_null($request->input('TrophyData'))){
@@ -92,7 +93,7 @@ class BookmarkletAccessController extends Controller
                     }
                 }
             }else{
-                $message .= "称号獲得状況が取得できませんでした。<br>";
+                $message['info'] .= "称号獲得状況が取得できませんでした。<br>";
             }
 
 
@@ -114,7 +115,7 @@ class BookmarkletAccessController extends Controller
                             if(is_null($userStatus)){
                                 $userStatus = new MusicData();
                                 $userStatus->title = $v['title'];
-                                $message .=  "[追加] ". $v['title'] . "<br>";
+                                $message['info'] .=  "[追加] ". $v['title'] . "<br>";
                                 $titles[] = $v['title'];
                             }
                             $def = $value . "_level";
@@ -125,10 +126,10 @@ class BookmarkletAccessController extends Controller
                         }
                     }
                     if(count($titles) !== 0){
-                        $message .= "楽曲情報の追加を行いました。<br>";
+                        $message['info'] .= "楽曲情報の追加を行いました。<br>";
                         (new AdminTweet())->tweetMusicUpdate($titles);
                     }else{
-                        $message .= "追加楽曲はありませんでした。<br>";
+                        $message['info'] .= "追加楽曲はありませんでした。<br>";
                     }
                 }
 
@@ -147,13 +148,14 @@ class BookmarkletAccessController extends Controller
                     "masterSongInfos" => 3,
                     "lunaticSongInfos" => 10,
                 ];
+                $generation = (new ScoreData())->getMaxGeneration(Auth::id()) + 1;
                 foreach ($difficultyArrayKey as $key => $value) {
                     foreach ($request->input('ScoreData')[$key] as $k => $v) {
                         $userStatus = MusicData::where("title", "=", $v['title'])->first();
                         if(!is_null($userStatus)){
                             $scoreData = new ScoreData();
                             $recentSong = $scoreData->getRecentGenerationOfScoreData(Auth::id(), $userStatus->id, $difficultyValue[$key]);
-                            $scoreData->generation = (!isset($recentSong->generation)) ? 0 : ($recentSong->generation + 1);
+                            $scoreData->generation = $generation;
                             $scoreData->user_id = Auth::id();
                             $scoreData->song_id = $userStatus->id;
                             $scoreData->difficulty = $difficultyValue[$key];
@@ -221,7 +223,7 @@ class BookmarkletAccessController extends Controller
                     }
                 }
             }else{
-                $message .= "スコアデータの取得が出来ませんでした。<br>";
+                $message['info'] .= "スコアデータの取得が出来ませんでした。<br>";
             }
 
             return $message;

@@ -52,7 +52,6 @@
                 </tbody>
             </table>
         </div>
-        
     </article>
 </div>
 @endsection
