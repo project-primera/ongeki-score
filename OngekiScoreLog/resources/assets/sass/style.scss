@@ -1,9 +1,7 @@
 @import "accordion";
 @import "menu_button";
-@import "sticky_table";
+// @import "sticky_table";
 @import "user_progress";
-
-
 
 body{
     box-sizing: border-box;
@@ -91,4 +89,8 @@ div.column{
     width: 100%;
     min-width: 0%;
     max-width: 100%;
+}
+
+.table-hidden-data{
+    display: none;
 }
