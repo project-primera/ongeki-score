@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\UserStatus;
 use App\ScoreData;
 use App\ApplicationVersion;
+use App\ExternalServiceCoordination;
 
 class ViewUserProgressController extends Controller
 {
@@ -27,6 +28,26 @@ class ViewUserProgressController extends Controller
         $oldScoreData = new ScoreData();
         $newScoreData = new ScoreData();
         $progress = [];
+
+        $user = \Auth::user();
+        if($user !== null){
+            $external = new ExternalServiceCoordination();
+            $ret = $external->get($user->id);
+            $display = [];
+            if(count($ret) === 0){
+                $display['screenName'] = '<p>認証していません。認証は<a href="/setting">こちら</a>。<br><button class="button" disabled>以下を画像化してツイート</button></p>';
+            }else{
+                $twitter = $external->getTwitter($ret[0]->twitter_access_token, $ret[0]->twitter_access_token_secret);
+                if(is_null($twitter)){
+                    $display['screenName'] = '<p>認証していません。認証は<a href="/setting">こちら</a>。<br><button class="button convert-to-image-button">以下を画像化してツイート</button></p>';
+                }else{
+                    $display['screenName'] = '<p>このアカウントでツイートします: ' . $twitter->screen_name . '<br><button class="button convert-to-image-button">以下を画像化してツイート</button></p>';
+                }
+            }
+        }else{
+            $display['screenName'] = '<p>ツイート機能を使うにはログインしてください。<br><button class="button" disabled>以下を画像化してツイート</button></p>';
+        }
+        
 
         $date = ['new' => 0, 'old' => 0];
         $score = [
@@ -215,7 +236,6 @@ class ViewUserProgressController extends Controller
         $date['new'] = date("Y/m/d H:i" ,$date['new']);
         $date['old'] = date("Y/m/d H:i" ,$date['old']);
 
-        var_dump($version);
-        return view('user_progress', compact('status', 'progress', 'date', 'score', 'version'));
+        return view('user_progress', compact('status', 'progress', 'date', 'score', 'version', 'display'));
     }
 }

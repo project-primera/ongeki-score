@@ -10,8 +10,8 @@
 
 @section('content')
     <article class="box">
-        <button class="convert-to-image-button">画像化</button>
-
+        {!!$display['screenName']!!}
+        <hr>
         <div id="user-progress">
             <div class="info">
                 <div class="left">
