@@ -15,8 +15,8 @@ Auth::routes();
 
 Route::get('/', 'SimpleViewController@getIndex');
 
+Route::get('/user/{id}/progress', 'ViewUserProgressController@getIndex')->where(['id' => '\d+']);
 Route::get('/user/{id}/{mode?}', 'ViewUserController@getUserPage')->where(['id' => '\d+']);
-Route::get('/user/progress/{id}', 'ViewUserProgressController@getIndex')->where(['id' => '\d+']);
 
 Route::get('/random', 'ViewUserController@redirectRandomUserPage');
 Route::get('/mypage', 'ViewUserController@getMyUserPage');
