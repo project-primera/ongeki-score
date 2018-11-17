@@ -17,7 +17,7 @@ import * as qs from 'qs';
 
   class PlayerData {
     trophy: string = "";
-    level: number = 0;
+    level: number = -1;
     name: string = "";
     battle_point: number = 0;
     rating: number = 0;
@@ -352,7 +352,7 @@ let main = async () => {
   let token: string = getToken();
 
   await allData.PlayerData.getData();
-  if(allData.PlayerData.level == 0){
+  if(allData.PlayerData.level == -1){
     $textarea.append("プレイヤー情報を取得できませんでした。<br>オンゲキNETにログインしてもう一度実行してください。<br><a href='https://ongeki-net.com'  style='color:#222'>オンゲキNET</a><br><br>ログインしている場合は時間を開けてお試しください。(一定期間にアクセスをしすぎると制限が掛かります)");
     return;
   }
