@@ -54,8 +54,8 @@ class SettingController extends Controller
                     env("TWITTER_CONSUMER_SECRET"),
                 ], [CURLOPT_CAINFO => __DIR__ . '/../../../resources/cacert.pem']);
                     
-                $_SESSION['client'] = $_SESSION['client']->oauthForRequestToken('http://127.0.0.1:8000/setting/twitter');
-                // $_SESSION['client'] = $_SESSION['client']->oauthForRequestToken('https://ongeki-score.net/twitter/login');
+                // $_SESSION['client'] = $_SESSION['client']->oauthForRequestToken('http://127.0.0.1:8000/setting/twitter');
+                $_SESSION['client'] = $_SESSION['client']->oauthForRequestToken('https://ongeki-score.net/twitter/login');
                 
                 $_SESSION['state'] = 'pending';
 
