@@ -47,6 +47,7 @@ import * as qs from 'qs';
       var parseHTML = $.parseHTML(html);
       this.trophy = $(parseHTML).find(".trophy_block").find("span").text();
       this.level = +$(parseHTML).find(".lv_block").find("span").text();
+      this.level += ((+($(parseHTML).find(".reincarnation_block").find("span").text())) * 100);
       this.name = $(parseHTML).find(".name_block").find("span").text();
       this.battle_point = +$(parseHTML).find(".battle_rank_block").find("div").text().replace(/,/g, "");
       this.rating = +$(parseHTML).find(".rating_block").find(".rating_field").find("[class^='rating_']").eq(0).text();
