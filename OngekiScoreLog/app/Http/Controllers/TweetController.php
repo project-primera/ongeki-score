@@ -37,9 +37,11 @@ class TweetController extends Controller
             ]);
         }catch(\RuntimeException $e){
             Log::debug($e);
-            return "ツイートに失敗しました・・・";
+            $result = "ツイートに失敗しました。この画面を添えてご報告いただけますと幸いです。 id: " . $user->id . " / time: " . date(DATE_ATOM);
+            return view("tweet_result", compact('result'));
         }
-
-        return redirect("/user/progress/" . $user->id);
+        
+        $result = "ツイートに成功しました！";
+        return view("tweet_result", compact('result'));
     }
 }
