@@ -30,4 +30,15 @@ class SimpleViewController extends Controller
         Auth::logout();
         return view('logout');
     }
+
+    /* for debug
+    public function versionUpdate(){
+        (new App\ApplicationVersion())->fetchAllVersion();
+    }
+
+    public function testTweet($s){
+        $res = (new App\AdminTweet())->tweet($s . rand());
+    }
+    */
+
 }

@@ -13,6 +13,7 @@ use App\UserTrophy;
 use App\UniqueIDForRequest;
 use App\MusicData;
 use App\ScoreData;
+use App\AdminTweet;
 
 use Log;
 
@@ -98,6 +99,8 @@ class BookmarkletAccessController extends Controller
             if(!is_null($request->input('ScoreData'))){
 
                 if(Auth::user()->role >= 7){
+                    $titles = [];
+
                     $difficultyArrayKey = [
                         "basicSongInfos" => "basic",
                         "advancedSongInfos" => "advanced",
@@ -111,7 +114,8 @@ class BookmarkletAccessController extends Controller
                             if(is_null($userStatus)){
                                 $userStatus = new MusicData();
                                 $userStatus->title = $v['title'];
-                                $message .=  "[追加] ". $v['title'] . " - " . $value . "<br>";
+                                $message .=  "[追加] ". $v['title'] . "<br>";
+                                $titles[] = $v['title'];
                             }
                             $def = $value . "_level";
                             $userStatus->$def = $v['level'];
@@ -119,6 +123,12 @@ class BookmarkletAccessController extends Controller
                             $userStatus->unique_id = $uniqueID;
                             $userStatus->save();
                         }
+                    }
+                    if(count($titles) !== 0){
+                        $message .= "楽曲情報の追加を行いました。<br>";
+                        (new AdminTweet())->tweetMusicUpdate($titles);
+                    }else{
+                        $message .= "追加楽曲はありませんでした。<br>";
                     }
                 }
 

@@ -13,7 +13,7 @@ use Log;
 
 class AdminTweet extends Model
 {
-    public function tweetLatestVersion(){
+    public function tweet(string $status, $inReplyToStatusID = null){
         try{
             $client = new Client([
                 env("TWITTER_CONSUMER_KEY"),
@@ -21,21 +21,51 @@ class AdminTweet extends Model
                 env("TWITTER_ADMIN_ACCOUNT_ACCESS_TOKEN"),
                 env("TWITTER_ADMIN_ACCOUNT_ACCESS_TOKEN_SECRET")         
             ], [CURLOPT_CAINFO => __DIR__ . '/../resources/cacert.pem']);
-            
-            $v = new ApplicationVersion();
-            $v->fetchAllVersion();
-            $version = $v->getLatestVersion();
-            $status = "#更新履歴 " . $version[0]->name . " (" .$version[0]->tag_name . ")" . "\n" . $version[0]->body;
-            if(mb_strlen($status) >= 120){
-                $status = mb_substr($status, 0, 120);
-                $status .= "...\nhttps://ongeki-score.net/changelog";
+            if(is_null($inReplyToStatusID)){
+                $response = $client->post('statuses/update', ['status' => $status]);
             }else{
-                $status .= "\nhttps://ongeki-score.net/changelog";
+                $response = $client->post('statuses/update', ['status' => $status, "in_reply_to_status_id" => $inReplyToStatusID]);
             }
-            $client->post('statuses/update', ['status' => $status]);
+            return $response;
 
         } catch (\RuntimeException $e) {
             Log::debug($e->getMessage());
         }
+    }
+
+    public function tweetMusicUpdate($musicTitles){
+        $tweets = ["#楽曲情報追加\n"];
+
+        foreach ($musicTitles as $key => $value) {
+            if(mb_strlen($tweets[count($tweets) - 1] . $value . "\n") <= 140){
+                $tweets[count($tweets) - 1] .= ($value . "\n");
+            }else{
+                $tweets[] = ("#楽曲情報追加\n" . $value . "\n");
+            }
+        }
+
+        $id = null;
+        foreach ($tweets as $key => $value) {
+            $response = $this->tweet($value, $id);
+            if(!is_null($response) && array_key_exists("id_str", $response)){
+                $id = $response->id_str;
+            }
+        }
+    }
+
+
+    public function tweetLatestVersion(){
+        $v = new ApplicationVersion();
+        $v->fetchAllVersion();
+        $version = $v->getLatestVersion();
+        $status = "#更新履歴 " . $version[0]->name . " (" .$version[0]->tag_name . ")" . "\n" . $version[0]->body;
+        if(mb_strlen($status) >= 120){
+            $status = mb_substr($status, 0, 120);
+            $status .= "...\nhttps://ongeki-score.net/changelog";
+        }else{
+            $status .= "\nhttps://ongeki-score.net/changelog";
+        }
+
+        $this->tweet($status);
     }
 }

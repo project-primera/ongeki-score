@@ -1,3 +1,4 @@
+import * as $ from 'jquery';
 import axios from 'axios';
 import * as qs from 'qs';
 
@@ -10,7 +11,7 @@ import * as qs from 'qs';
 
   const REQUEST_KEY = "?t="
   const PRODUCT_NAME = "Project Primera - getScore";
-  const VERSION = "20181027";
+  const VERSION = "20181114";
 
   const SLEEP_MSEC = 2000;
 
@@ -336,7 +337,7 @@ function sleep(milliseconds: number) {
 let main = async () => {
   let $overlay = $("<div>").addClass("ongeki_score").attr("style","color:#222; font-size: 1em; padding-top: 120px; width: 100%; height:100%; position: fixed; top: 0; z-index: 100; background: rgba(0,0,0,0.3);");
   $("body").append($overlay);
-  var $textarea = $("<div>").attr("style","background-color: #eee; width:480px; height:calc(100% - 120px); margin:0 auto; padding: 0.5em 1em;")
+  var $textarea = $("<div>").attr("style","background-color: #eee; width:480px; height:calc(100% - 120px); margin:0 auto; padding: 0.5em 1em;  overflow-y: scroll;")
   $overlay.append($textarea);
 
   $textarea.append(PRODUCT_NAME + " v." + VERSION + "<br>");

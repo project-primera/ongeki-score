@@ -22,7 +22,7 @@ class TweetController extends Controller
                 $_SESSION['client'] = new Client([
                     env("TWITTER_CONSUMER_KEY"),
                     env("TWITTER_CONSUMER_SECRET"),
-                ], [CURLOPT_CAINFO => __DIR__ . '/../../../../../resources/cacert.pem']);
+                ], [CURLOPT_CAINFO => __DIR__ . '/../../../resources/cacert.pem']);
                     
                 $_SESSION['client'] = $_SESSION['client']->oauthForRequestToken('http://127.0.0.1:8000/twitter/login');
                 // $_SESSION['client'] = $_SESSION['client']->oauthForRequestToken('https://ongeki-score.net/twitter/login');
