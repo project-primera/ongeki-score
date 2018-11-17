@@ -24,6 +24,8 @@ Route::get('/alluser', 'ViewAllUserController@getIndex');
 
 Route::get('/bookmarklet', 'BookmarkletGenerateController@getIndex');
 Route::get('/bookmarklet/agree', 'BookmarkletGenerateController@getBookmarklet');
+Route::get('/setting', 'SettingController@getSetting');
+Route::get('/setting/twitter', 'SettingController@getTwitterAuthentication');
 
 Route::get('/howto', 'SimpleViewController@getHowto');
 Route::get('/eula', 'SimpleViewController@getEula');
@@ -34,7 +36,6 @@ Route::get('/home', 'HomeController@index')->name('home');
 Route::get('/logout', 'SimpleViewController@getLogout');
 
 /*  for debug
-Route::get('/twitter/login', 'TweetController@getUserAccountRequest');
 Route::get('/version/update', 'SimpleViewController@versionUpdate');
 Route::get('/t/{s}', 'SimpleViewController@testTweet');
 */
