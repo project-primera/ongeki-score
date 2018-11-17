@@ -11,7 +11,7 @@ import * as qs from 'qs';
 
   const REQUEST_KEY = "?t="
   const PRODUCT_NAME = "Project Primera - getScore";
-  const VERSION = "20181114";
+  const VERSION = "20181118";
 
   const SLEEP_MSEC = 2000;
 
@@ -411,16 +411,19 @@ let main = async () => {
     return;
   }
 
-  if(result['data'] == "error"){
+  if(result['data']['info'] == "error"){
     $textarea.append("データ送信に失敗しました。お手数をおかけしますが以下のリンクまで以下のデータを添えてご報告をお願い致します。<br><a href='https://twitter.com/ongeki_score' style='color:#222'>Twitter</a> / <a href='https://github.com/Slime-hatena/ProjectPrimera/issues' style='color:#222'>Github issue</a><br>");
-    $textarea.append("data: " + result['data'] + "<br>status: " + result['status'] + "<br>");
+    $textarea.append("data: " + result['data']['info'] + "<br>status: " + result['status'] + "<br>");
     let now = new Date();
     let today = new Date();
     $textarea.append((today.getFullYear() + "/" +  (today.getMonth() + 1) + "/" + today.getDate()) + " " + now.toLocaleTimeString() + "<br>");
     console.log(result);
   }else{
-    $textarea.append(result['data'] + "<br>");
-    $textarea.append("スコア登録に成功しました！<br><a href='" + TOOL_URL + "/mypage' style='color:#222'>こちらからプロフィールページを閲覧できます</a><br><a href='" + NET_URL + "' style='color:#222'>オンゲキNETに戻る</a><br>");
+    $textarea.append(result['data']['info'] + "<br>");
+    $textarea.append("スコア登録に成功しました！<br><br>")
+    $textarea.append("<a href='" + TOOL_URL + "/user/" + result['data']['id'] + "' style='color:#222'>スコアツール ユーザーページ</a><br>");
+    $textarea.append("<a href='" + TOOL_URL + "/user/" + result['data']['id'] + "/progress' style='color:#222'>スコアツール 更新履歴ページ</a><br><br>");
+    $textarea.append("<a href='" + NET_URL + "/home' style='color:#222'>オンゲキNETに戻る</a>");
   }
 }
 
