@@ -423,7 +423,7 @@ let main = async () => {
     $textarea.append(result['data']['info'] + "<br>");
     $textarea.append("スコア登録に成功しました！<br><br>")
     $textarea.append("<a href='" + TOOL_URL + "/user/" + result['data']['id'] + "' style='color:#222'>スコアツール ユーザーページ</a><br>");
-    $textarea.append("<a href='" + TOOL_URL + "/user/" + result['data']['id'] + "/progress' style='color:#222'>スコアツール 更新履歴ページ</a><br><br>");
+    $textarea.append("<a href='" + TOOL_URL + "/user/" + result['data']['id'] + "/progress' style='color:#222'>スコアツール 更新履歴ページ(画像付きツイート機能はこちらから)</a><br><br>");
     $textarea.append("<a href='" + NET_URL + "/home' style='color:#222'>オンゲキNETに戻る</a>");
   }
 }
