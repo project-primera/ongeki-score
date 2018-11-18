@@ -31,7 +31,7 @@ class TweetController extends Controller
             $ids = [
                 $client->postMultipart('media/upload', ['media_data' => $request->img])->media_id_string,
             ];
-            $client->post('statuses/update', [
+            $response = $client->post('statuses/update', [
                 'status' => $request->status,
                 'media_ids' => implode(',', $ids),
             ]);
@@ -40,8 +40,9 @@ class TweetController extends Controller
             $result = "ツイートに失敗しました。この画面を添えてご報告いただけますと幸いです。 id: " . $user->id . " / time: " . date(DATE_ATOM);
             return view("tweet_result", compact('result'));
         }
-        
-        $result = "ツイートに成功しました！";
-        return view("tweet_result", compact('result'));
+
+        $tweetID = $response->id_str;
+        $result = "以下の内容をツイートしました！(鍵アカウントの場合は表示されませんが正常にツイートされています。)";
+        return view("tweet_result", compact('result', 'tweetID'));
     }
 }
