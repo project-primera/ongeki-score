@@ -7,7 +7,7 @@
     <article class="box">
         {{$result}}
 
-        @if (isset($tweetID))
+        @if (isset($firstTweetID))
             <script type="text/javascript" src="https://platform.twitter.com/widgets.js"></script>
             <div id="tweet-container"></div>
             <script type="text/javascript">
