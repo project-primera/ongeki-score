@@ -41,7 +41,7 @@ class ViewUserProgressController extends Controller
                 if(is_null($twitter)){
                     $display['screenName'] = '<p>認証していません。認証は<a href="/setting">こちら</a>。<br><button class="button convert-to-image-button">以下を画像化してツイート</button></p>';
                 }else{
-                    $display['screenName'] = '<p>このアカウントでツイートします: ' . $twitter->screen_name . '<br><form action="/tweet/image" method="post" onsubmit="document.getElementById(\'submit_button\').disabled = true">' . csrf_field() . '<div class="field"><label class="label">ツイートの内容(100文字まで)</label><div class="control"><textarea name="status" class="textarea" maxlength="100">' . $status[0]->name . 'さんの更新履歴 https://ongeki-score.net/user/' . $id . ' #OngekiScoreLog</textarea></div></div><input type="hidden" name="img" value=""><button type="submit" id="submit_button" class="button convert-to-image-button" disabled>以下を画像化してツイート</button></form></p>';
+                    $display['screenName'] = '<p>このアカウントでツイートします: ' . $twitter->screen_name . '<br><form action="/tweet/image" method="post" onsubmit="document.getElementById(\'submit_button\').disabled = true">' . csrf_field() . '<div class="field"><label class="label">ツイートの内容(100文字まで)</label><div class="control"><textarea name="status" class="textarea" maxlength="100">' . $status[0]->name . 'さんの更新履歴 https://ongeki-score.net/user/' . $id . ' #OngekiScoreLog</textarea></div></div><button type="submit" id="submit_button" class="button convert-to-image-button" disabled>以下を画像化してツイート</button></form></p>';
                 }
             }
         }else{

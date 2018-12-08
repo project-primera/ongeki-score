@@ -1,4 +1,4 @@
-#user-progress{
+.user-progress{
     .info{
         width: 100%;
         display: table;
@@ -6,7 +6,7 @@
         .left{
             display: inline-block;
             width: 30%;
-  display: table-cell;
+            display: table-cell;
             text-align: left;
             padding-left: 0.5em;
         }

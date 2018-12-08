@@ -20,7 +20,7 @@
     <article class="box">
         {!!$display['screenName']!!}
         <hr>
-        <div id="user-progress">
+        <div class="user-progress">
             <div class="info">
                 <div class="left">
                     <span class="update">Update&nbsp;{{$date['new']}}</span>
@@ -94,6 +94,11 @@
                 </tbody>
             </table>
 
+            @php
+                // 最初はヘッダー部分があるのでその分の幅を用意
+                $count = 3;
+            @endphp
+
             <div class="music">
                 @foreach ($progress as $music => $temp)
                     @foreach ($temp as $difficulty => $value)
@@ -126,7 +131,17 @@
                                     <span class="tag {{$value['difference']['new-lamp-is-ab']}}">AB</span>
                             </div>
                         </div>
-                        <hr>
+                        @if (++$count < 9)
+                            <hr>
+                        @else
+                            </div>
+                            </div>
+                            <div class="user-progress">
+                            <div class="music">
+                            @php
+                                $count = 0;   
+                            @endphp
+                        @endif
                     @endforeach
                 @endforeach
             </div>
