@@ -13,7 +13,7 @@
             <script type="text/javascript">
                 var container = document.getElementById("tweet-container");
                 twttr.widgets.createTweet(
-                    "{{$tweetID}}", container
+                    "{{$firstTweetID}}", container
                 ) ;
             </script>
         @endif
