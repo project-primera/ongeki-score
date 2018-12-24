@@ -88,6 +88,7 @@ class ViewUserController extends Controller
             "Lv.13" => [],
             "Lv.13+" => [],
             "Lv.14" => [],
+            "Lv.14+" => [],
         ];
 
         $stat['average'] = $stat['level'];
