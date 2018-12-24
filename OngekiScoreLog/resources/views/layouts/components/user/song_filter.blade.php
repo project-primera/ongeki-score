@@ -66,10 +66,10 @@
 
             <div class="filter-content">
                 <p class="title is-4">Clear Lamp</p>
-                <a class="button filter_lamp_button">NoLamp</a>
-                <a class="button filter_lamp_button">FB</a>
-                <a class="button filter_lamp_button">FC</a>
-                <a class="button filter_lamp_button">AB</a>
+                <a class="button filter_lamp_button nolamp">NoLamp</a>
+                <a class="button filter_lamp_button fb">FB</a>
+                <a class="button filter_lamp_button fc">FC</a>
+                <a class="button filter_lamp_button ab">AB</a>
             </div>
 
             <p class="title is-4"><span class="filter_cases"></span>件表示</p>

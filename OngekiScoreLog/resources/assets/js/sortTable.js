@@ -100,24 +100,27 @@ class ClearLamp {
         this.FB = false;
         this.FC = false;
         this.AB = false;
+        this.state = "";
     }
 
     get() {
         if(this.FB && this.AB){
-            return "FB+FC+AB";
+            this.state = "FB+FC+AB";
         }else if(this.FB && this.FC){
-            return "FB+FC";
+            this.state = "FB+FC";
         }else if(this.AB){
-            return "FC+AB";
+            this.state = "FC+AB";
         }else if(this.FC){
-            return "FC";
+            this.state = "FC";
         }else if(this.FB){
-            return "FB";
+            this.state = "FB";
         }else if(this.NoLamp){
-            return "-";
+            this.state = "-";
         }else{
+            this.state = "";
             return false;
         }
+        return this.state;
     }
 }
 
@@ -126,20 +129,37 @@ clearLamp = new ClearLamp();
 $('.filter_lamp_button').on('click',function(){
     var $text = $(this).text();
 
+    if($text !== "NoLamp" && clearLamp.NoLamp){
+        return;
+    }
+
     if($(this).hasClass('is-info')){
         DeleteFilterList('sort_raw_lamp', clearLamp.get());
         clearLamp[$text] = false;
-        if(clearLamp.get() !== false){
-            AddFilterList('sort_raw_lamp', clearLamp.get());
-        }
         $(this).removeClass('is-info');
 
     } else {
         DeleteFilterList('sort_raw_lamp', clearLamp.get());
         clearLamp[$text] = true;
-        AddFilterList('sort_raw_lamp', clearLamp.get());
         $(this).addClass('is-info');
     }
+
+    if(!clearLamp.FC && clearLamp.AB){
+        $('.filter_lamp_button.fc').addClass('is-info');
+        clearLamp.FC = true;
+    }else if(clearLamp.NoLamp || ($text === "NoLamp" && !clearLamp.NoLamp)){
+        $('.filter_lamp_button.fb').removeClass('is-info');
+        $('.filter_lamp_button.fc').removeClass('is-info');
+        $('.filter_lamp_button.ab').removeClass('is-info');
+        clearLamp.FB = false;
+        clearLamp.FC = false;
+        clearLamp.AB = false;
+    }
+
+    if(clearLamp.get() !== false){
+        AddFilterList('sort_raw_lamp', clearLamp.get());
+    }
+
     SortTable();
 });
 
