@@ -56,8 +56,9 @@
         <p class="space-bottom">
             <h3 class="title is-3">既知の不具合・追加予定の機能</h3>
             以下にまとまっています。<br>
-            既知の不具合: <a href="https://github.com/Slime-hatena/ProjectPrimera/issues?q=is%3Aopen+is%3Aissue+label%3Abug" target="_blank">GitHub issue - bug</a><br>
-            追加予定の機能: <a href="https://github.com/Slime-hatena/ProjectPrimera/issues?q=is%3Aopen+is%3Aissue+label%3Aenhancement" target="_blank">GitHub issue - enhancement</a>
+            既知の重大な不具合: <a href="https://github.com/Slime-hatena/ProjectPrimera/labels/bug" target="_blank">GitHub issue - bug</a><br>
+            既知の軽微な不具合: <a href="https://github.com/Slime-hatena/ProjectPrimera/labels/wontfix" target="_blank">GitHub issue - wontfix</a><br>
+            追加予定の機能: <a href="https://github.com/Slime-hatena/ProjectPrimera/labels/enhancement" target="_blank">GitHub issue - enhancement</a>
         </p>
         <p class="space-bottom">
             <strong>
