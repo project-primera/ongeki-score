@@ -11,7 +11,18 @@ body{
 }
 
 main {
+    margin-bottom: 0 !important;
     background-color: #eeeeee;
+}
+
+footer{
+    margin: 0;
+    padding: 0.2em 0.8em;
+    background-color: #242424;
+    color: #ddd;
+    a:hover{
+        color: #b9b9b9;
+    }
 }
 
 h1.title
