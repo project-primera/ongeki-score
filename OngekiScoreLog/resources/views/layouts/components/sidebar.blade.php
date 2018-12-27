@@ -27,3 +27,6 @@
         <li><a href="/eula" class="@yield('sidemark_eula')">利用規約 / プライバシーポリシー</a></li>
     </ul>
 </aside>
+<aside class="box">
+    <a class="twitter-timeline" data-lang="ja" data-height="480" href="https://twitter.com/ongeki_score?ref_src=twsrc%5Etfw">Tweets by ongeki_score</a> <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+</aside>
