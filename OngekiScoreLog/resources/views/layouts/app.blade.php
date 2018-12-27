@@ -84,30 +84,32 @@
             </div>
         </header>
 
-        <div class="hero is-info is-bold">
-            <div class="hero-body">
-                <div class="container">
-                    <h2 class="subtitle">@yield('hero_subtitle')</h2>
-                    <h1 class="title">@yield('hero_title')</h1>
+        <aside>
+            <div class="hero is-info is-bold">
+                <div class="hero-body">
+                    <div class="container">
+                        <h2 class="subtitle">@yield('hero_subtitle')</h2>
+                        <h1 class="title">@yield('hero_title')</h1>
+                    </div>
                 </div>
             </div>
-        </div>
-        <section class="level">
-            <div class="level-left"></div>
-            <div class="level-right">
-                <div class="level-item tabs">
-                    <ul>
-                        @section('submenu')
-                        @show
-                    </ul>
+            <section class="level">
+                <div class="level-left"></div>
+                <div class="level-right">
+                    <div class="level-item tabs">
+                        <ul>
+                            @section('submenu')
+                            @show
+                        </ul>
+                    </div>
                 </div>
-            </div>
-            <div class="level-right">
-                <div class="level-item">
-                    &nbsp;
+                <div class="level-right">
+                    <div class="level-item">
+                        &nbsp;
+                    </div>
                 </div>
-            </div>
-        </section>
+            </section>
+        </aside>
 
         <main class="columns">
             <div class="column">
