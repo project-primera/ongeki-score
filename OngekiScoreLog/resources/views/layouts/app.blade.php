@@ -114,6 +114,22 @@
         <main class="columns">
             <div class="column">
                 @include('layouts/components/assets/share_buttons')
+
+                <!-- for ongeki plus -->
+                <div class="notification">
+                    <strong>2019/2/7 0:00よりメンテナンス実施のお知らせ</strong>
+                    <p class="space-bottom">
+                    ご利用ありがとうございます。<br>
+                    下記日程で一部機能のメンテナンスを行います。<br>
+                    本メンテナンスでは、オンゲキPlus稼働に関連した機能の調整を行います。</p>
+                    <p class="space-bottom">■ 実施期間<br>
+                    2019/2/7 0:00 - 未定</p>
+                    <p class="space-bottom">■ ご利用いただけない機能<br>
+                        ブックマークレットを用いたスコア登録</p>
+                    <p>続報に関しましては<a href="https://twitter.com/ongeki_score" target="_blank">Twitter@ongeki_score</a>にてお知らせします。<br>
+                        ご不便をおかけしますがご理解いただきますようお願いいたします。</p>
+                </div>
+
                 @yield('content')
             </div>
             <div class="submenu column is-3">
