@@ -21,6 +21,10 @@ class BookmarkletAccessController extends Controller
 {
     public function postUserUpdate(Request $request)
     {
+        $message['info'] = 'ただいまこの機能はメンテナンス中です。<br>続報につきましては<a href="https://twitter.com/ongeki_score" target="_blank" style="color: #333">Twitter@ongeki_score</a>をご確認ください。<br>';
+        return $message;
+
+        /*
         try{
             $message['info'] = "";
             $message['id'] = Auth::id();
@@ -234,5 +238,6 @@ class BookmarkletAccessController extends Controller
             Log::error($e);
             return "error";
         }
+        */
     }
 }
