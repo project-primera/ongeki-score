@@ -116,7 +116,7 @@
                 @include('layouts/components/assets/share_buttons')
 
                 <!-- for ongeki plus -->
-                <div class="notification">
+                <div class="notification is-warning">
                     <strong>2019/2/7 0:00よりメンテナンス実施のお知らせ</strong>
                     <p class="space-bottom">
                     ご利用ありがとうございます。<br>
