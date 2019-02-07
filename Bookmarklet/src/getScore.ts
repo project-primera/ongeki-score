@@ -11,7 +11,7 @@ import * as qs from 'qs';
 
   const REQUEST_KEY = "?t="
   const PRODUCT_NAME = "Project Primera - getScore.js";
-  const VERSION = "20180208";
+  const VERSION = "20190208";
 
   const SLEEP_MSEC = 2000;
 
