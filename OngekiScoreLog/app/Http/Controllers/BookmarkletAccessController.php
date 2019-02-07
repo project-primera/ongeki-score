@@ -19,14 +19,15 @@ use Log;
 
 class BookmarkletAccessController extends Controller
 {
+    // 0 -> origin
+    // 1 -> origin plus
+    const currentVersion = 1;
+
     public function postUserUpdate(Request $request)
     {
-        $message['info'] = 'ただいまこの機能はメンテナンス中です。<br>続報につきましては<a href="https://twitter.com/ongeki_score" target="_blank" style="color: #333">Twitter@ongeki_score</a>をご確認ください。<br>';
-        return $message;
-
-        /*
         try{
             $message['info'] = "";
+            $message['result'] = "";
             $message['id'] = Auth::id();
 
             $uniqueID = md5(uniqid(rand(),1));
@@ -125,6 +126,11 @@ class BookmarkletAccessController extends Controller
                             $def = $value . "_level";
                             $userStatus->$def = $v['level'];
                             $userStatus->genre = $v['genre'];
+                            if($value === "lunatic"){
+                                $userStatus->lunatic_added_version = self::currentVersion;
+                            }else{
+                                $userStatus->normal_added_version = self::currentVersion;
+                            }
                             $userStatus->unique_id = $uniqueID;
                             $userStatus->save();
                         }
@@ -226,8 +232,9 @@ class BookmarkletAccessController extends Controller
                         }
                     }
                 }
+                $message['result'] .= "スコア登録に成功しました！<br>";
             }else{
-                $message['info'] .= "スコアデータの取得が出来ませんでした。<br>";
+                $message['result'] .= "スコアデータの取得が出来ませんでした。<br>";
             }
 
             return $message;
@@ -238,6 +245,5 @@ class BookmarkletAccessController extends Controller
             Log::error($e);
             return "error";
         }
-        */
     }
 }
