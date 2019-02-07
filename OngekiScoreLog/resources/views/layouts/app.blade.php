@@ -114,22 +114,6 @@
         <main class="columns">
             <div class="column">
                 @include('layouts/components/assets/share_buttons')
-
-                <!-- for ongeki plus -->
-                <div class="notification is-warning">
-                    <strong>2019/2/7 0:00よりメンテナンス実施のお知らせ</strong>
-                    <p class="space-bottom">
-                    ご利用ありがとうございます。<br>
-                    下記日程で一部機能のメンテナンスを行います。<br>
-                    本メンテナンスでは、オンゲキPlus稼働に関連した機能の調整を行います。</p>
-                    <p class="space-bottom">■ 実施期間<br>
-                    2019/2/7 0:00 - 未定</p>
-                    <p class="space-bottom">■ ご利用いただけない機能<br>
-                        ブックマークレットを用いたスコア登録</p>
-                    <p>続報に関しましては<a href="https://twitter.com/ongeki_score" target="_blank">Twitter@ongeki_score</a>にてお知らせします。<br>
-                        ご不便をおかけしますがご理解いただきますようお願いいたします。</p>
-                </div>
-
                 @yield('content')
             </div>
             <div class="submenu column is-3">
@@ -150,7 +134,10 @@
         </main>
 
         <footer>
-            This site is powered by <a href="https://github.com/Slime-hatena/ProjectPrimera" target="_blank">ProjectPrimera</a> licensed under the <a href="https://github.com/Slime-hatena/ProjectPrimera/blob/master/LICENSE" target="_blank">MIT</a>.
+            This site is powered by <a href="https://github.com/Slime-hatena/ProjectPrimera" target="_blank">ProjectPrimera</a> licensed under the <a href="https://github.com/Slime-hatena/ProjectPrimera/blob/master/LICENSE" target="_blank">MIT</a>.<br>
+            お問い合わせ:&nbsp;<a href="https://twitter.com/ongeki_score" target="blank">Twitter@ongeki_score</a> / <a href="mailto:info&#64;ongeki-score.net">
+                info&nbsp;(at)&nbsp;ongeki-score.net
+             </a>
         </footer>
 
         <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha256-3edrmyuQ0w65f8gfBsqowzjJe2iM6n0nKciPUp8y+7E=" crossorigin="anonymous"></script>
