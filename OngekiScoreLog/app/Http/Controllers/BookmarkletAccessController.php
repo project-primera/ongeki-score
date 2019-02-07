@@ -126,9 +126,9 @@ class BookmarkletAccessController extends Controller
                             $def = $value . "_level";
                             $userStatus->$def = $v['level'];
                             $userStatus->genre = $v['genre'];
-                            if($value === "lunatic"){
+                            if($value === "lunatic" && is_null($userStatus->lunatic_added_version)){
                                 $userStatus->lunatic_added_version = self::currentVersion;
-                            }else{
+                            }else if($value !== "lunatic" && is_null($userStatus->normal_added_version)){
                                 $userStatus->normal_added_version = self::currentVersion;
                             }
                             $userStatus->unique_id = $uniqueID;
