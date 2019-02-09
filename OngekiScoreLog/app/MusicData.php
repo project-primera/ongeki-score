@@ -10,8 +10,4 @@ class MusicData extends Model
     protected $table = "music_datas";
     protected $guarded = ['id'];
 
-    function getAllMusicData(){
-        $sql = DB::table($this->table)->select('*');
-        return $sql->get();
-    }
 }
