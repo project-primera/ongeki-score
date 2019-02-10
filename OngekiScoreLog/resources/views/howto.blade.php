@@ -8,17 +8,17 @@
 @section('content')
 <div class="container">
     <article class="box">
-        <p class="space-bottom">
+        <p>
             以下書きかけです。
         </p>
 
         <h3 class="title is-3">はじめに</h3>
-        <p class="space-bottom">
+        <p>
             このサイトではオンゲキNETからデータを取得します。<br>
             まずはオンゲキNETへの会員登録を済ませ、カードの紐づけを行ってください。<br>
             <a href="http://otogame-net.com" target="_blank">詳しくはこちら</a>
         </p>
-        <p class="space-bottom">
+        <p>
             オンゲキNETの情報を使用する為、有料プランに加入していないと得られる情報に制限が掛かります。<br>
             <strong>プレミアムコースに課金しましょう！！</strong>
         </p>
@@ -41,7 +41,7 @@
         </table>
 
         <h3 class="title is-3">ブックマークレットの使い方</h3>
-        <p class="space-bottom">
+        <p>
             どのブラウザでも以下のような流れになると思います。<br>
             詳しくは<strong>「ブックマークレット &lt;環境名&gt;」</strong>などで調べてみてください。<br>
             以下はPC版Google Chromeでの解説です。
