@@ -19,10 +19,15 @@ use Log;
 
 class BookmarkletAccessController extends Controller
 {
+    // 0 -> origin
+    // 1 -> origin plus
+    const currentVersion = 1;
+
     public function postUserUpdate(Request $request)
     {
         try{
             $message['info'] = "";
+            $message['result'] = "";
             $message['id'] = Auth::id();
 
             $uniqueID = md5(uniqid(rand(),1));
@@ -121,6 +126,11 @@ class BookmarkletAccessController extends Controller
                             $def = $value . "_level";
                             $userStatus->$def = $v['level'];
                             $userStatus->genre = $v['genre'];
+                            if($value === "lunatic" && is_null($userStatus->lunatic_added_version)){
+                                $userStatus->lunatic_added_version = self::currentVersion;
+                            }else if($value !== "lunatic" && is_null($userStatus->normal_added_version)){
+                                $userStatus->normal_added_version = self::currentVersion;
+                            }
                             $userStatus->unique_id = $uniqueID;
                             $userStatus->save();
                         }
@@ -222,8 +232,9 @@ class BookmarkletAccessController extends Controller
                         }
                     }
                 }
+                $message['result'] .= "スコア登録に成功しました！<br>";
             }else{
-                $message['info'] .= "スコアデータの取得が出来ませんでした。<br>";
+                $message['result'] .= "スコアデータの取得が出来ませんでした。<br>";
             }
 
             return $message;

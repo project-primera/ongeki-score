@@ -134,7 +134,10 @@
         </main>
 
         <footer>
-            This site is powered by <a href="https://github.com/Slime-hatena/ProjectPrimera" target="_blank">ProjectPrimera</a> licensed under the <a href="https://github.com/Slime-hatena/ProjectPrimera/blob/master/LICENSE" target="_blank">MIT</a>.
+            This site is powered by <a href="https://github.com/Slime-hatena/ProjectPrimera" target="_blank">ProjectPrimera</a> licensed under the <a href="https://github.com/Slime-hatena/ProjectPrimera/blob/master/LICENSE" target="_blank">MIT</a>.<br>
+            お問い合わせ:&nbsp;<a href="https://twitter.com/ongeki_score" target="blank">Twitter@ongeki_score</a> / <a href="mailto:info&#64;ongeki-score.net">
+                info&nbsp;(at)&nbsp;ongeki-score.net
+             </a>
         </footer>
 
         <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha256-3edrmyuQ0w65f8gfBsqowzjJe2iM6n0nKciPUp8y+7E=" crossorigin="anonymous"></script>
