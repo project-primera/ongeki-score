@@ -42,13 +42,13 @@ class OngekiUtility {
             return $extraLevel + 2.0;
         }else if($technicalScore >= 1000000){
             // >= 1000000   定数+1.5    1000000を超えた150点毎に+0.01
-            return ($extraLevel + 1.5) + (floor(($technicalScore - 1000000) / 150) / 100);
+            return floor(($extraLevel * 100 + 150) + (floor(($technicalScore - 1000000) / 150))) / 100;
         }else if($technicalScore >= 970000){
             // >= 970000    定数+0.0    970000を超えた200点毎に+0.01
-            return $extraLevel + (floor(($technicalScore - 970000) / 200) / 100);
+            return floor($extraLevel * 100 + (floor(($technicalScore - 970000) / 200))) / 100;
         }else{
             // < 970000     定数+0.0    970000から175点を割るごとに-0.01
-            $v = $extraLevel - (floor((970000 - $technicalScore) / 175 + 1) / 100);
+            $v = floor($extraLevel * 100 - (floor((970000 - $technicalScore) / 175 + 1))) / 100;
             if($v < 0){
                 $v = 0;
             }
