@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\User;
 use App\UserStatus;
 use App\ScoreData;
+use App\Facades\OngekiUtility;
 
 class ViewUserController extends Controller
 {
@@ -95,6 +96,8 @@ class ViewUserController extends Controller
         $stat['averageExist'] = $stat['level'];
 
         foreach ($score as $key => $value) {
+            $score[$key]->ratingValue = sprintf("%.2f", OngekiUtility::RateValueFromTitle($score[$key]->title, $score[$key]->difficulty, $score[$key]->technical_high_score));
+
             if($value->full_bell && $value->all_break){
                 $score[$key]->rawLamp = "FB+FC+AB";
             }else if($value->full_bell && $value->full_combo){
