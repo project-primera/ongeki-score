@@ -110,3 +110,10 @@ div.column{
 .table-hidden-data{
     display: none;
 }
+
+.music-list{
+    max-width: 650px;
+    .estimated{
+        color: #00e;
+    }
+}

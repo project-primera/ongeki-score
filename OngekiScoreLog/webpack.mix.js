@@ -14,6 +14,7 @@ let mix = require('laravel-mix');
 mix.js('resources/assets/js/app.js', 'public/js')
     .js('resources/assets/js/sortTable.js', 'public/js')
     .js('resources/assets/js/sortAllUserTable.js', 'public/js')
+    .js('resources/assets/js/sortMusic.js', 'public/js')
     .js('resources/assets/js/userProgress.js', 'public/js')
     .sass('resources/assets/sass/laravel/app.scss', 'public/css')
     .sass('resources/assets/sass/style.scss', 'public/css')
