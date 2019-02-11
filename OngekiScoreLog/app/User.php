@@ -27,4 +27,14 @@ class User extends Authenticatable
     protected $hidden = [
         'password', 'remember_token',
     ];
+
+    public function setRoleAllUser(int $role, int $rewriteHigherRole){
+        $users = User::all();
+        foreach ($users as $key => $value) {
+            if($value->role <= $rewriteHigherRole){
+                $users[$key]->role = $role;
+                $users[$key]->save();
+            }
+        }
+    }
 }
