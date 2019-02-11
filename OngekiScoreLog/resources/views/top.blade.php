@@ -62,11 +62,11 @@
             追加予定の機能: <a href="https://github.com/Slime-hatena/ProjectPrimera/labels/enhancement" target="_blank">GitHub issue - enhancement</a>
         </p>
         <p>
-            <strong>
+            <b>
                 現在サーバーからメールが送信できないため、パスワードリセットが出来ません。<br>
                 もしログインできなくなってしまった場合は再度アカウントを作成してください。<br>
                 ご不便をおかけしまして申し訳ございません。
-            </strong>
+            </b>
         </p>
     </div>
 @endsection
