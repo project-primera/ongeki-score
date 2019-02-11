@@ -28,14 +28,15 @@ class ViewUserController extends Controller
 
     public function getUserPage($id, $mode = null){
         $userStatus = new UserStatus();
+        $user = User::where('id' ,$id)->first();
         $status = $userStatus->getRecentUserData($id);
         $status[0]->badge = "";
-        if(Auth::user()->role == 7){
+        if($user->role == 7){
             $status[0]->badge .= '&nbsp;<span class="tag developer">ProjectPrimera Developer</span>';
         }
-        if(Auth::user()->role >= 2){
+        if($user->role >= 2){
             $status[0]->badge .= '&nbsp;<span class="tag net-premium">OngekiNet Premium</span>';
-        }else if(Auth::user()->role >= 1){
+        }else if($user->role >= 1){
             $status[0]->badge .= '&nbsp;<span class="tag net-standard">OngekiNet Standard</span>';
         }
 
