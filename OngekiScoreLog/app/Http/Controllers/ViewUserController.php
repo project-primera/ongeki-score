@@ -108,6 +108,9 @@ class ViewUserController extends Controller
         foreach ($score as $key => $value) {
             if(Auth::user()->role >= 2){
                 $score[$key]->ratingValue = sprintf("%.2f", OngekiUtility::RateValueFromTitle($score[$key]->title, $score[$key]->difficulty, $score[$key]->technical_high_score));
+                if(OngekiUtility::IsEstimatedRateValueFromTitle($score[$key]->title, $score[$key]->difficulty, $score[$key]->technical_high_score)){
+                    $score[$key]->ratingValue = "<i><span class='estimated'>" . $score[$key]->ratingValue . "</span></i>";
+                }
             }else{
                 $score[$key]->ratingValue = "|||||||||"; 
             }

@@ -1,4 +1,5 @@
 <article class="box">
+    <p>レート値が青字斜体のものは譜面定数が不明のため、推定値で表示されているものです。<br>レート値はオンゲキNETのプレミアムプランに加入していないと表示されません。</p>
     <div id="sort_table" class="table_wrap">
         <table class="table">
             <thead>
@@ -43,7 +44,7 @@
                         <td class="sort_rank1"><span class="sort-key">{{$s->technical_high_score}}</span>{{$s->technical_high_score_rank}}</td>
                         <td class="sort_ts"><span class="sort-key">{{$s->technical_high_score}}</span>{{number_format($s->technical_high_score)}}</td>
                         <td class="sort_nts"><span class="sort-key">{{$s->technical_high_score_next}}</span>{{($s->technical_high_score_next != 0) ? number_format($s->technical_high_score_next) : "-"}}</td>
-                        <td class="sort_rate">{{$s->ratingValue}}</td>
+                        <td class="sort_rate">{!!$s->ratingValue!!}</td>
                         <td class="sort_update">{{date('Y-m-d', strtotime($s->updated_at))}}</td>
                         <td class="table-hidden-data sort_raw_battle_rank">{{$s->over_damage_high_score_rank}}</td>
                         <td class="table-hidden-data sort_raw_technical_rank">{{$s->rawTechnicalRank}}</td>

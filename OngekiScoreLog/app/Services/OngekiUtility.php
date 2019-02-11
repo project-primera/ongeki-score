@@ -7,6 +7,33 @@ class OngekiUtility {
 
     private static $MusicData = null;
 
+    public function IsEstimatedRateValueFromTitle(string $title, $difficulty, int $technicalScore){
+        if(is_int($difficulty)){
+            $keys = [
+                0 => "basic_extra_level_estimated",
+                1 => "advanced_extra_level_estimated",
+                2 => "expert_extra_level_estimated",
+                3 => "master_extra_level_estimated",
+                10 => "lunatic_extra_level_estimated",
+            ];
+            $difficulty = $keys[$difficulty];
+        }else if(!is_string($difficulty)){
+            throw new InvalidArgumentException();
+        }
+
+        if(is_null($this::$MusicData)){
+            $temp = (new MusicData())->getEstimateExtraLevel();
+            foreach ($temp as $key => $value) {
+                $this::$MusicData[$value['title']] = $value;
+                unset($this::$MusicData[$value['title']]['title']);
+            }
+        }
+        if(!array_key_exists($title, $this::$MusicData)){
+            throw new OutOfBoundsException();
+        }
+        return $this::$MusicData[$title][$difficulty];
+    }
+
     public function RateValueFromTitle(string $title, $difficulty, int $technicalScore)
     {
         if(is_int($difficulty)){
