@@ -59,12 +59,13 @@
                         <td class="sort_nod"><span class="sort-key">{{$s->over_damage_high_score_next}}</span>{{($s->over_damage_high_score < 500) ? $s->over_damage_high_score_next . "%" : "-"}}</td>
                         <td class="sort_ts"><span class="sort-key">{{$s->technical_high_score}}</span>{{number_format($s->technical_high_score)}}</td>
                         <td class="sort_nts"><span class="sort-key">{{$s->technical_high_score_next}}</span>{{($s->technical_high_score_next != 0) ? number_format($s->technical_high_score_next) : "-"}}</td>
-                    <td class="sort_rate">{!!$s->ratingValue!!}</td>
-                    <td class="sort_update">{{$s->updated_at}}</td>
+                        <td>{!!$s->ratingValue!!}</td>
+                        <td class="sort_update">{{$s->updated_at}}</td>
                         <td class="table-hidden-data sort_raw_battle_rank">{{$s->over_damage_high_score_rank}}</td>
                         <td class="table-hidden-data sort_raw_technical_rank">{{$s->rawTechnicalRank}}</td>
                         <td class="table-hidden-data sort_raw_lamp">{{$s->rawLamp}}</td>
                         <td class="table-hidden-data sort_raw_difficulty">{{$s->rawDifficulty}}</td>
+                        <td class="table-hidden-data sort_rate">{{$s->ratingValueRaw}}</td>
                     </tr>
                 @endforeach
             </tbody>
