@@ -1,4 +1,5 @@
 <article class="box">
+    {{$badge}}
     <table class="table is-striped">
         <tbody>
             <tr>
