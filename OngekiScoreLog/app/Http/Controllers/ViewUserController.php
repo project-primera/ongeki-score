@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 
 use App\User;
@@ -28,6 +29,15 @@ class ViewUserController extends Controller
     public function getUserPage($id, $mode = null){
         $userStatus = new UserStatus();
         $status = $userStatus->getRecentUserData($id);
+        $status[0]->badge = "";
+        if(Auth::user()->role == 7){
+            $status[0]->badge .= '&nbsp;<span class="tag developer">ProjectPrimera Developer</span>';
+        }
+        if(Auth::user()->role >= 2){
+            $status[0]->badge .= '&nbsp;<span class="tag net-premium">OngekiNet Premium</span>';
+        }else if(Auth::user()->role >= 1){
+            $status[0]->badge .= '&nbsp;<span class="tag net-standard">OngekiNet Standard</span>';
+        }
 
         $scoreData = new ScoreData();
         $scoreData->getRecentUserScore($id);
@@ -96,7 +106,11 @@ class ViewUserController extends Controller
         $stat['averageExist'] = $stat['level'];
 
         foreach ($score as $key => $value) {
-            $score[$key]->ratingValue = sprintf("%.2f", OngekiUtility::RateValueFromTitle($score[$key]->title, $score[$key]->difficulty, $score[$key]->technical_high_score));
+            if(Auth::user()->role >= 2){
+                $score[$key]->ratingValue = sprintf("%.2f", OngekiUtility::RateValueFromTitle($score[$key]->title, $score[$key]->difficulty, $score[$key]->technical_high_score));
+            }else{
+                $score[$key]->ratingValue = "|||||||||"; 
+            }
 
             if($value->full_bell && $value->all_break){
                 $score[$key]->rawLamp = "FB+FC+AB";

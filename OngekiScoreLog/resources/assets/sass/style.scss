@@ -113,7 +113,23 @@ div.column{
 
 .music-list{
     max-width: 650px;
-    .estimated{
-        color: #00e;
+}
+
+.estimated{
+    color: #00e;
+}
+
+.tag{
+    &.developer{
+        background-color: #3273DC;
+        color: #fff;
+    }
+    &.net-standard{
+        background-color: #2DCCB5;
+        color: #fff;
+    }
+    &.net-premium{
+        background-color: #ED87AC;
+        color: #fff;
     }
 }
