@@ -107,7 +107,7 @@ class ViewUserController extends Controller
         $stat['averageExist'] = $stat['level'];
 
         foreach ($score as $key => $value) {
-            if(Auth::user()->role >= 2){
+            if(!is_null(Auth::user()) && Auth::user()->role >= 2){
                 $score[$key]->ratingValue = sprintf("%.2f", OngekiUtility::RateValueFromTitle($score[$key]->title, $score[$key]->difficulty, $score[$key]->technical_high_score));
                 $score[$key]->ratingValueRaw = $score[$key]->ratingValue;
                 if(OngekiUtility::IsEstimatedRateValueFromTitle($score[$key]->title, $score[$key]->difficulty, $score[$key]->technical_high_score)){
@@ -115,6 +115,7 @@ class ViewUserController extends Controller
                 }
             }else{
                 $score[$key]->ratingValue = "|||||||||"; 
+                $score[$key]->ratingValueRaw = 0;
             }
 
             if($value->full_bell && $value->all_break){
