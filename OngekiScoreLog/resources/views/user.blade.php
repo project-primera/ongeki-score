@@ -18,7 +18,7 @@
 @section('content')
     @component('layouts/components/user/user_status')
         @slot('name')
-            {{$status[0]->name}}
+            {{$status[0]->name}}{!!$status[0]->badge!!}
         @endslot
         @slot('trophy')
             {{$status[0]->trophy}}

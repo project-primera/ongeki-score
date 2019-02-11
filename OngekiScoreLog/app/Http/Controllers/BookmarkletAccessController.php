@@ -71,6 +71,12 @@ class BookmarkletAccessController extends Controller
                     $ratingRecentMusic->technical_score = $value['technicalScore'];
                     $ratingRecentMusic->unique_id =$uniqueID;
                     $ratingRecentMusic->save();
+
+                    // 取得ができればOngekiNetプレミアムプランと見なす
+                    if(Auth::user()->role < 2){
+                        Auth::user()->role = 2;
+                        Auth::user()->save();
+                    }
                 }
             }else{
                 $message['info'] .= "レーティング対象曲情報が取得できませんでした。<br>";
@@ -231,6 +237,11 @@ class BookmarkletAccessController extends Controller
                             }
                         }
                     }
+                }
+                // 取得ができればOngekiNetスタンダードプランと見なす
+                if(Auth::user()->role < 1){
+                    Auth::user()->role = 1;
+                    Auth::user()->save();
                 }
                 $message['result'] .= "スコア登録に成功しました！<br>";
             }else{

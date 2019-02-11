@@ -122,7 +122,7 @@
                         @php
                             $applicationVersion =  new App\ApplicationVersion();
                             $version = $applicationVersion->getLatestVersion();
-                            echo '<p class="menu-label" id="side_menu">更新履歴</p><p class="space-bottom">';
+                            echo '<p class="menu-label" id="side_menu">更新履歴</p><p>';
                             echo '<strong>' . (isset($version[0]->name) ? $version[0]->name : "") . '</strong><br>';
                             echo (isset($version[0]->tag_name) ? $version[0]->tag_name : "") . (isset($version[0]->published_at) ? date('(Y/m/d)', strtotime($version[0]->published_at)) : "") . '<br>';
                             echo (isset($version[0]->body) ? nl2br($version[0]->body) : "") . '</p>';
