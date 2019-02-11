@@ -27,6 +27,9 @@
             データ御提供者様(順不同 敬称略)<br>
         </p>
         -->
+        <p>
+            各ユーザーごとのレート値は"ユーザーページ>Technical"からご確認いただけます。
+        </p>
 
         <div id="sort_table" class="table_wrap">
             <table class="table is-narrow user-progress-total-table music-list">
