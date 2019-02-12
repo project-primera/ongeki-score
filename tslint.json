@@ -1,7 +1,0 @@
-{
-    "extends": ["tslint:recommended"],
-    "semicolon": [
-        true,
-        "always"
-    ],
-}
