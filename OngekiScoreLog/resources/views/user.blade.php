@@ -17,6 +17,9 @@
 
 @section('content')
     @component('layouts/components/user/user_status')
+        @slot('badge')
+            {!!$status[0]->badge!!}
+        @endslot
         @slot('name')
             {{$status[0]->name}}
         @endslot

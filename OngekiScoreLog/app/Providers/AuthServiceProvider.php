@@ -38,8 +38,8 @@ class AuthServiceProvider extends ServiceProvider
          *  5: 
          *  4: 
          *  3: 
-         *  2: 
-         *  1:  
+         *  2: Ongeki-Net プレミアムプランユーザー
+         *  1: Ongeki-Net スタンダードプランユーザー
          *  0: 一般ユーザー
          */
         /*

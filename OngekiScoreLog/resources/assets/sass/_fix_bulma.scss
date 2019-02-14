@@ -1,0 +1,13 @@
+b {
+    font-weight: 700;
+}
+
+.level{
+    margin-bottom: -20px;
+}
+
+@media screen and (min-width: 769px){
+    .level{
+        margin-bottom: 10px;
+    }
+}

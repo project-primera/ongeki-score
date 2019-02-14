@@ -1,3 +1,4 @@
+@import "fix_bulma";
 @import "accordion";
 @import "menu_button";
 // @import "sticky_table";
@@ -42,7 +43,7 @@ ol{
     padding-left: 2em;
 }
 
-.space-bottom{
+p{
     margin-bottom: 0.75em;
 }
 
@@ -109,4 +110,27 @@ div.column{
 
 .table-hidden-data{
     display: none;
+}
+
+.music-list{
+    max-width: 650px;
+}
+
+.estimated{
+    color: #00e;
+}
+
+.tag{
+    &.developer{
+        background-color: #3273DC;
+        color: #fff;
+    }
+    &.net-standard{
+        background-color: #2DCCB5;
+        color: #fff;
+    }
+    &.net-premium{
+        background-color: #ED87AC;
+        color: #fff;
+    }
 }
