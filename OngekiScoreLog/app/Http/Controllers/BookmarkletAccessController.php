@@ -39,7 +39,21 @@ class BookmarkletAccessController extends Controller
             if(!is_null($request->input('PlayerData'))){
                 $userStatus = new UserStatus();
                 $userStatus->user_id = Auth::id();
-                $userStatus->fill($request->input('PlayerData'));
+                if(is_null($request->input('PlayerData')['trophy'])){
+                    $userStatus->trophy = "";
+                }else{
+                    $userStatus->trophy = $request->input('PlayerData')['trophy'];
+                }
+                $userStatus->level = $request->input('PlayerData')['level'];
+                $userStatus->name = $request->input('PlayerData')['name'];
+                $userStatus->battle_point = $request->input('PlayerData')['battle_point'];
+                $userStatus->rating = $request->input('PlayerData')['rating'];
+                $userStatus->rating_max = $request->input('PlayerData')['rating_max'];
+                $userStatus->money = $request->input('PlayerData')['money'];
+                $userStatus->total_money = $request->input('PlayerData')['total_money'];
+                $userStatus->total_play = $request->input('PlayerData')['total_play'];
+                $userStatus->comment = $request->input('PlayerData')['comment'];
+                $userStatus->friend_code = $request->input('PlayerData')['friend_code'];
                 $userStatus->unique_id =$uniqueID;
                 $userStatus->save();
             }else{
