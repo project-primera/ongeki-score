@@ -13,7 +13,8 @@ use App\Facades\OngekiUtility;
 class ViewUserController extends Controller
 {
     public function redirectRandomUserPage(){
-        return redirect("/user/" . rand(1, count(User::all())));
+        $users = (new UserStatus())->getRecentAllUserData();
+        return redirect("/user/" . $users[array_rand($users)]->user_id);
     }
 
     public function getMyUserPage(){
