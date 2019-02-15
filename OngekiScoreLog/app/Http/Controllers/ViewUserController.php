@@ -193,7 +193,7 @@ class ViewUserController extends Controller
             $stat['level']["Lv." . $value->level_str][$key] += 1;
 
             // 対応するレベルのオーバーダメージランク総数を追加
-            if(!isset($sta['level']["Lv." . $value->level_str][$value->over_damage_high_score_rank])){
+            if(!isset($stat['level']["Lv." . $value->level_str][$value->over_damage_high_score_rank])){
                 $stat['level']["Lv." . $value->level_str][$value->over_damage_high_score_rank] = 0;
             }
             $stat['level']["Lv." . $value->level_str][$value->over_damage_high_score_rank] += 1;
