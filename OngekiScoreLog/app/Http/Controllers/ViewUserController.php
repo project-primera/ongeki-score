@@ -13,7 +13,8 @@ use App\Facades\OngekiUtility;
 class ViewUserController extends Controller
 {
     public function redirectRandomUserPage(){
-        return redirect("/user/" . rand(1, count(User::all())));
+        $users = (new UserStatus())->getRecentAllUserData();
+        return redirect("/user/" . $users[array_rand($users)]->user_id);
     }
 
     public function getMyUserPage(){
@@ -107,7 +108,7 @@ class ViewUserController extends Controller
         $stat['averageExist'] = $stat['level'];
 
         foreach ($score as $key => $value) {
-            if(!is_null(Auth::user()) && Auth::user()->role >= 2){
+            if($user->role >= 2){
                 $score[$key]->ratingValue = sprintf("%.2f", OngekiUtility::RateValueFromTitle($score[$key]->title, $score[$key]->difficulty, $score[$key]->technical_high_score));
                 $score[$key]->ratingValueRaw = $score[$key]->ratingValue;
                 if(OngekiUtility::IsEstimatedRateValueFromTitle($score[$key]->title, $score[$key]->difficulty, $score[$key]->technical_high_score)){
