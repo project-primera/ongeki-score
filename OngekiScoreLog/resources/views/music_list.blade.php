@@ -16,10 +16,9 @@
             各ユーザーごとのレート値は"ユーザーページ>Technical"からご確認いただけます。
         </p>
         <p>
-            譜面定数が青字斜体のものは推定値です。<br>
+            譜面定数が灰斜体のものは推定値です。<br>
             データをご提供頂ける場合は「ハンドルネーム, 楽曲名, 難易度, 譜面定数」を添えて、以下の連絡先からご連絡いただけますと幸いです。<br>
-            <a href="https://twitter.com/ongeki_score" target="_blank">Twitter@ongeki_score</a><br>
-            <a href="mailto:info&#64;ongeki-score.net">Mail: info&nbsp;(at)&nbsp;ongeki-score.net</a>
+            <a href="https://twitter.com/ongeki_score" target="_blank">Twitter@ongeki_score</a>
         </p>
         <div class="notification">
             <p>

@@ -116,8 +116,14 @@ div.column{
     max-width: 650px;
 }
 
-.estimated{
-    color: #00e;
+.estimated-rating{
+    font-style: italic;
+    color: #aaa;
+}
+
+.max-rating{
+    font-weight: bold; 
+    color: #a00;
 }
 
 .tag{

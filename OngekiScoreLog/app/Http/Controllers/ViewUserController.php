@@ -113,7 +113,9 @@ class ViewUserController extends Controller
                 $score[$key]->ratingValue = sprintf("%.2f", OngekiUtility::RateValueFromTitle($score[$key]->title, $score[$key]->difficulty, $score[$key]->technical_high_score));
                 $score[$key]->ratingValueRaw = $score[$key]->ratingValue;
                 if(OngekiUtility::IsEstimatedRateValueFromTitle($score[$key]->title, $score[$key]->difficulty, $score[$key]->technical_high_score)){
-                    $score[$key]->ratingValue = "<i><span class='estimated'>" . $score[$key]->ratingValue . "</span></i>";
+                    $score[$key]->ratingValue = "<i><span class='estimated-rating'>" . $score[$key]->ratingValue . "</span></i>";
+                }else if($score[$key]->technical_high_score >= 1007500){
+                    $score[$key]->ratingValue = "<i><span class='max-rating'>" . $score[$key]->ratingValue . "</span></i>";
                 }
             }else{
                 $score[$key]->ratingValue = "|||||||||"; 

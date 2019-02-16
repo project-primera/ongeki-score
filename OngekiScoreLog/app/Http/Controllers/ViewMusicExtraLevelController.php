@@ -30,7 +30,7 @@ class ViewMusicExtraLevelController extends Controller
                         $temp['level'] = substr($value[$v[0]], 0, strcspn($value[$v[0]],'.'));
                     }
                     if($value[$v[2]]){
-                        $temp['extra_level'] = "<i><span class='estimated'>" . sprintf('%.1f', $value[$v[1]]) . "</span></i>";
+                        $temp['extra_level'] = "<i><span class='estimated-rating'>" . sprintf('%.1f', $value[$v[1]]) . "</span></i>";
                     }else{
                         $temp['extra_level'] = sprintf('%.1f', $value[$v[1]]);
                     }
