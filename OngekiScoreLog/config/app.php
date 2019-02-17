@@ -166,6 +166,7 @@ return [
          * Original Service Providers...
          */
         App\Providers\OngekiUtilityServiceProvider::class,
+        App\Providers\SlackServiceProvider::class,
     ],
 
     /*
@@ -216,6 +217,7 @@ return [
 
         // Original
         'OngekiUtility' => App\Facades\OngekiUtility::class,
+        'Slack' => App\Facades\Slack::class,
     ],
 
 ];
