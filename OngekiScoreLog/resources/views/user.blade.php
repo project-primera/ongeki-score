@@ -5,6 +5,7 @@
 @section('hero_title', $status[0]->name)
 @section('additional_footer')
     <script type="text/javascript" src="{{ mix('/js/sortTable.js') }}"></script>
+    <script type="text/javascript" src="{{ mix('/js/tableScalable.js') }}"></script>
 @endsection
 
 @section('submenu')

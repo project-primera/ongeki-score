@@ -61,12 +61,5 @@
             既知の軽微な不具合: <a href="https://github.com/Slime-hatena/ProjectPrimera/labels/wontfix" target="_blank">GitHub issue - wontfix</a><br>
             追加予定の機能: <a href="https://github.com/Slime-hatena/ProjectPrimera/labels/enhancement" target="_blank">GitHub issue - enhancement</a>
         </p>
-        <p>
-            <b>
-                現在サーバーからメールが送信できないため、パスワードリセットが出来ません。<br>
-                もしログインできなくなってしまった場合は再度アカウントを作成してください。<br>
-                ご不便をおかけしまして申し訳ございません。
-            </b>
-        </p>
     </div>
 @endsection

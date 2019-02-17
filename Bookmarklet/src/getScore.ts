@@ -11,7 +11,7 @@ import * as qs from 'qs';
 
   const REQUEST_KEY = "?t="
   const PRODUCT_NAME = "Project Primera - getScore.js";
-  const VERSION = "20190208";
+  const VERSION = "20190216";
 
   const SLEEP_MSEC = 2000;
 
@@ -277,7 +277,6 @@ import * as qs from 'qs';
     private async parseRatingRecentMusicData(html: string) {
       var parseHTML = $.parseHTML(html);
       var $basic_btn = $(parseHTML).find(".basic_btn");
-      var count: number = 0;
 
       await $basic_btn.each((key, value) => {
         if ($(value).html().match(/TECHNICAL SCORE/)) {
@@ -304,6 +303,7 @@ import * as qs from 'qs';
       });
     }
   }
+
   class AllData {
     PlayerData: PlayerData = new PlayerData();
     ScoreData: ScoreData = new ScoreData();
@@ -311,6 +311,12 @@ import * as qs from 'qs';
     CharacterFriendlyData: CharacterFriendlyData = new CharacterFriendlyData();
     RatingRecentMusicData: RatingRecentMusicData = new RatingRecentMusicData();
   }
+
+  var sleep = (function(milliseconds: number) {
+    return new Promise<void>(resolve => {
+      setTimeout(() => resolve(), milliseconds);
+    });
+  });
 
   var getToken = (function() {
     let url: string;
@@ -326,108 +332,87 @@ import * as qs from 'qs';
         }
     }
     return url.slice(url.indexOf(REQUEST_KEY) + REQUEST_KEY.length);
-});
-
-function sleep(milliseconds: number) {
-  return new Promise<void>(resolve => {
-    setTimeout(() => resolve(), milliseconds);
-  });
-}
-
-
-let main = async () => {
-  let $overlay = $("<div>").addClass("ongeki_score").attr("style","color:#222; font-size: 1em; padding-top: 120px; width: 100%; height:100%; position: fixed; top: 0; z-index: 1000; background: rgba(0,0,0,0.3);");
-  $("body").append($overlay);
-  var $textarea = $("<div>").attr("style","background-color: #eee; width:480px; height:calc(100% - 120px); margin:0 auto; padding: 0.5em 1em;  overflow-y: scroll;")
-  $overlay.append($textarea);
-
-  $textarea.append(PRODUCT_NAME + " v." + VERSION + "<br>");
-  $textarea.append("スコアを取得します。しばらくお待ち下さい・・・<br><br>");
-  if(NET_DOMAIN != window.location.hostname){
-    $textarea.append("<a href='https://ongeki-net.com'>オンゲキNET</a>で実行してください・・・");
-    return;
-  }
-  let allData: AllData = new AllData();
-
-  $textarea.append("プレイヤーデータを取得します・・・(1/5)<br>");
-  let token: string = getToken();
-
-  await allData.PlayerData.getData();
-  if(allData.PlayerData.level == -1){
-    $textarea.append("プレイヤー情報を取得できませんでした。<br>オンゲキNETにログインしてもう一度実行してください。<br><a href='https://ongeki-net.com'  style='color:#222'>オンゲキNET</a><br><br>ログインしている場合は時間を開けてお試しください。(一定期間にアクセスをしすぎると制限が掛かります)");
-    return;
-  }
-  $textarea.append("完了(1/5)<br>");
-  await sleep(SLEEP_MSEC);
-
-  $textarea.append("スコアデータを取得します・・・(2/5)<br>");
-  await allData.ScoreData.getData();
-  $textarea.append("完了(2/5)<br>");
-  await sleep(SLEEP_MSEC);
-
-  $textarea.append("称号獲得状況を取得します・・・(3/5)<br>");
-  await allData.TrophyData.getData();
-  $textarea.append("完了(3/5)<br>");
-  await sleep(SLEEP_MSEC);
-
-  $textarea.append("キャラクターの親密度情報を取得します・・・(4/5)<br>");
-  await allData.CharacterFriendlyData.getData();
-  $textarea.append("完了(4/5)<br>");
-  await sleep(SLEEP_MSEC);
-
-  $textarea.append("レーティング対象曲情報を取得します・・・(5/5)<br>");
-  await allData.RatingRecentMusicData.getData();
-  $textarea.append("完了(5/5)<br>");
-  await sleep(SLEEP_MSEC);
-
-  console.log(allData);
-
-  $textarea.append("スコアデータを送信します・・・<br><br>");
-  let result = await axios.post(API_URL, qs.stringify(allData), {
-    headers: { 
-      Authorization: "Bearer " + token,
-    }
-  }).catch(error => {
-    if(error.response){
-      $textarea.append("データ送信に失敗しました。お手数をおかけしますが以下のリンクまで以下のデータを添えてご報告をお願い致します。<br><a href='https://twitter.com/ongeki_score' style='color:#222'>Twitter</a> / <a href='https://github.com/Slime-hatena/ProjectPrimera/issues' style='color:#222'>Github issue</a><br>");
-      $textarea.append(error + "<br>");
-      let now = new Date();
-      let today = new Date();
-      $textarea.append((today.getFullYear() + "/" +  (today.getMonth() + 1) + "/" + today.getDate()) + " " + now.toLocaleTimeString() + "<br>");
-      console.log(error.response);
-    }else if(error.response.status === 401){
-      $textarea.append("ユーザー認証に失敗しました。<br>ブックマークレットを再生成してもう一度実行してください。<br><a href='https://ongeki-score.net/bookmarklet' style='color:#222'>ブックマークレットを生成する</a>");
-    }else{
-      $textarea.append("データ送信に失敗しました。お手数をおかけしますが以下のリンクまで以下のデータを添えてご報告をお願い致します。<br><a href='https://twitter.com/ongeki_score' style='color:#222'>Twitter</a> / <a href='https://github.com/Slime-hatena/ProjectPrimera/issues' style='color:#222'>Github issue</a><br>");
-      $textarea.append(error + "<br>");
-      let now = new Date();
-      let today = new Date();
-      $textarea.append((today.getFullYear() + "/" +  (today.getMonth() + 1) + "/" + today.getDate()) + " " + now.toLocaleTimeString() + "<br>");
-      console.log(error.response);
-    }
   });
 
-  if(result === void 0){
-    // catch errorで処理済み
-    return;
-  }
-
-  if(result['data']['info'] == "error"){
-    $textarea.append("データ送信に失敗しました。お手数をおかけしますが以下のリンクまで以下のデータを添えてご報告をお願い致します。<br><a href='https://twitter.com/ongeki_score' style='color:#222'>Twitter</a> / <a href='https://github.com/Slime-hatena/ProjectPrimera/issues' style='color:#222'>Github issue</a><br>");
-    $textarea.append("data: " + result['data']['info'] + "<br>status: " + result['status'] + "<br>");
+  var getErrorMessage = (function(message: string = "") {
     let now = new Date();
     let today = new Date();
-    $textarea.append((today.getFullYear() + "/" +  (today.getMonth() + 1) + "/" + today.getDate()) + " " + now.toLocaleTimeString() + "<br>");
-    console.log(result);
-  }else{
-    $textarea.append(result['data']['info'] + "<br>");
-    $textarea.append(result['data']['result'] + "<br>");
-    $textarea.append("<a href='" + TOOL_URL + "/user/" + result['data']['id'] + "' style='color:#222'>スコアツール ユーザーページ</a><br>");
-    $textarea.append("<a href='" + TOOL_URL + "/user/" + result['data']['id'] + "/progress' style='color:#222'>スコアツール 更新履歴ページ(画像付きツイート機能はこちらから)</a><br><br>");
-    $textarea.append("<a href='" + NET_URL + "/home' style='color:#222'>オンゲキNETに戻る</a>");
+    return "データ送信に失敗しました。" + message + "お手数をおかけしますが以下のリンクまで以下のデータを添えてご報告をお願い致します。<br><a href='https://twitter.com/ongeki_score' style='color:#222'>Twitter</a> / <a href='https://github.com/Slime-hatena/ProjectPrimera/issues' style='color:#222'>Github issue</a><br>" + today.getFullYear() + "/" +  (today.getMonth() + 1) + "/" + today.getDate() + " " + now.toLocaleTimeString();
+  });
+
+
+  let main = async () => {
+    let $overlay = $("<div>").addClass("ongeki_score").attr("style","color:#222; font-size: 1em; padding-top: 120px; width: 100%; height:100%; position: fixed; top: 0; z-index: 1000; background: rgba(0,0,0,0.3);");
+    $("body").append($overlay);
+    var $textarea = $("<div>").attr("style","background-color: #eee; width:480px; height:calc(100% - 120px); margin:0 auto; padding: 0.5em 1em;  overflow-y: scroll;")
+    $overlay.append($textarea);
+
+    $textarea.append(PRODUCT_NAME + " v." + VERSION + "<br>");
+    $textarea.append("スコアを取得します。しばらくお待ち下さい・・・<br><br>");
+    if(NET_DOMAIN != window.location.hostname){
+      $textarea.append("<a href='https://ongeki-net.com'>オンゲキNET</a>で実行してください・・・");
+      return;
+    }
+    let allData: AllData = new AllData();
+
+    $textarea.append("プレイヤーデータを取得します・・・(1/5)<br>");
+    let token: string = getToken();
+
+    await allData.PlayerData.getData();
+    if(allData.PlayerData.level == -1){
+      $textarea.append("プレイヤー情報を取得できませんでした。<br>オンゲキNETにログインしてもう一度実行してください。<br><a href='https://ongeki-net.com'  style='color:#222'>オンゲキNET</a><br><br>ログインしている場合は時間を開けてお試しください。(一定期間にアクセスをしすぎると制限が掛かります)");
+      return;
+    }
+    $textarea.append("完了(1/5)<br>");
+    await sleep(SLEEP_MSEC);
+
+    $textarea.append("スコアデータを取得します・・・(2/5)<br>");
+    await allData.ScoreData.getData();
+    $textarea.append("完了(2/5)<br>");
+    await sleep(SLEEP_MSEC);
+
+    $textarea.append("称号獲得状況を取得します・・・(3/5)<br>");
+    await allData.TrophyData.getData();
+    $textarea.append("完了(3/5)<br>");
+    await sleep(SLEEP_MSEC);
+
+    $textarea.append("キャラクターの親密度情報を取得します・・・(4/5)<br>");
+    await allData.CharacterFriendlyData.getData();
+    $textarea.append("完了(4/5)<br>");
+    await sleep(SLEEP_MSEC);
+
+    $textarea.append("レーティング対象曲情報を取得します・・・(5/5)<br>");
+    await allData.RatingRecentMusicData.getData();
+    $textarea.append("完了(5/5)<br>");
+    await sleep(SLEEP_MSEC);
+
+    console.log(allData);
+    $textarea.append("スコアデータを送信します・・・<br><br>");
+
+    axios.post(API_URL, qs.stringify(allData), {
+      headers: { 
+        Authorization: "Bearer " + token,
+      }
+    }).then(result => {
+      $textarea.append(result['data']['info'] + "<br>");
+      $textarea.append(result['data']['result'] + "<br>");
+      $textarea.append("<a href='" + TOOL_URL + "/user/" + result['data']['id'] + "' style='color:#222'>スコアツール ユーザーページ</a><br>");
+      $textarea.append("<a href='" + TOOL_URL + "/user/" + result['data']['id'] + "/progress' style='color:#222'>スコアツール 更新履歴ページ(画像付きツイート機能はこちらから)</a><br><br>");
+      $textarea.append("<a href='" + NET_URL + "/home' style='color:#222'>オンゲキNETに戻る</a>");
+
+    }).catch(error => {
+      if (error.response != void 0) {
+        // 2xx系エラー
+        $textarea.append(getErrorMessage(error.response));
+      } else if (error.request != void 0) {
+        // 4xx系エラー
+        $textarea.append(getErrorMessage("<br>一度ブックマークレットの再生性をお試しください。解決しない場合は"));
+      } else {
+        // よくわからないエラー
+        $textarea.append(getErrorMessage());
+      }
+    });
   }
-}
 
-main();
-
+  main();
 })();
