@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App;
 use Auth;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class SimpleViewController extends Controller
 {
@@ -29,6 +30,16 @@ class SimpleViewController extends Controller
     public function getLogout(){
         Auth::logout();
         return view('logout');
+    }
+
+    public function index()
+    {
+        adsasdda;
+        return view('top');
+    }
+
+    public function getLogFile($path, $fileName){
+        return (Storage::get('log/' . $path . '/' . $fileName));
     }
 
     /* for debug
