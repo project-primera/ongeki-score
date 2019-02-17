@@ -4,6 +4,7 @@ namespace App\Exceptions;
 
 use Exception;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use App\Facades\Slack;
 
 class Handler extends ExceptionHandler
 {
@@ -34,6 +35,9 @@ class Handler extends ExceptionHandler
      */
     public function report(Exception $exception)
     {
+        if (!env('APP_DEBUG')) {
+            Slack::Critical($exception->getMessage(), $exception->__toString(), ["File" => $exception->getFile(), "Line" => $exception->getLine()], "error");
+        }
         parent::report($exception);
     }
 

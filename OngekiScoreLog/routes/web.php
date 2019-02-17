@@ -39,6 +39,11 @@ Route::get('/logout', 'SimpleViewController@getLogout');
 
 Route::post('/tweet/image', 'TweetController@postTweetImage');
 
+// for admin
+Route::group(['middleware' => ['auth', 'can:admin']], function () {
+    Route::get('/admin/log/{path}/{fileName}', 'SimpleViewController@getLogFile');
+});
+
 /*  for debug
 Route::get('/version/update', 'SimpleViewController@versionUpdate');
 Route::get('/t/{s}', 'SimpleViewController@testTweet');

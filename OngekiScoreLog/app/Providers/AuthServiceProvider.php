@@ -42,10 +42,8 @@ class AuthServiceProvider extends ServiceProvider
          *  1: Ongeki-Net スタンダードプランユーザー
          *  0: 一般ユーザー
          */
-        /*
-        Gate::define('higher_admin', function ($user) {
-            return ($user->role >= 8);
+        Gate::define('admin', function ($user) {
+            return ($user->role >= 7);
         });
-        */
     }
 }

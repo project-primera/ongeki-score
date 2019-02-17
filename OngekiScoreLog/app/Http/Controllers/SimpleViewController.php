@@ -32,12 +32,6 @@ class SimpleViewController extends Controller
         return view('logout');
     }
 
-    public function index()
-    {
-        adsasdda;
-        return view('top');
-    }
-
     public function getLogFile($path, $fileName){
         return (Storage::get('log/' . $path . '/' . $fileName));
     }
