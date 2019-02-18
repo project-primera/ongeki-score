@@ -2,6 +2,9 @@
 namespace App\Services;
 
 class Slack {
+    public function Default(string $content, $fileContent = false, $fields = [], string $type = "", string $name = "LaravelLogger"){
+        (new \App\NotifySlack(""))->notify(new \App\Notifications\SlackNotification($content, $fileContent, $fields, $type, $name));
+    }
     public function Debug(string $content, $fileContent = false, $fields = [], string $type = "", string $name = "LaravelLogger"){
         (new \App\NotifySlack("debug"))->notify(new \App\Notifications\SlackNotification($content, $fileContent, $fields, $type, $name));
     }
