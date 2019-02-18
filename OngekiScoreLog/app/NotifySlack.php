@@ -12,6 +12,7 @@ class NotifySlack extends Model
     
     public function __construct(string $level){
         switch(true) {
+            case (env('APP_DEBUG')):        $this->webhook = env('SLACK_WEBHOOK_URL_DEFAULT');      break;
             case ($level === "debug"):      $this->webhook = env('SLACK_WEBHOOK_URL_DEBUG');        break;
             case ($level === "info"):       $this->webhook = env('SLACK_WEBHOOK_URL_INFO');         break;
             case ($level === "notice"):     $this->webhook = env('SLACK_WEBHOOK_URL_NOTICE');       break;
@@ -20,7 +21,7 @@ class NotifySlack extends Model
             case ($level === "critical"):   $this->webhook = env('SLACK_WEBHOOK_URL_CRITICAL');     break;
             case ($level === "alert"):      $this->webhook = env('SLACK_WEBHOOK_URL_ALERT');        break;
             case ($level === "emergency"):  $this->webhook = env('SLACK_WEBHOOK_URL_EMERGENCY');    break;
-            default:                        $this->webhook = env('SLACK_WEBHOOK_URL_DEFAULT');          break;
+            default:                        $this->webhook = env('SLACK_WEBHOOK_URL_DEFAULT');      break;
         }
     }
 
