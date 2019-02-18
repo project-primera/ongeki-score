@@ -3,7 +3,10 @@
 namespace App\Exceptions;
 
 use Exception;
+use Request;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cookie;
 use App\Facades\Slack;
 
 class Handler extends ExceptionHandler
@@ -35,9 +38,25 @@ class Handler extends ExceptionHandler
      */
     public function report(Exception $exception)
     {
-        if (!env('APP_DEBUG')) {
-            Slack::Critical($exception->getMessage(), $exception->__toString(), ["File" => $exception->getFile(), "Line" => $exception->getLine()], "error");
+        $user = Auth::user();
+        $content = $exception->getMessage() . "\n" . get_class($exception) . "\n" . url()->full();
+        $fileContent = "ip: " . \Request::ip() . "\nUser agent: " . $_SERVER['HTTP_USER_AGENT'] . "\n\nUser:\nid: " . $user->id . "\nemail: " . $user->email . "\nrole: " . $user->role . "\n\nCookie:\n" . var_export(Cookie::get(), true) . "\n\nRequest:\n" . var_export(Request::all(), true) . "\n\n" . $exception->__toString();
+        $fields = ["File" => $exception->getFile(), "Line" => $exception->getLine(), "IP Address" => \Request::ip(), "User id" => $user->id];
+
+        switch (true) {
+            case ($exception instanceof \Symfony\Component\HttpKernel\Exception\NotFoundHttpException):
+                Slack::Warning($content, $fileContent, $fields, "warning");
+                break;
+            
+            case ($exception instanceof \Illuminate\Auth\AuthenticationException):
+                Slack::Notice($content, $fileContent, $fields, "warning");
+                break;
+            
+            default:
+                Slack::Critical($content, $fileContent, $fields, "error");
+                break;
         }
+        
         parent::report($exception);
     }
 
