@@ -1,8 +1,9 @@
 <!DOCTYPE html>
 <html lang="ja">
     <head prefix="og: http://ogp.me/ns# fb: http://ogp.me/ns/fb# article: http://ogp.me/ns/article#">
-        @include('layouts/components/assets/google_analytics')
         <meta charset="utf-8">
+        @include('layouts/components/assets/google_analytics')
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width,initial-scale=1">
         <title>OngekiScoreLog - @yield('title')</title>
         <meta name="description" content="SEGAのアーケード音楽ゲーム「オンゲキ」のスコアを集計し、見やすくソートしたりできる非公式ツールです。他のユーザーにスコアを共有することが出来ます。">
@@ -122,7 +123,7 @@
                         @php
                             $applicationVersion =  new App\ApplicationVersion();
                             $version = $applicationVersion->getLatestVersion();
-                            echo '<p class="menu-label" id="side_menu">更新履歴</p><p>';
+                            echo '<p class="menu-label">更新履歴</p><p>';
                             echo '<b>' . (isset($version[0]->name) ? $version[0]->name : "") . '</b><br>';
                             echo (isset($version[0]->tag_name) ? $version[0]->tag_name : "") . (isset($version[0]->published_at) ? date('(Y/m/d)', strtotime($version[0]->published_at)) : "") . '<br>';
                             echo (isset($version[0]->body) ? nl2br($version[0]->body) : "") . '</p>';

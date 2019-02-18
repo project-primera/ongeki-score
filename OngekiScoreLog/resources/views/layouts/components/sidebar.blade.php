@@ -1,8 +1,8 @@
 <aside class="box">
         {{ $box }}
 </aside>
-<aside class="box menu">
-    <p class="menu-label" id="side_menu">
+<aside class="box menu" id="side_menu">
+    <p class="menu-label">
         メニュー
     </p>
     <ul class="menu-list">
