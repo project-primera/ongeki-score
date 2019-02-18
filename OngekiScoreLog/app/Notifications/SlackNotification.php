@@ -62,8 +62,8 @@ class SlackNotification extends Notification
             $url = url('/admin' . $filePath);
             Storage::put($filePath, $this->fileContent);
 
-            $slack->attachment(function ($attachment) use ($fileName, $url) {
-                $attachment->title($fileName, $url)
+            $slack->attachment(function ($attachment) use ($url) {
+                $attachment->title($url, $url)
                 ->fields($this->fields);
             });
         }
