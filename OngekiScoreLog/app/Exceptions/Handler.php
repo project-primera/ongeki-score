@@ -40,8 +40,15 @@ class Handler extends ExceptionHandler
     {
         $user = Auth::user();
         $content = $exception->getMessage() . "\n" . get_class($exception) . "\n" . url()->full();
-        $fileContent = "ip: " . \Request::ip() . "\nUser agent: " . $_SERVER['HTTP_USER_AGENT'] . "\n\nUser:\nid: " . $user->id . "\nemail: " . $user->email . "\nrole: " . $user->role . "\n\nCookie:\n" . var_export(Cookie::get(), true) . "\n\nRequest:\n" . var_export(Request::all(), true) . "\n\n" . $exception->__toString();
-        $fields = ["File" => $exception->getFile(), "Line" => $exception->getLine(), "IP Address" => \Request::ip(), "User id" => $user->id];
+        $fileContent = "ip: " . \Request::ip() . "\nUser agent: " . $_SERVER['HTTP_USER_AGENT'] . "\nReferer: " . (isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : "N/A") . "\n\n";
+        if(!is_null($user)){
+            $fileContent .= "User:\nid: " . $user->id . "\nemail: " . $user->email . "\nrole: " . $user->role . "\n\n";
+            $fields = ["File" => $exception->getFile(), "Line" => $exception->getLine(), "IP Address" => \Request::ip(), "User id" => $user->id];
+        }else{
+            $fileContent .= "User: N/A\n\n";
+            $fields = ["File" => $exception->getFile(), "Line" => $exception->getLine(), "IP Address" => \Request::ip(), "User id" => "N/A"];
+        }
+        $fileContent .= "Cookie:\n" . var_export(Cookie::get(), true) . "\n\nRequest:\n" . var_export(Request::all(), true) . "\n\n" . $exception->__toString();
 
         switch (true) {
             case ($exception instanceof \Symfony\Component\HttpKernel\Exception\NotFoundHttpException):
@@ -69,6 +76,22 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Exception $exception)
     {
-        return parent::render($request, $exception);
+        if(env('APP_DEBUG')){
+            return parent::render($request, $exception);
+        }
+
+        $user['url'] = url()->full();
+        $user['ip'] = \Request::ip();
+        $user['id'] = !is_null(Auth::user()) ? Auth::user()->id : "N/A";
+        $referer = (isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : null);
+        $compact = compact("referer", "user");
+
+        if($this->isHttpException($exception)){
+            switch(true){
+                case ($exception->getStatusCode() == 404):
+                    return response()->view('errors/404', $compact);
+            }
+        }
+        return response()->view('errors/500', $compact);
     }
 }
