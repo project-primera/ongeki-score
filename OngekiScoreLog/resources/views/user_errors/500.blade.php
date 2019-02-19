@@ -1,11 +1,7 @@
 @extends('layouts.app')
 
-@section('title', 'すべてのユーザー')
-@section('sidemark_alluser', "is-active")
-@section('hero_title', "すべてのユーザー")
-@section('additional_footer')
-    <script type="text/javascript" src="{{ mix('/js/sortAllUserTable.js') }}"></script>
-@endsection
+@section('title', '500 Internal Server Error')
+@section('hero_title', "500 Internal Server Error")
 
 @section('content')
 <div class="container">
@@ -21,7 +17,7 @@
             
             <a href="/">Topページに戻る</a><br>
             @if (!is_null($referer))
-            <a href="{{$referer}}">元のページに戻る</a><br>
+                <a href="{{$referer}}">元のページに戻る</a><br>
             @endif
         </p>
         <p>

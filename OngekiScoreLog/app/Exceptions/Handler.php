@@ -76,22 +76,22 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Exception $exception)
     {
-        if(env('APP_DEBUG')){
+        if(env('APP_DEBUG') && false){
             return parent::render($request, $exception);
-        }
-
-        $user['url'] = url()->full();
-        $user['ip'] = \Request::ip();
-        $user['id'] = !is_null(Auth::user()) ? Auth::user()->id : "N/A";
-        $referer = (isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : null);
-        $compact = compact("referer", "user");
-
-        if($this->isHttpException($exception)){
-            switch(true){
-                case ($exception->getStatusCode() == 404):
-                    return response()->view('errors/404', $compact);
+        }else{
+            $user['url'] = url()->full();
+            $user['ip'] = \Request::ip();
+            $user['id'] = !is_null(Auth::user()) ? Auth::user()->id : "N/A";
+            $referer = (isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : null);
+            $compact = compact("referer", "user");
+    
+            if($this->isHttpException($exception)){
+                switch(true){
+                    case ($exception->getStatusCode() == 404):
+                        return response()->view('user_errors/404', $compact);
+                }
             }
+            return response()->view('user_errors/500', $compact);
         }
-        return response()->view('errors/500', $compact);
     }
 }
