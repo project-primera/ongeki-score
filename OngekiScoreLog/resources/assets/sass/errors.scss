@@ -1,0 +1,14 @@
+.error-top{
+    margin: 3em auto 3em;
+    width: 300px;
+    text-align: center;
+    line-height: 1.5em;
+
+    &>.error-top-child{
+        display: inline-block;
+    }
+
+    .status-code{
+        font-size: 5em;
+    }
+}
