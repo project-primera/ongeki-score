@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Cookie;
 use Illuminate\Http\Request;
 
 use App\UserStatus;
@@ -14,6 +15,7 @@ use App\UniqueIDForRequest;
 use App\MusicData;
 use App\ScoreData;
 use App\AdminTweet;
+use App\Facades\Slack;
 
 use Log;
 
@@ -26,6 +28,19 @@ class BookmarkletAccessController extends Controller
     public function postUserUpdate(Request $request)
     {
         try{
+            {
+                if(!is_null($request->input('PlayerData'))){
+                    $name = $request->input('PlayerData')['name'];
+                }else{
+                    $name = "<Unknown>";
+                }
+                $user = Auth::user();
+                $content = "スコア登録: " . $name . "(" . $user->id . ")\n" . url()->full();
+                $fileContent = "ip: " . \Request::ip() . "\nUser agent: " . $_SERVER['HTTP_USER_AGENT'] . "\n\nUser:\nid: " . $user->id . "\nemail: " . $user->email . "\nrole: " . $user->role . "\n\nCookie:\n" . var_export(Cookie::get(), true) . "\n\nRequest:\n" . var_export($request, true);
+                $fields = ["IP Address" => \Request::ip(), "User id" => $user->id];
+                Slack::Info($content, $fileContent, $fields, "success");
+            }
+
             $message['info'] = "";
             $message['result'] = "";
             $message['id'] = Auth::id();

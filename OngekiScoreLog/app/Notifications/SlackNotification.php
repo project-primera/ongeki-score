@@ -18,6 +18,7 @@ class SlackNotification extends Notification
     private $fields = [];
     private $type;
     private $fileContent;
+    private $level;
 
 
     /**
@@ -25,13 +26,14 @@ class SlackNotification extends Notification
      *
      * @return void
      */
-    public function __construct(string $content, $fileContent, $fields, string $type, string $name)
+    public function __construct(string $content, $fileContent, $fields, string $type, string $name, string $level)
     {
         $this->name = $name;
         $this->content = $content;
         $this->fields = $fields;
         $this->type = $type;
         $this->fileContent = $fileContent;
+        $this->level = $level;
     }
 
     /**
@@ -58,7 +60,7 @@ class SlackNotification extends Notification
             
         if($this->fileContent !== false){
             $fileName = time() . "_" . mt_rand();
-            $filePath = "/log/exceptions/" . $fileName;
+            $filePath = "/log/" . $this->level . "/" . $fileName;
             $url = url('/admin' . $filePath);
             Storage::put($filePath, $this->fileContent);
 
