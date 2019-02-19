@@ -33,7 +33,7 @@ class SimpleViewController extends Controller
     }
 
     public function getLogFile($path, $fileName){
-        return "<html><body>" . str_replace("\n", "<br>", Storage::get('log/' . $path . '/' . $fileName)) . "</body></html>";
+        return "<html><body><div style='font-size: 0.25rem'>\n" . str_replace("\n", "<br>\n", Storage::get('log/' . $path . '/' . $fileName)) . "\n</div></body></html>";
     }
 
     /* for debug
