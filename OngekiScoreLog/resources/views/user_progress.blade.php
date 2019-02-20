@@ -2,7 +2,7 @@
 
 @section('title', $status[0]->name . "の更新差分")
 @section('hero_subtitle', $date['old'] . " → " . $date['new'])
-@section('hero_title', $status[0]->name . "の更新履歴")
+@section('hero_title', $status[0]->name . "の更新差分")
 @section('additional_footer')
     <script type="text/javascript" src="/js/html2canvas.min.js"></script>
     <script type="text/javascript" src="{{ mix('/js/userProgress.js') }}"></script>
@@ -13,7 +13,7 @@
     <li><a href="/user/{{$id}}/details">詳細</a></li>
     <li><a href="/user/{{$id}}/battle">Battle</a></li>
     <li><a href="/user/{{$id}}/technical">Technical</a></li>
-    <li class="is-active"><a href="/user/{{$id}}/progress">更新履歴</a></li>
+    <li class="is-active"><a href="/user/{{$id}}/progress">更新差分</a></li>
 @endsection
 
 @section('content')
