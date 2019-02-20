@@ -37,6 +37,7 @@ Route::get('/changelog', 'SimpleViewController@getChangelog');
 Route::get('/home', 'HomeController@index')->name('home');
 Route::get('/logout', 'SimpleViewController@getLogout');
 
+Route::get('/tweet/image', 'TweetController@getIndex');
 Route::post('/tweet/image', 'TweetController@postTweetImage');
 
 // for admin

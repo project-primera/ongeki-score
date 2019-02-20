@@ -16,6 +16,10 @@ use Log;
 
 class TweetController extends Controller
 {
+    function getIndex(){
+        return redirect("/");
+    }
+
     function postTweetImage(Request $request){
         $user = \Auth::user();
 
