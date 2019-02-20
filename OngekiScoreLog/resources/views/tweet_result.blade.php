@@ -5,7 +5,7 @@
 
 @section('content')
     <article class="box">
-        {{$result}}
+        {!!$result!!}
 
         @if (isset($firstTweetID))
             <script type="text/javascript" src="https://platform.twitter.com/widgets.js"></script>
