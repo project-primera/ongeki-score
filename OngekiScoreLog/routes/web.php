@@ -21,7 +21,7 @@ Route::get('/user/{id}/{mode?}', 'ViewUserController@getUserPage')->where(['id' 
 Route::get('/music', 'ViewMusicExtraLevelController@getIndex');
 
 Route::get('/random', 'ViewUserController@redirectRandomUserPage');
-Route::get('/mypage', 'ViewUserController@getMyUserPage');
+Route::get('/mypage/{path?}', 'ViewUserController@getMyUserPage');
 Route::get('/alluser', 'ViewAllUserController@getIndex');
 
 Route::get('/bookmarklet', 'BookmarkletGenerateController@getIndex');

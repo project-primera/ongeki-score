@@ -17,14 +17,14 @@ class ViewUserController extends Controller
         return redirect("/user/" . $users[array_rand($users)]->user_id);
     }
 
-    public function getMyUserPage(){
+    public function getMyUserPage($path = ""){
         $user = \Auth::user();
 
         if($user == null){
             return view('require');
         }
 
-        return redirect("/user/" . $user->id);
+        return redirect("/user/" . $user->id . "/" . $path);
     }
 
     public function getUserPage($id, $mode = null){

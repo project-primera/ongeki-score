@@ -2,9 +2,7 @@
         {{ $box }}
 </aside>
 <aside class="box menu" id="side_menu">
-    <p class="menu-label">
-        メニュー
-    </p>
+    <p class="menu-label">メニュー</p>
     <ul class="menu-list">
         <li><a href="/" class="@yield('sidemark_top')">トップページ</a></li>
         <li><a href="/howto" class="@yield('sidemark_howto')">使い方</a></li>
@@ -12,20 +10,25 @@
         <li><a href="/random" class="@yield('sidemark_random')">ランダムアクセス</a></li>
         <li><a href="/music" class="@yield('sidemark_music')">楽曲リスト/譜面定数</a></li>
     </ul>
-    <p class="menu-label">
-        ユーザーページ
-    </p>
+    <p class="menu-label">マイページ</p>
     <ul class="menu-list">
-        <li><a href="/mypage">自分のページ</a></li>
-        <li><span class="menu-list-dummy">設定</span>
+        <li><a href="/mypage">簡易表示</a></li>
+        <li><a href="/mypage/details">詳細表示</a></li>
+        <li><a href="/mypage/battle">Battle Score</a></li>
+        <li><a href="/mypage/technical">Technical Score</a></li>
+        <li><a href="/mypage/progress">更新差分</a></li>
+    </ul>
+    <p class="menu-label">設定</p>
+    <ul class="menu-list">
+        <li>
             <ul>
                 <li><a href="/bookmarklet" class="@yield('sidemark_bookmarklet')">ブックマークレットを取得する</a></li>
-                <li><a href="/setting" class="@yield('sidemark_setting')">設定</a></a></li>
+                <li><a href="/setting" class="@yield('sidemark_setting')">その他の設定</a></li>
             </ul>
         </li>
     </ul>
     <ul class="menu-list">
-        <li><a href="/eula" class="@yield('sidemark_eula')">利用規約 / プライバシーポリシー</a></li>
+        <li><a href="/eula" class="@yield('sidemark_eula')">利用規約<br>プライバシーポリシー</a></li>
     </ul>
 </aside>
 <aside class="box">
