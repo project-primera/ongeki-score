@@ -17,20 +17,27 @@ class ViewUserController extends Controller
         return redirect("/user/" . $users[array_rand($users)]->user_id);
     }
 
-    public function getMyUserPage(){
+    public function getMyUserPage($path = ""){
         $user = \Auth::user();
 
         if($user == null){
             return view('require');
         }
 
-        return redirect("/user/" . $user->id);
+        return redirect("/user/" . $user->id . "/" . $path);
     }
 
     public function getUserPage($id, $mode = null){
         $userStatus = new UserStatus();
         $user = User::where('id' ,$id)->first();
         $status = $userStatus->getRecentUserData($id);
+        if(count($status) === 0){
+            if(is_null($user)){
+                abort(404);
+            }else{
+                return view("user_error", ['id' => $id]);
+            }
+        }
         $status[0]->badge = "";
         if($user->role == 7){
             $status[0]->badge .= '&nbsp;<span class="tag developer">ProjectPrimera Developer</span>';
@@ -51,6 +58,24 @@ class ViewUserController extends Controller
 
         $submenuActive = [0 => "", 1 => "", 2 => "", 3 => ""];
 
+        $sidemark = null;
+        if(Auth::check() && \Auth::user()->id == $id){
+            switch (true) {
+                case ($mode === "technical"):
+                    $sidemark = "sidemark_mypage_technical";
+                    break;
+                case ($mode === "battle"):
+                    $sidemark = "sidemark_mypage_battle";
+                    break;
+                case ($mode === "details"):
+                    $sidemark = "sidemark_mypage_details";
+                    break;
+                default:
+                    $sidemark = "sidemark_mypage_default";
+                    break;
+            }
+        }
+        
         switch (true) {
             case ($mode === "technical"):
                 $mode = "song_status_technical";
@@ -69,6 +94,8 @@ class ViewUserController extends Controller
                 $submenuActive[0] = "is-active";
                 break;
         }
+
+        
 
         
         $stat['difficulty'] = [
@@ -319,6 +346,6 @@ class ViewUserController extends Controller
             }
             
         }
-        return view('user', compact('id', 'status', 'score', 'stat', 'mode', 'submenuActive'));
+        return view('user', compact('id', 'status', 'score', 'stat', 'mode', 'submenuActive', 'sidemark'));
     }
 }

@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use App\User;
 use App\UserStatus;
 use App\ScoreData;
 use App\ApplicationVersion;
@@ -19,11 +21,24 @@ class ViewUserProgressController extends Controller
             return $ret;
         }
 
-        $version = (new ApplicationVersion())->getLatestVersion();
-        $version = isset($version[0]->tag_name) ? $version[0]->tag_name : "";
-
         $userStatus = new UserStatus();
         $status = $userStatus->getRecentUserData($id);
+
+        if(count($status) === 0){
+            if(is_null(User::where('id' ,$id)->first())){
+                abort(404);
+            }else{
+                return view("user_error", ['id' => $id]);
+            }
+        }
+
+        $sidemark = null;
+        if(Auth::check() && \Auth::user()->id == $id){
+            $sidemark = "sidemark_mypage_progress";
+        }
+
+        $version = (new ApplicationVersion())->getLatestVersion();
+        $version = isset($version[0]->tag_name) ? $version[0]->tag_name : "";
 
         $oldScoreData = new ScoreData();
         $newScoreData = new ScoreData();
@@ -41,7 +56,7 @@ class ViewUserProgressController extends Controller
                 if(is_null($twitter)){
                     $display['screenName'] = '<p>認証していません。認証は<a href="/setting">こちら</a>。<br><button class="button convert-to-image-button">以下を画像化してツイート</button></p>';
                 }else{
-                    $display['screenName'] = '<p>このアカウントでツイートします: ' . $twitter->screen_name . '</p><form action="/tweet/image" method="post" onsubmit="document.getElementById(\'submit_button\').disabled = true">' . csrf_field() . '<div class="field"><label class="label">ツイートの内容(100文字まで)</label><div class="control"><textarea name="status" class="textarea" maxlength="100">' . $status[0]->name . 'さんの更新履歴 https://ongeki-score.net/user/' . $id . ' #OngekiScoreLog</textarea></div></div><button type="submit" id="submit_button" class="button convert-to-image-button" disabled>以下を画像化してツイート</button></form><p>全ての記録をツイートします。４枚に収まらない場合はインリプライに続きます。(1枚につき7曲)<br><b>初めてこの機能を使用する場合は大量のツイートがされる可能性があります。十分注意して使用いただくようお願いいたします。</b></p>';
+                    $display['screenName'] = '<p>このアカウントでツイートします: ' . $twitter->screen_name . '</p><form action="/tweet/image" method="post" onsubmit="document.getElementById(\'submit_button\').disabled = true">' . csrf_field() . '<div class="field"><label class="label">ツイートの内容(100文字まで)</label><div class="control"><textarea name="status" class="textarea" maxlength="100">' . $status[0]->name . 'さんの更新差分 https://ongeki-score.net/user/' . $id . ' #OngekiScoreLog</textarea></div></div><button type="submit" id="submit_button" class="button convert-to-image-button" disabled>以下を画像化してツイート</button></form><p>全ての記録をツイートします。４枚に収まらない場合はインリプライに続きます。(1枚につき7曲)<br><b>初めてこの機能を使用する場合は大量のツイートがされる可能性があります。十分注意して使用いただくようお願いいたします。</b></p>';
                 }
             }
         }else{
@@ -235,6 +250,6 @@ class ViewUserProgressController extends Controller
         $date['new'] = date("Y/m/d H:i" ,$date['new']);
         $date['old'] = date("Y/m/d H:i" ,$date['old']);
 
-        return view('user_progress', compact('status', 'progress', 'date', 'score', 'version', 'display', 'id'));
+        return view('user_progress', compact('status', 'progress', 'date', 'score', 'version', 'display', 'id', 'sidemark'));
     }
 }

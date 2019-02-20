@@ -7,13 +7,16 @@
     <script type="text/javascript" src="{{ mix('/js/sortTable.js') }}"></script>
     <script type="text/javascript" src="{{ mix('/js/tableScalable.js') }}"></script>
 @endsection
+@if(!is_null($sidemark))
+    @section($sidemark, "is-active")
+@endif
 
 @section('submenu')
     <li class="{{$submenuActive[0]}}"><a href="/user/{{$id}}">簡易</a></li>
     <li class="{{$submenuActive[1]}}"><a href="/user/{{$id}}/details">詳細</a></li>
     <li class="{{$submenuActive[2]}}"><a href="/user/{{$id}}/battle">Battle</a></li>
     <li class="{{$submenuActive[3]}}"><a href="/user/{{$id}}/technical">Technical</a></li>
-    <li><a href="/user/{{$id}}/progress">更新履歴</a></li>
+    <li><a href="/user/{{$id}}/progress">更新差分</a></li>
 @endsection
 
 @section('content')

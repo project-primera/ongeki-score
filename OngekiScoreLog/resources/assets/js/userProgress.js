@@ -14,7 +14,7 @@ $(window).on('load', function(){
             base64 = base64.substring(base64.indexOf(",") + 1);
 
             $('form').append(
-                $('<input type="hidden" name="img[]">').val(base64)
+                $('<input type="hidden" name="img[' + index + ']">').val(base64)
             );
             $('.user-progress').css('width','auto');
 

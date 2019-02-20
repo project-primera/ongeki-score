@@ -13,20 +13,11 @@
             </div>
         </div>
         <p>
-            表示しようとしたページはシステムの不具合で表示できませんでした。<br>
-            
-            <a href="/">Topページに戻る</a><br>
-            @if (!is_null($referer))
-                <a href="{{$referer}}">元のページに戻る</a><br>
-            @endif
+            表示しようとしたページはシステムの不具合で表示できませんでした。
         </p>
         <p>
-            以下の情報を添えてご報告をお願いいたします。<br>
-            URL: {{$user['url']}}<br>
-            IP: {{$user['ip']}}<br>
-            ID: {{$user['id']}}<br>
-            <a href="https://twitter.com/ongeki_score" target="_blank">Twitter@ongeki_score</a><br>
-            <a href="https://github.com/Slime-hatena/ProjectPrimera/issues" target="_blank">GitHub issue</a>
+            <a href="/">Topページに戻る</a><br>
+            <a href="{{url()->previous()}}">元のページに戻る</a><br>
         </p>
     </article>
 </div>

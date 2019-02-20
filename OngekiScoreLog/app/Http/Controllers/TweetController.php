@@ -11,14 +11,20 @@ use mpyw\Cowitter\Client;
 use mpyw\Cowitter\HttpException;
 
 use App\ExternalServiceCoordination;
+use App\Facades\Slack;
 
 use Log;
 
 class TweetController extends Controller
 {
+    function getIndex(){
+        return redirect("/");
+    }
+
     function postTweetImage(Request $request){
         $user = \Auth::user();
 
+        $url = null;
         $firstTweetID = null;
         $tweetID = null;
 
@@ -52,19 +58,22 @@ class TweetController extends Controller
                         'in_reply_to_status_id' => $tweetID
                     ]);
                 }
-
                 $tweetID = $response->id_str;
                 if($firstTweetID == null){
+                    $url = "https://twitter.com/" . $response->user->screen_name . "/status/" . $response->id_str;
                     $firstTweetID = $response->id_str;
                 }
             }
         }catch(\RuntimeException $e){
             Log::debug($e);
-            $result = "ツイートに失敗しました。この画面を添えてご報告いただけますと幸いです。 id: " . $user->id . " / time: " . date(DATE_ATOM);
+            $result = "<p>ツイートに失敗しました。この画面を添えてご報告いただけますと幸いです。<br>id: " . $user->id . " / time: " . date(DATE_ATOM) . "</p>";
             return view("tweet_result", compact('result'));
         }
+
+        Slack::Info("ツイート: (" . $user->id . ") " . $url);
         
-        $result = "以下の内容をツイートしました！画像が４枚を超える場合はインリプライに続きます。(鍵アカウントの場合は表示されませんが正常にツイートされています。)";
+        $result = "<p>以下の内容をツイートしました！画像が４枚を超える場合はインリプライに続きます。(鍵アカウントの場合は表示されませんが正常にツイートされています。)<br><a href='" . $url . "' target='_blank'>Twitterで確認する</a></p>";
+        
         return view("tweet_result", compact('result', 'firstTweetID'));
     }
 }
