@@ -1,11 +1,7 @@
 @extends('layouts.app')
 
-@section('title', 'すべてのユーザー')
-@section('sidemark_alluser', "is-active")
-@section('hero_title', "すべてのユーザー")
-@section('additional_footer')
-    <script type="text/javascript" src="{{ mix('/js/sortAllUserTable.js') }}"></script>
-@endsection
+@section('title', '500 Internal Server Error')
+@section('hero_title', "500 Internal Server Error")
 
 @section('content')
 <div class="container">
@@ -17,7 +13,7 @@
             </div>
         </div>
         <p>
-            表示しようとしたページはシステムの不具合で表示できませんでした。
+            表示しようとしたページは何らかの不具合で表示できませんでした。
         </p>
         <p>
             <a href="/">Topページに戻る</a><br>

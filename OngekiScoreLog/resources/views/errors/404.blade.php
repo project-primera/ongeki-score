@@ -1,11 +1,7 @@
 @extends('layouts.app')
 
-@section('title', 'すべてのユーザー')
-@section('sidemark_alluser', "is-active")
-@section('hero_title', "すべてのユーザー")
-@section('additional_footer')
-    <script type="text/javascript" src="{{ mix('/js/sortAllUserTable.js') }}"></script>
-@endsection
+@section('title', '404 Not Found')
+@section('hero_title', "404 Not Found")
 
 @section('content')
 <div class="container">
