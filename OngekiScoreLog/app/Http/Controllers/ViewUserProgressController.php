@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use App\User;
 use App\UserStatus;
 use App\ScoreData;
 use App\ApplicationVersion;
@@ -20,6 +21,17 @@ class ViewUserProgressController extends Controller
             return $ret;
         }
 
+        $userStatus = new UserStatus();
+        $status = $userStatus->getRecentUserData($id);
+
+        if(count($status) === 0){
+            if(is_null(User::where('id' ,$id)->first())){
+                abort(404);
+            }else{
+                return view("user_error", ['id' => $id]);
+            }
+        }
+
         $sidemark = null;
         if(Auth::check() && \Auth::user()->id == $id){
             $sidemark = "sidemark_mypage_progress";
@@ -27,9 +39,6 @@ class ViewUserProgressController extends Controller
 
         $version = (new ApplicationVersion())->getLatestVersion();
         $version = isset($version[0]->tag_name) ? $version[0]->tag_name : "";
-
-        $userStatus = new UserStatus();
-        $status = $userStatus->getRecentUserData($id);
 
         $oldScoreData = new ScoreData();
         $newScoreData = new ScoreData();

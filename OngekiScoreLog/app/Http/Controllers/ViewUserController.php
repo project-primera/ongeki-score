@@ -31,6 +31,13 @@ class ViewUserController extends Controller
         $userStatus = new UserStatus();
         $user = User::where('id' ,$id)->first();
         $status = $userStatus->getRecentUserData($id);
+        if(count($status) === 0){
+            if(is_null($user)){
+                abort(404);
+            }else{
+                return view("user_error", ['id' => $id]);
+            }
+        }
         $status[0]->badge = "";
         if($user->role == 7){
             $status[0]->badge .= '&nbsp;<span class="tag developer">ProjectPrimera Developer</span>';
