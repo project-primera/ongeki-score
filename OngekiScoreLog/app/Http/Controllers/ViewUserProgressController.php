@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use App\UserStatus;
 use App\ScoreData;
 use App\ApplicationVersion;
@@ -17,6 +18,11 @@ class ViewUserProgressController extends Controller
                 $ret[$value->song_id][$value->difficulty] = $value;
             }
             return $ret;
+        }
+
+        $sidemark = null;
+        if(Auth::check() && \Auth::user()->id == $id){
+            $sidemark = "sidemark_mypage_progress";
         }
 
         $version = (new ApplicationVersion())->getLatestVersion();
@@ -235,6 +241,6 @@ class ViewUserProgressController extends Controller
         $date['new'] = date("Y/m/d H:i" ,$date['new']);
         $date['old'] = date("Y/m/d H:i" ,$date['old']);
 
-        return view('user_progress', compact('status', 'progress', 'date', 'score', 'version', 'display', 'id'));
+        return view('user_progress', compact('status', 'progress', 'date', 'score', 'version', 'display', 'id', 'sidemark'));
     }
 }

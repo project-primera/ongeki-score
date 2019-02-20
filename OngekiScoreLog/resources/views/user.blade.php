@@ -7,6 +7,9 @@
     <script type="text/javascript" src="{{ mix('/js/sortTable.js') }}"></script>
     <script type="text/javascript" src="{{ mix('/js/tableScalable.js') }}"></script>
 @endsection
+@if(!is_null($sidemark))
+    @section($sidemark, "is-active")
+@endif
 
 @section('submenu')
     <li class="{{$submenuActive[0]}}"><a href="/user/{{$id}}">簡易</a></li>

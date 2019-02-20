@@ -51,6 +51,24 @@ class ViewUserController extends Controller
 
         $submenuActive = [0 => "", 1 => "", 2 => "", 3 => ""];
 
+        $sidemark = null;
+        if(Auth::check() && \Auth::user()->id == $id){
+            switch (true) {
+                case ($mode === "technical"):
+                    $sidemark = "sidemark_mypage_technical";
+                    break;
+                case ($mode === "battle"):
+                    $sidemark = "sidemark_mypage_battle";
+                    break;
+                case ($mode === "details"):
+                    $sidemark = "sidemark_mypage_details";
+                    break;
+                default:
+                    $sidemark = "sidemark_mypage_default";
+                    break;
+            }
+        }
+        
         switch (true) {
             case ($mode === "technical"):
                 $mode = "song_status_technical";
@@ -69,6 +87,8 @@ class ViewUserController extends Controller
                 $submenuActive[0] = "is-active";
                 break;
         }
+
+        
 
         
         $stat['difficulty'] = [
@@ -319,6 +339,6 @@ class ViewUserController extends Controller
             }
             
         }
-        return view('user', compact('id', 'status', 'score', 'stat', 'mode', 'submenuActive'));
+        return view('user', compact('id', 'status', 'score', 'stat', 'mode', 'submenuActive', 'sidemark'));
     }
 }
