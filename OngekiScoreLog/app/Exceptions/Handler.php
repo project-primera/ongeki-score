@@ -39,10 +39,10 @@ class Handler extends ExceptionHandler
     public function report(Exception $exception)
     {
         $user = Auth::user();
-        $referrer = isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : "N/A";
-        if(strpos($referrer, "+https://api.slack.com/robots") === false){
+        $ua = isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : "N/A";
+        if(strpos($ua, "+https://api.slack.com/robots") === false){
             $content = $exception->getMessage() . "\n" . get_class($exception) . "\n" . url()->full();
-            $fileContent = "ip: " . \Request::ip() . "\nUser agent: " . $_SERVER['HTTP_USER_AGENT'] . "\nReferer: " . $referrer . "\n\n";
+            $fileContent = "ip: " . \Request::ip() . "\nUser agent: " . $ua . "\nReferer: " . (isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : "N/A") . "\n\n";
             if(!is_null($user)){
                 $fileContent .= "User:\nid: " . $user->id . "\nemail: " . $user->email . "\nrole: " . $user->role . "\n\n";
                 $fields = ["File" => $exception->getFile(), "Line" => $exception->getLine(), "IP Address" => \Request::ip(), "User id" => $user->id];
