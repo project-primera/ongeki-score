@@ -35,7 +35,7 @@ class BookmarkletAccessController extends Controller
                     $name = "<Unknown>";
                 }
                 $user = Auth::user();
-                $content = "スコア登録: " . $name . "(" . $user->id . ")\n" . url()->full();
+                $content = "スコア登録: " . $name . "(" . $user->id . ")\n" . url("/user/" . $user->id);
                 $fileContent = "ip: " . \Request::ip() . "\nUser agent: " . $_SERVER['HTTP_USER_AGENT'] . "\n\nUser:\nid: " . $user->id . "\nemail: " . $user->email . "\nrole: " . $user->role . "\n\nCookie:\n" . var_export(Cookie::get(), true) . "\n\nRequest:\n" . var_export($request, true);
                 $fields = ["IP Address" => \Request::ip(), "User id" => $user->id];
                 Slack::Info($content, $fileContent, $fields, "success");
