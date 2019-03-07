@@ -152,16 +152,28 @@ class ViewUserController extends Controller
             // フィルタ用隠しキー ランプ
             if($value->full_bell && $value->all_break){
                 $score[$key]->rawLamp = "FB+FC+AB";
+                $score[$key]->lamp = "fbfcab";
+                $score[$key]->sortLamp = "5";
             }else if($value->full_bell && $value->full_combo){
                 $score[$key]->rawLamp = "FB+FC";
+                $score[$key]->lamp = "fbfc__";
+                $score[$key]->sortLamp = "3";
             }else if($value->all_break){
                 $score[$key]->rawLamp = "FC+AB";
+                $score[$key]->lamp = "__fcab";
+                $score[$key]->sortLamp = "4";
             }else if($value->full_combo){
                 $score[$key]->rawLamp = "FC";
+                $score[$key]->lamp = "__fc__";
+                $score[$key]->sortLamp = "2";
             }else if($value->full_bell){
                 $score[$key]->rawLamp = "FB";
+                $score[$key]->lamp = "fb____";
+                $score[$key]->sortLamp = "1";
             }else{
                 $score[$key]->rawLamp = "-";
+                $score[$key]->lamp = "______";
+                $score[$key]->sortLamp = "0";
             }
 
             // ソート用隠しキー Technicalランク

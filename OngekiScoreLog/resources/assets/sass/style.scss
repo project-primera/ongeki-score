@@ -81,7 +81,7 @@ td.table-tag{
     }
 
     &.full-combo{
-        background-color: #227223;
+        background-color: #2b922d;
         color: #fff;
     }
 
@@ -92,6 +92,19 @@ td.table-tag{
 
     &.not-light{
         background-color: #666;
+        color: #fff;
+    }
+
+    &.developer{
+        background-color: #3273DC;
+        color: #fff;
+    }
+    &.net-standard{
+        background-color: #2DCCB5;
+        color: #fff;
+    }
+    &.net-premium{
+        background-color: #ED87AC;
         color: #fff;
     }
 }
@@ -126,17 +139,82 @@ div.column{
     color: #a00;
 }
 
-.tag{
-    &.developer{
-        background-color: #3273DC;
-        color: #fff;
+.lamp{
+    $fb: #c1b400;
+    $fc: #2b922d;
+    $ab: #e8822a;
+    $none: #666;
+    $separation: #ccc;
+
+    @function lamp-gradient($isFB, $isFC, $isAB){
+        @return linear-gradient(90deg, 
+            if($isFB == true, $fb, $none) 32%, $separation 32%, $separation 35%, if($isFC == true, $fc, $none) 35%, if($isFC == true, $fc, $none) 65%, $separation 65%, $separation 68%, if($isAB == true, $ab, $none) 68%);
     }
-    &.net-standard{
-        background-color: #2DCCB5;
-        color: #fff;
+
+    &.fbfcab{
+        display: inline-block;
+        width: 3em;
+        height: 1em;
+        // background: linear-gradient(90deg, #c1b400 33%,#2b922d 33%, #2b922d 66%, #e8822a 66%);
+        background: lamp-gradient(true, true, true);
+        border-radius: 0.5em;
     }
-    &.net-premium{
-        background-color: #ED87AC;
-        color: #fff;
+
+    &.__fcab{
+        display: inline-block;
+        width: 3em;
+        height: 1em;
+        background: lamp-gradient(false, true, true);
+        border-radius: 0.5em;
+    }
+
+    &.fb__ab{
+        display: inline-block;
+        width: 3em;
+        height: 1em;
+        background: lamp-gradient(true, false, true);
+        border-radius: 0.5em;
+    }
+
+    &.fbfc__{
+        display: inline-block;
+        width: 3em;
+        height: 1em;
+        background: lamp-gradient(true, true, false);
+        border-radius: 0.5em;
+    }
+
+    &.fb____{
+        display: inline-block;
+        width: 3em;
+        height: 1em;
+        background: lamp-gradient(true, false, false);
+        border-radius: 0.5em;
+    }
+
+    &.__fc__{
+        display: inline-block;
+        width: 3em;
+        height: 1em;
+        background: lamp-gradient(false, true, false);
+        border-radius: 0.5em;
+    }
+
+    &.____ab{
+        display: inline-block;
+        width: 3em;
+        height: 1em;
+        background: lamp-gradient(false, false, true);
+        border-radius: 0.5em;
+    }
+
+    &.______{
+        display: inline-block;
+        width: 3em;
+        height: 1em;
+        background: lamp-gradient(false, false, false);
+        border-radius: 0.5em;
     }
 }
+
+
