@@ -188,4 +188,55 @@ class ScoreData extends Model
     function getMaxGeneration($id){
         return DB::select('SELECT MAX(generation) FROM score_datas WHERE user_id = ?;', [$id])[0]->{"MAX(generation)"};
     }
+    
+    /**
+     * ユーザーのスコアデータのうち Rating新曲枠対象曲をすべて取得します。
+     * @param integer $id 取得するユーザーid
+     * @return 取得したデータ
+     */
+    function getRatingNewUserScore(int $id){
+        $version = env("ONGEKI_VERSION");
+
+        $this->value = DB::select("SELECT * FROM score_datas AS t1 INNER JOIN music_datas ON t1.song_id = music_datas.id
+        WHERE user_id = ? AND (
+            CASE 
+                WHEN difficulty = '10' THEN lunatic_added_version
+                ELSE normal_added_version
+            END
+        ) = ? AND 
+        NOT EXISTS (
+            SELECT * FROM score_datas AS t2
+            WHERE t1.user_id = t2.user_id
+                AND t1.song_id = t2.song_id
+                AND t1.difficulty = t2.difficulty
+                AND t1.updated_at < t2.updated_at
+        )", [$id, $version]);
+        return $this->value;
+    }
+
+    /**
+     * ユーザーのスコアデータのうち、Rating旧曲枠対象曲をすべて取得します。
+     *
+     * @param integer $id 取得するユーザーid
+     * @return 取得したデータ
+     */
+    function getRatingOldUserScore(int $id){
+        $version = env("ONGEKI_VERSION");
+
+        $this->value = DB::select("SELECT * FROM score_datas AS t1 INNER JOIN music_datas ON t1.song_id = music_datas.id
+        WHERE user_id = ? AND (
+            CASE 
+                WHEN difficulty = '10' THEN lunatic_added_version
+                ELSE normal_added_version
+            END
+        ) < ? AND 
+        NOT EXISTS (
+            SELECT * FROM score_datas AS t2
+            WHERE t1.user_id = t2.user_id
+                AND t1.song_id = t2.song_id
+                AND t1.difficulty = t2.difficulty
+                AND t1.updated_at < t2.updated_at
+        )", [$id, $version]);
+        return $this->value;
+    }
 }
