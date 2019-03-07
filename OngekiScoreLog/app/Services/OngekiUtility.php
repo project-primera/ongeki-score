@@ -5,7 +5,7 @@ use App\MusicData;
 
 class OngekiUtility {
 
-    private static $MusicData = null;
+    private static $MusicData = [];
 
     public function IsEstimatedRateValueFromTitle(string $title, $difficulty, int $technicalScore){
         if(is_int($difficulty)){
