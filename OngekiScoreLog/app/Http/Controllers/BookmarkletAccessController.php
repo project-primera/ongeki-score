@@ -21,12 +21,12 @@ use Log;
 
 class BookmarkletAccessController extends Controller
 {
-    // 0 -> origin
-    // 1 -> origin plus
-    const currentVersion = 1;
 
     public function postUserUpdate(Request $request)
     {
+        // 0 -> origin
+        // 1 -> origin plus
+        $currentVersion = env('ONGEKI_VERSION');
         try{
             {
                 if(!is_null($request->input('PlayerData'))){
@@ -162,9 +162,9 @@ class BookmarkletAccessController extends Controller
                             $userStatus->$def = $v['level'];
                             $userStatus->genre = $v['genre'];
                             if($value === "lunatic" && is_null($userStatus->lunatic_added_version)){
-                                $userStatus->lunatic_added_version = self::currentVersion;
+                                $userStatus->lunatic_added_version = $currentVersion;
                             }else if($value !== "lunatic" && is_null($userStatus->normal_added_version)){
-                                $userStatus->normal_added_version = self::currentVersion;
+                                $userStatus->normal_added_version = $currentVersion;
                             }
                             $userStatus->unique_id = $uniqueID;
                             $userStatus->save();
