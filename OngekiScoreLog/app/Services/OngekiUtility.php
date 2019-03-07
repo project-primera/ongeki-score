@@ -7,6 +7,14 @@ class OngekiUtility {
 
     private static $MusicData = null;
 
+    function __construct()	{
+		$temp = (new MusicData())->getEstimateExtraLevel();
+        foreach ($temp as $key => $value) {
+            $this::$MusicData[$value['title']] = $value;
+            unset($this::$MusicData[$value['title']]['title']);
+        }
+}
+
     public function IsEstimatedRateValueFromTitle(string $title, $difficulty, int $technicalScore){
         if(is_int($difficulty)){
             $keys = [
@@ -21,15 +29,8 @@ class OngekiUtility {
             throw new InvalidArgumentException();
         }
 
-        if(is_null($this::$MusicData)){
-            $temp = (new MusicData())->getEstimateExtraLevel();
-            foreach ($temp as $key => $value) {
-                $this::$MusicData[$value['title']] = $value;
-                unset($this::$MusicData[$value['title']]['title']);
-            }
-        }
         if(!array_key_exists($title, $this::$MusicData)){
-            throw new OutOfBoundsException();
+            throw new \OutOfBoundsException();
         }
         return $this::$MusicData[$title][$difficulty];
     }
@@ -49,20 +50,13 @@ class OngekiUtility {
             throw new InvalidArgumentException();
         }
 
-        if(is_null($this::$MusicData)){
-            $temp = (new MusicData())->getEstimateExtraLevel();
-            foreach ($temp as $key => $value) {
-                $this::$MusicData[$value['title']] = $value;
-                unset($this::$MusicData[$value['title']]['title']);
-            }
-        }
         if(!array_key_exists($title, $this::$MusicData)){
-            throw new OutOfBoundsException();
+            throw new \OutOfBoundsException();
         }
         return $this->RateValue($this::$MusicData[$title][$difficulty], $technicalScore);
     }
 
-    public function RateValue(float $extraLevel, int $technicalScore)
+    private function RateValue(float $extraLevel, int $technicalScore)
     {
         if($technicalScore >= 1007500){
             // >= 1007500   定数+2.0    理論値
@@ -80,6 +74,27 @@ class OngekiUtility {
                 $v = 0;
             }
             return $v;
+        }
+    }
+
+    public function GetMusicLevel(string $title, $difficulty, bool $isStr = false){
+        if(is_int($difficulty)){
+            $keys = [
+                0 => "basic_level",
+                1 => "advanced_level",
+                2 => "expert_level",
+                3 => "master_level",
+                10 => "lunatic_level",
+            ];
+            $difficulty = $keys[$difficulty];
+        }
+        if(!array_key_exists($title, $this::$MusicData)){
+            throw new \OutOfBoundsException();
+        }
+        if($isStr){
+            return $this::$MusicData[$title][$difficulty . "_str"];
+        }else{
+            return $this::$MusicData[$title][$difficulty];
         }
     }
 }
