@@ -182,12 +182,12 @@
                 <tbody>
                     @for ($i = 0; $i < $statistics->recentRatingCount; $i++)
                         <tr>
-                            <td>{{$recentScore[$i]->title}}</td>
-                            <td>{{substr($recentScore[$i]->difficulty_str, 0, 3)}}</td>
-                            <td>{{$recentScore[$i]->level_str}}</td>
-                            <td>{{number_format($recentScore[$i]->technical_score)}}</td>
-                            <td>{!!$recentScore[$i]->ratingValue!!}</td>
-                            <td>{{date('Y-m-d', strtotime($recentScore[$i]->updated_at))}}</td>
+                            <td>{{$recentScore[$i]['title']}}</td>
+                            <td>{{substr($recentScore[$i]['difficulty_str'], 0, 3)}}</td>
+                            <td>{{$recentScore[$i]['level_str']}}</td>
+                            <td>{{number_format($recentScore[$i]['technical_score'])}}</td>
+                            <td>{!!$recentScore[$i]['ratingValue']!!}</td>
+                            <td>{{date('Y-m-d', strtotime($recentScore[$i]['updated_at']))}}</td>
                         </tr>
                     @endfor
                 </tbody>
