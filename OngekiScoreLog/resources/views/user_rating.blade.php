@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', $status[0]->name . "の更新差分")
+@section('title', $status[0]->name . "のレーティング情報")
 @section('hero_subtitle', $status[0]->trophy)
 @section('hero_title', $status[0]->name)
 @section('additional_footer')
