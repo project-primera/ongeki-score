@@ -13,9 +13,6 @@ class ViewUserRatingController extends Controller
 {
     function getIndex($id){
         $user = User::where('id' ,$id)->first();
-        if($user->role < 2){
-            echo "todo: みせない";
-        }
 
         $userStatus = new UserStatus();
         $status = $userStatus->getRecentUserData($id);
@@ -24,13 +21,17 @@ class ViewUserRatingController extends Controller
             if(is_null(User::where('id' ,$id)->first())){
                 abort(404);
             }else{
-                return view("user_error", ['id' => $id]);
+                return view("user_error", ['message' => '<p>このユーザーはOngekiScoreLogに登録していますが、オンゲキNETからスコア取得を行っていません。(UserID: ' . $id . ')</p><p>スコアの取得方法は<a href="/howto">こちら</a>をお読みください。</p>']);
             }
         }
 
         $sidemark = null;
         if(Auth::check() && \Auth::user()->id == $id){
             $sidemark = "sidemark_mypage_rating";
+        }
+
+        if($user->role < 2){
+            return view("user_rating_error", compact('id', 'status', 'sidemark'));
         }
 
         $statistics = new \stdClass;
