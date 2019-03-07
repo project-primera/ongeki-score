@@ -192,7 +192,7 @@ class ScoreData extends Model
     /**
      * ユーザーのスコアデータのうち Rating新曲枠対象曲をすべて取得します。
      * @param integer $id 取得するユーザーid
-     * @return 取得したデータ
+     * @return this
      */
     function getRatingNewUserScore(int $id){
         $version = env("ONGEKI_VERSION");
@@ -211,14 +211,14 @@ class ScoreData extends Model
                 AND t1.difficulty = t2.difficulty
                 AND t1.updated_at < t2.updated_at
         )", [$id, $version]);
-        return $this->value;
+        return $this;
     }
 
     /**
      * ユーザーのスコアデータのうち、Rating旧曲枠対象曲をすべて取得します。
      *
      * @param integer $id 取得するユーザーid
-     * @return 取得したデータ
+     * @return this
      */
     function getRatingOldUserScore(int $id){
         $version = env("ONGEKI_VERSION");
@@ -237,6 +237,6 @@ class ScoreData extends Model
                 AND t1.difficulty = t2.difficulty
                 AND t1.updated_at < t2.updated_at
         )", [$id, $version]);
-        return $this->value;
+        return $this;
     }
 }
