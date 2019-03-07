@@ -97,26 +97,6 @@ class ViewUserRatingController extends Controller
         }
         array_multisort(array_column($oldScore, 'rawRatingValue'), SORT_DESC, $oldScore);
 
-        foreach ($recentScore as $key => $value) {
-            $recentScore[$key]->ratingValue = sprintf("%.2f", OngekiUtility::RateValueFromTitle($recentScore[$key]->title, $recentScore[$key]->difficulty, $recentScore[$key]->technical_score));
-            $recentScore[$key]->rawRatingValue = $recentScore[$key]->ratingValue;
-            if(OngekiUtility::IsEstimatedRateValueFromTitle($recentScore[$key]->title, $recentScore[$key]->difficulty, $recentScore[$key]->technical_score)){
-                $recentScore[$key]->ratingValue = "<i><span class='estimated-rating'>" . $recentScore[$key]->ratingValue . "</span></i>";
-            }else if($recentScore[$key]->technical_high_score >= 1007500){
-                $recentScore[$key]->ratingValue = "<i><span class='max-rating'>" . $recentScore[$key]->ratingValue . "</span></i>";
-            }
-            $recentScore[$key]->difficulty_str = $difficultyToStr[$value->difficulty];
-            $recentScore[$key]->level_str = OngekiUtility::GetMusicLevel($recentScore[$key]->title, $recentScore[$key]->difficulty, true);
-
-            $statistics->recentRatingTotal += $recentScore[$key]->rawRatingValue;
-            if($statistics->recentRatingTop < $recentScore[$key]->rawRatingValue){
-                $statistics->recentRatingTop = $recentScore[$key]->rawRatingValue;
-            }
-            if($statistics->recentRatingMin > $recentScore[$key]->rawRatingValue){
-                $statistics->recentRatingMin = $recentScore[$key]->rawRatingValue;
-            }
-        }
-
         for ($i = 0; $i < $statistics->newBestRatingCount; ++$i) { 
             $statistics->newBestRatingTotal += $newScore[$i]->rawRatingValue;
             if($statistics->newBestRatingTop < $newScore[$i]->rawRatingValue){
@@ -134,6 +114,26 @@ class ViewUserRatingController extends Controller
             }
             if($statistics->oldBestRatingMin > $oldScore[$i]->rawRatingValue){
                 $statistics->oldBestRatingMin = $oldScore[$i]->rawRatingValue;
+            }
+        }
+
+        for ($i = 0; $i < $statistics->recentRatingCount; ++$i) { 
+            $recentScore[$i]->ratingValue = sprintf("%.2f", OngekiUtility::RateValueFromTitle($recentScore[$i]->title, $recentScore[$i]->difficulty, $recentScore[$i]->technical_score));
+            $recentScore[$i]->rawRatingValue = $recentScore[$i]->ratingValue;
+            if(OngekiUtility::IsEstimatedRateValueFromTitle($recentScore[$i]->title, $recentScore[$i]->difficulty, $recentScore[$i]->technical_score)){
+                $recentScore[$i]->ratingValue = "<i><span class='estimated-rating'>" . $recentScore[$i]->ratingValue . "</span></i>";
+            }else if($recentScore[$i]->technical_score >= 1007500){
+                $recentScore[$i]->ratingValue = "<i><span class='max-rating'>" . $recentScore[$i]->ratingValue . "</span></i>";
+            }
+            $recentScore[$i]->difficulty_str = $difficultyToStr[$value->difficulty];
+            $recentScore[$i]->level_str = OngekiUtility::GetMusicLevel($recentScore[$i]->title, $recentScore[$i]->difficulty, true);
+
+            $statistics->recentRatingTotal += $recentScore[$i]->rawRatingValue;
+            if($statistics->recentRatingTop < $recentScore[$i]->rawRatingValue){
+                $statistics->recentRatingTop = $recentScore[$i]->rawRatingValue;
+            }
+            if($statistics->recentRatingMin > $recentScore[$i]->rawRatingValue){
+                $statistics->recentRatingMin = $recentScore[$i]->rawRatingValue;
             }
         }
 
