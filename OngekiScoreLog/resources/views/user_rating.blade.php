@@ -23,8 +23,60 @@
 
 @section('content')
     <article class="box">
+        <h3 class="title is-3">レーティング対象曲の内訳</h3>
+        <div class="table_wrap scalable">
+            <table class="table is-striped">
+                <thead>
+                    <tr>
+                        <th></th>
+                        <th>平均値</th>
+                        <th>合計値</th>
+                        <th>対象曲数</th>
+                        <th>Max</th>
+                        <th>Min</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>新曲枠</td>
+                        <td>{{sprintf("%.2f", $statistics->newBestRatingTotal / $statistics->newBestRatingCount)}}</td>
+                        <td>{{sprintf("%.2f", $statistics->newBestRatingTotal)}}</td>
+                        <td>{{$statistics->newBestRatingCount}}</td>
+                        <td>{{sprintf("%.2f", $statistics->newBestRatingTop)}}</td>
+                        <td>{{sprintf("%.2f", $statistics->newBestRatingMin)}}</td>
+                    </tr>
+                    <tr>
+                        <td>ベスト枠</td>
+                        <td>{{sprintf("%.2f", $statistics->oldBestRatingTotal / $statistics->oldBestRatingCount)}}</td>
+                        <td>{{sprintf("%.2f", $statistics->oldBestRatingTotal)}}</td>
+                        <td>{{$statistics->oldBestRatingCount}}</td>
+                        <td>{{sprintf("%.2f", $statistics->oldBestRatingTop)}}</td>
+                        <td>{{sprintf("%.2f", $statistics->oldBestRatingMin)}}</td>
+                    </tr>
+                    <tr>
+                        <td>リーセント枠</td>
+                        <td>{{sprintf("%.2f", $statistics->recentRatingTotal / $statistics->recentRatingCount)}}</td>
+                        <td>{{sprintf("%.2f", $statistics->recentRatingTotal)}}</td>
+                        <td>{{$statistics->recentRatingCount}}</td>
+                        <td>{{sprintf("%.2f", $statistics->recentRatingTop)}}</td>
+                        <td>{{sprintf("%.2f", $statistics->recentRatingMin)}}</td>
+                    </tr>
+                    <tr>
+                        <td>全対象曲</td>
+                        <td>{{sprintf("%.2f", $statistics->totalRatingTotal / $statistics->totalRatingCount)}}</td>
+                        <td>{{sprintf("%.2f", $statistics->totalRatingTotal)}}</td>
+                        <td>{{$statistics->totalRatingCount}}</td>
+                        <td>{{sprintf("%.2f", $statistics->totalRatingTop)}}</td>
+                        <td>{{sprintf("%.2f", $statistics->totalRatingMin)}}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </article>
+    <article class="box">
         <h3 class="title is-3">新曲枠 レーティング対象曲</h3>
-        <div id="sort_table" class="table_wrap scalable">
+        現在のバージョンに追加された楽曲のうち、テクニカルハイスコアから算出されたレート値が高い{{$statistics->newBestRatingCount}}曲が選出されます。
+        <div class="table_wrap scalable">
             <table class="table">
                 <thead>
                     <tr>
@@ -46,7 +98,7 @@
                         <th>Update</th>
                     </tr>
                 </tfoot>
-                <tbody class="list">
+                <tbody>
                     @for ($i = 0; $i < $statistics->newBestRatingCount; $i++)
                         <tr>
                             <td>{{$newScore[$i]->title}}</td>
@@ -63,7 +115,8 @@
     </article>
     <article class="box">
         <h3 class="title is-3">ベスト枠 レーティング対象曲</h3>
-        <div id="sort_table" class="table_wrap scalable">
+        過去のバージョンに追加された楽曲のうち、テクニカルハイスコアから算出されたレート値が高い{{$statistics->oldBestRatingCount}}曲が選出されます。
+        <div class="table_wrap scalable">
             <table class="table">
                 <thead>
                     <tr>
@@ -85,7 +138,7 @@
                         <th>Update</th>
                     </tr>
                 </tfoot>
-                <tbody class="list">
+                <tbody>
                     @for ($i = 0; $i < $statistics->oldBestRatingCount; $i++)
                         <tr>
                             <td>{{$oldScore[$i]->title}}</td>
@@ -102,7 +155,9 @@
     </article>
     <article class="box">
         <h3 class="title is-3">リーセント枠 レーティング対象曲</h3>
-        <div id="sort_table" class="table_wrap scalable">
+        過去にプレイした30曲(?)のうち、レート値が高い{{$statistics->recentRatingCount}}曲が選出されます。<br>
+        ランクSSS(?)以上を取得し、現在のリーセント枠の30位よりもレート値が低い場合はリーセント枠に含まれません。
+        <div class="table_wrap scalable">
             <table class="table">
                 <thead>
                     <tr>
@@ -124,7 +179,7 @@
                         <th>Update</th>
                     </tr>
                 </tfoot>
-                <tbody class="list">
+                <tbody>
                     @for ($i = 0; $i < $statistics->recentRatingCount; $i++)
                         <tr>
                             <td>{{$recentScore[$i]->title}}</td>

@@ -36,11 +36,20 @@ class ViewUserRatingController extends Controller
         $statistics = new \stdClass;
         $statistics->newBestRatingCount = 15;
         $statistics->newBestRatingTotal = 0;
+        $statistics->newBestRatingTop = 0;
+        $statistics->newBestRatingMin = 255;
         $statistics->oldBestRatingCount = 30;
         $statistics->oldBestRatingTotal = 0;
+        $statistics->oldBestRatingTop = 0;
+        $statistics->oldBestRatingMin = 255;
         $statistics->recentRatingCount = 10;
         $statistics->recentRatingTotal = 0;
-        $statistics->topRating = 0;
+        $statistics->recentRatingTop = 0;
+        $statistics->recentRatingMin = 255;
+        $statistics->totalRatingCount = $statistics->newBestRatingCount + $statistics->oldBestRatingCount + $statistics->recentRatingCount;
+        $statistics->totalRatingTotal = 0;
+        $statistics->totalRatingTop = 0;
+        $statistics->totalRatingMin = 255;
         
         $notExistMusic = new \stdClass;
         $notExistMusic->title = "-";
@@ -97,15 +106,40 @@ class ViewUserRatingController extends Controller
             }
             $recentScore[$key]->difficulty_str = $difficultyToStr[$value->difficulty];
             $recentScore[$key]->level_str = OngekiUtility::GetMusicLevel($recentScore[$key]->title, $recentScore[$key]->difficulty, true);
+
+            $statistics->recentRatingTotal += $recentScore[$key]->rawRatingValue;
+            if($statistics->recentRatingTop < $recentScore[$key]->rawRatingValue){
+                $statistics->recentRatingTop = $recentScore[$key]->rawRatingValue;
+            }
+            if($statistics->recentRatingMin > $recentScore[$key]->rawRatingValue){
+                $statistics->recentRatingMin = $recentScore[$key]->rawRatingValue;
+            }
         }
 
         for ($i = 0; $i < $statistics->newBestRatingCount; ++$i) { 
             $statistics->newBestRatingTotal += $newScore[$i]->rawRatingValue;
+            if($statistics->newBestRatingTop < $newScore[$i]->rawRatingValue){
+                $statistics->newBestRatingTop = $newScore[$i]->rawRatingValue;
+            }
+            if($statistics->newBestRatingMin > $newScore[$i]->rawRatingValue){
+                $statistics->newBestRatingMin = $newScore[$i]->rawRatingValue;
+            }
         }
 
         for ($i = 0; $i < $statistics->oldBestRatingCount; ++$i) { 
             $statistics->oldBestRatingTotal += $oldScore[$i]->rawRatingValue;
+            if($statistics->oldBestRatingTop < $oldScore[$i]->rawRatingValue){
+                $statistics->oldBestRatingTop = $oldScore[$i]->rawRatingValue;
+            }
+            if($statistics->oldBestRatingMin > $oldScore[$i]->rawRatingValue){
+                $statistics->oldBestRatingMin = $oldScore[$i]->rawRatingValue;
+            }
         }
+
+        $statistics->totalRatingTotal = $statistics->newBestRatingTotal + $statistics->oldBestRatingTotal + $statistics->recentRatingTotal;
+        $statistics->totalRatingTop = max([$statistics->newBestRatingTop, $statistics->oldBestRatingTop, $statistics->recentRatingTop]);
+        $statistics->totalRatingMin = max([$statistics->newBestRatingMin, $statistics->oldBestRatingMin, $statistics->recentRatingMin]);
+
 
         return view("user_rating", compact('status', 'id', 'sidemark', 'statistics', 'newScore', 'oldScore', 'recentScore'));
     }
