@@ -156,7 +156,7 @@
     <article class="box">
         <h3 class="title is-3">リーセント枠 レーティング対象曲</h3>
         過去にプレイした30曲(?)のうち、レート値が高い{{$statistics->recentRatingCount}}曲が選出されます。<br>
-        ランクSSS(?)以上を取得し、現在のリーセント枠の30位よりもレート値が低い場合はリーセント枠に含まれません。
+        ランクSSS(?)以上を取得し、現在のリーセント枠の最下位よりもレート値が低い場合はリーセント枠に含まれません。
         <div class="table_wrap scalable">
             <table class="table">
                 <thead>
