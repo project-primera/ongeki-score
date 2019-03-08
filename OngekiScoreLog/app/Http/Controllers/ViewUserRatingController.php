@@ -11,6 +11,40 @@ use App\Facades\OngekiUtility;
 
 class ViewUserRatingController extends Controller
 {
+    private $difficultyToStr = [
+        0 => 'Basic',
+        1 => 'Advanced',
+        2 => 'Expert',
+        3 => 'Master',
+        10 => 'Lunatic',
+    ];
+
+    private function editMusicStdClass(\stdClass $stdClass, int $totalMusicCount){
+        // 譜面定数の取得
+        $stdClass->ratingValue = sprintf("%.2f", OngekiUtility::RateValueFromTitle($stdClass->title, $stdClass->difficulty, $stdClass->technical_high_score));
+        $stdClass->rawRatingValue = $stdClass->ratingValue;
+
+        // レート値上昇推定スコア計算
+        $stdClass->extraLevel = OngekiUtility::ExtraLevelFromTitle($stdClass->title, $stdClass->difficulty);
+        $stdClass->targetMusicRateMusic = OngekiUtility::ExpectedScoreFromExtraLevel($stdClass->extraLevel, $stdClass->rawRatingValue + 0.01);
+        if($stdClass->targetMusicRateMusic !== false){
+            $stdClass->targetMusicRateMusic = number_format($stdClass->technical_high_score - $stdClass->targetMusicRateMusic);
+        }
+        $stdClass->targetMusicRateUser = OngekiUtility::ExpectedScoreFromExtraLevel($stdClass->extraLevel, $stdClass->rawRatingValue + sprintf("%.2f", $totalMusicCount / 100));
+        if($stdClass->targetMusicRateUser !== false){
+            $stdClass->targetMusicRateUser = number_format($stdClass->technical_high_score - $stdClass->targetMusicRateUser);
+        }
+
+        // レート値が理論値 / 推定値なら文字装飾
+        if(OngekiUtility::IsEstimatedRateValueFromTitle($stdClass->title, $stdClass->difficulty, $stdClass->technical_high_score)){
+            $stdClass->ratingValue = "<i><span class='estimated-rating'>" . $stdClass->ratingValue . "</span></i>";
+        }else if($stdClass->technical_high_score >= 1007500){
+            $stdClass->ratingValue = "<i><span class='max-rating'>" . $stdClass->ratingValue . "</span></i>";
+        }
+
+        $stdClass->difficulty_str = $this->difficultyToStr[$stdClass->difficulty];
+    }
+
     function getIndex($id){
         $user = User::where('id' ,$id)->first();
 
@@ -59,42 +93,22 @@ class ViewUserRatingController extends Controller
         $notExistMusic->technical_high_score = 0;
         $notExistMusic->technical_score = 0;
         $notExistMusic->ratingValue = "-";
+        $notExistMusic->targetMusicRateMusic = "";
+        $notExistMusic->targetMusicRateUser = "";
         $notExistMusic->updated_at = date("Y/m/d");
 
         $newScore = (new ScoreData())->getRatingNewUserScore($id)->addMusicData();
         $oldScore = (new ScoreData())->getRatingOldUserScore($id)->addMusicData();
-        $recentScore = RatingRecentMusic::where('user_id', $id)->get();
-        $recentScore = json_decode(json_encode($recentScore), true);
-
-        $difficultyToStr = [
-            0 => 'Basic',
-            1 => 'Advanced',
-            2 => 'Expert',
-            3 => 'Master',
-            10 => 'Lunatic',
-        ];
+        $recentScore = json_decode(json_encode(RatingRecentMusic::where('user_id', $id)->get()), true);
 
         foreach ($newScore as $key => $value) {
-            $newScore[$key]->ratingValue = sprintf("%.2f", OngekiUtility::RateValueFromTitle($newScore[$key]->title, $newScore[$key]->difficulty, $newScore[$key]->technical_high_score));
-            $newScore[$key]->rawRatingValue = $newScore[$key]->ratingValue;
-            if(OngekiUtility::IsEstimatedRateValueFromTitle($newScore[$key]->title, $newScore[$key]->difficulty, $newScore[$key]->technical_high_score)){
-                $newScore[$key]->ratingValue = "<i><span class='estimated-rating'>" . $newScore[$key]->ratingValue . "</span></i>";
-            }else if($newScore[$key]->technical_high_score >= 1007500){
-                $newScore[$key]->ratingValue = "<i><span class='max-rating'>" . $newScore[$key]->ratingValue . "</span></i>";
-            }
-            $newScore[$key]->difficulty_str = $difficultyToStr[$value->difficulty];
+            self::editMusicStdClass($value, $statistics->totalRatingCount);
         }
         array_multisort(array_column($newScore, 'rawRatingValue'), SORT_DESC, $newScore);
 
+
         foreach ($oldScore as $key => $value) {
-            $oldScore[$key]->ratingValue = sprintf("%.2f", OngekiUtility::RateValueFromTitle($oldScore[$key]->title, $oldScore[$key]->difficulty, $oldScore[$key]->technical_high_score));
-            $oldScore[$key]->rawRatingValue = $oldScore[$key]->ratingValue;
-            if(OngekiUtility::IsEstimatedRateValueFromTitle($oldScore[$key]->title, $oldScore[$key]->difficulty, $oldScore[$key]->technical_high_score)){
-                $oldScore[$key]->ratingValue = "<i><span class='estimated-rating'>" . $oldScore[$key]->ratingValue . "</span></i>";
-            }else if($oldScore[$key]->technical_high_score >= 1007500){
-                $oldScore[$key]->ratingValue = "<i><span class='max-rating'>" . $oldScore[$key]->ratingValue . "</span></i>";
-            }
-            $oldScore[$key]->difficulty_str = $difficultyToStr[$value->difficulty];
+            self::editMusicStdClass($value, $statistics->totalRatingCount);
         }
         array_multisort(array_column($oldScore, 'rawRatingValue'), SORT_DESC, $oldScore);
 
@@ -138,7 +152,7 @@ class ViewUserRatingController extends Controller
                 }else if($recentScore[$i]['technical_score'] >= 1007500){
                     $recentScore[$i]['ratingValue'] = "<i><span class='max-rating'>" . $recentScore[$i]['ratingValue'] . "</span></i>";
                 }
-                $recentScore[$i]['difficulty_str'] = $difficultyToStr[$recentScore[$i]['difficulty']];
+                $recentScore[$i]['difficulty_str'] = $this->difficultyToStr[$recentScore[$i]['difficulty']];
                 $recentScore[$i]['level_str'] = OngekiUtility::GetMusicLevel($recentScore[$i]['title'], $recentScore[$i]['difficulty'], true);
 
                 $statistics->recentRatingTotal += $recentScore[$i]['rawRatingValue'];

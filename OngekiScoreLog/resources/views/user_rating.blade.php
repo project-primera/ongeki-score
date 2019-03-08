@@ -30,7 +30,6 @@
                     <tr>
                         <th></th>
                         <th>平均値</th>
-                        <th>合計値</th>
                         <th>対象曲数</th>
                         <th>Max</th>
                         <th>Min</th>
@@ -40,7 +39,6 @@
                     <tr>
                         <td>新曲枠</td>
                         <td>{{sprintf("%.2f", $statistics->newBestRatingTotal / $statistics->newBestRatingCount)}}</td>
-                        <td>{{sprintf("%.2f", $statistics->newBestRatingTotal)}}</td>
                         <td>{{$statistics->newBestRatingCount}}</td>
                         <td>{{sprintf("%.2f", $statistics->newBestRatingTop)}}</td>
                         <td>{{sprintf("%.2f", $statistics->newBestRatingMin)}}</td>
@@ -48,7 +46,6 @@
                     <tr>
                         <td>ベスト枠</td>
                         <td>{{sprintf("%.2f", $statistics->oldBestRatingTotal / $statistics->oldBestRatingCount)}}</td>
-                        <td>{{sprintf("%.2f", $statistics->oldBestRatingTotal)}}</td>
                         <td>{{$statistics->oldBestRatingCount}}</td>
                         <td>{{sprintf("%.2f", $statistics->oldBestRatingTop)}}</td>
                         <td>{{sprintf("%.2f", $statistics->oldBestRatingMin)}}</td>
@@ -56,7 +53,6 @@
                     <tr>
                         <td>リーセント枠</td>
                         <td>{{sprintf("%.2f", $statistics->recentRatingTotal / $statistics->recentRatingCount)}}</td>
-                        <td>{{sprintf("%.2f", $statistics->recentRatingTotal)}}</td>
                         <td>{{$statistics->recentRatingCount}}</td>
                         <td>{{sprintf("%.2f", $statistics->recentRatingTop)}}</td>
                         <td>{{sprintf("%.2f", $statistics->recentRatingMin)}}</td>
@@ -64,7 +60,6 @@
                     <tr>
                         <td>全対象曲</td>
                         <td>{{sprintf("%.2f", $statistics->totalRatingTotal / $statistics->totalRatingCount)}}</td>
-                        <td>{{sprintf("%.2f", $statistics->totalRatingTotal)}}</td>
                         <td>{{$statistics->totalRatingCount}}</td>
                         <td>{{sprintf("%.2f", $statistics->totalRatingTop)}}</td>
                         <td>{{sprintf("%.2f", $statistics->totalRatingMin)}}</td>
@@ -85,7 +80,8 @@
                         <th>Lv</th>
                         <th><abbr title="Technical Score">TS</abbr></th>
                         <th>Rate</th>
-                        <th>Update</th>
+                        <th><abbr title="この曲のレート値が0.01上昇するために必要なスコアです">+0.01</abbr></th>
+                        <th><abbr title="1曲のみでユーザーのレート値が0.01上昇するために必要なスコアです">+{{sprintf("%.2f", $statistics->totalRatingCount / 100)}}</abbr></th>
                     </tr>
                 </thead>
                 <tfoot>
@@ -95,7 +91,8 @@
                         <th>Lv</th>
                         <th><abbr title="Technical Score">TS</abbr></th>
                         <th>Rate</th>
-                        <th>Update</th>
+                        <th><abbr title="この曲のレート値が0.01上昇するために必要なスコアです">+0.01</abbr></th>
+                        <th><abbr title="1曲のみでユーザーのレート値が0.01上昇するために必要なスコアです">+{{sprintf("%.2f", $statistics->totalRatingCount / 100)}}</abbr></th>
                     </tr>
                 </tfoot>
                 <tbody>
@@ -106,7 +103,8 @@
                             <td>{{$newScore[$i]->level_str}}</td>
                             <td>{{number_format($newScore[$i]->technical_high_score)}}</td>
                             <td>{!!$newScore[$i]->ratingValue!!}</td>
-                            <td>{{date('Y-m-d', strtotime($newScore[$i]->updated_at))}}</td>
+                            <td>{{$newScore[$i]->targetMusicRateMusic}}</td>
+                            <td>{{$newScore[$i]->targetMusicRateUser}}</td>
                         </tr>
                     @endfor
                 </tbody>
@@ -125,7 +123,8 @@
                         <th>Lv</th>
                         <th><abbr title="Technical Score">TS</abbr></th>
                         <th>Rate</th>
-                        <th>Update</th>
+                        <th><abbr title="この曲のレート値が0.01上昇するために必要なスコアです">+0.01</abbr></th>
+                        <th><abbr title="1曲のみでユーザーのレート値が0.01上昇するために必要なスコアです">+{{sprintf("%.2f", $statistics->totalRatingCount / 100)}}</abbr></th>
                     </tr>
                 </thead>
                 <tfoot>
@@ -135,7 +134,8 @@
                         <th>Lv</th>
                         <th><abbr title="Technical Score">TS</abbr></th>
                         <th>Rate</th>
-                        <th>Update</th>
+                        <th><abbr title="この曲のレート値が0.01上昇するために必要なスコアです">+0.01</abbr></th>
+                        <th><abbr title="1曲のみでユーザーのレート値が0.01上昇するために必要なスコアです">+{{sprintf("%.2f", $statistics->totalRatingCount / 100)}}</abbr></th>
                     </tr>
                 </tfoot>
                 <tbody>
@@ -146,7 +146,8 @@
                             <td>{{$oldScore[$i]->level_str}}</td>
                             <td>{{number_format($oldScore[$i]->technical_high_score)}}</td>
                             <td>{!!$oldScore[$i]->ratingValue!!}</td>
-                            <td>{{date('Y-m-d', strtotime($oldScore[$i]->updated_at))}}</td>
+                            <td>{{$oldScore[$i]->targetMusicRateMusic}}</td>
+                            <td>{{$oldScore[$i]->targetMusicRateUser}}</td>
                         </tr>
                     @endfor
                 </tbody>
@@ -166,7 +167,6 @@
                         <th>Lv</th>
                         <th><abbr title="Technical Score">TS</abbr></th>
                         <th>Rate</th>
-                        <th>Update</th>
                     </tr>
                 </thead>
                 <tfoot>
@@ -176,7 +176,6 @@
                         <th>Lv</th>
                         <th><abbr title="Technical Score">TS</abbr></th>
                         <th>Rate</th>
-                        <th>Update</th>
                     </tr>
                 </tfoot>
                 <tbody>
@@ -187,7 +186,6 @@
                             <td>{{$recentScore[$i]['level_str']}}</td>
                             <td>{{number_format($recentScore[$i]['technical_score'])}}</td>
                             <td>{!!$recentScore[$i]['ratingValue']!!}</td>
-                            <td>{{date('Y-m-d', strtotime($recentScore[$i]['updated_at']))}}</td>
                         </tr>
                     @endfor
                 </tbody>
