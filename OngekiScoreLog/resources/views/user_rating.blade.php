@@ -22,8 +22,9 @@
 
 
 @section('content')
-    <article class="box">
-        <h3 class="title is-3">レーティング対象曲の内訳</h3>
+    <article id="rating_statistics" class="box">
+        <h3 class="title is-3">レーティング対象曲の内訳</h3><br>
+        <a href="#rating_new">▼新曲枠</a>&nbsp;/&nbsp;<a href="#rating_old">▼ベスト枠</a>&nbsp;/&nbsp;<a href="#rating_recent">▼リーセント枠</a><br>
         <div class="table_wrap scalable">
             <table class="table is-striped">
                 <thead>
@@ -68,8 +69,9 @@
             </table>
         </div>
     </article>
-    <article class="box">
+    <article id="rating_new" class="box">
         <h3 class="title is-3">新曲枠 レーティング対象曲</h3>
+        <a href="#rating_statistics">▲内訳</a>&nbsp;/&nbsp;<a href="#rating_old">▼ベスト枠</a>&nbsp;/&nbsp;<a href="#rating_recent">▼リーセント枠</a><br>
         現在のバージョンに追加された楽曲のうち、テクニカルハイスコアから算出されたレート値が高い{{$statistics->newBestRatingCount}}曲が選出されます。
         <div class="table_wrap scalable">
             <table class="table">
@@ -111,8 +113,9 @@
             </table>
         </div>
     </article>
-    <article class="box">
+    <article id="rating_old" class="box">
         <h3 class="title is-3">ベスト枠 レーティング対象曲</h3>
+        <a href="#rating_statistics">▲内訳</a>&nbsp;/&nbsp;<a href="#rating_new">▲新曲枠</a>&nbsp;/&nbsp;<a href="#rating_recent">▼リーセント枠</a><br>
         過去のバージョンに追加された楽曲のうち、テクニカルハイスコアから算出されたレート値が高い{{$statistics->oldBestRatingCount}}曲が選出されます。
         <div class="table_wrap scalable">
             <table class="table">
@@ -154,8 +157,9 @@
             </table>
         </div>
     </article>
-    <article class="box">
+    <article id="rating_recent" class="box">
         <h3 class="title is-3">リーセント枠 レーティング対象曲</h3>
+        <a href="#rating_statistics">▲内訳</a>&nbsp;/&nbsp;<a href="#rating_new">▲新曲枠</a>&nbsp;/&nbsp;<a href="#rating_old">▲ベスト枠</a><br>
         過去にプレイした30曲(?)のうち、レート値が高い{{$statistics->recentRatingCount}}曲が選出されます。<br>
         ランクSSS(?)以上を取得し、現在のリーセント枠の最下位よりもレート値が低い場合はリーセント枠に含まれません。
         <div class="table_wrap scalable">
