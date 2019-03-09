@@ -48,8 +48,8 @@
                     <th>Lv</th>
                     <th><abbr title="Technical Score">TS</abbr></th>
                     <th>Rate</th>
-                    <th><abbr title="この曲のレート値が0.01上昇するために必要なスコアです">+0.01</abbr></th>
-                    <th><abbr title="1曲のみでユーザーのレート値が0.01上昇するために必要なスコアです">+{{sprintf("%.2f", $statistics->totalRatingCount / 100)}}</abbr></th>
+                    <th><abbr title="同枠楽曲のレート値で一番低いものとの差です">レート差</abbr></th>
+                    <th><abbr title="レーティング対象曲に入るために必要なスコアです">必要スコア</abbr></th>
                 </tr>
             </thead>
             <tfoot>
@@ -59,8 +59,8 @@
                     <th>Lv</th>
                     <th><abbr title="Technical Score">TS</abbr></th>
                     <th>Rate</th>
-                    <th><abbr title="この曲のレート値が0.01上昇するために必要なスコアです">+0.01</abbr></th>
-                    <th><abbr title="1曲のみでユーザーのレート値が0.01上昇するために必要なスコアです">+{{sprintf("%.2f", $statistics->totalRatingCount / 100)}}</abbr></th>
+                    <th><abbr title="同枠楽曲のレート値で一番低いものとの差です">レート差</abbr></th>
+                    <th><abbr title="レーティング対象曲に入るために必要なスコアです">必要スコア</abbr></th>
                 </tr>
             </tfoot>
             <tbody>
@@ -71,8 +71,8 @@
                         <td>{{$array[$i]->level_str}}</td>
                         <td>{{number_format($array[$i]->technical_high_score)}}</td>
                         <td>{!!$array[$i]->ratingValue!!}</td>
-                        <td>{{$array[$i]->targetMusicRateMusic}}</td>
-                        <td>{{$array[$i]->targetMusicRateUser}}</td>
+                        <td>{{sprintf("%.2f", $array[$i]->minDifferenceRate)}}</td>
+                        <td>{{$array[$i]->minDifferenceScore}}</td>
                     </tr>
                 @endfor
             </tbody>

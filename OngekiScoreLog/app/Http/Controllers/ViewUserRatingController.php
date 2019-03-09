@@ -93,6 +93,7 @@ class ViewUserRatingController extends Controller
         $notExistMusic->technical_high_score = 0;
         $notExistMusic->technical_score = 0;
         $notExistMusic->ratingValue = "-";
+        $notExistMusic->rawRatingValue = 0;
         $notExistMusic->targetMusicRateMusic = "";
         $notExistMusic->targetMusicRateUser = "";
         $notExistMusic->updated_at = date("Y/m/d");
@@ -101,17 +102,19 @@ class ViewUserRatingController extends Controller
         $oldScore = (new ScoreData())->getRatingOldUserScore($id)->addMusicData();
         $recentScore = json_decode(json_encode(RatingRecentMusic::where('user_id', $id)->get()), true);
 
+        // 新曲枠のレート計算
         foreach ($newScore as $key => $value) {
             self::editMusicStdClass($value, $statistics->totalRatingCount);
         }
         array_multisort(array_column($newScore, 'rawRatingValue'), SORT_DESC, $newScore);
 
-
+        // 旧曲枠のレート計算
         foreach ($oldScore as $key => $value) {
             self::editMusicStdClass($value, $statistics->totalRatingCount);
         }
         array_multisort(array_column($oldScore, 'rawRatingValue'), SORT_DESC, $oldScore);
 
+        // 新曲枠対象曲 統計情報の処理
         for ($i = 0; $i < $statistics->newBestRatingCount; ++$i) {
             if(!array_key_exists($i, $newScore)){
                 $newScore[] = $notExistMusic;
@@ -126,6 +129,7 @@ class ViewUserRatingController extends Controller
             }
         }
 
+        // 旧曲枠対象曲 統計情報の処理
         for ($i = 0; $i < $statistics->oldBestRatingCount; ++$i) { 
             if(!array_key_exists($i, $oldScore)){
                 $oldScore[] = $notExistMusic;
@@ -140,6 +144,29 @@ class ViewUserRatingController extends Controller
             }
         }
 
+        // 新曲枠対象外曲 統計情報の処理
+        for ($i = $statistics->newBestRatingCount; $i < count($newScore); ++$i) {
+            $newScore[$i]->minDifferenceRate = $newScore[$i]->rawRatingValue - $statistics->newBestRatingMin;
+            $newScore[$i]->minDifferenceScore = OngekiUtility::ExpectedScoreFromExtraLevel($newScore[$i]->extraLevel, $statistics->newBestRatingMin);
+            if($newScore[$i]->minDifferenceScore !== false){
+                $newScore[$i]->minDifferenceScore = number_format($newScore[$i]->technical_high_score - $newScore[$i]->minDifferenceScore);
+            }else{
+                $newScore[$i]->minDifferenceScore = "";
+            }
+        }
+
+        // 旧曲枠対象外曲 統計情報の処理
+        for ($i = $statistics->oldBestRatingCount; $i < count($oldScore); ++$i) {
+            $oldScore[$i]->minDifferenceRate = $oldScore[$i]->rawRatingValue - $statistics->oldBestRatingMin;
+            $oldScore[$i]->minDifferenceScore = OngekiUtility::ExpectedScoreFromExtraLevel($oldScore[$i]->extraLevel, $statistics->oldBestRatingMin);
+            if($oldScore[$i]->minDifferenceScore !== false){
+                $oldScore[$i]->minDifferenceScore = number_format($oldScore[$i]->technical_high_score - $oldScore[$i]->minDifferenceScore);
+            }else{
+                $oldScore[$i]->minDifferenceScore = "";
+            }
+        }
+
+        // リーセント枠のレート計算
         $notExistMusic = json_decode(json_encode($notExistMusic), true);
         for ($i = 0; $i < $statistics->recentRatingCount; ++$i) { 
             if(!array_key_exists($i, $recentScore)){
