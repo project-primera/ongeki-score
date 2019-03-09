@@ -25,7 +25,7 @@
     <article id="rating_statistics" class="box">
         <h3 class="title is-3">レーティング対象曲の内訳</h3>
         <p>
-            <a href="#rating_new">▼新曲枠</a>&nbsp;/&nbsp;<a href="#rating_old">▼ベスト枠</a>&nbsp;/&nbsp;<a href="#rating_recent">▼リーセント枠</a>
+            ■内訳&nbsp;/&nbsp;<a href="#rating_new">▼新曲枠</a>&nbsp;/&nbsp;<a href="#rating_old">▼ベスト枠</a>&nbsp;/&nbsp;<a href="#rating_recent">▼リーセント枠</a>
         </p>
         <div class="table_wrap scalable">
             <table class="table is-striped">
@@ -75,25 +75,35 @@
             現在のスコアデータのうち、最大レートの曲でリーセント枠を全て埋めたときの値です。
         </p>
     </article>
+
     <article id="rating_new" class="box">
-        <h3 class="title is-3">新曲枠 レーティング対象曲</h3>
-        <a href="#rating_statistics">▲内訳</a>&nbsp;/&nbsp;<a href="#rating_old">▼ベスト枠</a>&nbsp;/&nbsp;<a href="#rating_recent">▼リーセント枠</a><br>
-        現在のバージョンに追加された楽曲のうち、テクニカルハイスコアから算出されたレート値が高い{{$statistics->newBestRatingCount}}曲が選出されます。
-        @component('layouts/components/user_rating/rating_best_table', ['array' => $newScore, 'statistics' => $statistics])
+        <h3 class="title is-3">新曲枠</h3>
+        <p>
+            <a href="#rating_statistics">▲内訳</a>&nbsp;/&nbsp;■新曲枠&nbsp;/&nbsp;<a href="#rating_old">▼ベスト枠</a>&nbsp;/&nbsp;<a href="#rating_recent">▼リーセント枠</a><br>
+            現在のバージョンに追加された楽曲のうち、テクニカルハイスコアから算出されたレート値が高い{{$statistics->newBestRatingCount}}曲が選出されます。
+        </p>
+        @component('layouts/components/user_rating/rating_best_table', ['array' => $newScore, 'statistics' => $statistics, 'start' => 0, 'targetCount' => $statistics->newBestRatingCount, 'end' => count($newScore)])
         @endcomponent
     </article>
+
     <article id="rating_old" class="box">
-        <h3 class="title is-3">ベスト枠 レーティング対象曲</h3>
-        <a href="#rating_statistics">▲内訳</a>&nbsp;/&nbsp;<a href="#rating_new">▲新曲枠</a>&nbsp;/&nbsp;<a href="#rating_recent">▼リーセント枠</a><br>
-        過去のバージョンに追加された楽曲のうち、テクニカルハイスコアから算出されたレート値が高い{{$statistics->oldBestRatingCount}}曲が選出されます。
-        @component('layouts/components/user_rating/rating_best_table', ['array' => $oldScore, 'statistics' => $statistics])
+        <h3 class="title is-3">ベスト枠</h3>
+        <p>
+            <a href="#rating_statistics">▲内訳</a>&nbsp;/&nbsp;<a href="#rating_new">▲新曲枠</a>&nbsp;/&nbsp;■ベスト枠&nbsp;/&nbsp;<a href="#rating_recent">▼リーセント枠</a><br>
+            過去のバージョンに追加された楽曲のうち、テクニカルハイスコアから算出されたレート値が高い{{$statistics->oldBestRatingCount}}曲が選出されます。
+        </p>
+        @component('layouts/components/user_rating/rating_best_table', ['array' => $oldScore, 'statistics' => $statistics, 'start' => 0, 'targetCount' => $statistics->oldBestRatingCount, 'end' => count($oldScore)])
         @endcomponent
     </article>
+
     <article id="rating_recent" class="box">
-        <h3 class="title is-3">リーセント枠 レーティング対象曲</h3>
-        <a href="#rating_statistics">▲内訳</a>&nbsp;/&nbsp;<a href="#rating_new">▲新曲枠</a>&nbsp;/&nbsp;<a href="#rating_old">▲ベスト枠</a><br>
-        過去にプレイした30曲(?)のうち、レート値が高い{{$statistics->recentRatingCount}}曲が選出されます。<br>
-        ランクSSS(?)以上を取得し、現在のリーセント枠の最下位よりもレート値が低い場合はリーセント枠に含まれません。
+        <h3 class="title is-3">リーセント枠</h3>
+        <h4 class="title is-4">レーティング対象曲</h4>
+        <p>
+            <a href="#rating_statistics">▲内訳</a>&nbsp;/&nbsp;<a href="#rating_new">▲新曲枠</a>&nbsp;/&nbsp;<a href="#rating_old">▲ベスト枠</a>&nbsp;/&nbsp;■リーセント枠<br>
+            過去にプレイした30曲(?)のうち、レート値が高い{{$statistics->recentRatingCount}}曲が選出されます。<br>
+            ランクSSS(?)以上を取得し、現在のリーセント枠の最下位よりもレート値が低い場合はリーセント枠に含まれません。
+        </p>
         <div class="table_wrap scalable">
             <table class="table">
                 <thead>
@@ -103,6 +113,7 @@
                         <th>Lv</th>
                         <th><abbr title="Technical Score">TS</abbr></th>
                         <th>Rate</th>
+                        <th>最大レートとの差</th>
                     </tr>
                 </thead>
                 <tfoot>
@@ -112,6 +123,7 @@
                         <th>Lv</th>
                         <th><abbr title="Technical Score">TS</abbr></th>
                         <th>Rate</th>
+                        <th>最大レートとの差</th>
                     </tr>
                 </tfoot>
                 <tbody>
@@ -122,6 +134,7 @@
                             <td>{{$recentScore[$i]['level_str']}}</td>
                             <td>{{number_format($recentScore[$i]['technical_score'])}}</td>
                             <td>{!!$recentScore[$i]['ratingValue']!!}</td>
+                            <td>{{sprintf("%.2f", $recentScore[$i]['rawRatingValue'] - $statistics->totalRatingTop)}}</td>
                         </tr>
                     @endfor
                 </tbody>
