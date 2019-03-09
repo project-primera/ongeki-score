@@ -6,8 +6,24 @@ b {
     margin-bottom: -20px;
 }
 
+.columns{
+    margin-left: 0;
+    margin-right: 0;
+}
+
+.column{
+    padding-left: 0;
+    padding-right: 0;
+}
+
 @media screen and (min-width: 769px){
     .level{
         margin-bottom: 10px;
     }
+
+    .column{
+        padding-left: 10px;
+        padding-right: 10px;
+    }
+    
 }
