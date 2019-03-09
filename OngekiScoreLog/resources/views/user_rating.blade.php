@@ -23,9 +23,9 @@
 
 @section('content')
     <article id="rating_statistics" class="box">
-        <h3 class="title is-3">レーティング対象曲の内訳</h3>
+        <h3 class="title is-3">レーティング対象曲の統計</h3>
         <p>
-            ■内訳&nbsp;/&nbsp;<a href="#rating_new">▼新曲枠</a>&nbsp;/&nbsp;<a href="#rating_old">▼ベスト枠</a>&nbsp;/&nbsp;<a href="#rating_recent">▼リーセント枠</a>
+            ■統計&nbsp;/&nbsp;<a href="#rating_new">▼新曲枠</a>&nbsp;/&nbsp;<a href="#rating_old">▼ベスト枠</a>&nbsp;/&nbsp;<a href="#rating_recent">▼リーセント枠</a>
         </p>
         <div class="table_wrap scalable">
             <table class="table is-striped">
@@ -79,7 +79,7 @@
     <article id="rating_new" class="box">
         <h3 class="title is-3">新曲枠</h3>
         <p>
-            <a href="#rating_statistics">▲内訳</a>&nbsp;/&nbsp;■新曲枠&nbsp;/&nbsp;<a href="#rating_old">▼ベスト枠</a>&nbsp;/&nbsp;<a href="#rating_recent">▼リーセント枠</a><br>
+            <a href="#rating_statistics">▲統計</a>&nbsp;/&nbsp;■新曲枠&nbsp;/&nbsp;<a href="#rating_old">▼ベスト枠</a>&nbsp;/&nbsp;<a href="#rating_recent">▼リーセント枠</a><br>
             現在のバージョンに追加された楽曲のうち、テクニカルハイスコアから算出されたレート値が高い{{$statistics->newBestRatingCount}}曲が選出されます。
         </p>
         @component('layouts/components/user_rating/rating_best_table', ['array' => $newScore, 'statistics' => $statistics, 'start' => 0, 'targetCount' => $statistics->newBestRatingCount, 'end' => count($newScore)])
@@ -89,7 +89,7 @@
     <article id="rating_old" class="box">
         <h3 class="title is-3">ベスト枠</h3>
         <p>
-            <a href="#rating_statistics">▲内訳</a>&nbsp;/&nbsp;<a href="#rating_new">▲新曲枠</a>&nbsp;/&nbsp;■ベスト枠&nbsp;/&nbsp;<a href="#rating_recent">▼リーセント枠</a><br>
+            <a href="#rating_statistics">▲統計</a>&nbsp;/&nbsp;<a href="#rating_new">▲新曲枠</a>&nbsp;/&nbsp;■ベスト枠&nbsp;/&nbsp;<a href="#rating_recent">▼リーセント枠</a><br>
             過去のバージョンに追加された楽曲のうち、テクニカルハイスコアから算出されたレート値が高い{{$statistics->oldBestRatingCount}}曲が選出されます。
         </p>
         @component('layouts/components/user_rating/rating_best_table', ['array' => $oldScore, 'statistics' => $statistics, 'start' => 0, 'targetCount' => $statistics->oldBestRatingCount, 'end' => count($oldScore)])
@@ -100,7 +100,7 @@
         <h3 class="title is-3">リーセント枠</h3>
         <h4 class="title is-4">レーティング対象曲</h4>
         <p>
-            <a href="#rating_statistics">▲内訳</a>&nbsp;/&nbsp;<a href="#rating_new">▲新曲枠</a>&nbsp;/&nbsp;<a href="#rating_old">▲ベスト枠</a>&nbsp;/&nbsp;■リーセント枠<br>
+            <a href="#rating_statistics">▲統計</a>&nbsp;/&nbsp;<a href="#rating_new">▲新曲枠</a>&nbsp;/&nbsp;<a href="#rating_old">▲ベスト枠</a>&nbsp;/&nbsp;■リーセント枠<br>
             過去にプレイした30曲(?)のうち、レート値が高い{{$statistics->recentRatingCount}}曲が選出されます。<br>
             ランクSSS(?)以上を取得し、現在のリーセント枠の最下位よりもレート値が低い場合はリーセント枠に含まれません。
         </p>
