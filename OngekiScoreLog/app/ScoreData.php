@@ -197,7 +197,7 @@ class ScoreData extends Model
     function getRatingNewUserScore(int $id){
         $version = env("ONGEKI_VERSION");
 
-        $this->value = DB::select("SELECT * FROM score_datas AS t1 INNER JOIN music_datas ON t1.song_id = music_datas.id
+        $this->value = DB::select("SELECT * FROM " . env("DB_DATABASE") . ".score_datas AS t1 INNER JOIN " . env("DB_DATABASE") . ".music_datas ON t1.song_id = music_datas.id
         WHERE user_id = ? AND (
             CASE 
                 WHEN difficulty = '10' THEN lunatic_added_version
@@ -205,7 +205,7 @@ class ScoreData extends Model
             END
         ) = ? AND 
         NOT EXISTS (
-            SELECT * FROM score_datas AS t2
+            SELECT * FROM " . env("DB_DATABASE") . ".score_datas AS t2
             WHERE t1.user_id = t2.user_id
                 AND t1.song_id = t2.song_id
                 AND t1.difficulty = t2.difficulty
@@ -223,7 +223,7 @@ class ScoreData extends Model
     function getRatingOldUserScore(int $id){
         $version = env("ONGEKI_VERSION");
 
-        $this->value = DB::select("SELECT * FROM score_datas AS t1 INNER JOIN music_datas ON t1.song_id = music_datas.id
+        $this->value = DB::select("SELECT * FROM " . env("DB_DATABASE") . ".score_datas AS t1 INNER JOIN " . env("DB_DATABASE") . ".music_datas ON t1.song_id = music_datas.id
         WHERE user_id = ? AND (
             CASE 
                 WHEN difficulty = '10' THEN lunatic_added_version
@@ -231,7 +231,7 @@ class ScoreData extends Model
             END
         ) < ? AND 
         NOT EXISTS (
-            SELECT * FROM score_datas AS t2
+            SELECT * FROM " . env("DB_DATABASE") . ".score_datas AS t2
             WHERE t1.user_id = t2.user_id
                 AND t1.song_id = t2.song_id
                 AND t1.difficulty = t2.difficulty
