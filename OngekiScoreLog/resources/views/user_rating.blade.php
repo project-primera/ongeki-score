@@ -23,8 +23,10 @@
 
 @section('content')
     <article id="rating_statistics" class="box">
-        <h3 class="title is-3">レーティング対象曲の内訳</h3><br>
-        <a href="#rating_new">▼新曲枠</a>&nbsp;/&nbsp;<a href="#rating_old">▼ベスト枠</a>&nbsp;/&nbsp;<a href="#rating_recent">▼リーセント枠</a><br>
+        <h3 class="title is-3">レーティング対象曲の内訳</h3>
+        <p>
+            <a href="#rating_new">▼新曲枠</a>&nbsp;/&nbsp;<a href="#rating_old">▼ベスト枠</a>&nbsp;/&nbsp;<a href="#rating_recent">▼リーセント枠</a>
+        </p>
         <div class="table_wrap scalable">
             <table class="table is-striped">
                 <thead>
@@ -68,94 +70,24 @@
                 </tbody>
             </table>
         </div>
+        <p>
+        <span class="subtitle is-5">到達可能レーティング: {{sprintf("%.2f",$statistics->maxRatingTotal / $statistics->totalRatingCount)}}</span><br>
+            現在のスコアデータのうち、最大レートの曲でリーセント枠を全て埋めたときの値です。
+        </p>
     </article>
     <article id="rating_new" class="box">
         <h3 class="title is-3">新曲枠 レーティング対象曲</h3>
         <a href="#rating_statistics">▲内訳</a>&nbsp;/&nbsp;<a href="#rating_old">▼ベスト枠</a>&nbsp;/&nbsp;<a href="#rating_recent">▼リーセント枠</a><br>
         現在のバージョンに追加された楽曲のうち、テクニカルハイスコアから算出されたレート値が高い{{$statistics->newBestRatingCount}}曲が選出されます。
-        <div class="table_wrap scalable">
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th>Title</th>
-                        <th><abbr title="Difficulty">Dif</abbr></th>
-                        <th>Lv</th>
-                        <th><abbr title="Technical Score">TS</abbr></th>
-                        <th>Rate</th>
-                        <th><abbr title="この曲のレート値が0.01上昇するために必要なスコアです">+0.01</abbr></th>
-                        <th><abbr title="1曲のみでユーザーのレート値が0.01上昇するために必要なスコアです">+{{sprintf("%.2f", $statistics->totalRatingCount / 100)}}</abbr></th>
-                    </tr>
-                </thead>
-                <tfoot>
-                    <tr>
-                        <th>Title</th>
-                        <th><abbr title="Difficulty">Dif</abbr></th>
-                        <th>Lv</th>
-                        <th><abbr title="Technical Score">TS</abbr></th>
-                        <th>Rate</th>
-                        <th><abbr title="この曲のレート値が0.01上昇するために必要なスコアです">+0.01</abbr></th>
-                        <th><abbr title="1曲のみでユーザーのレート値が0.01上昇するために必要なスコアです">+{{sprintf("%.2f", $statistics->totalRatingCount / 100)}}</abbr></th>
-                    </tr>
-                </tfoot>
-                <tbody>
-                    @for ($i = 0; $i < $statistics->newBestRatingCount; $i++)
-                        <tr>
-                            <td>{{$newScore[$i]->title}}</td>
-                            <td>{{substr($newScore[$i]->difficulty_str, 0, 3)}}</td>
-                            <td>{{$newScore[$i]->level_str}}</td>
-                            <td>{{number_format($newScore[$i]->technical_high_score)}}</td>
-                            <td>{!!$newScore[$i]->ratingValue!!}</td>
-                            <td>{{$newScore[$i]->targetMusicRateMusic}}</td>
-                            <td>{{$newScore[$i]->targetMusicRateUser}}</td>
-                        </tr>
-                    @endfor
-                </tbody>
-            </table>
-        </div>
+        @component('layouts/components/user_rating/rating_best_table', ['array' => $newScore, 'statistics' => $statistics])
+        @endcomponent
     </article>
     <article id="rating_old" class="box">
         <h3 class="title is-3">ベスト枠 レーティング対象曲</h3>
         <a href="#rating_statistics">▲内訳</a>&nbsp;/&nbsp;<a href="#rating_new">▲新曲枠</a>&nbsp;/&nbsp;<a href="#rating_recent">▼リーセント枠</a><br>
         過去のバージョンに追加された楽曲のうち、テクニカルハイスコアから算出されたレート値が高い{{$statistics->oldBestRatingCount}}曲が選出されます。
-        <div class="table_wrap scalable">
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th>Title</th>
-                        <th><abbr title="Difficulty">Dif</abbr></th>
-                        <th>Lv</th>
-                        <th><abbr title="Technical Score">TS</abbr></th>
-                        <th>Rate</th>
-                        <th><abbr title="この曲のレート値が0.01上昇するために必要なスコアです">+0.01</abbr></th>
-                        <th><abbr title="1曲のみでユーザーのレート値が0.01上昇するために必要なスコアです">+{{sprintf("%.2f", $statistics->totalRatingCount / 100)}}</abbr></th>
-                    </tr>
-                </thead>
-                <tfoot>
-                    <tr>
-                        <th>Title</th>
-                        <th><abbr title="Difficulty">Dif</abbr></th>
-                        <th>Lv</th>
-                        <th><abbr title="Technical Score">TS</abbr></th>
-                        <th>Rate</th>
-                        <th><abbr title="この曲のレート値が0.01上昇するために必要なスコアです">+0.01</abbr></th>
-                        <th><abbr title="1曲のみでユーザーのレート値が0.01上昇するために必要なスコアです">+{{sprintf("%.2f", $statistics->totalRatingCount / 100)}}</abbr></th>
-                    </tr>
-                </tfoot>
-                <tbody>
-                    @for ($i = 0; $i < $statistics->oldBestRatingCount; $i++)
-                        <tr>
-                            <td>{{$oldScore[$i]->title}}</td>
-                            <td>{{substr($oldScore[$i]->difficulty_str, 0, 3)}}</td>
-                            <td>{{$oldScore[$i]->level_str}}</td>
-                            <td>{{number_format($oldScore[$i]->technical_high_score)}}</td>
-                            <td>{!!$oldScore[$i]->ratingValue!!}</td>
-                            <td>{{$oldScore[$i]->targetMusicRateMusic}}</td>
-                            <td>{{$oldScore[$i]->targetMusicRateUser}}</td>
-                        </tr>
-                    @endfor
-                </tbody>
-            </table>
-        </div>
+        @component('layouts/components/user_rating/rating_best_table', ['array' => $oldScore, 'statistics' => $statistics])
+        @endcomponent
     </article>
     <article id="rating_recent" class="box">
         <h3 class="title is-3">リーセント枠 レーティング対象曲</h3>
