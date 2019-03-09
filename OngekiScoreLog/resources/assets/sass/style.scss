@@ -8,12 +8,21 @@
 body{
     box-sizing: border-box;
     margin: 0;
-    overflow-x: hidden;
 }
 
 main {
     margin-bottom: 0 !important;
     background-color: #eeeeee;
+}
+
+#sidebar{
+    height: 100%;
+}
+
+.side_sticky{
+    position: -webkit-sticky;
+    position: sticky;
+    top: 0;
 }
 
 footer{
