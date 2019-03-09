@@ -17,4 +17,12 @@ yarn-error.log
 /public/js/*
 /public/img/*
 /public/bookmarklets/*
-/public/favicons/*
+
+# favicons
+/public/android-chrome*.png
+/public/apple-touch*.png
+/public/icon*.png
+/public/mstile*.png
+/public/favicon.ico
+/public/browserconfig.xml
+/public/manifest.json

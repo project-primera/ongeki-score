@@ -24,10 +24,11 @@ mix.js('resources/assets/js/app.js', 'public/js')
     .copy('node_modules/html2canvas/dist/html2canvas.min.js', 'public/js/html2canvas.min.js')
     .copy('../Bookmarklet/bin/main.js', 'public/bookmarklets/main.js')
     .copyDirectory('resources/assets/img', 'public/img')
-    .copyDirectory('resources/assets/favicons', 'public/favicons');
+    .copyDirectory('resources/assets/favicons', 'public')
 
 if (mix.inProduction()) {
     mix.version();
 }else{
-    mix.sourceMaps(); 
+    mix.sourceMaps()
+    .disableNotifications();
 }

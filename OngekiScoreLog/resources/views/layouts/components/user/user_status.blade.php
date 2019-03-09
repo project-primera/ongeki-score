@@ -24,7 +24,7 @@
             </tr>
             <tr>
                 <th>マニー</th>
-                <td>{{$money}} (MAX {{$money_max}})</td>
+                <td>{{$money}} (Total {{$money_max}})</td>
             </tr>
             <tr>
                 <th>トータルプレイ</th>

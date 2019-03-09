@@ -28,7 +28,7 @@ class ViewUserProgressController extends Controller
             if(is_null(User::where('id' ,$id)->first())){
                 abort(404);
             }else{
-                return view("user_error", ['id' => $id]);
+                return view("user_error", ['message' => '<p>このユーザーはOngekiScoreLogに登録していますが、オンゲキNETからスコア取得を行っていません。(UserID: ' . $id . ')</p><p>スコアの取得方法は<a href="/howto">こちら</a>をお読みください。</p>']);
             }
         }
 
