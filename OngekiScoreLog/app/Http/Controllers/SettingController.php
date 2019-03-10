@@ -50,8 +50,8 @@ class SettingController extends Controller
             if (!isset($_SESSION['state'])) {
                 // Step.1 Start
                 $_SESSION['client'] = new LooseClient([
-                    env("TWITTER_CONSUMER_KEY"),
-                    env("TWITTER_CONSUMER_SECRET"),
+                    config('env.twitter-consumer-key'),
+                    config('env.twitter-consumer-secret'),
                 ], [CURLOPT_CAINFO => __DIR__ . '/../../../resources/cacert.pem']);
                     
                 // $_SESSION['client'] = $_SESSION['client']->oauthForRequestToken('http://127.0.0.1:8000/setting/twitter');

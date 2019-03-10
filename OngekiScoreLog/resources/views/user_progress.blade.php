@@ -30,9 +30,9 @@
                     <span class="update">Update&nbsp;{{$date['new']}}</span>
                 </div>
                 <div class="right">
-                    <span class="site-name">{{env("APP_NAME")}}</span>&nbsp;
+                    <span class="site-name">{{config('app.name')}}</span>&nbsp;
                     <span class="version">({{$version}})</span>&nbsp;
-                    <span class="url">{{env("APP_URL")}}</span>
+                    <span class="url">{{config('app.url')}}</span>
                 </div>
             </div>
 

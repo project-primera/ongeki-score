@@ -16,10 +16,10 @@ class AdminTweet extends Model
     public function tweet(string $status, $inReplyToStatusID = null){
         try{
             $client = new Client([
-                env("TWITTER_CONSUMER_KEY"),
-                env("TWITTER_CONSUMER_SECRET"),
-                env("TWITTER_ADMIN_ACCOUNT_ACCESS_TOKEN"),
-                env("TWITTER_ADMIN_ACCOUNT_ACCESS_TOKEN_SECRET")         
+                config('env.twitter-consumer-key'),
+                config('env.twitter-consumer-secret'),
+                config('env.twitter-admin-account-access-token'),
+                config('env.twitter-admin-account-access-token-secret'),
             ], [CURLOPT_CAINFO => __DIR__ . '/../resources/cacert.pem']);
             if(is_null($inReplyToStatusID)){
                 $response = $client->post('statuses/update', ['status' => $status]);
