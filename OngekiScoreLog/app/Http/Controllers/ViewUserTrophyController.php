@@ -40,11 +40,11 @@ class ViewUserTrophyController extends Controller
         $trophies = json_decode(json_encode(UserTrophy::where('user_id', $id)->get()), true);
 
         $trophyIdToStr = [
-            0 => "Normal",
-            1 => "Silver",
-            2 => "Gold",
-            3 => "Platinum",
-            4 => "Rainbow",
+            0 => "ノーマル",
+            1 => "シルバー",
+            2 => "ゴールド",
+            3 => "プラチナ",
+            4 => "レインボー",
         ];
 
         return view("user_trophy", compact('id', 'status', 'trophies', 'trophyIdToStr', 'sidemark'));
