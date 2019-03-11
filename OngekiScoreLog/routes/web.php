@@ -17,6 +17,7 @@ Route::get('/', 'SimpleViewController@getIndex');
 
 Route::get('/user/{id}/progress', 'ViewUserProgressController@getIndex')->where(['id' => '\d+']);
 Route::get('/user/{id}/rating', 'ViewUserRatingController@getIndex')->where(['id' => '\d+']);
+Route::get('/user/{id}/trophy', 'ViewUserTrophyController@getIndex')->where(['id' => '\d+']);
 Route::get('/user/{id}/{mode?}', 'ViewUserController@getUserPage')->where(['id' => '\d+']);
 
 Route::get('/music', 'ViewMusicExtraLevelController@getIndex');
