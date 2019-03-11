@@ -18,6 +18,7 @@
                 <li><a href="/mypage/details" class="@yield('sidemark_mypage_details')">詳細表示</a></li>
                 <li><a href="/mypage/battle" class="@yield('sidemark_mypage_battle')">Battle Score</a></li>
                 <li><a href="/mypage/technical" class="@yield('sidemark_mypage_technical')">Technical Score</a></li>
+                <li><a href="/mypage/trophy" class="@yield('sidemark_mypage_trophy')">称号</a></li>
                 <li><a href="/mypage/rating" class="@yield('sidemark_mypage_rating')">レーティング情報</a></li>
                 <li><a href="/mypage/progress" class="@yield('sidemark_mypage_progress')">更新差分</a></li>
             </ul>

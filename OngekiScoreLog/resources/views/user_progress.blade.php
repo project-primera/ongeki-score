@@ -16,6 +16,7 @@
     <li><a href="/user/{{$id}}/details">詳細</a></li>
     <li><a href="/user/{{$id}}/battle">Battle</a></li>
     <li><a href="/user/{{$id}}/technical">Technical</a></li>
+    <li><a href="/user/{{$id}}/trophy">称号</a></li>
     <li><a href="/user/{{$id}}/rating">Rating</a></li>
     <li class="is-active"><a href="/user/{{$id}}/progress">更新差分</a></li>
 @endsection
@@ -30,9 +31,9 @@
                     <span class="update">Update&nbsp;{{$date['new']}}</span>
                 </div>
                 <div class="right">
-                    <span class="site-name">{{env("APP_NAME")}}</span>&nbsp;
+                    <span class="site-name">{{config('app.name')}}</span>&nbsp;
                     <span class="version">({{$version}})</span>&nbsp;
-                    <span class="url">{{env("APP_URL")}}</span>
+                    <span class="url">{{config('app.url')}}</span>
                 </div>
             </div>
 

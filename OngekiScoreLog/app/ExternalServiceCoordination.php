@@ -23,8 +23,8 @@ class ExternalServiceCoordination extends Model{
     function getTwitter($twitter_access_token, $twitter_access_token_secret){
         try{
             $cowitter = new Client([
-                env("TWITTER_CONSUMER_KEY"),
-                env("TWITTER_CONSUMER_SECRET"),
+                config('env.twitter-consumer-key'),
+                config('env.twitter-consumer-secret'),
                 $twitter_access_token,
                 $twitter_access_token_secret
             ], [CURLOPT_CAINFO => __DIR__ . '/../resources/cacert.pem']);

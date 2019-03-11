@@ -16,6 +16,7 @@
     <li><a href="/user/{{$id}}/details">詳細</a></li>
     <li><a href="/user/{{$id}}/battle">Battle</a></li>
     <li><a href="/user/{{$id}}/technical">Technical</a></li>
+    <li><a href="/user/{{$id}}/trophy">称号</a></li>
     <li class="is-active"><a href="/user/{{$id}}/rating">Rating</a></li>
     <li><a href="/user/{{$id}}/progress">更新差分</a></li>
 @endsection
@@ -98,12 +99,12 @@
 
     <article id="rating_recent" class="box">
         <h3 class="title is-3">リーセント枠</h3>
-        <h4 class="title is-4">レーティング対象曲</h4>
         <p>
             <a href="#rating_statistics">▲統計</a>&nbsp;/&nbsp;<a href="#rating_new">▲新曲枠</a>&nbsp;/&nbsp;<a href="#rating_old">▲ベスト枠</a>&nbsp;/&nbsp;■リーセント枠<br>
             過去にプレイした30曲(?)のうち、レート値が高い{{$statistics->recentRatingCount}}曲が選出されます。<br>
             ランクSSS(?)以上を取得し、現在のリーセント枠の最下位よりもレート値が低い場合はリーセント枠に含まれません。
         </p>
+        <h4 class="title is-4">レーティング対象曲</h4>
         <div class="table_wrap scalable">
             <table class="table">
                 <thead>

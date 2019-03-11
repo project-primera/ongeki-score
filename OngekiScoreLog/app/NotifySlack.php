@@ -12,16 +12,16 @@ class NotifySlack extends Model
     
     public function __construct(string $level){
         switch(true) {
-            case (env('APP_DEBUG')):        $this->webhook = env('SLACK_WEBHOOK_URL_DEFAULT');      break;
-            case ($level === "debug"):      $this->webhook = env('SLACK_WEBHOOK_URL_DEBUG');        break;
-            case ($level === "info"):       $this->webhook = env('SLACK_WEBHOOK_URL_INFO');         break;
-            case ($level === "notice"):     $this->webhook = env('SLACK_WEBHOOK_URL_NOTICE');       break;
-            case ($level === "warning"):    $this->webhook = env('SLACK_WEBHOOK_URL_WARNING');      break;
-            case ($level === "error"):      $this->webhook = env('SLACK_WEBHOOK_URL_ERROR');        break;
-            case ($level === "critical"):   $this->webhook = env('SLACK_WEBHOOK_URL_CRITICAL');     break;
-            case ($level === "alert"):      $this->webhook = env('SLACK_WEBHOOK_URL_ALERT');        break;
-            case ($level === "emergency"):  $this->webhook = env('SLACK_WEBHOOK_URL_EMERGENCY');    break;
-            default:                        $this->webhook = env('SLACK_WEBHOOK_URL_DEFAULT');      break;
+            case (config('app.debug')):        $this->webhook = config('env.slack-webhook-url-default');      break;
+            case ($level === "debug"):      $this->webhook = config('env.slack-webhook-url-debug');        break;
+            case ($level === "info"):       $this->webhook = config('env.slack-webhook-url-info');         break;
+            case ($level === "notice"):     $this->webhook = config('env.slack-webhook-url-notice');       break;
+            case ($level === "warning"):    $this->webhook = config('env.slack-webhook-url-warning');      break;
+            case ($level === "error"):      $this->webhook = config('env.slack-webhook-url-error');        break;
+            case ($level === "critical"):   $this->webhook = config('env.slack-webhook-url-critical');     break;
+            case ($level === "alert"):      $this->webhook = config('env.slack-webhook-url-alert');        break;
+            case ($level === "emergency"):  $this->webhook = config('env.slack-webhook-url-emergency');    break;
+            default:                        $this->webhook = config('env.slack-webhook-url-default');      break;
         }
     }
 

@@ -195,7 +195,7 @@ class ScoreData extends Model
      * @return this
      */
     function getRatingNewUserScore(int $id){
-        $version = env("ONGEKI_VERSION");
+        $version = config('env.ongeki-version');
 
         $this->value = DB::select("SELECT * FROM score_datas AS t1 INNER JOIN music_datas ON t1.song_id = music_datas.id
         WHERE user_id = ? AND (
@@ -221,7 +221,7 @@ class ScoreData extends Model
      * @return this
      */
     function getRatingOldUserScore(int $id){
-        $version = env("ONGEKI_VERSION");
+        $version = config('env.ongeki-version');
 
         $this->value = DB::select("SELECT * FROM score_datas AS t1 INNER JOIN music_datas ON t1.song_id = music_datas.id
         WHERE user_id = ? AND (

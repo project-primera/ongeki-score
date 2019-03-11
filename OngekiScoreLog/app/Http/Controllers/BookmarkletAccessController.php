@@ -26,7 +26,7 @@ class BookmarkletAccessController extends Controller
     {
         // 0 -> origin
         // 1 -> origin plus
-        $currentVersion = env('ONGEKI_VERSION');
+        $currentVersion = config('env.ongeki-version');
         try{
             {
                 if(!is_null($request->input('PlayerData'))){

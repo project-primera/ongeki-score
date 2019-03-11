@@ -32,8 +32,8 @@ class TweetController extends Controller
         $ret = $external->get($user->id);
         try{
             $client = new Client([
-                env("TWITTER_CONSUMER_KEY"),
-                env("TWITTER_CONSUMER_SECRET"),
+                config('env.twitter-consumer-key'),
+                config('env.twitter-consumer-secret'),
                 $ret[0]->twitter_access_token,
                 $ret[0]->twitter_access_token_secret
             ], [CURLOPT_CAINFO => __DIR__ . '/../../../resources/cacert.pem']);
