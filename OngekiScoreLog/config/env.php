@@ -1,6 +1,7 @@
 <?php
 return [
     'ongeki-version' => env('ONGEKI_VERSION'),
+    'ongeki-version-date' => env('ONGEKE_VERSION_DATE'),
 
     'twitter-consumer-key' => env('TWITTER_CONSUMER_KEY'),
     'twitter-consumer-secret' => env('TWITTER_CONSUMER_SECRET'),
