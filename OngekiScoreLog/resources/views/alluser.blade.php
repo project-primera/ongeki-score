@@ -43,8 +43,15 @@
                             <td class="sort_name"><a href="/user/{{$item->user_id}}">{{$item->name}}</a></td>
                             <td class="sort_trophy">{{$item->trophy}}</td>
                             <td class="sort_lv">{{$item->level}}</td>
-                            <td class="sort_rating">{{$item->rating}}</td>
-                            <td class="sort_max">{{$item->rating_max}}</td>
+
+                            @if (strtotime($item->updated_at) >= strtotime(config('env.ongeki-version-date')))
+                                <td class="sort_rating">{{$item->rating}}</td>
+                                <td class="sort_max">{{$item->rating_max}}</td>
+                            @else
+                                <td class="sort_rating">({{$item->rating}})</td>
+                                <td class="sort_max">({{$item->rating_max}})</td>
+                            @endif
+                            
                             <td class="sort_bp">{{$item->battle_point}}</td>
                             <td class="sort_update">{{date('Y-m-d', strtotime($item->updated_at))}}<span class="sort-key">{{date('H:i:s', strtotime($item->updated_at))}}</span></td>
                         </tr>
