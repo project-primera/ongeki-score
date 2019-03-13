@@ -40,8 +40,6 @@ class ViewUserProgressController extends Controller
         $version = (new ApplicationVersion())->getLatestVersion();
         $version = isset($version[0]->tag_name) ? $version[0]->tag_name : "";
 
-        $oldScoreData = new ScoreData();
-        $newScoreData = new ScoreData();
         $progress = [];
 
         $user = \Auth::user();
@@ -118,14 +116,8 @@ class ViewUserProgressController extends Controller
             10 => 'Lunatic',
         ];
 
-        $oldScoreData->getSpecifiedGenerationUserScore($id, $oldScoreData->getMaxGeneration($id));
-        $oldScoreData->addDetailedData();
-        $old = shapingKeys($oldScoreData->value);
-
-        $newScoreData->getRecentUserScore($id);
-        $newScoreData->addMusicData();
-        $newScoreData->addDetailedData();
-        $new = shapingKeys($newScoreData->value);
+        $old = shapingKeys((new ScoreData)->getSpecifiedGenerationUserScore($id, (new ScoreData)->getMaxGeneration($id))->addDetailedData()->getValue());
+        $new = shapingKeys((new ScoreData)->getRecentUserScore($id)->addMusicData()->addDetailedData()->getValue());
 
         foreach ($new as $music => $temp) {
             foreach ($temp as $difficulty => $value) {

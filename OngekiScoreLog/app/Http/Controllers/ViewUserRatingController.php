@@ -98,8 +98,8 @@ class ViewUserRatingController extends Controller
         $notExistMusic->targetMusicRateUser = "";
         $notExistMusic->updated_at = date("Y/m/d");
 
-        $newScore = (new ScoreData())->getRatingNewUserScore($id)->addMusicData();
-        $oldScore = (new ScoreData())->getRatingOldUserScore($id)->addMusicData();
+        $newScore = (new ScoreData())->getRatingNewUserScore($id)->addMusicData()->getValue();
+        $oldScore = (new ScoreData())->getRatingOldUserScore($id)->addMusicData()->getValue();
         $recentScore = json_decode(json_encode(RatingRecentMusic::where('user_id', $id)->get()), true);
 
         // 新曲枠のレート計算

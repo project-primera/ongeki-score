@@ -48,11 +48,7 @@ class ViewUserController extends Controller
             $status[0]->badge .= '&nbsp;<span class="tag net-standard">OngekiNet Standard</span>';
         }
 
-        $scoreData = new ScoreData();
-        $scoreData->getRecentUserScore($id);
-        $scoreData->addMusicData();
-        $scoreData->addDetailedData();
-        $score = $scoreData->value;
+        $score = (new ScoreData)->getRecentUserScore($id)->addMusicData()->addDetailedData()->getValue();
 
         array_multisort(array_column($score, 'updated_at'), SORT_DESC, $score);
 

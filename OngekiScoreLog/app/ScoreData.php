@@ -12,7 +12,11 @@ class ScoreData extends Model
     //
     protected $table = "score_datas";
     protected $guarded = ['id', 'user_id'];
-    public $value;
+    private $value;
+
+    function getValue(){
+        return $this->value;
+    }
 
     function addMusicData(){
         $temp = MusicData::all();
@@ -62,7 +66,7 @@ class ScoreData extends Model
             }
         }
 
-        return $this->value;
+        return $this;
     }
 
     function addDetailedData(){
@@ -133,7 +137,7 @@ class ScoreData extends Model
             }
         }
 
-        return $this->value;
+        return $this;
     }
 
     function getRecentGenerationOfScoreData($id, $songID, $difficulty){
@@ -143,7 +147,7 @@ class ScoreData extends Model
         });
 
         $this->value = $sql->first();
-        return $this->value;
+        return $this;
     }
 
     function getRecentGenerationOfScoreDataAll($id){
@@ -155,7 +159,7 @@ class ScoreData extends Model
 
         $this->value = $sql->get();
 
-        return $this->value;
+        return $this;
     }
 
     function getRecentUserScore($id){
@@ -168,7 +172,7 @@ class ScoreData extends Model
                 AND t1.updated_at < t2.updated_at
         );', [$id]);
 
-        return $this->value;
+        return $this;
     }
 
     function getSpecifiedGenerationUserScore($id, $generation){
@@ -182,7 +186,7 @@ class ScoreData extends Model
                     AND t1.updated_at < t2.updated_at
         );', [$id, $generation, $generation]);
 
-        return $this->value;
+        return $this;
     }
 
     function getMaxGeneration($id){
