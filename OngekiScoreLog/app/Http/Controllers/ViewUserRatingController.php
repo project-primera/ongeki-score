@@ -147,7 +147,7 @@ class ViewUserRatingController extends Controller
         // 新曲枠対象外曲 統計情報の処理
         for ($i = $statistics->newBestRatingCount; $i < count($newScore); ++$i) {
             $newScore[$i]->minDifferenceRate = $newScore[$i]->rawRatingValue - $statistics->newBestRatingMin;
-            $newScore[$i]->minDifferenceScore = OngekiUtility::ExpectedScoreFromExtraLevel($newScore[$i]->extraLevel, $statistics->newBestRatingMin);
+            $newScore[$i]->minDifferenceScore = OngekiUtility::ExpectedScoreFromExtraLevel($newScore[$i]->extraLevel, $statistics->newBestRatingMin + 0.01);
             if($newScore[$i]->minDifferenceScore !== false){
                 $newScore[$i]->minDifferenceScore = number_format($newScore[$i]->technical_high_score - $newScore[$i]->minDifferenceScore);
             }else{
@@ -158,7 +158,7 @@ class ViewUserRatingController extends Controller
         // 旧曲枠対象外曲 統計情報の処理
         for ($i = $statistics->oldBestRatingCount; $i < count($oldScore); ++$i) {
             $oldScore[$i]->minDifferenceRate = $oldScore[$i]->rawRatingValue - $statistics->oldBestRatingMin;
-            $oldScore[$i]->minDifferenceScore = OngekiUtility::ExpectedScoreFromExtraLevel($oldScore[$i]->extraLevel, $statistics->oldBestRatingMin);
+            $oldScore[$i]->minDifferenceScore = OngekiUtility::ExpectedScoreFromExtraLevel($oldScore[$i]->extraLevel, $statistics->oldBestRatingMin + 0.01);
             if($oldScore[$i]->minDifferenceScore !== false){
                 $oldScore[$i]->minDifferenceScore = number_format($oldScore[$i]->technical_high_score - $oldScore[$i]->minDifferenceScore);
             }else{
