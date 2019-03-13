@@ -11,7 +11,7 @@ import * as qs from 'qs';
 
   const REQUEST_KEY = "?t="
   const PRODUCT_NAME = "Project Primera - getScore.js";
-  const VERSION = "20190216";
+  const VERSION = "20190314";
 
   const SLEEP_MSEC = 2000;
 
@@ -394,6 +394,9 @@ import * as qs from 'qs';
         Authorization: "Bearer " + token,
       }
     }).then(result => {
+      if(result['data'] == "error"){
+        throw new Error();
+      }
       $textarea.append(result['data']['info'] + "<br>");
       $textarea.append(result['data']['result'] + "<br>");
       $textarea.append("<a href='" + TOOL_URL + "/user/" + result['data']['id'] + "' style='color:#222'>スコアツール ユーザーページ</a><br>");
