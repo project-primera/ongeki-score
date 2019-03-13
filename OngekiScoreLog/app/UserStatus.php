@@ -17,7 +17,15 @@ class UserStatus extends Model
     }
 
     function getRecentAllUserData(){
-        $sql = DB::select('SELECT * FROM user_status AS t1 WHERE created_at = (SELECT MAX(created_at) FROM user_status AS t2 WHERE t1.user_id = t2.user_id);');
+        $sql = DB::select('SELECT * FROM user_status AS t1 WHERE created_at = (SELECT MAX(created_at) FROM user_status AS t2 WHERE t1.user_id = t2.user_id)');
+        $users = [];
+        foreach ($sql as $key => $value) {
+            if(!in_array($value->user_id, $users)){
+                $users[] = $value->user_id;
+            }else{
+                unset($sql[$key]);
+            }
+        }
         return $sql;
     }
 }
