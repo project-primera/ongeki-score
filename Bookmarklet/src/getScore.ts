@@ -394,6 +394,9 @@ import * as qs from 'qs';
         Authorization: "Bearer " + token,
       }
     }).then(result => {
+      if(result['data'] == "error"){
+        throw new Error();
+      }
       $textarea.append(result['data']['info'] + "<br>");
       $textarea.append(result['data']['result'] + "<br>");
       $textarea.append("<a href='" + TOOL_URL + "/user/" + result['data']['id'] + "' style='color:#222'>スコアツール ユーザーページ</a><br>");
