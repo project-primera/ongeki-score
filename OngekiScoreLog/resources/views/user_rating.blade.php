@@ -72,7 +72,7 @@
             </table>
         </div>
         <p>
-        <span class="subtitle is-5">到達可能レーティング: {{sprintf("%.2f",$statistics->maxRatingTotal / $statistics->totalRatingCount)}}</span><br>
+        <span class="subtitle is-5">到達可能レーティング: {{sprintf("%.2f",floor($statistics->maxRatingTotal / $statistics->totalRatingCount * 100) / 100)}}</span><br>
             現在のスコアデータのうち、最大レートの曲でリーセント枠を全て埋めたときの値です。
         </p>
     </article>
