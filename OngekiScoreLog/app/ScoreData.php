@@ -165,7 +165,7 @@ class ScoreData extends Model
             WHERE t1.user_id = t2.user_id
                 AND t1.song_id = t2.song_id
                 AND t1.difficulty = t2.difficulty
-                AND t1.updated_at < t2.updated_at
+                AND t1.id < t2.id
         );', [$id]);
 
         return $this->value;
@@ -179,7 +179,7 @@ class ScoreData extends Model
                     AND t1.user_id = t2.user_id
                     AND t1.song_id = t2.song_id
                     AND t1.difficulty = t2.difficulty
-                    AND t1.updated_at < t2.updated_at
+                    AND t1.id < t2.id
         );', [$id, $generation, $generation]);
 
         return $this->value;
@@ -209,7 +209,7 @@ class ScoreData extends Model
             WHERE t1.user_id = t2.user_id
                 AND t1.song_id = t2.song_id
                 AND t1.difficulty = t2.difficulty
-                AND t1.updated_at < t2.updated_at
+                AND t1.id < t2.id
         )", [$id, $version]);
         return $this;
     }
@@ -235,7 +235,7 @@ class ScoreData extends Model
             WHERE t1.user_id = t2.user_id
                 AND t1.song_id = t2.song_id
                 AND t1.difficulty = t2.difficulty
-                AND t1.updated_at < t2.updated_at
+                AND t1.id < t2.id
         )", [$id, $version]);
         return $this;
     }
