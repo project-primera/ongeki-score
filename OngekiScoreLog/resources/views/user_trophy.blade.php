@@ -7,7 +7,7 @@
     <script type="text/javascript" src="{{ mix('/js/sortTrophy.js') }}"></script>
 @endsection
 
-@if(!is_null($sidemark))
+@if(isset($sidemark) && !is_null($sidemark))
     @section($sidemark, "is-active")
 @endif
 
