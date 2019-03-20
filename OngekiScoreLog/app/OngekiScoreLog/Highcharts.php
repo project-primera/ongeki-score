@@ -16,6 +16,10 @@ class Highcharts
     // Data
     private $series = [];
 
+    // Tooltip
+    private $isTooltipCrosshairs = false;
+    private $isTooltipShared = false;
+
     // Options
     private $isPlotOptionsDataLabelsEnabled = false;
     private $isPlotOptionsEnableMouseTracking = true;
@@ -47,23 +51,25 @@ class Highcharts
         return $this;
     }
 
-    public function addXAxis(string $title, array $data = [], bool $isRight = false, int $width = null)
+    public function addXAxis(string $title, array $data = [], bool $isRight = false, int $width = null, string $formatter = null)
     {
         $c = new \stdClass();
         $c->title = $title;
         $c->categories = $data;
         $c->isRight = $isRight;
         $c->width = $width;
+        $c->formatter = $formatter;
         $this->xAxis[] = $c;
         return $this;
     }
-    public function addYAxis(string $title, array $data = [], bool $isRight = false, int $width = null)
+    public function addYAxis(string $title, array $data = [], bool $isRight = false, int $width = null, string $formatter = null)
     {
         $c = new \stdClass();
         $c->title = $title;
         $c->categories = $data;
         $c->isRight = $isRight;
         $c->width = $width;
+        $c->formatter = $formatter;
         $this->yAxis[] = $c;
         return $this;
     }
@@ -75,6 +81,15 @@ class Highcharts
         $c->data = $a;
         $c->axis = $axis;
         $this->series[] = $c;
+        return $this;
+    }
+
+    public function isTooltipCrosshairs(bool $b){
+        $this->isTooltipCrosshairs = $b;
+        return $this;
+    }
+    public function isTooltipShared(bool $b){
+        $this->isTooltipShared = $b;
         return $this;
     }
     public function isPlotOptionsDataLabelsEnabled(bool $b)
@@ -102,6 +117,9 @@ class Highcharts
             if(!is_null($value->width)){
                 $str .= "gridLineWidth:$value->width,";
             }
+            if(!is_null($value->formatter)){
+                $str .= "labels:{formatter: function () {return ($value->formatter);},},";
+            }
             $str .= "},";
 
         }
@@ -113,6 +131,9 @@ class Highcharts
             if(!is_null($value->width)){
                 $str .= "gridLineWidth:$value->width,";
             }
+            if(!is_null($value->formatter)){
+                $str .= "labels:{formatter: function () { return $value->formatter;}},";
+            }
             $str .= "},";
         }
         $str .= "],";
@@ -123,7 +144,11 @@ class Highcharts
         }
         $str .= "],";
 
-        $str .= "plotOptions: {
+        $str .= "tooltip: {
+            crosshairs:" . var_export($this->isTooltipCrosshairs, true) . ",
+            shared:" . var_export($this->isTooltipShared, true) . "
+        },
+        plotOptions: {
             $this->type: {
                 dataLabels: {
                     enabled:" . var_export($this->isPlotOptionsDataLabelsEnabled, true) . "
