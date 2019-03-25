@@ -5,6 +5,8 @@
 @section('hero_title', "[" . ucfirst($difficulty) . "] " . $score[0]->title)
 @section('additional_footer')
     {!!$highcharts!!}
+    {!!$highcharts_sp!!}
+    <script type="text/javascript" src="{{ mix('/js/changeGraphSize.js') }}"></script>
 @endsection
 @if(isset($sidemark) && !is_null($sidemark))
     @section($sidemark, "is-active")
@@ -23,5 +25,7 @@
 @section('content')
     <article class="box">
         <div id="graph"></div>
+        <div id="sp-graph"></div>
+        <button class="button change-graph-size">軸表示切り替え</button>
     </article>
 @endsection

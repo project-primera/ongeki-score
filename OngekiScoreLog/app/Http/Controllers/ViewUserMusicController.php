@@ -52,7 +52,22 @@ class ViewUserMusicController extends Controller
             ->isTooltipShared(true)
             ->isPlotOptionsDataLabelsEnabled(true)
             ->isPlotOptionsEnableMouseTracking(true);
+
+        $highcharts_sp = new Highcharts();
+        $highcharts_sp->id("sp-graph")
+            ->addXAxis("", $date)
+            ->addYAxis("", [], false, 1, "this.value + 'k'", true)
+            ->addYAxis("", [], true, 0, "this.value + 'm'", true)
+            ->addYAxis("", [], true, 0, "this.value + '%'", true)
+            ->addSeries("TechnicalScore(k)", $technical)
+            ->addSeries("BattleScore(m)", $battle, 1)
+            ->addSeries("OverDamage(%)", $damage, 2)
+            ->zoomType("x")
+            ->isTooltipCrosshairs(true)
+            ->isTooltipShared(true)
+            ->isPlotOptionsDataLabelsEnabled(true)
+            ->isPlotOptionsEnableMouseTracking(true);
             
-        return view('user_music', compact('status', 'id', 'highcharts', 'score', 'difficulty'));
+        return view('user_music', compact('status', 'id', 'highcharts', 'highcharts_sp', 'score', 'difficulty'));
     }
 }
