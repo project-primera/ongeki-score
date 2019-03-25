@@ -26,11 +26,17 @@ class ViewUserMusicController extends Controller
             abort(404);
         }
 
-        $score = ScoreData::join('music_datas','score_datas.song_id','=','music_datas.id')->where(['user_id' => $id,'song_id' => $music, 'difficulty' => $dif])->get();
         $musicData = MusicData::find($music);
+        if(is_null($musicData)){
+            abort(404);
+        }
+
         $isExist = new \stdClass;
         $isExist->normal = !is_null($musicData->normal_added_version);
         $isExist->lunatic = !is_null($musicData->lunatic_added_version); 
+
+        $score = ScoreData::join('music_datas','score_datas.song_id','=','music_datas.id')->where(['user_id' => $id,'song_id' => $music, 'difficulty' => $dif])->get();
+
 
         $technical = [];
         $battle = [];
@@ -86,6 +92,6 @@ class ViewUserMusicController extends Controller
             ->isPlotOptionsDataLabelsEnabled(true)
             ->isPlotOptionsEnableMouseTracking(true);
             
-        return view('user_music', compact('status', 'id', 'music', 'isExist', 'highcharts', 'highcharts_sp', 'score', 'difficulty'));
+        return view('user_music', compact('status', 'id', 'music', 'musicData', 'isExist', 'highcharts', 'highcharts_sp', 'score', 'difficulty'));
     }
 }

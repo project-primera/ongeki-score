@@ -1,8 +1,8 @@
 @extends('layouts.app')
 
-@section('title', $status[0]->name . " / [" . ucfirst($difficulty) . "] " . $score[0]->title)
+@section('title', $status[0]->name . " / [" . ucfirst($difficulty) . "] " . $musicData->title)
 @section('hero_subtitle', $status[0]->name . " - 楽曲詳細")
-@section('hero_title', "[" . ucfirst($difficulty) . "] " . $score[0]->title)
+@section('hero_title', "[" . ucfirst($difficulty) . "] " . $musicData->title)
 @section('additional_footer')
     {!!$highcharts!!}
     {!!$highcharts_sp!!}
