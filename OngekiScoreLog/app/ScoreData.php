@@ -150,6 +150,19 @@ class ScoreData extends Model
         return $this;
     }
 
+    function getRecentOfAllUserScoreData($songID, $difficulty){
+        $sql = DB::table($this->table)->select('*')
+            ->from($this->table . ' AS t1')
+            ->where('song_id', $songID)
+            ->where('difficulty', $difficulty)
+            ->whereNotExists(function ($query) {
+                $query->select(DB::raw('1'))->from($this->table . ' AS t2')->whereRaw('t1.user_id = t2.user_id')->whereRaw('t1.song_id = t2.song_id')->whereRaw('t1.difficulty = t2.difficulty')->whereRaw('t1.id < t2.id');
+            }
+        );
+        $this->value = $sql->get();
+        return $this;
+    }
+
     function getRecentGenerationOfScoreDataAll($id){
         $sql = DB::table($this->table)->
             select('user_id', 'song_id', 'difficulty')->
