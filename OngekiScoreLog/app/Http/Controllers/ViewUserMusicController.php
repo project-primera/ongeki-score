@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\UserStatus;
 use App\ScoreData;
 use App\OngekiScoreLog\Highcharts;
+use App\MusicData;
 
 class ViewUserMusicController extends Controller
 {
@@ -26,6 +27,10 @@ class ViewUserMusicController extends Controller
         }
 
         $score = ScoreData::join('music_datas','score_datas.song_id','=','music_datas.id')->where(['user_id' => $id,'song_id' => $music, 'difficulty' => $dif])->get();
+        $musicData = MusicData::find($music);
+        $isExist = new \stdClass;
+        $isExist->normal = !is_null($musicData->normal_added_version);
+        $isExist->lunatic = !is_null($musicData->lunatic_added_version); 
 
         $technical = [];
         $battle = [];
@@ -81,6 +86,6 @@ class ViewUserMusicController extends Controller
             ->isPlotOptionsDataLabelsEnabled(true)
             ->isPlotOptionsEnableMouseTracking(true);
             
-        return view('user_music', compact('status', 'id', 'highcharts', 'highcharts_sp', 'score', 'difficulty'));
+        return view('user_music', compact('status', 'id', 'music', 'isExist', 'highcharts', 'highcharts_sp', 'score', 'difficulty'));
     }
 }

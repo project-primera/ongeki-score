@@ -24,6 +24,19 @@
 
 @section('content')
     <article class="box">
+        <div class="buttons has-addons">
+            @if ($isExist->normal)
+                <a href="/user/{{$id}}/music/{{$music}}/basic" class="button basic">Basic</a>
+                <a href="/user/{{$id}}/music/{{$music}}/advanced" class="button advanced">Advanced</a>
+                <a href="/user/{{$id}}/music/{{$music}}/expert" class="button expert">Expert</a>
+                <a href="/user/{{$id}}/music/{{$music}}/master" class="button master">Master</a>
+            @endif
+            @if ($isExist->lunatic)
+                <a href="/user/{{$id}}/music/{{$music}}/lunatic" class="button lunatic">Lunatic</a>
+            @endif
+        </div>
+    </article>
+    <article class="box">
         <div id="graph"></div>
         <div id="sp-graph"></div>
         <button class="button change-graph-size">軸表示切り替え</button>
