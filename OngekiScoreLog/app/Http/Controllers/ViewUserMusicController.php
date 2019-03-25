@@ -31,11 +31,24 @@ class ViewUserMusicController extends Controller
         $battle = [];
         $damage = [];
         $date = [];
+        
+        $prev = new \stdClass();
+        $prev->technical = 0;
+        $prev->battle = 0;
+        $prev->damage = 0;
+
         foreach ($score as $key => $value) {
             $technical[] = (int)($value->technical_high_score / 100) / 10;
             $battle[] = (int)($value->battle_high_score / 1000) / 1000;
             $damage[] = (float)$value->over_damage_high_score;
             $date[] = date('n/j', strtotime($value->updated_at));
+
+            $value->differenceTechnical = $value->technical_high_score - $prev->technical;
+            $value->differenceBattle = $value->battle_high_score - $prev->battle;
+            $value->differenceDamage = round(($value->over_damage_high_score - $prev->damage) * 100) / 100;
+            $prev->technical = $value->technical_high_score;
+            $prev->battle = $value->battle_high_score;
+            $prev->damage = $value->over_damage_high_score;
         }
 
         $highcharts = new Highcharts();

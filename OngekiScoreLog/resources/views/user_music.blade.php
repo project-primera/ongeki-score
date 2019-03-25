@@ -28,4 +28,54 @@
         <div id="sp-graph"></div>
         <button class="button change-graph-size">軸表示切り替え</button>
     </article>
+    <article class="box">
+        <div class="table_wrap scalable">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th colspan="2">Technical Score</th>
+                        <th colspan="2">Battle Score</th>
+                        <th colspan="2">Over Damage</th>
+                        <th>Date</th>
+                    </tr>
+                </thead>
+                <tfoot>
+                    <tr>
+                        <th colspan="2">Technical Score</th>
+                        <th colspan="2">Battle Score</th>
+                        <th colspan="2">Over Damage</th>
+                        <th>Date</th>
+                    </tr>
+                </tfoot>
+                <tbody>
+                    @foreach ($score as $item)
+                        <tr>
+                            <td>{{number_format($item->technical_high_score)}}</td>
+                            @if ($loop->first || $item->differenceTechnical == 0)
+                                <td></td>
+                            @else
+                                <td>+{{number_format($item->differenceTechnical)}}</td>
+                            @endif
+
+                            <td>{{number_format($item->battle_high_score)}}</td>
+                            @if ($loop->first || $item->differenceBattle == 0)
+                                <td></td>
+                            @else
+                                <td>+{{number_format($item->differenceBattle)}}</td>
+                            @endif
+
+                            <td>{{$item->over_damage_high_score}}%</td>
+                            @if ($loop->first || $item->differenceDamage == 0)
+                                <td></td>
+                            @else
+                                <td>+{{$item->differenceDamage}}%</td>
+                            @endif
+
+                            <td>{{date("Y/m/d H:i", strtotime($item->updated_at))}}</td>
+                        </tr>
+                    @endforeach
+                </tbody>
+            </table>
+        </div>
+    </article>
 @endsection
