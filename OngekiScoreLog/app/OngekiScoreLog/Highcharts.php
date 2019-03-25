@@ -51,7 +51,7 @@ class Highcharts
         return $this;
     }
 
-    public function addXAxis(string $title, array $data = [], bool $isRight = false, int $width = null, string $formatter = null)
+    public function addXAxis(string $title, array $data = [], bool $isRight = false, int $width = null, string $formatter = null, bool $hideAxis = false)
     {
         $c = new \stdClass();
         $c->title = $title;
@@ -59,10 +59,11 @@ class Highcharts
         $c->isRight = $isRight;
         $c->width = $width;
         $c->formatter = $formatter;
+        $c->hideAxis = $hideAxis;
         $this->xAxis[] = $c;
         return $this;
     }
-    public function addYAxis(string $title, array $data = [], bool $isRight = false, int $width = null, string $formatter = null)
+    public function addYAxis(string $title, array $data = [], bool $isRight = false, int $width = null, string $formatter = null, bool $hideAxis = false)
     {
         $c = new \stdClass();
         $c->title = $title;
@@ -70,6 +71,7 @@ class Highcharts
         $c->isRight = $isRight;
         $c->width = $width;
         $c->formatter = $formatter;
+        $c->hideAxis = $hideAxis;
         $this->yAxis[] = $c;
         return $this;
     }
@@ -120,6 +122,17 @@ class Highcharts
             if(!is_null($value->formatter)){
                 $str .= "labels:{formatter: function () {return ($value->formatter);},},";
             }
+            if($value->hideAxis){
+                $str .= "lineWidth: 0,
+                minorGridLineWidth: 0,
+                lineColor: 'transparent',
+                labels: {
+                    enabled: false
+                },
+                minorTickLength: 0,
+                tickLength: 0,";
+                $str .= "},";
+            }
             $str .= "},";
 
         }
@@ -133,6 +146,16 @@ class Highcharts
             }
             if(!is_null($value->formatter)){
                 $str .= "labels:{formatter: function () { return $value->formatter;}},";
+            }
+            if($value->hideAxis){
+                $str .= "lineWidth: 0,
+                minorGridLineWidth: 0,
+                lineColor: 'transparent',
+                labels: {
+                    enabled: false
+                },
+                minorTickLength: 0,
+                tickLength: 0,";
             }
             $str .= "},";
         }
