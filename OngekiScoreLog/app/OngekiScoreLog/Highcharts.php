@@ -19,10 +19,12 @@ class Highcharts
     // Tooltip
     private $isTooltipCrosshairs = false;
     private $isTooltipShared = false;
+    private $tooltipPointFormat = null;
 
     // Options
     private $isPlotOptionsDataLabelsEnabled = false;
     private $isPlotOptionsEnableMouseTracking = true;
+    private $isPlotOptionsStackingPercent = false;
 
 
     public function id(string $s)
@@ -51,7 +53,7 @@ class Highcharts
         return $this;
     }
 
-    public function addXAxis(string $title, array $data = [], bool $isRight = false, int $width = null, string $formatter = null, bool $hideAxis = false)
+    public function addXAxis(string $title, array $data = [], bool $isRight = false, int $width = null, string $formatter = null, bool $hideAxis = false, int $min = null, $max = null)
     {
         $c = new \stdClass();
         $c->title = $title;
@@ -60,10 +62,12 @@ class Highcharts
         $c->width = $width;
         $c->formatter = $formatter;
         $c->hideAxis = $hideAxis;
+        $c->min = $min;
+        $c->max = $max;
         $this->xAxis[] = $c;
         return $this;
     }
-    public function addYAxis(string $title, array $data = [], bool $isRight = false, int $width = null, string $formatter = null, bool $hideAxis = false)
+    public function addYAxis(string $title, array $data = [], bool $isRight = false, int $width = null, string $formatter = null, bool $hideAxis = false, int $min = null, $max = null)
     {
         $c = new \stdClass();
         $c->title = $title;
@@ -72,6 +76,8 @@ class Highcharts
         $c->width = $width;
         $c->formatter = $formatter;
         $c->hideAxis = $hideAxis;
+        $c->min = $min;
+        $c->max = $max;
         $this->yAxis[] = $c;
         return $this;
     }
@@ -94,6 +100,10 @@ class Highcharts
         $this->isTooltipShared = $b;
         return $this;
     }
+    public function tooltipPointFormat(string $s){
+        $this->tooltipPointFormat = $s;
+        return $this;
+    }
     public function isPlotOptionsDataLabelsEnabled(bool $b)
     {
         $this->isPlotOptionsDataLabelsEnabled = $b;
@@ -104,7 +114,13 @@ class Highcharts
         $this->isPlotOptionsEnableMouseTracking = $b;
         return $this;
     }
+    public function isPlotOptionsStackingPercent(bool $b)
+    {
+        $this->isPlotOptionsStackingPercent = $b;
+        return $this;
+    }
 
+    
     public function __toString()
     {
         $str = "<script>Highcharts.chart('$this->id',{chart:{type:'$this->type',";
@@ -133,6 +149,12 @@ class Highcharts
                 tickLength: 0,";
                 $str .= "},";
             }
+            if(!is_null($value->min)){
+                $str .= "min: " . $value->min . ",";
+            }
+            if(!is_null($value->max)){
+                $str .= "max: " . $value->max . ",";
+            }
             $str .= "},";
 
         }
@@ -157,6 +179,12 @@ class Highcharts
                 minorTickLength: 0,
                 tickLength: 0,";
             }
+            if(!is_null($value->min)){
+                $str .= "min: " . $value->min . ",";
+            }
+            if(!is_null($value->max)){
+                $str .= "max: " . $value->max . ",";
+            }
             $str .= "},";
         }
         $str .= "],";
@@ -169,14 +197,19 @@ class Highcharts
 
         $str .= "tooltip: {
             crosshairs:" . var_export($this->isTooltipCrosshairs, true) . ",
-            shared:" . var_export($this->isTooltipShared, true) . "
-        },
+            shared:" . var_export($this->isTooltipShared, true) . ",";
+            if(!is_null($this->tooltipPointFormat)){
+                $str .= "pointFormat: '" . $this->tooltipPointFormat . "',";
+            }
+            
+        $str .= "},
         plotOptions: {
             $this->type: {
                 dataLabels: {
                     enabled:" . var_export($this->isPlotOptionsDataLabelsEnabled, true) . "
                 },
-                enableMouseTracking: " . var_export($this->isPlotOptionsEnableMouseTracking, true) . "
+                enableMouseTracking: " . var_export($this->isPlotOptionsEnableMouseTracking, true) . ",
+                " . ($this->isPlotOptionsStackingPercent ? "stacking: 'percent'," : "") . "
             }
         },});</script>";
 
