@@ -53,7 +53,7 @@ class Highcharts
         return $this;
     }
 
-    public function addXAxis(string $title, array $data = [], bool $isRight = false, int $width = null, string $formatter = null, bool $hideAxis = false, int $min = null, $max = null)
+    public function addXAxis(string $title, array $data = [], bool $isRight = false, int $width = null, string $formatter = null, bool $hideAxis = false, int $min = null, $max = null, int $tickInterval = null)
     {
         $c = new \stdClass();
         $c->title = $title;
@@ -64,10 +64,11 @@ class Highcharts
         $c->hideAxis = $hideAxis;
         $c->min = $min;
         $c->max = $max;
+        $c->tickInterval = $tickInterval;
         $this->xAxis[] = $c;
         return $this;
     }
-    public function addYAxis(string $title, array $data = [], bool $isRight = false, int $width = null, string $formatter = null, bool $hideAxis = false, int $min = null, $max = null)
+    public function addYAxis(string $title, array $data = [], bool $isRight = false, int $width = null, string $formatter = null, bool $hideAxis = false, int $min = null, $max = null, int $tickInterval = null)
     {
         $c = new \stdClass();
         $c->title = $title;
@@ -78,6 +79,7 @@ class Highcharts
         $c->hideAxis = $hideAxis;
         $c->min = $min;
         $c->max = $max;
+        $c->tickInterval = $tickInterval;
         $this->yAxis[] = $c;
         return $this;
     }
@@ -155,6 +157,9 @@ class Highcharts
             if(!is_null($value->max)){
                 $str .= "max: " . $value->max . ",";
             }
+            if(!is_null($value->tickInterval)){
+                $str .= "tickInterval: " . $value->tickInterval . ",";
+            }
             $str .= "},";
 
         }
@@ -182,8 +187,11 @@ class Highcharts
             if(!is_null($value->min)){
                 $str .= "min: " . $value->min . ",";
             }
-            if(!is_null($value->max)){
-                $str .= "max: " . $value->max . ",";
+            if(!is_null($value->min)){
+                $str .= "min: " . $value->min . ",";
+            }
+            if(!is_null($value->tickInterval)){
+                $str .= "tickInterval: " . $value->tickInterval . ",";
             }
             $str .= "},";
         }
