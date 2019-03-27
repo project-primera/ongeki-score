@@ -8,33 +8,25 @@
                     <thead>
                         <tr>
                             <td>&nbsp;</td>
-                            <td>Technical Score</td>
                             <td>Battle Score</td>
                             <td>Over Damage</td>
+                            <td>Technical Score</td>
                         </tr>
                     </thead>
-                    <tfoot>
-                        <tr>
-                            <td>&nbsp;</td>
-                            <td>Technical Score</td>
-                            <td>Battle Score</td>
-                            <td>Over Damage</td>
-                        </tr>
-                    </tfoot>
                     <tbody>
                         @foreach ($stat['difficulty'] as $key => $value)
                             <tr>
                                 <td>{{$key}}</td>
-                                <td>{{number_format($value["technical"])}}</td>
                                 <td>{{number_format($value["battle"])}}</td>
                                 <td>{{number_format($value["overDamage"], 2)}}%</td>
+                                <td>{{number_format($value["technical"])}}</td>
                             </tr>
                         @endforeach
                         <tr>
                             <td>Total</td>
-                            <td>{{number_format($stat['difficulty']["Basic"]["technical"] + $stat['difficulty']["Advanced"]["technical"] + $stat['difficulty']["Expert"]["technical"] + $stat['difficulty']["Master"]["technical"] + $stat['difficulty']["Lunatic"]["technical"])}}</td>
                             <td>{{number_format($stat['difficulty']["Basic"]["battle"] + $stat['difficulty']["Advanced"]["battle"] + $stat['difficulty']["Expert"]["battle"] + $stat['difficulty']["Master"]["battle"] + $stat['difficulty']["Lunatic"]["battle"])}}</td>
                             <td>{{number_format($stat['difficulty']["Basic"]["overDamage"] + $stat['difficulty']["Advanced"]["overDamage"] + $stat['difficulty']["Expert"]["overDamage"] + $stat['difficulty']["Master"]["overDamage"] + $stat['difficulty']["Lunatic"]["overDamage"], 2)}}%</td>
+                            <td>{{number_format($stat['difficulty']["Basic"]["technical"] + $stat['difficulty']["Advanced"]["technical"] + $stat['difficulty']["Expert"]["technical"] + $stat['difficulty']["Master"]["technical"] + $stat['difficulty']["Lunatic"]["technical"])}}</td>
                         </tr>
                     </tbody>
                 </table>
