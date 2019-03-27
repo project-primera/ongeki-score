@@ -84,12 +84,14 @@ class Highcharts
         return $this;
     }
 
-    public function addSeries(string $name, array $a, int $axis = 0)
+    public function addSeries(string $name, array $a, int $axis = 0, string $type = null, string $color = null)
     {
         $c = new \stdClass();
         $c->name = $name;
         $c->data = $a;
         $c->axis = $axis;
+        $c->type = $type;
+        $c->color = $color;
         $this->series[] = $c;
         return $this;
     }
@@ -199,7 +201,14 @@ class Highcharts
 
         $str .= "series:[";
         foreach ($this->series as $value) {
-            $str .= "{name:'$value->name',data:" . json_encode($value->data) . ",yAxis:$value->axis,},";
+            $str .= "{name:'$value->name',data:" . json_encode($value->data) . ",yAxis:$value->axis,";
+            if(!is_null($value->type)){
+                $str .= "type: '" . $value->type . "',";
+            }
+            if(!is_null($value->color)){
+                $str .= "color: '" . $value->color . "',";
+            }
+            $str .= "},";
         }
         $str .= "],";
 
