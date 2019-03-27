@@ -194,7 +194,7 @@ class ViewUserRatingController extends Controller
 
         $statistics->totalRatingTotal = $statistics->newBestRatingTotal + $statistics->oldBestRatingTotal + $statistics->recentRatingTotal;
         $statistics->totalRatingTop = max([$statistics->newBestRatingTop, $statistics->oldBestRatingTop, $statistics->recentRatingTop]);
-        $statistics->totalRatingMin = max([$statistics->newBestRatingMin, $statistics->oldBestRatingMin, $statistics->recentRatingMin]);
+        $statistics->totalRatingMin = min([$statistics->newBestRatingMin, $statistics->oldBestRatingMin, $statistics->recentRatingMin]);
 
         $statistics->maxRatingTotal = $statistics->newBestRatingTotal + $statistics->oldBestRatingTotal + ($statistics->totalRatingTop * $statistics->recentRatingCount);
 
