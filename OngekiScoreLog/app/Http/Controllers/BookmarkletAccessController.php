@@ -151,7 +151,7 @@ class BookmarkletAccessController extends Controller
                     ];
                     foreach ($difficultyArrayKey as $key => $value) {
                         foreach ($request->input('ScoreData')[$key] as $k => $v) {
-                            $userStatus = MusicData::where("title", "=", $v['title'])->first();
+                            $userStatus = MusicData::where("title", $v['title'])->first();
                             if(is_null($userStatus)){
                                 $userStatus = new MusicData();
                                 $userStatus->title = $v['title'];
@@ -199,7 +199,7 @@ class BookmarkletAccessController extends Controller
                         $userStatus = MusicData::where("title", "=", $v['title'])->first();
                         if(!is_null($userStatus)){
                             $scoreData = new ScoreData();
-                            $recentSong = $scoreData->getRecentGenerationOfScoreData(Auth::id(), $userStatus->id, $difficultyValue[$key]);
+                            $recentSong = $scoreData->getRecentGenerationOfScoreData(Auth::id(), $userStatus->id, $difficultyValue[$key])->getValue();
                             $scoreData->generation = $generation;
                             $scoreData->user_id = Auth::id();
                             $scoreData->song_id = $userStatus->id;
@@ -280,9 +280,11 @@ class BookmarkletAccessController extends Controller
             return $message;
         }catch(\PDOException $e){
             Log::error($e);
+            Slack::Error($e->getMessage(), $e, $fields, "error");
             return "error";
         }catch(\Exception $e){
             Log::error($e);
+            Slack::Error($e->getMessage(), $e, $fields, "error");
             return "error";
         }
     }

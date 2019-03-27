@@ -7,7 +7,7 @@
     <script type="text/javascript" src="/js/html2canvas.min.js"></script>
     <script type="text/javascript" src="{{ mix('/js/userProgress.js') }}"></script>
 @endsection
-@if(!is_null($sidemark))
+@if(isset($sidemark) && !is_null($sidemark))
     @section($sidemark, "is-active")
 @endif
 
@@ -42,28 +42,28 @@
                 <tbody>
                     <tr>
                         <td>新曲枠</td>
-                        <td>{{sprintf("%.2f", $statistics->newBestRatingTotal / $statistics->newBestRatingCount)}}</td>
+                        <td>{{sprintf("%.2f", floor($statistics->newBestRatingTotal / $statistics->newBestRatingCount * 100) / 100)}}</td>
                         <td>{{$statistics->newBestRatingCount}}</td>
                         <td>{{sprintf("%.2f", $statistics->newBestRatingTop)}}</td>
                         <td>{{sprintf("%.2f", $statistics->newBestRatingMin)}}</td>
                     </tr>
                     <tr>
                         <td>ベスト枠</td>
-                        <td>{{sprintf("%.2f", $statistics->oldBestRatingTotal / $statistics->oldBestRatingCount)}}</td>
+                        <td>{{sprintf("%.2f", floor($statistics->oldBestRatingTotal / $statistics->oldBestRatingCount * 100) / 100)}}</td>
                         <td>{{$statistics->oldBestRatingCount}}</td>
                         <td>{{sprintf("%.2f", $statistics->oldBestRatingTop)}}</td>
                         <td>{{sprintf("%.2f", $statistics->oldBestRatingMin)}}</td>
                     </tr>
                     <tr>
                         <td>リーセント枠</td>
-                        <td>{{sprintf("%.2f", $statistics->recentRatingTotal / $statistics->recentRatingCount)}}</td>
+                        <td>{{sprintf("%.2f", floor($statistics->recentRatingTotal / $statistics->recentRatingCount * 100) / 100)}}</td>
                         <td>{{$statistics->recentRatingCount}}</td>
                         <td>{{sprintf("%.2f", $statistics->recentRatingTop)}}</td>
                         <td>{{sprintf("%.2f", $statistics->recentRatingMin)}}</td>
                     </tr>
                     <tr>
                         <td>全対象曲</td>
-                        <td>{{sprintf("%.2f", $statistics->totalRatingTotal / $statistics->totalRatingCount)}}</td>
+                        <td>{{sprintf("%.2f", floor($statistics->totalRatingTotal / $statistics->totalRatingCount * 100) / 100)}}</td>
                         <td>{{$statistics->totalRatingCount}}</td>
                         <td>{{sprintf("%.2f", $statistics->totalRatingTop)}}</td>
                         <td>{{sprintf("%.2f", $statistics->totalRatingMin)}}</td>

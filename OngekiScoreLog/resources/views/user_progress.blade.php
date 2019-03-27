@@ -7,7 +7,7 @@
     <script type="text/javascript" src="/js/html2canvas.min.js"></script>
     <script type="text/javascript" src="{{ mix('/js/userProgress.js') }}"></script>
 @endsection
-@if(!is_null($sidemark))
+@if(isset($sidemark) && !is_null($sidemark))
     @section($sidemark, "is-active")
 @endif
 

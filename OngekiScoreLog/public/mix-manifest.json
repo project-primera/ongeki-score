@@ -8,6 +8,7 @@
     "/js/sortTable.js": "/js/sortTable.js",
     "/js/sortMusic.js": "/js/sortMusic.js",
     "/js/sortAllUserTable.js": "/js/sortAllUserTable.js",
+    "/js/changeGraphSize.js": "/js/changeGraphSize.js",
     "/js/list.min.js": "/js/list.min.js",
     "/js/sweet-scroll.min.js": "/js/sweet-scroll.min.js",
     "/js/html2canvas.min.js": "/js/html2canvas.min.js",

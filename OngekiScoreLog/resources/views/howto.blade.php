@@ -8,10 +8,6 @@
 @section('content')
 <div class="container">
     <article class="box">
-        <p>
-            以下書きかけです。
-        </p>
-
         <h3 class="title is-3">はじめに</h3>
         <p>
             このサイトではオンゲキNETからデータを取得します。<br>
@@ -56,6 +52,11 @@
                 <li>ホーム画面でさっき登録したブックマークを実行します</li>
             </ol>
         </p>
+
+        <div class="notification is-danger">
+            ブックマークレットの使い方は端末やブラウザ等、環境によって利用方法が大きく異なる場合がございます。<br>
+            お問い合わせをいただきましてもお答えできない場合がございますので予めご了承ください。
+        </div>
     </article>
 </div>
 @endsection

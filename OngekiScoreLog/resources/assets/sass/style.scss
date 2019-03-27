@@ -83,6 +83,29 @@ td.table-tag{
     padding-right: 0.15em;
 }
 
+.button{
+    &.basic{
+        background-color: #319D17;
+        color: #fff;
+    }
+    &.advanced{
+        background-color: #EEAD00;
+        color: #fff;
+    }
+    &.expert{
+        background-color: #F14494;
+        color: #fff;
+    }
+    &.master{
+        background-color: #8D43C5;
+        color: #fff;
+    }
+    &.lunatic{
+        background-color: #E9E8E9;
+    }
+
+}
+
 .tag{
     &.full-bell{
         background-color: #c1b400;

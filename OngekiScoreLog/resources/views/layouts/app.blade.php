@@ -10,6 +10,7 @@
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.1.2/css/bulma.css">
         <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.2.0/css/all.css" integrity="sha384-hWVjflwFxL6sNzntih27bfxkr27PmbbK/iSvJ+a4+0owXq79v+lsFkW54bOGbiDQ" crossorigin="anonymous">
         <link rel="stylesheet" href="{{ mix('/css/style.css') }}">
+        <script src="https://code.highcharts.com/highcharts.js"></script>
         <!-- favicons -->
         <meta name="msapplication-TileColor" content="#2d88ef">
         <meta name="msapplication-TileImage" content="/mstile-144x144.png">

@@ -9,6 +9,7 @@ use App\User;
 use App\UserStatus;
 use App\ScoreData;
 use App\Facades\OngekiUtility;
+use function GuzzleHttp\json_encode;
 
 class ViewUserController extends Controller
 {
@@ -48,11 +49,7 @@ class ViewUserController extends Controller
             $status[0]->badge .= '&nbsp;<span class="tag net-standard">OngekiNet Standard</span>';
         }
 
-        $scoreData = new ScoreData();
-        $scoreData->getRecentUserScore($id);
-        $scoreData->addMusicData();
-        $scoreData->addDetailedData();
-        $score = $scoreData->value;
+        $score = (new ScoreData)->getRecentUserScore($id)->addMusicData()->addDetailedData()->getValue();
 
         array_multisort(array_column($score, 'updated_at'), SORT_DESC, $score);
 
@@ -99,13 +96,13 @@ class ViewUserController extends Controller
 
         
         $stat['difficulty'] = [
-            "Basic" => [],
-            "Advanced" => [],
-            "Expert" => [],
-            "Master" => [],
-            "Lunatic" => [],
-
+            "Basic" => ['technical' => 0, "battle" => 0, "overDamage" => 0],
+            "Advanced" => ['technical' => 0, "battle" => 0, "overDamage" => 0],
+            "Expert" => ['technical' => 0, "battle" => 0, "overDamage" => 0],
+            "Master" => ['technical' => 0, "battle" => 0, "overDamage" => 0],
+            "Lunatic" => ['technical' => 0, "battle" => 0, "overDamage" => 0],
         ];
+
         $stat['level'] = [
             "Lv.1" => [],
             "Lv.2" => [],
@@ -224,8 +221,11 @@ class ViewUserController extends Controller
             if(!isset($stat['difficulty'][$value->difficulty_str]["fb"])){
 				$stat['difficulty'][$value->difficulty_str]["fb"] = 0;
             }
-			$stat['difficulty'][$value->difficulty_str]["fb"] += $value->full_bell;
-        
+            $stat['difficulty'][$value->difficulty_str]["fb"] += $value->full_bell;
+            
+            $stat['difficulty'][$value->difficulty_str]["technical"] += $value->technical_high_score;
+            $stat['difficulty'][$value->difficulty_str]["battle"] += $value->battle_high_score;
+            $stat['difficulty'][$value->difficulty_str]["overDamage"] += $value->over_damage_high_score;
 
             // 対応するレベルのランク総数を追加
             if(!isset($stat['level']["Lv." . $value->level_str][$key])){

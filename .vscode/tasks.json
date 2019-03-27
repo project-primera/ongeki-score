@@ -19,7 +19,7 @@
         {
             "label": "Watch Bookmarklet webpack files",
             "type": "shell",
-            "command": "cd Bookmarklet& node_modules\\.bin\\webpack --watch",
+            "command": "cd Bookmarklet; node_modules\\.bin\\webpack --watch",
             "presentation": {
                 "reveal": "always",
                 "panel": "new",
@@ -29,7 +29,7 @@
         {
             "label": "Watch OngekiScoreLog webpack mix files",
             "type": "shell",
-            "command": "cd OngekiScoreLog& npm run watch",
+            "command": "cd OngekiScoreLog; npm run watch",
             "presentation": {
                 "reveal": "always",
                 "panel": "new",
