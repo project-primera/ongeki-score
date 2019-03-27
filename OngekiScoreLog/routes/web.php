@@ -21,6 +21,8 @@ Route::get('/user/{id}/trophy', 'ViewUserTrophyController@getIndex')->where(['id
 Route::get('/user/{id}/music/{music}/{difficulty}', 'ViewUserMusicController@getIndex')->where(['id' => '\d+', 'music' => '\d+', 'difficulty' => '\w+']);
 Route::get('/user/{id}/{mode?}', 'ViewUserController@getUserPage')->where(['id' => '\d+']);
 
+Route::get('/music/{music}/{difficulty}', 'ViewMusicStatisticsController@getIndex')->where(['music' => '\d+', 'difficulty' => '\w+']);
+
 Route::get('/music', 'ViewMusicExtraLevelController@getIndex');
 
 Route::get('/random', 'ViewUserController@redirectRandomUserPage');

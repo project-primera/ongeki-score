@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Auth;
 use App\UserStatus;
 use App\ScoreData;
 use App\OngekiScoreLog\Highcharts;
@@ -32,94 +33,153 @@ class ViewMusicStatisticsController extends Controller
         $users = (new UserStatus)->getRecentAllUserData();
         $users = array_column($users, null, 'user_id');
 
+        $statistics = new \stdClass;
         $scoreData = new ScoreData;
         $scoreData = $scoreData->getRecentOfAllUserScoreData($music, $dif)->getValue();
 
-        $statistics = new \stdClass;
+        $battleKeys = ["新入生", "十級", "九級", "八級", "七級", "六級", "五級", "四級", "三級", "二級", "一級",  "初段", "二段", "三段", "四段", "五段", "六段", "七段", "八段", "九段", "十段", "奏伝"];
+
+        $technicalGrades = ["P", "SSS+", "SSS", "SS", "S", "AAA", "AA", "A", "B"];
+
+        $rateKeys = [];
+        for ($i = 10; $i <= 15; ++$i) { 
+            $rateKeys[] = $i . ".00";
+            $rateKeys[] = $i . ".25";
+            $rateKeys[] = $i . ".50";
+            $rateKeys[] = $i . ".75";
+        }
+        $rateKeys[] = "16.00";
+
+        foreach ($rateKeys as $value) {
+            $statistics->technicalTotalScore[$value] = 0;
+            $statistics->technicalTotalCount[$value] = 0;
+            foreach ($technicalGrades as $v) {
+                $statistics->technicalGradeCountGraph[$v][$value] = 0;
+                $statistics->technicalGradeCount[$value][$v] = 0;
+            }
+        }
+
         foreach ($scoreData as $key => $value) {
             $rateKey = $users[$value->user_id]->rating;
-            if($rateKey < 10.0 || strtotime($users[$value->user_id]->updated_at) < strtotime(config('env.ongeki-version-date'))){
-                continue;
-            }
             $rateKey = floor(floor($rateKey * 40) / 10);
-            if($rateKey % 4 == 0){
-                $rateKey = floor($rateKey / 4) . ".00";
-            }else if($rateKey % 4 == 1){
-                $rateKey = floor($rateKey / 4) . ".25";
-            }else if($rateKey % 4 == 2){
-                $rateKey = floor($rateKey / 4) . ".50";
-            }else{
-                $rateKey = floor($rateKey / 4) . ".75";
+            switch (true) {
+                case ($rateKey % 4 == 0): $rateKey = floor($rateKey / 4) . ".00"; break;
+                case ($rateKey % 4 == 1): $rateKey = floor($rateKey / 4) . ".25"; break;
+                case ($rateKey % 4 == 2): $rateKey = floor($rateKey / 4) . ".50"; break;
+                case ($rateKey % 4 == 3): $rateKey = floor($rateKey / 4) . ".75"; break;
             }
 
             $battleKey = $users[$value->user_id]->battle_point;
             switch (true) {
-                case ($battleKey >= 15000): $battleKey = "奏伝"; break;
-                case ($battleKey >= 14000): $battleKey = "十段"; break;
-                case ($battleKey >= 13000): $battleKey = "九段"; break;
-                case ($battleKey >= 12000): $battleKey = "八段"; break;
-                case ($battleKey >= 14000): $battleKey = "七段"; break;
-                case ($battleKey >= 10000): $battleKey = "六段"; break;
-                case ($battleKey >= 9000):  $battleKey = "五段"; break;
-                case ($battleKey >= 8000):  $battleKey = "四段"; break;
-                case ($battleKey >= 7000):  $battleKey = "三段"; break;
-                case ($battleKey >= 6000):  $battleKey = "二段"; break;
-                case ($battleKey >= 5000):  $battleKey = "初段"; break;
-                case ($battleKey >= 4500):  $battleKey = "一級"; break;
-                case ($battleKey >= 4000):  $battleKey = "二級"; break;
-                case ($battleKey >= 3500):  $battleKey = "三級"; break;
-                case ($battleKey >= 3000):  $battleKey = "四級"; break;
-                case ($battleKey >= 2500):  $battleKey = "五級"; break;
-                case ($battleKey >= 2000):  $battleKey = "六級"; break;
-                case ($battleKey >= 1500):  $battleKey = "七級"; break;
-                case ($battleKey >= 1000):  $battleKey = "八級"; break;
-                case ($battleKey >= 500):   $battleKey = "九級"; break;
-                case ($battleKey >= 200):   $battleKey = "十級"; break;
-                default:                    $battleKey = "新入生"; break;
+                case ($battleKey >= 15000): $battleKey = $battleKeys[21]; break;
+                case ($battleKey >= 14000): $battleKey = $battleKeys[20]; break;
+                case ($battleKey >= 13000): $battleKey = $battleKeys[19]; break;
+                case ($battleKey >= 12000): $battleKey = $battleKeys[18]; break;
+                case ($battleKey >= 14000): $battleKey = $battleKeys[17]; break;
+                case ($battleKey >= 10000): $battleKey = $battleKeys[16]; break;
+                case ($battleKey >= 9000):  $battleKey = $battleKeys[15]; break;
+                case ($battleKey >= 8000):  $battleKey = $battleKeys[14]; break;
+                case ($battleKey >= 7000):  $battleKey = $battleKeys[13]; break;
+                case ($battleKey >= 6000):  $battleKey = $battleKeys[12]; break;
+                case ($battleKey >= 5000):  $battleKey = $battleKeys[11]; break;
+                case ($battleKey >= 4500):  $battleKey = $battleKeys[10]; break;
+                case ($battleKey >= 4000):  $battleKey = $battleKeys[9]; break;
+                case ($battleKey >= 3500):  $battleKey = $battleKeys[8]; break;
+                case ($battleKey >= 3000):  $battleKey = $battleKeys[7]; break;
+                case ($battleKey >= 2500):  $battleKey = $battleKeys[6]; break;
+                case ($battleKey >= 2000):  $battleKey = $battleKeys[5]; break;
+                case ($battleKey >= 1500):  $battleKey = $battleKeys[4]; break;
+                case ($battleKey >= 1000):  $battleKey = $battleKeys[3]; break;
+                case ($battleKey >= 500):   $battleKey = $battleKeys[2]; break;
+                case ($battleKey >= 200):   $battleKey = $battleKeys[1]; break;
+                default:                    $battleKey = $battleKeys[0]; break;
             }
 
-            $statistics->technical[$rateKey][] = $value->technical_high_score;
-            $statistics->battle[$battleKey][] = $value->battle_high_score;
-            $statistics->damage[$battleKey][] = $value->over_damage_high_score;
+            // technical系は特定レート以上を参考値にする
+            if($rateKey >= 10.0 && strtotime($users[$value->user_id]->updated_at) >= strtotime(config('env.ongeki-version-date'))){
+                $grade = "";
+                switch (true) {
+                    case ($value->technical_high_score < 850000): $grade = "B"; break;
+                    case ($value->technical_high_score < 900000): $grade = "A"; break;
+                    case ($value->technical_high_score < 940000): $grade = "AA"; break;
+                    case ($value->technical_high_score < 970000): $grade = "AAA"; break;
+                    case ($value->technical_high_score < 990000): $grade = "S"; break;
+                    case ($value->technical_high_score < 1000000): $grade = "SS"; break;
+                    case ($value->technical_high_score < 1007500): $grade = "SSS"; break;
+                    case ($value->technical_high_score < 1010000): $grade = "SSS+"; break;
+                    default: $grade = "P"; break;
+                }
+
+                $statistics->technicalTotalScore[$rateKey] += $value->technical_high_score;
+                ++$statistics->technicalTotalCount[$rateKey];
+                ++$statistics->technicalGradeCountGraph[$grade][$rateKey];
+                ++$statistics->technicalGradeCount[$rateKey][$grade];
+            }
+
+            // $statistics->technical[$rateKey][] = $value->technical_high_score;
+            // $statistics->battle[$battleKey][] = $value->battle_high_score;
+            // $statistics->damage[$battleKey][] = $value->over_damage_high_score;
         }
 
-        return json_encode($statistics, true);
+        if(Auth::check()){
+            $myScore = (new ScoreData)->getRecentGenerationOfScoreData(Auth::user()->id, $music, $dif)->getValue();
+        }
 
-        $highcharts = new Highcharts();
-        /*
-        $highcharts->id("graph")
-            ->addXAxis("", $date)
-            ->addYAxis("TechnicalScore", [], false, 1, "this.value + 'k'")
-            ->addYAxis("BattleScore", [], true, 0, "this.value + 'm'")
-            ->addYAxis("OverDamage", [], true, 0, "this.value + '%'")
-            ->addSeries("TechnicalScore", $technical)
-            ->addSeries("BattleScore", $battle, 1)
-            ->addSeries("OverDamage", $damage, 2)
-            ->zoomType("x")
-            ->isTooltipCrosshairs(true)
-            ->isTooltipShared(true)
-            ->isPlotOptionsDataLabelsEnabled(true)
-            ->isPlotOptionsEnableMouseTracking(true);
-        */
+        $data = [];
+        foreach ($statistics->technicalGradeCountGraph as $key => $value) {
+            foreach ($value as $v) {
+                $data[$key][] = $v;
+            }
+        }
+        $line = [];
+        foreach ($statistics->technicalTotalScore as $key => $value) {
+            if($statistics->technicalTotalCount[$key] !== 0){
+                $line[] = $value / $statistics->technicalTotalCount[$key];
+            }else{
+                $line[] = null;
+            }
+        }
 
-        $highcharts_sp = new Highcharts();
-        /*
-        $highcharts_sp->id("sp-graph")
-            ->addXAxis("", $date)
-            ->addYAxis("", [], false, 1, "this.value + 'k'", true)
-            ->addYAxis("", [], true, 0, "this.value + 'm'", true)
-            ->addYAxis("", [], true, 0, "this.value + '%'", true)
-            ->addSeries("TechnicalScore(k)", $technical)
-            ->addSeries("BattleScore(m)", $battle, 1)
-            ->addSeries("OverDamage(%)", $damage, 2)
+        $highcharts = new \stdClass;
+        $highcharts->technical = new Highcharts();
+        $highcharts->technical
+            ->type("column")
+            ->addXAxis("Rate", $rateKeys)
             ->zoomType("x")
+            ->tooltipPointFormat('<span style="color:{series.color}">{series.name}</span>: <b>{point.y}</b><br/>')
+            ->isPlotOptionsStackingPercent(true)
             ->isTooltipCrosshairs(true)
-            ->isTooltipShared(true)
-            ->isPlotOptionsDataLabelsEnabled(true)
-            ->isPlotOptionsEnableMouseTracking(true);
-        */ 
-            
-        return view("statistics_music", compact('music', 'difficulty', 'musicData', 'isExist', 'highcharts', 'highcharts_sp'));
-        return view('user_music', compact('status', 'id', 'music', 'isExist', 'highcharts', 'highcharts_sp', 'score', 'difficulty'));
+            ->isTooltipShared(true);
+
+        $colors = ["#f35987", "#ba801c", "#df9c2a", "#e6b156", "#ecc583", "#1fb2f8", "#50c3f9", "#82d4fb", "#b3e5fd"];
+        $cnt = 0;
+        foreach ($data as $key => $value) {
+            $highcharts->technical->addSeries($key, $value, 0, null, $colors[$cnt++]);
+        }
+        $highcharts->technical->addSeries("レート別平均", $line, 1, "line", "#333333");
+
+        $highcharts->technical_sp = clone $highcharts->technical;
+        $highcharts->technical->id("graph")->addYAxis("", [], false, null, "this.value + '%'", false, 0, 100, 10)
+            ->addYAxis("", [], true, 0, null, false, 800000, 1010000, 10000);
+        $highcharts->technical_sp->id("sp-graph")->addYAxis("", [], false, null, "this.value + '%'", true, 0, 100, 10)
+            ->addYAxis("", [], true, 0, null, true, 800000, 1010000, 10000);
+
+        foreach ($statistics->technicalTotalScore as $key => $value) {
+            if($statistics->technicalTotalCount[$key] !== 0){
+                $statistics->technicalAverageScore[$key] = floor($value / $statistics->technicalTotalCount[$key]);
+                if(!is_null($myScore)){
+                    $statistics->technicalDifferenceScore[$key] = $myScore->technical_high_score - $statistics->technicalAverageScore[$key]; 
+                }else{
+                    $statistics->technicalDifferenceScore[$key] = "";
+                }
+            }else{
+                $statistics->technicalAverageScore[$key] = 0;
+                $statistics->technicalDifferenceScore[$key] = "";
+            }
+        }
+
+        // return json_encode($statistics, true);
+
+        return view("statistics_music", compact('music', 'difficulty', 'musicData', 'isExist', 'highcharts', 'statistics'));
     }
 }
