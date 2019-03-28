@@ -4,6 +4,12 @@
 @section('hero_subtitle', '')
 @section('hero_title', 'ブックマークレットを生成')
 @section('sidemark_bookmarklet', "is-active")
+@section('additional_footer')
+    <script type="text/javascript" src="{{ mix('/js/clipboard.min.js') }}"></script>
+    <script>
+        new ClipboardJS('.btn');
+    </script>
+@endsection
 
 @section('content')
 <div class="container">

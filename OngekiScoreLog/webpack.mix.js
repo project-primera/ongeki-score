@@ -26,6 +26,7 @@ mix.js('resources/assets/js/app.js', 'public/js')
     .copy('node_modules/list.js/dist/list.min.js', 'public/js/list.min.js')
     .copy('node_modules/sweet-scroll/sweet-scroll.min.js', 'public/js/sweet-scroll.min.js')
     .copy('node_modules/html2canvas/dist/html2canvas.min.js', 'public/js/html2canvas.min.js')
+    .copy('node_modules/clipboard/dist/clipboard.min.js', 'public/js/clipboard.min.js')
 
     .copy('../Bookmarklet/bin/main.js', 'public/bookmarklets/main.js')
 
