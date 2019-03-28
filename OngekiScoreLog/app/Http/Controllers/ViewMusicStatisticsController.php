@@ -96,7 +96,7 @@ class ViewMusicStatisticsController extends Controller
             }
 
             // technical系は特定レート以上を参考値にする
-            if($rateKey >= 10.0 && strtotime($users[$value->user_id]->updated_at) >= strtotime(config('env.ongeki-version-date'))){
+            if($value->technical_high_score !== 0 && $rateKey >= 10.0 && strtotime($users[$value->user_id]->updated_at) >= strtotime(config('env.ongeki-version-date'))){
                 $grade = "";
                 switch (true) {
                     case ($value->technical_high_score < 850000): $grade = "B"; break;
@@ -115,10 +115,6 @@ class ViewMusicStatisticsController extends Controller
                 ++$statistics->technicalGradeCountGraph[$grade][$rateKey];
                 ++$statistics->technicalGradeCount[$rateKey][$grade];
             }
-
-            // $statistics->technical[$rateKey][] = $value->technical_high_score;
-            // $statistics->battle[$battleKey][] = $value->battle_high_score;
-            // $statistics->damage[$battleKey][] = $value->over_damage_high_score;
         }
 
         if(Auth::check()){
@@ -134,7 +130,7 @@ class ViewMusicStatisticsController extends Controller
         $line = [];
         foreach ($statistics->technicalTotalScore as $key => $value) {
             if($statistics->technicalTotalCount[$key] !== 0){
-                $line[] = $value / $statistics->technicalTotalCount[$key];
+                $line[] = floor($value / $statistics->technicalTotalCount[$key]);
             }else{
                 $line[] = null;
             }
@@ -168,7 +164,7 @@ class ViewMusicStatisticsController extends Controller
             if($statistics->technicalTotalCount[$key] !== 0){
                 $statistics->technicalAverageScore[$key] = floor($value / $statistics->technicalTotalCount[$key]);
                 if(!is_null($myScore)){
-                    $statistics->technicalDifferenceScore[$key] = $myScore->technical_high_score - $statistics->technicalAverageScore[$key]; 
+                    $statistics->technicalDifferenceScore[$key] = number_format($myScore->technical_high_score - $statistics->technicalAverageScore[$key]);
                 }else{
                     $statistics->technicalDifferenceScore[$key] = "";
                 }

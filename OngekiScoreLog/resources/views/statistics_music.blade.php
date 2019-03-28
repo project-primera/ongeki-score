@@ -53,7 +53,7 @@
                     @foreach ($statistics->technicalDifferenceScore as $key => $value)
                     <tr>
                         <td>{{$key}}</td>
-                        <td>{{$statistics->technicalAverageScore[$key]}}</td>
+                        <td>{{number_format($statistics->technicalAverageScore[$key])}}</td>
                         <td>{{$value}}</td>
                     </tr>
                     @endforeach
