@@ -117,6 +117,7 @@ class ViewMusicStatisticsController extends Controller
             }
         }
 
+        $myScore = null;
         if(Auth::check()){
             $myScore = (new ScoreData)->getRecentGenerationOfScoreData(Auth::user()->id, $music, $dif)->getValue();
         }
@@ -173,9 +174,6 @@ class ViewMusicStatisticsController extends Controller
                 $statistics->technicalDifferenceScore[$key] = "";
             }
         }
-
-        // return json_encode($statistics, true);
-
-        return view("statistics_music", compact('music', 'difficulty', 'musicData', 'isExist', 'highcharts', 'statistics'));
+        return view("statistics_music", compact('music', 'difficulty', 'musicData', 'isExist', 'highcharts', 'statistics', 'myScore'));
     }
 }

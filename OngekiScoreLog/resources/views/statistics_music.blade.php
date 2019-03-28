@@ -39,14 +39,22 @@
                     <tr>
                         <th>Rate</th>
                         <th>Technical Score</th>
-                        <th>あなたのスコアとの差</th>
+                        @if (!is_null($myScore))
+                            <th>あなたのスコアとの差</th>
+                        @else
+                            <th>&nbsp;</th>
+                        @endif
                     </tr>
                 </thead>
                 <tfoot>
                     <tr>
                         <th>Rate</th>
                         <th>Technical Score</th>
-                        <th>あなたのスコアとの差</th>
+                        @if (!is_null($myScore))
+                            <th>あなたのスコアとの差</th>
+                        @else
+                            <th>&nbsp;</th>
+                        @endif
                     </tr>
                 </tfoot>
                 <tbody>
