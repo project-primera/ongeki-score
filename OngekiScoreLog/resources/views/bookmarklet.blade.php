@@ -4,6 +4,12 @@
 @section('hero_subtitle', '')
 @section('hero_title', 'ブックマークレットを生成')
 @section('sidemark_bookmarklet', "is-active")
+@section('additional_footer')
+    <script type="text/javascript" src="{{ mix('/js/clipboard.min.js') }}"></script>
+    <script>
+        new ClipboardJS('.btn');
+    </script>
+@endsection
 
 @section('content')
 <div class="container">
@@ -27,7 +33,10 @@
                 再生成すると以前のブックマークレットは使用できなくなります。
             </p>
         </div>
-
+        <div class="notification is-danger">
+            ブックマークレットの使い方は端末やブラウザ等、環境によって利用方法が大きく異なる場合がございます。<br>
+            お問い合わせをいただきましてもお答えできない場合がございますので予めご了承ください。
+        </div>
     </article>
 </div>
 @endsection

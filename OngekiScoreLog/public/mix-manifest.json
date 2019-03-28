@@ -12,5 +12,6 @@
     "/js/list.min.js": "/js/list.min.js",
     "/js/sweet-scroll.min.js": "/js/sweet-scroll.min.js",
     "/js/html2canvas.min.js": "/js/html2canvas.min.js",
+    "/js/clipboard.min.js": "/js/clipboard.min.js",
     "/bookmarklets/main.js": "/bookmarklets/main.js"
 }

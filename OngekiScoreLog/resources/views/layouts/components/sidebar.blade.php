@@ -7,7 +7,7 @@
         <ul class="menu-list">
             <li><a href="/" class="@yield('sidemark_top')">トップページ</a></li>
             <li><a href="/howto" class="@yield('sidemark_howto')">使い方</a></li>
-            <li><a href="/alluser" class="@yield('sidemark_alluser')">すべてのユーザー</a></li>
+            <li><a href="/user" class="@yield('sidemark_alluser')">すべてのユーザー</a></li>
             <li><a href="/random" class="@yield('sidemark_random')">ランダムアクセス</a></li>
             <li><a href="/music" class="@yield('sidemark_music')">楽曲リスト/譜面定数</a></li>
         </ul>
