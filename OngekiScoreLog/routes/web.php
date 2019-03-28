@@ -27,7 +27,9 @@ Route::get('/music', 'ViewMusicExtraLevelController@getIndex');
 
 Route::get('/random', 'ViewUserController@redirectRandomUserPage');
 Route::get('/mypage/{path?}', 'ViewUserController@getMyUserPage');
-Route::get('/alluser', 'ViewAllUserController@getIndex');
+
+Route::redirect('/alluser', '/user', 301);
+Route::get('/user', 'ViewAllUserController@getIndex');
 
 Route::get('/bookmarklet', 'BookmarkletGenerateController@getIndex');
 Route::get('/bookmarklet/agree', 'BookmarkletGenerateController@getBookmarklet');
