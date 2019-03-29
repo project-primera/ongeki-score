@@ -174,6 +174,6 @@ class ViewMusicStatisticsController extends Controller
                 $statistics->technicalDifferenceScore[$key] = "";
             }
         }
-        return view("statistics_music", compact('music', 'difficulty', 'musicData', 'isExist', 'highcharts', 'statistics', 'myScore'));
+        return view("music_statistics", compact('music', 'difficulty', 'musicData', 'isExist', 'highcharts', 'statistics', 'myScore'));
     }
 }

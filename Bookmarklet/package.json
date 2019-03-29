@@ -5,17 +5,17 @@
   "main": "Bookmarklet/bin/main.js",
   "dependencies": {
     "@types/axios": "^0.14.0",
-    "@types/jquery": "^3.3.5",
-    "@types/qs": "^6.5.1",
+    "@types/jquery": "^3.3.29",
+    "@types/qs": "^6.5.2",
     "axios": "^0.18",
     "jquery": "^3.3.1",
-    "qs": "^6.5.2",
-    "ts-loader": "^4.4.2",
-    "webpack": "^4.16.4"
+    "qs": "^6.7.0",
+    "ts-loader": "^4.5.0",
+    "webpack": "^4.29.6"
   },
   "devDependencies": {
     "typescript": "3.0.1",
-    "webpack-cli": "^3.1.0"
+    "webpack-cli": "^3.3.0"
   },
   "scripts": {
     "build": "webpack --mode=production",
