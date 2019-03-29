@@ -5,9 +5,7 @@
 @section('hero_title', 'ログアウト')
 
 @section('content')
-<div class="container">
     <article class="box">
         ログアウトしました。
     </article>
-</div>
 @endsection

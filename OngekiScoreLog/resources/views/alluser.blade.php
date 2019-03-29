@@ -8,7 +8,6 @@
 @endsection
 
 @section('content')
-<div class="container">
     <article class="box">
         <div id="sort_table" class="table_wrap">
             <table class="table">
@@ -60,5 +59,4 @@
             </table>
         </div>
     </article>
-</div>
 @endsection

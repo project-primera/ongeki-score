@@ -10,7 +10,6 @@
 @endsection
 
 @section('content')
-<div class="container">
     <article class="box">
         <p>
             各ユーザーごとのレート値は"ユーザーページ>Technical"からご確認いただけます。
@@ -68,5 +67,4 @@
             </table>
         </div>
     </article>
-</div>
 @endsection

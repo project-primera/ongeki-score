@@ -6,7 +6,6 @@
 @section('sidemark_eula', "is-active")
 
 @section('content')
-<div class="container">
     <article class="box">
         <h3 class="title is-3">利用規約</h3>
         <p>
@@ -45,5 +44,4 @@
             本サービスで活用している「Cookie」には個人情報は含まれておらず、個人情報を特定することはできません。また、ユーザー側で自由にブロックすることができます。詳しい設定方法は各ブラウザのヘルプをご確認ください。
         </p>
     </article>
-</div>
 @endsection

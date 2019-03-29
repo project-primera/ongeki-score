@@ -6,7 +6,6 @@
 @section('sidemark_howto', "is-active")
 
 @section('content')
-<div class="container">
     <article class="box">
         <h3 class="title is-3">はじめに</h3>
         <p>
@@ -58,5 +57,4 @@
             お問い合わせをいただきましてもお答えできない場合がございますので予めご了承ください。
         </div>
     </article>
-</div>
 @endsection

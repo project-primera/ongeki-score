@@ -4,7 +4,6 @@
 @section('hero_title', "更新履歴")
 
 @section('content')
-<div class="container">
     <article class="box">
         @foreach ($version as $item)
             <h3 class="title is-3" style="margin-bottom: 0.2em;">{{$item->name}}</h3>
@@ -14,5 +13,4 @@
             </p>
         @endforeach
     </article>
-</div>
 @endsection

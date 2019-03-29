@@ -5,7 +5,6 @@
 @section('hero_title', 'ログインページ')
 
 @section('content')
-<div class="container">
     <article class="box">
         @if (session('status'))
             <div class="alert alert-success" role="alert">
@@ -14,5 +13,4 @@
         @endif
         ログイン済みです。
     </article>
-</div>
 @endsection

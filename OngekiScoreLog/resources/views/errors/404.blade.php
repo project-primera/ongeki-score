@@ -4,7 +4,6 @@
 @section('hero_title', "404 Not Found")
 
 @section('content')
-<div class="container">
     <article class="box">
         <div class="error-top">
             <div class="error-top-child">
@@ -20,5 +19,4 @@
             <a href="{{url()->previous()}}">元のページに戻る</a><br>
         </p>
     </article>
-</div>
 @endsection
