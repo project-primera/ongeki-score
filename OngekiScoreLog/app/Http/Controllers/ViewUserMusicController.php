@@ -9,6 +9,9 @@ use App\MusicData;
 
 class ViewUserMusicController extends Controller
 {
+    function getRedirect(int $id, int $music){
+        return redirect("/user/$id/music/$music/master");
+    }
     function getIndex(int $id, int $music, string $difficulty){
         $status = (new UserStatus)->getRecentUserData($id);
 

@@ -19,6 +19,7 @@ Route::get('/user/{id}/progress', 'ViewUserProgressController@getIndex')->where(
 Route::get('/user/{id}/rating', 'ViewUserRatingController@getIndex')->where(['id' => '\d+']);
 Route::get('/user/{id}/trophy', 'ViewUserTrophyController@getIndex')->where(['id' => '\d+']);
 Route::get('/user/{id}/music/{music}/{difficulty}', 'ViewUserMusicController@getIndex')->where(['id' => '\d+', 'music' => '\d+', 'difficulty' => '\w+']);
+Route::get('/user/{id}/music/{music}', 'ViewUserMusicController@getRedirect')->where(['id' => '\d+', 'music' => '\d+']);
 Route::get('/user/{id}/{mode?}', 'ViewUserController@getUserPage')->where(['id' => '\d+']);
 
 Route::get('/music/{music}/{difficulty}', 'ViewMusicStatisticsController@getIndex')->where(['music' => '\d+', 'difficulty' => '\w+']);
