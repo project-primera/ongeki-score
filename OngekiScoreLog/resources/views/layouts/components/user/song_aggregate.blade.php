@@ -7,10 +7,10 @@
                 <table class="table">
                     <thead>
                         <tr>
-                            <td>&nbsp;</td>
-                            <td>Battle Score</td>
-                            <td>Over Damage</td>
-                            <td>Technical Score</td>
+                            <th>&nbsp;</th>
+                            <th>Battle Score</th>
+                            <th>Over Damage</th>
+                            <th>Technical Score</th>
                         </tr>
                     </thead>
                     <tbody>
