@@ -7,7 +7,7 @@
         <meta name="viewport" content="width=device-width,initial-scale=1">
         <title>OngekiScoreLog - @yield('title')</title>
         <meta name="description" content="SEGAのアーケード音楽ゲーム「オンゲキ」のスコアを集計し、見やすくソートしたりできる非公式ツールです。他のユーザーにスコアを共有することが出来ます。">
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.1.2/css/bulma.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.4/css/bulma.css">
         <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.2.0/css/all.css" integrity="sha384-hWVjflwFxL6sNzntih27bfxkr27PmbbK/iSvJ+a4+0owXq79v+lsFkW54bOGbiDQ" crossorigin="anonymous">
         <link rel="stylesheet" href="{{ mix('/css/style.css') }}">
         <script src="https://code.highcharts.com/highcharts.js"></script>
@@ -67,27 +67,49 @@
 
     <body>
         <a href="#side_menu" class="round_button is-hidden-tablet" data-scroll><i class="fas fa-bars"></i></a>
-        <header class="nav">
-            <div class="nav-left">
-                <span class="nav-item">
-                    <a href="/"><i class="fas fa-chart-line"></i>&nbsp;ongeki-score.net</span></a>
+
+
+        <header class="navbar" role="navigation" aria-label="main navigation">
+            <div class="navbar-brand">
+                <a class="navbar-item" href="/">
+                    <!-- <img src="logo" width="112" height="28"> -->
+                    <i class="fas fa-chart-line"></i>&nbsp;ongeki-score.net
+                </a>
+                <a role="button" class="navbar-burger burger" aria-label="menu" aria-expanded="false" data-target="navbar">
+                    <span aria-hidden="true"></span>
+                    <span aria-hidden="true"></span>
+                    <span aria-hidden="true"></span>
+                </a>
             </div>
-            <div class="nav-right">
-                <span class="nav-item">
-                    <!-- <div class="control has-addons">
-                        <input class="input" type="search" name="search" placeholder="キーワード検索">
-                        <a class="button is-info"><i class="fas fa-search"></i>&nbsp;検索</a>
-                    </div> -->
-                </span>
-                <span class="nav-item">
-                    @component('layouts/components/login_button')
-                    @endcomponent
-                </span>
+            <div id="navbar" class="navbar-menu">
+                <div class="navbar-end">
+                    <div class="navbar-item">
+                        @if (!is_null(\Auth::user()))
+                            <div class="navbar-item">
+                                    <i class="fas fa-user"></i>&nbsp;{{\Auth::user()->name}}&nbsp;(ID:{{\Auth::user()->id}})
+                            </div>
+                        @endif
+                        <div class="buttons">
+                            @if (is_null(\Auth::user()))
+                                <a class="button is-primary" href="/register">
+                                    <strong>新規登録</strong>
+                                </a>
+                                <a class="button is-light" href="/login">
+                                    ログイン
+                                </a>
+                            @else
+                                <a class="button is-light" href="/logout">
+                                    ログアウト
+                                </a>
+                            @endif
+                        </div>
+                    </div>
+                </div>
             </div>
         </header>
 
         <aside>
-            <div class="hero is-info is-bold">
+            <div class="hero is-older-info is-bold">
                 <div class="hero-body">
                     <div class="container">
                         <h2 class="subtitle">@yield('hero_subtitle')</h2>
@@ -141,7 +163,21 @@
                 info&nbsp;(at)&nbsp;ongeki-score.net
              </a>
         </footer>
-
+        <script>
+            document.addEventListener('DOMContentLoaded', () => {
+                const $navbarBurgers = Array.prototype.slice.call(document.querySelectorAll('.navbar-burger'), 0);
+                if ($navbarBurgers.length > 0) {
+                    $navbarBurgers.forEach( el => {
+                        el.addEventListener('click', () => {
+                            const target = el.dataset.target;
+                            const $target = document.getElementById(target);
+                            el.classList.toggle('is-active');
+                            $target.classList.toggle('is-active');
+                        });
+                    });
+                }
+            });
+        </script>  
         <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha256-3edrmyuQ0w65f8gfBsqowzjJe2iM6n0nKciPUp8y+7E=" crossorigin="anonymous"></script>
         <script type="text/javascript" src="{{ mix('/js/list.min.js') }}"></script>
         <script type="text/javascript" src="{{ mix('/js/sweet-scroll.min.js') }}"></script>
