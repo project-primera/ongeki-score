@@ -1,6 +1,6 @@
 @extends('layouts.app')
-@section('title', "パスワードリセット")
-@section('hero_title', __('Reset Password'))
+@section('title', "パスワードをリセット")
+@section('hero_title', "パスワードをリセット")
 
 @section('content')
     <article class="box">
@@ -9,10 +9,10 @@
                 {{ session('status') }}
             </div>
         @endif
-        <form method="POST" action="{{ route('password.email') }}" aria-label="{{ __('Reset Password') }}">
+        <form method="POST" action="{{ route('password.email') }}" aria-label="パスワードをリセット">
             @csrf
             <div class="field">
-                <label for="email" class="label">{{ __('E-Mail Address') }}</label>
+                <label for="email" class="label">メールアドレス</label>
                 <div class="control has-icons-left">
                     <span class="icon is-small is-left">
                         <i class="fas fa-envelope"></i>
@@ -27,7 +27,7 @@
             </div>
             <div class="field">
                 <div class="control">
-                    <button type="submit" class="button is-link">{{ __('Send Password Reset Link') }}</button>
+                    <button type="submit" class="button is-link">パスワードリセット用のリンクを送信する</button>
                 </div>
             </div>
         </form>

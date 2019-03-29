@@ -1,14 +1,14 @@
 @extends('layouts.app')
-@section('title', "新規登録")
-@section('hero_title', __('Reset Password'))
+@section('title', "パスワードをリセット")
+@section('hero_title', "パスワードをリセット")
 
 @section('content')
     <article class="box">
-        <form method="POST" action="{{ route('password.request') }}" aria-label="{{ __('Reset Password') }}">
+        <form method="POST" action="{{ route('password.request') }}" aria-label="パスワードをリセット">
             @csrf
             <input type="hidden" name="token" value="{{ $token }}">
             <div class="field">
-                <label for="email" class="label">{{ __('E-Mail Address') }}</label>
+                <label for="email" class="label">メールアドレス</label>
                 <div class="control has-icons-left">
                     <span class="icon is-small is-left">
                         <i class="fas fa-envelope"></i>
@@ -22,7 +22,7 @@
                 </div>
             </div>
             <div class="field">
-                <label for="password" class="label">{{ __('Password') }}</label>
+                <label for="password" class="label">パスワード</label>
                 <div class="control has-icons-left">
                     <span class="icon is-small is-left">
                         <i class="fas fa-lock"></i>
@@ -36,7 +36,7 @@
                 </div>
             </div>
             <div class="field">
-                <label for="password-confirm" class="label">{{ __('Confirm Password') }}</label>
+                <label for="password-confirm" class="label">確認用パスワード</label>
                 <div class="control has-icons-left">
                     <span class="icon is-small is-left">
                         <i class="fas fa-lock"></i>
@@ -46,7 +46,7 @@
             </div>
             <div class="field">
                 <div class="control">
-                    <button type="submit" class="button is-link">{{ __('Reset Password') }}</button>
+                    <button type="submit" class="button is-link">パスワードをリセットする</button>
                 </div>
             </div>
         </form>

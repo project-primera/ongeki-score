@@ -1,13 +1,13 @@
 @extends('layouts.app')
 @section('title', "新規登録")
-@section('hero_title', __('Register'))
+@section('hero_title', "新規登録")
 
 @section('content')
     <article class="box">
-        <form method="POST" action="{{ route('register') }}" aria-label="{{ __('Register') }}">
+        <form method="POST" action="{{ route('register') }}" aria-label="新規登録">
             @csrf
             <div class="field">
-                <label for="name" class="label">{{ __('Name') }}</label>
+                <label for="name" class="label">ユーザー名</label>
                 <div class="control has-icons-left">
                     <span class="icon is-small is-left">
                         <i class="fas fa-user-circle"></i>
@@ -21,7 +21,7 @@
                 </div>
             </div>
             <div class="field">
-                <label for="email" class="label">{{ __('E-Mail Address') }}</label>
+                <label for="email" class="label">メールアドレス</label>
                 <div class="control has-icons-left">
                     <span class="icon is-small is-left">
                         <i class="fas fa-envelope"></i>
@@ -35,7 +35,7 @@
                 </div>
             </div>
             <div class="field">
-                <label for="password" class="label">{{ __('Password') }}</label>
+                <label for="password" class="label">パスワード</label>
                 <div class="control has-icons-left">
                     <span class="icon is-small is-left">
                         <i class="fas fa-lock"></i>
@@ -49,7 +49,7 @@
                 </div>
             </div>
             <div class="field">
-                <label for="password-confirm" class="label">{{ __('Confirm Password') }}</label>
+                <label for="password-confirm" class="label">確認用パスワード</label>
                 <div class="control has-icons-left">
                     <span class="icon is-small is-left">
                         <i class="fas fa-lock"></i>
@@ -59,7 +59,7 @@
             </div>
             <div class="field">
                 <div class="control">
-                    <button type="submit" class="button is-link">{{ __('Register') }}</button>
+                    <button type="submit" class="button is-link">登録</button>
                 </div>
             </div>
         </form>
