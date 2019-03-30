@@ -42,13 +42,12 @@ class ViewMusicStatisticsController extends Controller
         $technicalGrades = ["P", "SSS+", "SSS", "SS", "S", "AAA", "AA", "A", "B"];
 
         $rateKeys = [];
-        for ($i = 10; $i <= 15; ++$i) { 
+        for ($i = 0; $i <= 16; ++$i) { 
             $rateKeys[] = $i . ".00";
             $rateKeys[] = $i . ".25";
             $rateKeys[] = $i . ".50";
             $rateKeys[] = $i . ".75";
         }
-        $rateKeys[] = "16.00";
 
         foreach ($rateKeys as $value) {
             $statistics->technicalTotalScore[$value] = 0;
@@ -96,18 +95,18 @@ class ViewMusicStatisticsController extends Controller
             }
 
             // technical系は特定レート以上を参考値にする
-            if($value->technical_high_score !== 0 && $rateKey >= 10.0 && strtotime($users[$value->user_id]->updated_at) >= strtotime(config('env.ongeki-version-date'))){
+            if($value->technical_high_score !== 0 && strtotime($users[$value->user_id]->updated_at) >= strtotime(config('env.ongeki-version-date'))){
                 $grade = "";
                 switch (true) {
-                    case ($value->technical_high_score < 850000): $grade = "B"; break;
-                    case ($value->technical_high_score < 900000): $grade = "A"; break;
-                    case ($value->technical_high_score < 940000): $grade = "AA"; break;
-                    case ($value->technical_high_score < 970000): $grade = "AAA"; break;
-                    case ($value->technical_high_score < 990000): $grade = "S"; break;
-                    case ($value->technical_high_score < 1000000): $grade = "SS"; break;
-                    case ($value->technical_high_score < 1007500): $grade = "SSS"; break;
-                    case ($value->technical_high_score < 1010000): $grade = "SSS+"; break;
-                    default: $grade = "P"; break;
+                    case ($value->technical_high_score < 850000): $grade = $technicalGrades[8]; break;
+                    case ($value->technical_high_score < 900000): $grade = $technicalGrades[7]; break;
+                    case ($value->technical_high_score < 940000): $grade = $technicalGrades[6]; break;
+                    case ($value->technical_high_score < 970000): $grade = $technicalGrades[5]; break;
+                    case ($value->technical_high_score < 990000): $grade = $technicalGrades[4]; break;
+                    case ($value->technical_high_score < 1000000): $grade = $technicalGrades[3]; break;
+                    case ($value->technical_high_score < 1007500): $grade = $technicalGrades[2]; break;
+                    case ($value->technical_high_score < 1010000): $grade = $technicalGrades[1]; break;
+                    default: $grade = $technicalGrades[0]; break;
                 }
 
                 $statistics->technicalTotalScore[$rateKey] += $value->technical_high_score;
@@ -122,12 +121,6 @@ class ViewMusicStatisticsController extends Controller
             $myScore = (new ScoreData)->getRecentGenerationOfScoreData(Auth::user()->id, $music, $dif)->getValue();
         }
 
-        $data = [];
-        foreach ($statistics->technicalGradeCountGraph as $key => $value) {
-            foreach ($value as $v) {
-                $data[$key][] = $v;
-            }
-        }
         $line = [];
         foreach ($statistics->technicalTotalScore as $key => $value) {
             if($statistics->technicalTotalCount[$key] !== 0){
@@ -136,6 +129,31 @@ class ViewMusicStatisticsController extends Controller
                 $line[] = null;
             }
         }
+
+        $data = [];
+        foreach ($statistics->technicalGradeCountGraph as $key => $value) {
+            if($statistics->technicalTotalCount[key($value)] !== 0 || true){
+                foreach ($value as $v) {
+                    $data[$key][] = $v;
+                }
+            }
+        }
+
+        foreach ($rateKeys as $key => $value) {
+            if($statistics->technicalTotalCount[$rateKeys[$key]] === 0){
+                foreach ($technicalGrades as $k => $v) {
+                    unset($data[$v][$key]);
+                }
+                unset($line[$key]);
+                unset($rateKeys[$key]);
+            }
+        }
+        foreach ($technicalGrades as $k => $v) {
+            $data[$v] = array_values($data[$v]);
+        }
+        $line = array_values($line);
+        $rateKeys = array_values($rateKeys);
+
 
         $highcharts = new \stdClass;
         $highcharts->technical = new Highcharts();
