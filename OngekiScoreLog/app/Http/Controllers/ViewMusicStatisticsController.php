@@ -10,6 +10,17 @@ use App\MusicData;
 
 class ViewMusicStatisticsController extends Controller
 {
+    function getRedirect(int $music){
+        $musicData = MusicData::find($music);
+        if(is_null($musicData)){
+            abort(404);
+        }else if (!is_null($musicData->normal_added_version)){
+            return redirect("/music/$music/master");
+        }else{
+            return redirect("/music/$music/lunatic");
+        }
+    }
+
     function getIndex(int $music, string $difficulty){
         $difficultyToInt = [
             'basic' => 0,
@@ -175,7 +186,7 @@ class ViewMusicStatisticsController extends Controller
 
         $highcharts->technical_sp = clone $highcharts->technical;
         $highcharts->technical->id("graph")->addYAxis("", [], false, null, "this.value + '%'", false, 0, 100, 10)
-            ->addYAxis("", [], true, 0, null, false, 800000, 1010000, 10000);
+            ->addYAxis("", [], true, 0, null, false, 810000, 1010000, 10000);
         $highcharts->technical_sp->id("sp-graph")->addYAxis("", [], false, null, "this.value + '%'", true, 0, 100, 10)
             ->addYAxis("", [], true, 0, null, true, 800000, 1010000, 10000);
 
