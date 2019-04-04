@@ -24,6 +24,19 @@
 @section('content')
     <article class="box">
         {!!$display['screenName']!!}
+        <div class="field">
+            <label class="label">表示開始期間</label>
+            <div id="select-generation" class="select">
+                <select>
+                    @foreach ($display['select'] as $key => $value)
+                        <option class="select-generations-option" value='{{$key}}'{{$value["selected"]}}{{$value["disabled"]}}>{{$key}}: {{$value["value"]}}</option>
+                    @endforeach
+                </select>
+            </div>
+        </div>
+            
+
+        <span id="current-url" style="display: none;">{{$display['url']}}</span>
         <hr>
         <div class="user-progress">
             <div class="info">
@@ -136,9 +149,8 @@
                                     <span class="tag {{$value['difference']['new-lamp-is-ab']}}">AB</span>
                             </div>
                         </div>
-                        @if (++$count < 9)
-                            <hr>
-                        @else
+                        <hr>
+                        @if (++$count >= 9)
                             </div>
                             </div>
                             <div class="user-progress">

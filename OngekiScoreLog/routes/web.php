@@ -15,7 +15,7 @@ Auth::routes();
 
 Route::get('/', 'SimpleViewController@getIndex');
 
-Route::get('/user/{id}/progress', 'ViewUserProgressController@getIndex')->where(['id' => '\d+']);
+Route::get('/user/{id}/progress/{generation?}', 'ViewUserProgressController@getIndex')->where(['id' => '\d+', 'generation' => '\d+']);
 Route::get('/user/{id}/rating', 'ViewUserRatingController@getIndex')->where(['id' => '\d+']);
 Route::get('/user/{id}/trophy', 'ViewUserTrophyController@getIndex')->where(['id' => '\d+']);
 Route::get('/user/{id}/music/{music}/{difficulty}', 'ViewUserMusicController@getIndex')->where(['id' => '\d+', 'music' => '\d+', 'difficulty' => '\w+']);
