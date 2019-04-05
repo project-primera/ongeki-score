@@ -25,17 +25,16 @@
     <article class="box">
         {!!$display['screenName']!!}
         <div class="field">
-            <label class="label">表示開始期間</label>
+            <label class="label">表示期間</label>
             <div id="select-generation" class="select">
                 <select>
                     @foreach ($display['select'] as $key => $value)
-                        <option class="select-generations-option" value='{{$key}}'{{$value["selected"]}}{{$value["disabled"]}}>{{$key}}: {{$value["value"]}}</option>
+                <option class="select-generations-option" value='{{$key}}'{{$value["selected"]}}>{{$key}}: {{$value["value"]}} ～ {{$display['select_last']["value"]}}</option>
                     @endforeach
                 </select>
             </div>
         </div>
             
-
         <span id="current-url" style="display: none;">{{$display['url']}}</span>
         <hr>
         <div class="user-progress">

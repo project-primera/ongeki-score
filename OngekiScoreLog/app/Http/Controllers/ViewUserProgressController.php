@@ -134,15 +134,15 @@ class ViewUserProgressController extends Controller
         $display['select'][0]["disabled"] = "";
 
         foreach ($gen as $key => $value) {
-            $display['select'][$value->generation]["value"] = $value->updated_at;
-            $display['select'][$value->generation]["selected"] = "";
-            $display['select'][$value->generation]["disabled"] = "";
-
-            if($value->generation == $generation){
-                $display['select'][$value->generation]["selected"] = " selected";
-            }
             if($value == end($gen)){
-                $display['select'][$value->generation]["disabled"] = " disabled";
+                $display['select_last']["value"] = $value->updated_at;
+            }else{
+                $display['select'][$value->generation]["value"] = $value->updated_at;
+                $display['select'][$value->generation]["selected"] = "";
+                $display['select'][$value->generation]["disabled"] = "";
+                if($value->generation == $generation){
+                    $display['select'][$value->generation]["selected"] = " selected";
+                }
             }
         }
         
