@@ -40,7 +40,7 @@
         <div class="user-progress">
             <div class="info">
                 <div class="left">
-                    <span class="update">Update&nbsp;{{$date['new']}}</span>
+                    <span class="update">{{$date['old']}} → {{$date['new']}}</span>
                 </div>
                 <div class="right">
                     <span class="site-name">{{config('app.name')}}</span>&nbsp;
@@ -50,10 +50,10 @@
             </div>
 
             <div class="notification">
-                    <span class="title is-5">{{$status[0]->trophy}}</span><br>
+                <span class="title is-5">{{$status[0]->trophy}}</span><br>
                 <span class="title is-5">Lv.{{$status[0]->level}}&nbsp;/&nbsp;
-                    BP: {{$status[0]->battle_point}}&nbsp;/&nbsp;
-                    Rate: {{$status[0]->rating}}&nbsp;(MAX:&nbsp;{{$status[0]->rating_max}})</span><br>
+                BP: {{$status[0]->battle_point}}&nbsp;/&nbsp;
+                Rate: {{$status[0]->rating}}&nbsp;(MAX:&nbsp;{{$status[0]->rating_max}})</span><br>
                 <span class="title is-3">{{$status[0]->name}}</span>
             </div>
 

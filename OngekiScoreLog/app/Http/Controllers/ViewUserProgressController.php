@@ -146,14 +146,14 @@ class ViewUserProgressController extends Controller
             }
         }
         
-        $date["new"] = date("Y/m/d H:i", strtotime(end($display['select'])["value"]));
+        $date["new"] = date("Y/m/d H:i", strtotime($display['select_last']["value"]));
         if($date["new"] === date("Y/m/d H:i", strtotime(0))){
             $date["new"] = "N/A"; 
         }
         if(array_key_exists($generation - 1, $display['select'])){
             $date["old"] = date("Y/m/d H:i", strtotime($display['select'][$generation]["value"]));
         }else{
-            $date["old"] = "N/A";
+            $date["old"] = "初回登録";
         }
 
         foreach ($new as $music => $temp) {
