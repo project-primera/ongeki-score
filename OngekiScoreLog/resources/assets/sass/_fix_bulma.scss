@@ -42,3 +42,7 @@ b {
     background-color: #1fc8db;
     color: #fff;
 }
+
+.progress::-webkit-progress-value {
+    transition: width 1.0s ease;
+}
