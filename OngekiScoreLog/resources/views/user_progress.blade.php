@@ -39,17 +39,15 @@
         <hr>
         <div class="user-progress">
             <div class="info">
-                <div class="left">
-                    <span class="update">{{$date['old']}} → {{$date['new']}}</span>
-                </div>
                 <div class="right">
                     <span class="site-name">{{config('app.name')}}</span>&nbsp;
-                    <span class="version">({{$version}})</span>&nbsp;
+                    <span class="version">(v.{{$version}})</span>&nbsp;
                     <span class="url">{{config('app.url')}}</span>
                 </div>
             </div>
 
             <div class="notification">
+                <div class="date"><span class="update">{{$date['old']}} → {{$date['new']}}</span></div>
                 <span class="title is-5">{{$status[0]->trophy}}</span><br>
                 <span class="title is-5">Lv.{{$status[0]->level}}&nbsp;/&nbsp;
                 BP: {{$status[0]->battle_point}}&nbsp;/&nbsp;
