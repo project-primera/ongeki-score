@@ -32,8 +32,8 @@ $(function($) {
         location.href = $('#current-url').text() + "/" + $('#select-generation  option:selected').val();
     });
     
-    $('#progress').click(async function(){
-        $('#progress').prop("disabled", true);
+    $('#submit_button').click(async function(){
+        $('#submit_button').prop("disabled", true);
         $('.user-progress').css('width','640px');
         
         for (let index = 0; index < progress.length; index++) {
@@ -41,5 +41,8 @@ $(function($) {
 
             await convert(element, index);
         }
+
+        $('.progress').removeClass("is-progress").removeAttr("value").removeAttr("max");
+        $('#tweet_form').submit();
     })
 });
