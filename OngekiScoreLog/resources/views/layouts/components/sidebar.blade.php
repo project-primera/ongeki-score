@@ -29,6 +29,7 @@
             </ul>
         @endif
         <ul class="menu-list">
+            <li><a href="/faq" class="@yield('sidemark_faq')">よくある質問</a></li>
             <li><a href="/eula" class="@yield('sidemark_eula')">利用規約<br>プライバシーポリシー</a></li>
         </ul>
     </aside>

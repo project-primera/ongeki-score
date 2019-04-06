@@ -46,3 +46,11 @@ b {
 .is-progress .progress::-webkit-progress-value {
     transition: width 1.0s ease;
 }
+
+.title.is-3,.title.is-4{
+    margin-bottom: 0.3em; 
+}
+
+.title.is-3:not(:first-child),.title.is-4:not(:first-child){
+    margin-top: 1em;
+}

@@ -38,6 +38,7 @@ Route::get('/setting', 'SettingController@getSetting');
 Route::get('/setting/twitter', 'SettingController@getTwitterAuthentication');
 
 Route::get('/howto', 'SimpleViewController@getHowto');
+Route::get('/faq', 'SimpleViewController@getFAQ');
 Route::get('/eula', 'SimpleViewController@getEula');
 
 Route::get('/changelog', 'SimpleViewController@getChangelog');
