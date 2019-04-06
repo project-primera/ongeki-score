@@ -29,7 +29,7 @@
             <div id="select-generation" class="select">
                 <select>
                     @foreach ($display['select'] as $key => $value)
-                <option class="select-generations-option" value='{{$key}}'{{$value["selected"]}}>{{$key}}: {{$value["value"]}} ～ {{$display['select_last']["value"]}}</option>
+                <option class="select-generations-option" value='{{$key}}'{{$value["selected"]}}>{{$key}}: {{$value["value"]}} ～</option>
                     @endforeach
                 </select>
             </div>
