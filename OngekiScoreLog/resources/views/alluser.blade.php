@@ -39,7 +39,7 @@
                     @foreach ($users as $item)
                         <tr>
                             <td class="sort_id">{{$item->user_id}}</td>
-                            <td class="sort_name"><a href="/user/{{$item->user_id}}">{{$item->name}}</a></td>
+                        <td class="sort_name"><span class="sort-key">{{mb_convert_kana($item->name, 'a')}}</span><a href="/user/{{$item->user_id}}">{{$item->name}}</a></td>
                             <td class="sort_trophy">{{$item->trophy}}</td>
                             <td class="sort_lv">{{$item->level}}</td>
 
