@@ -17,12 +17,18 @@ async function convert(element: HTMLElement, index: number){
         );
 
         $('.progress').val(renderingState / images * 100);
+        $(".progress-message").text("画像化中: " + renderingState + "/" + images + "(" + Math.round(renderingState / images * 100) + "%)");
+
         if(images - 1 <= renderingState){
             $('.user-progress').css('width','auto');
             $('.progress').val(100);
+            $(".progress-message").text("ツイート中・・・");
             $('.convert-to-image-button').prop("disabled", false);
         }
-    }).catch((res) => {});
+    }).catch((res) => {
+        $(".progress-message").text("エラーが発生しました。<br>" + JSON.stringify(res));
+        throw res;
+    });
 }
 
 $(function($) {
@@ -35,6 +41,8 @@ $(function($) {
     $('#submit_button').click(async function(){
         $('#submit_button').prop("disabled", true);
         $('.user-progress').css('width','640px');
+
+        $(".progress-message").text("画像化中: " + renderingState + "/" + images + "(0%)");
         
         for (let index = 0; index < progress.length; index++) {
             const element: HTMLElement = <HTMLScriptElement>progress[index];
