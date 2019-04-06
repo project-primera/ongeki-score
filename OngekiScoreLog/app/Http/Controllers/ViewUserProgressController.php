@@ -32,7 +32,14 @@ class ViewUserProgressController extends Controller
             }
         }
 
-        $prevGeneration = (new ScoreData)->getMaxGeneration($id) - 1;
+        // 設計がゆるふわだったときのユーザーにgeneration 0を持っているユーザーが居るので補正
+        $fixedGeneration = 0;
+        $gen = (new ScoreData)->getAllGenerationUserScore($id)->getValue();
+        if($gen[0]->generation == 0){
+            $fixedGeneration = 1;
+        }
+        
+        $prevGeneration = (new ScoreData)->getMaxGeneration($id) - 1 + $fixedGeneration;
         if($generation === null){
             $generation = $prevGeneration;
         }else if($generation >= $prevGeneration){
@@ -123,10 +130,7 @@ class ViewUserProgressController extends Controller
         ];
 
 
-        $old = shapingKeys((new ScoreData)->getSpecifiedGenerationUserScore($id, $generation)->addDetailedData()->getValue());
-        $new = shapingKeys((new ScoreData)->getRecentUserScore($id)->addMusicData()->addDetailedData()->getValue());
-
-        $gen = (new ScoreData)->getAllGenerationUserScore($id)->getValue();
+        
         $display['url'] = "/user/" . $id . "/progress";
         $display['select'] = [];
         $display['select'][0]["value"] = "初回登録";
@@ -137,14 +141,17 @@ class ViewUserProgressController extends Controller
             if($value == end($gen)){
                 $display['select_last']["value"] = $value->updated_at;
             }else{
-                $display['select'][$value->generation]["value"] = $value->updated_at;
-                $display['select'][$value->generation]["selected"] = "";
-                $display['select'][$value->generation]["disabled"] = "";
-                if($value->generation == $generation){
-                    $display['select'][$value->generation]["selected"] = " selected";
+                $display['select'][$value->generation + $fixedGeneration]["value"] = $value->updated_at;
+                $display['select'][$value->generation + $fixedGeneration]["selected"] = "";
+                $display['select'][$value->generation + $fixedGeneration]["disabled"] = "";
+                if($value->generation + $fixedGeneration == $generation){
+                    $display['select'][$value->generation + $fixedGeneration]["selected"] = " selected";
                 }
             }
         }
+
+        $old = shapingKeys((new ScoreData)->getSpecifiedGenerationUserScore($id, $generation - $fixedGeneration)->addDetailedData()->getValue());
+        $new = shapingKeys((new ScoreData)->getRecentUserScore($id)->addMusicData()->addDetailedData()->getValue());
         
         $date["new"] = date("Y/m/d H:i", strtotime($display['select_last']["value"]));
         if($date["new"] === date("Y/m/d H:i", strtotime(0))){
