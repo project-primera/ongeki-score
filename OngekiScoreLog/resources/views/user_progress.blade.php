@@ -24,24 +24,34 @@
 @section('content')
     <article class="box">
         {!!$display['screenName']!!}
+        <div class="field">
+            <label class="label">表示期間</label>
+            <div id="select-generation" class="select">
+                <select>
+                    @foreach ($display['select'] as $key => $value)
+                <option class="select-generations-option" value='{{$key}}'{{$value["selected"]}}>{{$key}}: {{$value["value"]}} ～ {{$display['select_last']["value"]}}</option>
+                    @endforeach
+                </select>
+            </div>
+        </div>
+            
+        <span id="current-url" style="display: none;">{{$display['url']}}</span>
         <hr>
         <div class="user-progress">
             <div class="info">
-                <div class="left">
-                    <span class="update">Update&nbsp;{{$date['new']}}</span>
-                </div>
                 <div class="right">
                     <span class="site-name">{{config('app.name')}}</span>&nbsp;
-                    <span class="version">({{$version}})</span>&nbsp;
+                    <span class="version">(v.{{$version}})</span>&nbsp;
                     <span class="url">{{config('app.url')}}</span>
                 </div>
             </div>
 
             <div class="notification">
-                    <span class="title is-5">{{$status[0]->trophy}}</span><br>
+                <div class="date"><span class="update">{{$date['old']}} → {{$date['new']}}</span></div>
+                <span class="title is-5">{{$status[0]->trophy}}</span><br>
                 <span class="title is-5">Lv.{{$status[0]->level}}&nbsp;/&nbsp;
-                    BP: {{$status[0]->battle_point}}&nbsp;/&nbsp;
-                    Rate: {{$status[0]->rating}}&nbsp;(MAX:&nbsp;{{$status[0]->rating_max}})</span><br>
+                BP: {{$status[0]->battle_point}}&nbsp;/&nbsp;
+                Rate: {{$status[0]->rating}}&nbsp;(MAX:&nbsp;{{$status[0]->rating_max}})</span><br>
                 <span class="title is-3">{{$status[0]->name}}</span>
             </div>
 
@@ -136,9 +146,8 @@
                                     <span class="tag {{$value['difference']['new-lamp-is-ab']}}">AB</span>
                             </div>
                         </div>
-                        @if (++$count < 9)
-                            <hr>
-                        @else
+                        <hr>
+                        @if (++$count >= 9)
                             </div>
                             </div>
                             <div class="user-progress">

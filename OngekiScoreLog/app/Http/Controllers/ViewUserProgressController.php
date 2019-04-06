@@ -12,10 +12,10 @@ use App\ExternalServiceCoordination;
 
 class ViewUserProgressController extends Controller
 {
-    function getIndex($id){
+    function getIndex(int $id, int $generation = null){
         function shapingKeys($array){
             $ret = [];
-            foreach ($array as $key => $value) {
+            foreach ($array as $value) {
                 $ret[$value->song_id][$value->difficulty] = $value;
             }
             return $ret;
@@ -30,6 +30,13 @@ class ViewUserProgressController extends Controller
             }else{
                 return view("user_error", ['message' => '<p>このユーザーはOngekiScoreLogに登録していますが、オンゲキNETからスコア取得を行っていません。(UserID: ' . $id . ')</p><p>スコアの取得方法は<a href="/howto">こちら</a>をお読みください。</p>']);
             }
+        }
+
+        $prevGeneration = (new ScoreData)->getMaxGeneration($id) - 1;
+        if($generation === null){
+            $generation = $prevGeneration;
+        }else if($generation >= $prevGeneration){
+            return redirect("/user/" . $id . "/progress");
         }
 
         $sidemark = null;
@@ -52,16 +59,15 @@ class ViewUserProgressController extends Controller
             }else{
                 $twitter = $external->getTwitter($ret[0]->twitter_access_token, $ret[0]->twitter_access_token_secret);
                 if(is_null($twitter)){
-                    $display['screenName'] = '<p>認証していません。認証は<a href="/setting">こちら</a>。<br><button class="button convert-to-image-button">以下を画像化してツイート</button></p>';
+                    $display['screenName'] = '<p>認証していません。認証は<a href="/setting">こちら</a>。</p>';
                 }else{
-                    $display['screenName'] = '<p>このアカウントでツイートします: ' . $twitter->screen_name . '</p><form action="/tweet/image" method="post" onsubmit="document.getElementById(\'submit_button\').disabled = true">' . csrf_field() . '<div class="field"><label class="label">ツイートの内容(100文字まで)</label><div class="control"><textarea name="status" class="textarea" maxlength="100">' . $status[0]->name . 'さんの更新差分 https://ongeki-score.net/user/' . $id . ' #OngekiScoreLog</textarea></div></div><button type="submit" id="submit_button" class="button convert-to-image-button" disabled>以下を画像化してツイート</button></form><p>全ての記録をツイートします。４枚に収まらない場合はインリプライに続きます。(1枚につき7曲)<br><b>初めてこの機能を使用する場合は大量のツイートがされる可能性があります。十分注意して使用いただくようお願いいたします。</b></p>';
+                    $display['screenName'] = '<p>このアカウントでツイートします: ' . $twitter->screen_name . '</p><form id="tweet_form" action="/tweet/image" method="post" onsubmit="document.getElementById(\'submit_button\').disabled = true">' . csrf_field() . '<div class="field"><label class="label">ツイートの内容(100文字まで)</label><div class="control"><textarea name="status" class="textarea" maxlength="100">' . $status[0]->name . 'さんの更新差分 https://ongeki-score.net/user/' . $id . ' #OngekiScoreLog</textarea></div></div><button type="button" id="submit_button" class="button convert-to-image-button">以下を画像化してツイート</button></form><div style="padding: 0.75em 0"><div class="progress-message"></div><progress class="progress is-progress is-link" value="0" max="100">0%</progress></div><p>全ての記録をツイートします。４枚に収まらない場合はインリプライに続きます。(1枚につき7曲)<br><b>初めてこの機能を使用する場合は大量のツイートがされる可能性があります。十分注意して使用いただくようお願いいたします。</b></p>';
                 }
             }
         }else{
             $display['screenName'] = '<p>ツイート機能を使うにはログインしてください。<br><button class="button" disabled>以下を画像化してツイート</button></p>';
         }
 
-        $date = ['new' => 0, 'old' => 0];
         $score = [
             'new' =>[
                 'Basic' => [
@@ -116,8 +122,39 @@ class ViewUserProgressController extends Controller
             10 => 'Lunatic',
         ];
 
-        $old = shapingKeys((new ScoreData)->getSpecifiedGenerationUserScore($id, (new ScoreData)->getMaxGeneration($id))->addDetailedData()->getValue());
+
+        $old = shapingKeys((new ScoreData)->getSpecifiedGenerationUserScore($id, $generation)->addDetailedData()->getValue());
         $new = shapingKeys((new ScoreData)->getRecentUserScore($id)->addMusicData()->addDetailedData()->getValue());
+
+        $gen = (new ScoreData)->getAllGenerationUserScore($id)->getValue();
+        $display['url'] = "/user/" . $id . "/progress";
+        $display['select'] = [];
+        $display['select'][0]["value"] = "初回登録";
+        $display['select'][0]["selected"] = "";
+        $display['select'][0]["disabled"] = "";
+
+        foreach ($gen as $key => $value) {
+            if($value == end($gen)){
+                $display['select_last']["value"] = $value->updated_at;
+            }else{
+                $display['select'][$value->generation]["value"] = $value->updated_at;
+                $display['select'][$value->generation]["selected"] = "";
+                $display['select'][$value->generation]["disabled"] = "";
+                if($value->generation == $generation){
+                    $display['select'][$value->generation]["selected"] = " selected";
+                }
+            }
+        }
+        
+        $date["new"] = date("Y/m/d H:i", strtotime($display['select_last']["value"]));
+        if($date["new"] === date("Y/m/d H:i", strtotime(0))){
+            $date["new"] = "N/A"; 
+        }
+        if(array_key_exists($generation - 1, $display['select'])){
+            $date["old"] = date("Y/m/d H:i", strtotime($display['select'][$generation]["value"]));
+        }else{
+            $date["old"] = "初回登録";
+        }
 
         foreach ($new as $music => $temp) {
             foreach ($temp as $difficulty => $value) {
@@ -192,15 +229,7 @@ class ViewUserProgressController extends Controller
                             $progress[$music][$difficulty]["difference"]['new-lamp-is-fc'] = $value->full_combo ? "full-combo" : "not-light";
                             $progress[$music][$difficulty]["difference"]['new-lamp-is-ab'] = $value->all_break ? "all-break" : "not-light";
                             
-                            
-
                             $progress[$music][$difficulty]["new"] = $value;
-                            if($date['new'] < strtotime($value->updated_at)){
-                                $date['new'] = strtotime($value->updated_at);
-                            }
-                            if($date['old'] < strtotime($old[$music][$difficulty]->updated_at)){
-                                $date['old'] = strtotime($old[$music][$difficulty]->updated_at);
-                            }
                         }
                     }
                 }
@@ -238,9 +267,6 @@ class ViewUserProgressController extends Controller
                 'technical_high_score' => $score['new']['Lunatic']['technical_high_score'] - $score['old']['Lunatic']['technical_high_score'],
             ]
         ];
-
-        $date['new'] = date("Y/m/d H:i" ,$date['new']);
-        $date['old'] = date("Y/m/d H:i" ,$date['old']);
 
         return view('user_progress', compact('status', 'progress', 'date', 'score', 'version', 'display', 'id', 'sidemark'));
     }

@@ -188,16 +188,41 @@ class ScoreData extends Model
         return $this;
     }
 
-    function getSpecifiedGenerationUserScore($id, $generation){
+    /**
+     * 指定した世代のスコアデータを取得します。
+     *
+     * @param integer $id ユーザーid
+     * @param integer $generation 世代
+     * @return object this
+     */
+    function getSpecifiedGenerationUserScore(int $id, int $generation){
         $this->value = DB::select('SELECT * FROM score_datas AS t1 
-            WHERE user_id = ? AND generation < ? AND NOT EXISTS (
+            WHERE user_id = ? AND generation <= ? AND NOT EXISTS (
             SELECT * FROM score_datas AS t2
-                WHERE generation < ?
+                WHERE generation <= ?
                     AND t1.user_id = t2.user_id
                     AND t1.song_id = t2.song_id
                     AND t1.difficulty = t2.difficulty
                     AND t1.id < t2.id
         );', [$id, $generation, $generation]);
+
+        return $this;
+    }
+
+    /**
+     * 特定のユーザーのスコアデータ世代一覧を取得します
+     *
+     * @param integer $id 取得するユーザーidを取得します
+     * @return object this
+     */
+    function getAllGenerationUserScore(int $id){
+        $this->value = DB::select('SELECT * FROM score_datas AS t1 
+            WHERE user_id = ? AND NOT EXISTS (
+            SELECT * FROM score_datas AS t2
+                WHERE t1.generation = t2.generation
+                AND t1.user_id = t2.user_id
+                AND t1.id > t2.id
+        );', [$id]);
 
         return $this;
     }

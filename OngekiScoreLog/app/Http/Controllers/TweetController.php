@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Http\Controllers;
 
 use Illuminate\Support\Facades\Auth;
@@ -14,6 +13,8 @@ use App\ExternalServiceCoordination;
 use App\Facades\Slack;
 
 use Log;
+
+set_time_limit(180);
 
 class TweetController extends Controller
 {
