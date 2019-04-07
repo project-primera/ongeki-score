@@ -179,6 +179,7 @@ class ViewUserRatingController extends Controller
                 }else if($recentScore[$i]['technical_score'] >= 1007500){
                     $recentScore[$i]['ratingValue'] = "<i><span class='max-rating'>" . $recentScore[$i]['ratingValue'] . "</span></i>";
                 }
+                $recentScore[$i]['song_id'] = OngekiUtility::GetIDFromTitle($recentScore[$i]['title']);
                 $recentScore[$i]['difficulty_str'] = $this->difficultyToStr[$recentScore[$i]['difficulty']];
                 $recentScore[$i]['level_str'] = OngekiUtility::GetMusicLevel($recentScore[$i]['title'], $recentScore[$i]['difficulty'], true);
 

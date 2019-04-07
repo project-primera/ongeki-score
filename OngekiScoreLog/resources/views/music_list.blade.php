@@ -55,8 +55,8 @@
                 <tbody class="list">
                     @foreach ($view as $key => $value)
                         <tr>
-                            <td class="sort_title">{{$value['title']}}</td>
-                            <td>{{$value['difficulty']}}</td>
+                        <td class="sort_title"><span class="sort-key">{{$value['title']}}</span><a href="/music/{{$value['id']}}/{{$value['difficulty']}}">{{$value['title']}}</a></td>
+                            <td>{{ucwords($value['difficulty'])}}</td>
                             <td class="sort_level">{{$value['level']}}</td>
                             <td class="sort_title">{!!$value['extra_level']!!}</td>
                             <td class="table-hidden-data sort_extra_level">{{$value['extra_level_raw']}}</td>

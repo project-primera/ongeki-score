@@ -35,7 +35,7 @@
             <tbody class="list">
                 @foreach ($score as $s)
                     <tr>
-                        <td class="sort_title">{{$s->title}}</td>
+                        <td class="sort_title"><span class="sort-key">{{$s->title}}</span><a href="{{url("/user/" . $id . "/music/" . $s->song_id . "/" . strtolower($s->difficulty_str))}}">{{$s->title}}</a></td>
                         <td class="sort_difficulty"><span class="sort-key">{{$s->difficulty}}</span>{{substr($s->difficulty_str, 0, 3)}}</td>
                         <td class="sort_lv">{{$s->level_str}}</td>
                         <td class="sort_rank0"><span class="sort-key">{{$s->over_damage_high_score}}</span>{{$s->over_damage_high_score_rank}}</td>
