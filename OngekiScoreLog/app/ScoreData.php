@@ -222,7 +222,7 @@ class ScoreData extends Model
                 WHERE t1.generation = t2.generation
                 AND t1.user_id = t2.user_id
                 AND t1.id > t2.id
-        ) order by id desc;', [$id]);
+        ) order by generation asc;', [$id]);
 
         return $this;
     }
