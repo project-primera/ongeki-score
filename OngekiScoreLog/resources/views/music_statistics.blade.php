@@ -25,6 +25,14 @@
                 <a href="/user/music/{{$music}}/lunatic" class="button lunatic">Lunatic</a>
             @endif
         </div>
+        <div class="buttons has-addons">
+            @if (Auth::id() == null)
+                <button class="button" disabled>自分の記録(ログインしてください)</button>
+            @else
+                <a href="/user/{{Auth::id()}}/music/{{$music}}/{{strtolower($difficulty)}}" class="button">自分の記録</a>
+            @endif
+            <button class="button" disabled>全ユーザーの統計</button>
+        </div>
     </article>
     <article class="box">
         <h3 class="title is-3">テクニカルスコア</h3>

@@ -35,6 +35,10 @@
                 <a href="/user/{{$id}}/music/{{$music}}/lunatic" class="button lunatic">Lunatic</a>
             @endif
         </div>
+        <div class="buttons has-addons">
+            <button class="button" disabled>自分の記録</button>
+            <a href="/music/{{$music}}/{{strtolower($difficulty)}}" class="button">全ユーザーの統計</a>
+        </div>
     </article>
     <article class="box">
         <div id="graph"></div>
