@@ -11,7 +11,7 @@ import * as qs from 'qs';
 
   const REQUEST_KEY = "?t="
   const PRODUCT_NAME = "Project Primera - getScore.js";
-  const VERSION = "20190314";
+  const VERSION = "20190407";
 
   const SLEEP_MSEC = 2000;
 
@@ -341,28 +341,52 @@ import * as qs from 'qs';
   });
 
 
-  let main = async () => {
+  let main = async () => {;
+    let allData: AllData = new AllData();
+
     let $overlay = $("<div>").addClass("ongeki_score").attr("style","color:#222; font-size: 1em; padding-top: 120px; width: 100%; height:100%; position: fixed; top: 0; z-index: 1000; background: rgba(0,0,0,0.3);");
     $("body").append($overlay);
     var $textarea = $("<div>").attr("style","background-color: #eee; width:480px; height:calc(100% - 120px); margin:0 auto; padding: 0.5em 1em;  overflow-y: scroll;")
     $overlay.append($textarea);
 
     $textarea.append(PRODUCT_NAME + " v." + VERSION + "<br>");
-    $textarea.append("スコアを取得します。しばらくお待ち下さい・・・<br><br>");
-    if(NET_DOMAIN != window.location.hostname){
-      $textarea.append("<a href='https://ongeki-net.com'>オンゲキNET</a>で実行してください・・・");
-      return;
+
+    try {
+      // メンテナンスチェック
+      // 後の /api/user/update net::ERR_ABORTED 401 何故・・・？ 
+      /*
+      await axios.get(TOOL_URL + "/api/live").then(function(){
+        // ignore
+      }).catch(await function (error) {
+        $textarea.append("<br>スコアツールサーバーへの接続に失敗しました。<br>多くの場合メンテナンス中です。<br>予告のないメンテナンスは1分程度で終了します。<br>情報については<a href='https://twitter.com/ongeki_score' target='_blank' style='color:#222'>Twitter@ongeki_score</a>にてお知らせします。<br><a href='https://ongeki-net.com'  style='color:#222'>オンゲキNETに戻る</a>");
+        throw new Error();
+      });
+      */
+
+      if(NET_DOMAIN != window.location.hostname){
+        $textarea.append("<a href='https://ongeki-net.com'>オンゲキNET</a>で実行してください。");
+        throw new Error();
+      }
+    } catch (ignore) {
+      throw new Error();
     }
-    let allData: AllData = new AllData();
+
+    $textarea.append("スコアを取得します。しばらくお待ち下さい・・・<br><br>");
+    
 
     $textarea.append("プレイヤーデータを取得します・・・(1/5)<br>");
     let token: string = getToken();
 
     await allData.PlayerData.getData();
-    if(allData.PlayerData.level == -1){
-      $textarea.append("プレイヤー情報を取得できませんでした。<br>オンゲキNETにログインしてもう一度実行してください。<br><a href='https://ongeki-net.com'  style='color:#222'>オンゲキNET</a><br><br>ログインしている場合は時間を開けてお試しください。(一定期間にアクセスをしすぎると制限が掛かります)");
-      return;
+    try {
+      if(allData.PlayerData.level == -1){
+        $textarea.append("プレイヤー情報を取得できませんでした。<br>オンゲキNETにログインしてもう一度実行してください。<br><a href='https://ongeki-net.com'  style='color:#222'>オンゲキNET</a><br><br>ログインしている場合は時間を開けてお試しください。(一定期間にアクセスをしすぎると制限が掛かります)");
+        throw Error();
+      }
+    } catch (ignore) {
+      throw new Error();
     }
+    
     $textarea.append("完了(1/5)<br>");
     await sleep(SLEEP_MSEC);
 
@@ -389,7 +413,7 @@ import * as qs from 'qs';
     console.log(allData);
     $textarea.append("スコアデータを送信します・・・<br><br>");
 
-    axios.post(API_URL, qs.stringify(allData), {
+    await axios.post(API_URL, qs.stringify(allData), {
       headers: { 
         Authorization: "Bearer " + token,
       }
@@ -403,7 +427,14 @@ import * as qs from 'qs';
       $textarea.append("<a href='" + TOOL_URL + "/user/" + result['data']['id'] + "/progress' style='color:#222'>スコアツール 更新差分ページ(画像付きツイート機能はこちらから)</a><br><br>");
       $textarea.append("<a href='" + NET_URL + "/home' style='color:#222'>オンゲキNETに戻る</a>");
 
-    }).catch(error => {
+    }).catch(async function (error){
+      await axios.get(TOOL_URL + "/api/live").then(function(){
+        // ignore
+      }).catch(await function (error) {
+        $textarea.append("スコアツールサーバーへの接続に失敗しました。<br>多くの場合メンテナンス中です。<br>予告のないメンテナンスは1分程度で終了します。<br>情報については<a href='https://twitter.com/ongeki_score' target='_blank' style='color:#222'>Twitter@ongeki_score</a>にてお知らせします。<br><a href='https://ongeki-net.com'  style='color:#222'>オンゲキNETに戻る</a>");
+        throw new Error();
+      });
+
       if (error.response != void 0) {
         // 2xx系エラー
         $textarea.append(getErrorMessage(error.response));
@@ -416,6 +447,6 @@ import * as qs from 'qs';
       }
     });
   }
-
+  
   main();
 })();

@@ -83,7 +83,7 @@
             <a data-scroll href="#rating_statistics">▲統計</a>&nbsp;/&nbsp;■新曲枠&nbsp;/&nbsp;<a data-scroll href="#rating_old">▼ベスト枠</a>&nbsp;/&nbsp;<a data-scroll href="#rating_recent">▼リーセント枠</a><br>
             現在のバージョンに追加された楽曲のうち、テクニカルハイスコアから算出されたレート値が高い{{$statistics->newBestRatingCount}}曲が選出されます。
         </p>
-        @component('layouts/components/user_rating/rating_best_table', ['array' => $newScore, 'statistics' => $statistics, 'start' => 0, 'targetCount' => $statistics->newBestRatingCount, 'end' => count($newScore)])
+        @component('layouts/components/user_rating/rating_best_table', ['array' => $newScore, 'statistics' => $statistics, 'start' => 0, 'targetCount' => $statistics->newBestRatingCount, 'end' => count($newScore), 'id' => $id])
         @endcomponent
     </article>
 
@@ -93,7 +93,7 @@
             <a data-scroll href="#rating_statistics">▲統計</a>&nbsp;/&nbsp;<a data-scroll href="#rating_new">▲新曲枠</a>&nbsp;/&nbsp;■ベスト枠&nbsp;/&nbsp;<a data-scroll href="#rating_recent">▼リーセント枠</a><br>
             過去のバージョンに追加された楽曲のうち、テクニカルハイスコアから算出されたレート値が高い{{$statistics->oldBestRatingCount}}曲が選出されます。
         </p>
-        @component('layouts/components/user_rating/rating_best_table', ['array' => $oldScore, 'statistics' => $statistics, 'start' => 0, 'targetCount' => $statistics->oldBestRatingCount, 'end' => count($oldScore)])
+        @component('layouts/components/user_rating/rating_best_table', ['array' => $oldScore, 'statistics' => $statistics, 'start' => 0, 'targetCount' => $statistics->oldBestRatingCount, 'end' => count($oldScore), 'id' => $id])
         @endcomponent
     </article>
 
@@ -130,7 +130,7 @@
                 <tbody>
                     @for ($i = 0; $i < $statistics->recentRatingCount; $i++)
                         <tr>
-                            <td>{{$recentScore[$i]['title']}}</td>
+                            <td class="sort_title"><a href="{{url("/user/" . $id . "/music/" . $recentScore[$i]['song_id'] . "/" . strtolower($recentScore[$i]['difficulty_str']))}}">{{$recentScore[$i]['title']}}</a></td>
                             <td>{{substr($recentScore[$i]['difficulty_str'], 0, 3)}}</td>
                             <td>{{$recentScore[$i]['level_str']}}</td>
                             <td>{{number_format($recentScore[$i]['technical_score'])}}</td>

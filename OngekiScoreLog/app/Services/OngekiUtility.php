@@ -151,4 +151,11 @@ class OngekiUtility {
             return $this::$MusicData[$title][$difficulty];
         }
     }
+
+    public function GetIDFromTitle(string $title){
+        if(!array_key_exists($title, $this::$MusicData)){
+            throw new \OutOfBoundsException();
+        }
+        return $this::$MusicData[$title]["id"];
+    }
 }

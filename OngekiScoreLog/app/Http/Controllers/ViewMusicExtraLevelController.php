@@ -23,7 +23,7 @@ class ViewMusicExtraLevelController extends Controller
             foreach ($keys as $k => $v) {
                 if($value[$v[0]] !== null){
                     $temp['title'] = $value['title'];
-                    $temp['difficulty'] = ucwords(strtolower($k));
+                    $temp['difficulty'] = strtolower($k);
                     if(strpos($value[$v[0]], ".5") !== false){
                         $temp['level'] = substr($value[$v[0]], 0, strcspn($value[$v[0]],'.')) . "+";
                     }else{
@@ -36,12 +36,12 @@ class ViewMusicExtraLevelController extends Controller
                     }
                     $temp['extra_level_raw'] = sprintf('%.1f', $value[$v[1]]);
                     $temp['difficulty_raw'] = $v[3];
+                    $temp['id'] = $value->id;
 
                     $view[] = $temp;
                 }
             }
         }
-
         return view("music_list", compact('view'));
     }
 }

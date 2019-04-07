@@ -67,7 +67,7 @@
     @component('layouts/components/user/song_filter')
     @endcomponent
 
-    @component('layouts/components/user/' . $mode, ['score' => $score])
+    @component('layouts/components/user/' . $mode, ['score' => $score, 'id' => $id])
     @endcomponent
 
 @endsection
