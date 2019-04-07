@@ -51,20 +51,50 @@ class Handler extends ExceptionHandler
                 $fields = ["File" => $exception->getFile(), "Line" => $exception->getLine(), "IP Address" => \Request::ip(), "User id" => "N/A"];
             }
             $fileContent .= "Cookie:\n" . var_export(Cookie::get(), true) . "\n\nRequest:\n" . var_export(Request::all(), true) . "\n\n" . $exception->__toString();
+
+            $securityPages = [
+                "administrator" => "",
+                "security.txt" => "",
+                ".well-known/security.txt" => "",
+            ];
+            $ignorePages = [
+                "apple-app-site-association" => "",
+                "cross-platform-app-identifiers" => "",
+                ".well-known/assetlinks.json" => "",
+                "rss" => "",
+                "atom" => "",
+                "feed" => "",
+                "blog" => "",
+            ];
     
             switch (true) {
                 case ($exception instanceof \Illuminate\Foundation\Http\Exceptions\MaintenanceModeException):
                     Slack::Notice($content, $fileContent, $fields, "warning");
                     break;
-
-                case ($exception instanceof \Symfony\Component\HttpKernel\Exception\NotFoundHttpException):
+                
                 case ($exception instanceof \League\OAuth2\Server\Exception\OAuthServerException):
                 case ($exception instanceof \Illuminate\Auth\AuthenticationException):
                 case ($exception instanceof \Illuminate\Validation\ValidationException):
                 case ($exception instanceof \Illuminate\Session\TokenMismatchException):
                 Slack::Warning($content, $fileContent, $fields, "warning");
                     break;
-                
+
+                case ($exception instanceof \Symfony\Component\HttpKernel\Exception\NotFoundHttpException):
+                    if(isset($securityPages[request()->path()]) || strpos(request()->path(), "ini_set") !== false){
+                        Slack::Error($content, $fileContent, $fields, "success");
+                        abort(418);
+                    }else if(!isset($ignorePages[request()->path()])){
+                        Slack::Warning($content, $fileContent, $fields, "warning");
+                    }
+                    break;
+
+                case ($exception instanceof \Symfony\Component\HttpKernel\Exception\HttpException):
+                if(isset($securityPages[request()->path()]) || strpos(request()->path(), "ini_set") !== false){
+                }else{
+                    Slack::Warning($content, $fileContent, $fields, "warning");
+                }
+                break;
+
                 default:
                     Slack::Critical($content, $fileContent, $fields, "error");
                     break;
