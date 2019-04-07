@@ -53,12 +53,16 @@ class Handler extends ExceptionHandler
             $fileContent .= "Cookie:\n" . var_export(Cookie::get(), true) . "\n\nRequest:\n" . var_export(Request::all(), true) . "\n\n" . $exception->__toString();
     
             switch (true) {
-                case ($exception instanceof \Symfony\Component\HttpKernel\Exception\NotFoundHttpException):
-                    Slack::Warning($content, $fileContent, $fields, "warning");
-                    break;
-                
-                case ($exception instanceof \Illuminate\Auth\AuthenticationException):
+                case ($exception instanceof \Illuminate\Foundation\Http\Exceptions\MaintenanceModeException):
                     Slack::Notice($content, $fileContent, $fields, "warning");
+                    break;
+
+                case ($exception instanceof \Symfony\Component\HttpKernel\Exception\NotFoundHttpException):
+                case ($exception instanceof \League\OAuth2\Server\Exception\OAuthServerException):
+                case ($exception instanceof \Illuminate\Auth\AuthenticationException):
+                case ($exception instanceof \Illuminate\Validation\ValidationException):
+                case ($exception instanceof \Illuminate\Session\TokenMismatchException):
+                Slack::Warning($content, $fileContent, $fields, "warning");
                     break;
                 
                 default:
