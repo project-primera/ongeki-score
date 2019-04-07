@@ -17,6 +17,10 @@ class SimpleViewController extends Controller
         return view('howto');
     }
 
+    public function getFAQ(){
+        return view('faq');
+    }
+
     public function getEula(){
         return view('eula');
     }
