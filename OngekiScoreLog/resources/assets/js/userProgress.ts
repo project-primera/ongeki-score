@@ -20,7 +20,7 @@ async function convert(element: HTMLElement, index: number){
         $(".progress-message").text("画像化中: " + renderingState + "/" + images + "(" + Math.round(renderingState / images * 100) + "%)");
 
         if(images - 1 <= renderingState){
-            $('.user-progress').css('width','auto');
+            // $('.user-progress').css('width','auto');
             $('.progress').val(100);
             $(".progress-message").text("ツイート中・・・");
             $('.convert-to-image-button').prop("disabled", false);
