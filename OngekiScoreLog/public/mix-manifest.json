@@ -1,4 +1,5 @@
 {
+    "/bookmarklets/main.js": "/bookmarklets/main.js",
     "/js/app.js": "/js/app.js",
     "/css/app.css": "/css/app.css",
     "/css/style.css": "/css/style.css",
@@ -12,6 +13,5 @@
     "/js/list.min.js": "/js/list.min.js",
     "/js/sweet-scroll.min.js": "/js/sweet-scroll.min.js",
     "/js/html2canvas.min.js": "/js/html2canvas.min.js",
-    "/js/clipboard.min.js": "/js/clipboard.min.js",
-    "/bookmarklets/main.js": "/bookmarklets/main.js"
+    "/js/clipboard.min.js": "/js/clipboard.min.js"
 }
