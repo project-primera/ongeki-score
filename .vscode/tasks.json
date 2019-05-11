@@ -10,39 +10,14 @@
                 "isDefault": true
               },
               "dependsOn": [
-                "Watch Bookmarklet webpack files",
                 "Watch OngekiScoreLog webpack mix files",
-                "Run Bookmarklet server",
                 "Run OngekiScoreLog server",
               ],
-        },
-        {
-            "label": "Watch Bookmarklet webpack files",
-            "type": "shell",
-            "command": "cd Bookmarklet; node_modules\\.bin\\webpack --watch",
-            "presentation": {
-                "reveal": "always",
-                "panel": "new",
-                "echo": true
-            }
         },
         {
             "label": "Watch OngekiScoreLog webpack mix files",
             "type": "shell",
             "command": "cd OngekiScoreLog; npm run watch",
-            "presentation": {
-                "reveal": "always",
-                "panel": "new",
-                "echo": true
-            }
-        },
-        {
-            "label": "Run Bookmarklet server",
-            "type": "shell",
-            "command": "php",
-            "args": [
-                "-S", "127.0.0.1:8001", "-t", "Bookmarklet/bin"
-            ],
             "presentation": {
                 "reveal": "always",
                 "panel": "new",
