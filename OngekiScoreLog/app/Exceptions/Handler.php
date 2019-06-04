@@ -112,6 +112,12 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Exception $exception)
     {
+        if ($exception instanceof \Illuminate\Validation\ValidationException
+            || $exception instanceof \Illuminate\Foundation\Http\Exceptions\MaintenanceModeException){
+            // 勝手に処理してくれるのでもともとのハンドラに丸投げする
+            return parent::render($request, $exception);
+        }
+
         if(config('app.debug')){
             return parent::render($request, $exception);
         }
