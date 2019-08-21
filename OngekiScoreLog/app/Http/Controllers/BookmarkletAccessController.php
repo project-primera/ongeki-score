@@ -26,6 +26,7 @@ class BookmarkletAccessController extends Controller
     {
         $message['info'] = "";
         $message['result'] = "只今新バージョン稼働に向けたメンテナンスを行っています。<br>メンテナンス中はスコアデータの登録は行なえませんが、閲覧は可能です。<br>詳細は<a href='https://twitter.com/ongeki_score' target='_blank' style='color:#222'>Twitter@ongeki_score</a>にてお知らせします。";
+        $message['id'] = Auth::id();
         return $message;
 
         // 0 -> origin
