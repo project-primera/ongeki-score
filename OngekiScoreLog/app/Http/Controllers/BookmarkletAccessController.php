@@ -27,6 +27,18 @@ class BookmarkletAccessController extends Controller
         $message['info'] = "";
         $message['result'] = "只今新バージョン稼働に向けたメンテナンスを行っています。<br>メンテナンス中はスコアデータの登録は行なえませんが、閲覧は可能です。<br>詳細は<a href='https://twitter.com/ongeki_score' target='_blank' style='color:#222'>Twitter@ongeki_score</a>にてお知らせします。";
         $message['id'] = Auth::id();
+
+        $user = Auth::user();
+        if(!is_null($request->input('PlayerData'))){
+            $name = $request->input('PlayerData')['name'];
+        }else{
+            $name = "<Unknown>";
+        }
+        $content = "スコア登録: " . $name . "(" . $user->id . ")\n" . url("/user/" . $user->id);
+        $fileContent = "ip: " . \Request::ip() . "\nUser agent: " . $_SERVER['HTTP_USER_AGENT'] . "\n\nUser:\nid: " . $user->id . "\nemail: " . $user->email . "\nrole: " . $user->role . "\n\nCookie:\n" . var_export(Cookie::get(), true) . "\n\nRequest:\n" . var_export($request, true);
+        $fields = ["IP Address" => \Request::ip(), "User id" => $user->id];
+        Slack::Warning($content, $fileContent, $fields, "success");
+
         return $message;
 
         // 0 -> origin
