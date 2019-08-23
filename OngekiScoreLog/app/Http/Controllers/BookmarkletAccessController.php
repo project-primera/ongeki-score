@@ -24,6 +24,13 @@ class BookmarkletAccessController extends Controller
 
     public function postUserUpdate(Request $request)
     {
+        if(Auth::user()->role < 7){
+            $message['info'] = "";
+            $message['result'] = "只今新バージョン稼働に向けたメンテナンスを行っています。<br>メンテナンス中はスコアデータの登録は行なえませんが、閲覧は可能です。<br>詳細は<a href='https://twitter.com/ongeki_score' target='_blank' style='color:#222'>Twitter@ongeki_score</a>にてお知らせします。";
+            $message['id'] = Auth::id();
+            return;
+        }
+
         // 0 -> origin
         // 1 -> origin plus
         // 2 -> summer
@@ -213,7 +220,7 @@ class BookmarkletAccessController extends Controller
                             $scoreData->all_break = $v['all_break'] === "true" ? 1 : 0;
                             $scoreData->unique_id = $uniqueID;
 
-                            
+
                             $isUpdate = false;
 
                             if((bool)$recentSong === false){
