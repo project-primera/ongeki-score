@@ -11,7 +11,7 @@ import * as qs from 'qs';
 
   const REQUEST_KEY = "?t="
   const PRODUCT_NAME = "Project Primera - getScore.js";
-  const VERSION = "20190407";
+  const VERSION = "20190823";
 
   const SLEEP_MSEC = 2000;
 
@@ -428,12 +428,12 @@ import * as qs from 'qs';
       $textarea.append("<a href='" + NET_URL + "/home' style='color:#222'>オンゲキNETに戻る</a>");
 
     }).catch(async function (error){
-      await axios.get(TOOL_URL + "/api/live").then(function(){
-        // ignore
-      }).catch(await function (error) {
-        $textarea.append("スコアツールサーバーへの接続に失敗しました。<br>多くの場合メンテナンス中です。<br>予告のないメンテナンスは1分程度で終了します。<br>情報については<a href='https://twitter.com/ongeki_score' target='_blank' style='color:#222'>Twitter@ongeki_score</a>にてお知らせします。<br><a href='https://ongeki-net.com'  style='color:#222'>オンゲキNETに戻る</a>");
-        throw new Error();
-      });
+      // await axios.get(TOOL_URL + "/api/live").then(function(){
+      //   // ignore
+      // }).catch(await function (error) {
+      //   $textarea.append("スコアツールサーバーへの接続に失敗しました。<br>多くの場合メンテナンス中です。<br>予告のないメンテナンスは1分程度で終了します。<br>情報については<a href='https://twitter.com/ongeki_score' target='_blank' style='color:#222'>Twitter@ongeki_score</a>にてお知らせします。<br><a href='https://ongeki-net.com'  style='color:#222'>オンゲキNETに戻る</a>");
+      //   throw new Error();
+      // });
 
       if (error.response != void 0) {
         // 2xx系エラー
