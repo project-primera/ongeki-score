@@ -353,15 +353,12 @@ import * as qs from 'qs';
 
     try {
       // メンテナンスチェック
-      // 後の /api/user/update net::ERR_ABORTED 401 何故・・・？ 
-      /*
       await axios.get(TOOL_URL + "/api/live").then(function(){
         // ignore
       }).catch(await function (error) {
         $textarea.append("<br>スコアツールサーバーへの接続に失敗しました。<br>多くの場合メンテナンス中です。<br>予告のないメンテナンスは1分程度で終了します。<br>情報については<a href='https://twitter.com/ongeki_score' target='_blank' style='color:#222'>Twitter@ongeki_score</a>にてお知らせします。<br><a href='https://ongeki-net.com'  style='color:#222'>オンゲキNETに戻る</a>");
         throw new Error();
       });
-      */
 
       if(NET_DOMAIN != window.location.hostname){
         $textarea.append("<a href='https://ongeki-net.com'>オンゲキNET</a>で実行してください。");
@@ -372,7 +369,6 @@ import * as qs from 'qs';
     }
 
     $textarea.append("スコアを取得します。しばらくお待ち下さい・・・<br><br>");
-    
 
     $textarea.append("プレイヤーデータを取得します・・・(1/5)<br>");
     let token: string = getToken();

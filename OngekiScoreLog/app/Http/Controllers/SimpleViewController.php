@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App;
 use Auth;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
 class SimpleViewController extends Controller
@@ -40,14 +39,8 @@ class SimpleViewController extends Controller
         return "<html><body><div style='font-size: 0.25rem'>\n" . str_replace("\n", "<br>\n", Storage::get('log/' . $path . '/' . $fileName)) . "\n</div></body></html>";
     }
 
-    /* for debug
-    public function versionUpdate(){
-        (new App\ApplicationVersion())->fetchAllVersion();
+    public function getApiLive(){
+        return 'live';
     }
-
-    public function testTweet($s){
-        $res = (new App\AdminTweet())->tweet($s . rand());
-    }
-    */
 
 }
