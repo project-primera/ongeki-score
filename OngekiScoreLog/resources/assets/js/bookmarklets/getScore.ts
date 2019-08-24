@@ -2,6 +2,12 @@ import * as $ from 'jquery';
 import axios from 'axios';
 import * as qs from 'qs';
 
+interface CustomWindowAttribute extends Window {
+  IsProcessOngekiScoreNetBookmarklet: Boolean
+}
+declare var window: CustomWindowAttribute;
+export default window;
+
 (function () {
   const NET_DOMAIN = "ongeki-net.com";
   const NET_URL = "https://" + NET_DOMAIN + "/ongeki-mobile/";
@@ -340,8 +346,13 @@ import * as qs from 'qs';
     return "データ送信に失敗しました。" + message + "お手数をおかけしますが以下のリンクまで以下のデータを添えてご報告をお願い致します。<br><a href='https://twitter.com/ongeki_score' style='color:#222'>Twitter</a> / <a href='https://github.com/Slime-hatena/ProjectPrimera/issues' style='color:#222'>Github issue</a><br>" + today.getFullYear() + "/" +  (today.getMonth() + 1) + "/" + today.getDate() + " " + now.toLocaleTimeString();
   });
 
+  let main = async () => {
+    // 多重起動チェック
+    if(window.IsProcessOngekiScoreNetBookmarklet){
+      return;
+    }
+    window.IsProcessOngekiScoreNetBookmarklet = true;
 
-  let main = async () => {;
     let allData: AllData = new AllData();
 
     let $overlay = $("<div>").addClass("ongeki_score").attr("style","color:#222; font-size: 1em; padding-top: 120px; width: 100%; height:100%; position: fixed; top: 0; z-index: 1000; background: rgba(0,0,0,0.3);");
