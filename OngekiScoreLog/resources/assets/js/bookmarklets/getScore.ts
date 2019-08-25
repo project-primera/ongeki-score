@@ -17,7 +17,9 @@ export default window;
 
   const REQUEST_KEY = "?t="
   const PRODUCT_NAME = "Project Primera - getScore.js";
-  const VERSION = "20190823";
+  const VERSION = "20190825";
+
+  const APP_SCRIPT_ATTR = 'ongeki_score_net';
 
   const SLEEP_MSEC = 2000;
 
@@ -142,7 +144,7 @@ export default window;
       await $innerContainer3.each((key, value) => {
         if($(value).hasClass("p_5 f_20")){
           genre = $(value).text();
-          
+
         }else if($(value).hasClass("basic_btn")){
           $(value).each((k, v) => {
             var song = new SongInfo(
@@ -163,7 +165,7 @@ export default window;
               case 3: this.masterSongInfos.push(song); break;
               case 10: this.lunaticSongInfos.push(song); break;
             }
-          }); 
+          });
         }
       });
     }
@@ -329,12 +331,17 @@ export default window;
     if (document.currentScript) {
       url = (document.currentScript as HTMLScriptElement).src;
     } else {
-        var scripts = document.getElementsByTagName('script'),
-        script = scripts[scripts.length-1];
-        if (script.src) {
-          url = script.src;
+        let element = <HTMLScriptElement>document.getElementById(APP_SCRIPT_ATTR);
+        if(element.src){
+          url = element.src;
         }else{
-          url = "";
+          let elements = document.getElementsByTagName('script'),
+          element = elements[elements.length-1];
+          if (element.src) {
+            url = element.src;
+          }else{
+            throw new Error('Invalid Token.');
+          }
         }
     }
     return url.slice(url.indexOf(REQUEST_KEY) + REQUEST_KEY.length);
@@ -355,7 +362,7 @@ export default window;
 
     let allData: AllData = new AllData();
 
-    let $overlay = $("<div>").addClass("ongeki_score").attr("style","color:#222; font-size: 1em; padding-top: 120px; width: 100%; height:100%; position: fixed; top: 0; z-index: 1000; background: rgba(0,0,0,0.3);");
+    let $overlay = $("<div>").addClass(APP_SCRIPT_ATTR).attr("style","color:#222; font-size: 1em; padding-top: 120px; width: 100%; height:100%; position: fixed; top: 0; z-index: 1000; background: rgba(0,0,0,0.3);");
     $("body").append($overlay);
     var $textarea = $("<div>").attr("style","background-color: #eee; width:480px; height:calc(100% - 120px); margin:0 auto; padding: 0.5em 1em;  overflow-y: scroll;")
     $overlay.append($textarea);
@@ -393,7 +400,7 @@ export default window;
     } catch (ignore) {
       throw new Error();
     }
-    
+
     $textarea.append("完了(1/5)<br>");
     await sleep(SLEEP_MSEC);
 
@@ -421,7 +428,7 @@ export default window;
     $textarea.append("スコアデータを送信します・・・<br><br>");
 
     await axios.post(API_URL, qs.stringify(allData), {
-      headers: { 
+      headers: {
         Authorization: "Bearer " + token,
       }
     }).then(result => {
@@ -454,6 +461,5 @@ export default window;
       }
     });
   }
-  
   main();
 })();
