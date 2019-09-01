@@ -85,6 +85,7 @@ class ViewUserRatingController extends Controller
         $statistics->totalRatingTotal = 0;
         $statistics->totalRatingTop = 0;
         $statistics->totalRatingMin = null;
+        $statistics->potentialRatingTop = null;
         
         $notExistMusic = new \stdClass;
         $notExistMusic->title = "-";
@@ -126,6 +127,10 @@ class ViewUserRatingController extends Controller
                 if(is_null($statistics->newBestRatingMin) || $statistics->newBestRatingMin > $newScore[$i]->rawRatingValue){
                     $statistics->newBestRatingMin = $newScore[$i]->rawRatingValue;
                 }
+
+                if($statistics->potentialRatingTop < $newScore[$i]->rawRatingValue && $newScore[$i]->difficulty != 10){
+                    $statistics->potentialRatingTop = $newScore[$i]->rawRatingValue;
+                }
             }
         }
 
@@ -140,6 +145,10 @@ class ViewUserRatingController extends Controller
                 }
                 if(is_null($statistics->oldBestRatingMin) || $statistics->oldBestRatingMin > $oldScore[$i]->rawRatingValue){
                     $statistics->oldBestRatingMin = $oldScore[$i]->rawRatingValue;
+                }
+
+                if($statistics->potentialRatingTop < $oldScore[$i]->rawRatingValue && $oldScore[$i]->difficulty != 10){
+                    $statistics->potentialRatingTop = $oldScore[$i]->rawRatingValue;
                 }
             }
         }
@@ -197,7 +206,7 @@ class ViewUserRatingController extends Controller
         $statistics->totalRatingTop = max([$statistics->newBestRatingTop, $statistics->oldBestRatingTop, $statistics->recentRatingTop]);
         $statistics->totalRatingMin = min([$statistics->newBestRatingMin, $statistics->oldBestRatingMin, $statistics->recentRatingMin]);
 
-        $statistics->maxRatingTotal = $statistics->newBestRatingTotal + $statistics->oldBestRatingTotal + ($statistics->totalRatingTop * $statistics->recentRatingCount);
+        $statistics->maxRatingTotal = $statistics->newBestRatingTotal + $statistics->oldBestRatingTotal + ($statistics->potentialRatingTop * $statistics->recentRatingCount);
 
         return view("user_rating", compact('status', 'id', 'sidemark', 'statistics', 'newScore', 'oldScore', 'recentScore'));
     }
