@@ -130,7 +130,11 @@
                 <tbody>
                     @for ($i = 0; $i < $statistics->recentRatingCount; $i++)
                         <tr>
-                            <td class="sort_title"><a href="{{url("/user/" . $id . "/music/" . $recentScore[$i]['song_id'] . "/" . strtolower($recentScore[$i]['difficulty_str']))}}">{{$recentScore[$i]['title']}}</a></td>
+                            @if (array_key_exists($i, $recentScore) && array_key_exists('song_id', $recentScore[$i]))
+                                <td class="sort_title"><a href="{{url("/user/" . $id . "/music/" . $recentScore[$i]['song_id'] . "/" . strtolower($recentScore[$i]['difficulty_str']))}}">{{$recentScore[$i]['title']}}</a></td>
+                            @else
+                                <td class="sort_title">{{$recentScore[$i]['title']}}</td>
+                            @endif
                             <td>{{substr($recentScore[$i]['difficulty_str'], 0, 3)}}</td>
                             <td>{{$recentScore[$i]['level_str']}}</td>
                             <td>{{number_format($recentScore[$i]['technical_score'])}}</td>
