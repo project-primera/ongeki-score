@@ -16,7 +16,7 @@ export default window;
   const API_URL = TOOL_URL + "/api/user/update";
 
   const REQUEST_KEY = "?t="
-  const PRODUCT_NAME = "Project Primera - getScore.js";
+  const PRODUCT_NAME = "Project Primera";
   const VERSION = "20190825";
 
   const APP_SCRIPT_ATTR = 'ongeki_score_net';
@@ -369,7 +369,15 @@ export default window;
 
     $textarea.append(PRODUCT_NAME + " v." + VERSION + "<br>");
 
+    let token: string = getToken();
+
     try {
+
+      if(NET_DOMAIN != window.location.hostname){
+        $textarea.append("<a href='https://ongeki-net.com'>オンゲキNET</a>で実行してください。");
+        throw new Error();
+      }
+
       // メンテナンスチェック
       await axios.get(TOOL_URL + "/api/live").then(function(){
         // ignore
@@ -378,10 +386,19 @@ export default window;
         throw new Error();
       });
 
-      if(NET_DOMAIN != window.location.hostname){
-        $textarea.append("<a href='https://ongeki-net.com'>オンゲキNET</a>で実行してください。");
+      // ユーザーチェック
+      await axios.get(TOOL_URL + "/api/user",  {
+        headers: {
+          Authorization: "Bearer " + token,
+        }
+      }).then(function(r){
+        console.log(r.data);
+        $textarea.append("ユーザー認証に成功しました。<br>" + r.data.user.name + " (userID: " + r.data.user.id + ")<br><br>");
+      }).catch(await function (error) {
+        $textarea.append("<br>ユーザー認証に失敗しました。<br>ブックマークレットの再生性をお試しください。<br><a href='https://ongeki-net.com'  style='color:#222'>オンゲキNETに戻る</a>");
         throw new Error();
-      }
+      });
+
     } catch (ignore) {
       throw new Error();
     }
@@ -389,8 +406,6 @@ export default window;
     $textarea.append("スコアを取得します。しばらくお待ち下さい・・・<br><br>");
 
     $textarea.append("プレイヤーデータを取得します・・・(1/5)<br>");
-    let token: string = getToken();
-
     await allData.PlayerData.getData();
     try {
       if(allData.PlayerData.level == -1){

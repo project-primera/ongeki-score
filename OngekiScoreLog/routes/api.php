@@ -16,3 +16,5 @@ use Illuminate\Http\Request;
 // From Bookmarklet
 Route::middleware('cors')->get('/live', 'SimpleViewController@getApiLive');
 Route::middleware('cors')->match(['post', 'options'], '/user/update', 'BookmarkletAccessController@postUserUpdate')->middleware('auth:api');
+
+Route::middleware('cors')->get('/user', 'Api\UserController@getIndex')->middleware('auth:api');
