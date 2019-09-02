@@ -367,7 +367,7 @@ export default window;
     var $textarea = $("<div>").attr("style","background-color: #eee; width:480px; height:calc(100% - 120px); margin:0 auto; padding: 0.5em 1em;  overflow-y: scroll;")
     $overlay.append($textarea);
 
-    $textarea.append(PRODUCT_NAME + " v." + VERSION + "<br>");
+    $textarea.append(PRODUCT_NAME + " v." + VERSION + "<br><br>");
 
     let token: string = getToken();
 
