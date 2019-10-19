@@ -54,11 +54,11 @@ class HealthCheckCommand extends Command
             $vvv[] = $e;
         }
 
-        if($this->output->isDebug()){
+        if($this->output->isDebug() && count($vvv) !== 0){
             $this->error(implode("\n", $vvv));
-        }if($this->output->isVeryVerbose()){
+        }if($this->output->isVeryVerbose() && count($vv) !== 0){
             $this->error(implode("\n", $vv));
-        }else if($this->output->isVerbose()){
+        }else if($this->output->isVerbose() && count($v) !== 0){
             $this->error(implode("\n", $v));
         }
 
