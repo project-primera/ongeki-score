@@ -1,5 +1,5 @@
 FROM php:7.3.10-fpm-alpine3.10 AS base
-LABEL maintainer "Slime-hatena <git@aki-memo.net>"
+LABEL maintainer "slime-hatena <Slime-hatena@aki-memo.net>"
 WORKDIR /app
 EXPOSE 80
 EXPOSE 443
