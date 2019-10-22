@@ -39,4 +39,4 @@ MariaDB 10.4.8+
 
 ## ライセンス
 
-MIT License
+GNU Affero General Public License v3.0
