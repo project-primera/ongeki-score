@@ -73,7 +73,7 @@
             <div class="navbar-brand">
                 <a class="navbar-item" href="/">
                     <!-- <img src="logo" width="112" height="28"> -->
-                    <i class="fas fa-chart-line"></i>&nbsp;ongeki-score.net
+                    <i class="fas fa-chart-line"></i>&nbsp;<?=config('app.name')?>
                 </a>
                 <a role="button" class="navbar-burger burger" aria-label="menu" aria-expanded="false" data-target="navbar">
                     <span aria-hidden="true"></span>
