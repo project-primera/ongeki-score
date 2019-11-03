@@ -1,6 +1,12 @@
-# ProjectPrimera
+# ProjectPrimera/ongeki-score
 
-Ongeki Score Tool
+![](https://img.shields.io/github/v/release/projectprimera/ongeki-score.svg?style=plastic)
+![](https://img.shields.io/github/v/release/projectprimera/ongeki-score.svg?include_prereleases&style=plastic)
+![](https://img.shields.io/docker/pulls/projectprimera/ongeki-score.svg?style=plastic)
+
+![](https://github.com/ProjectPrimera/ongeki-score/workflows/Release:%20Publish%20To%20Docker%20Hub/badge.svg)
+![](https://github.com/ProjectPrimera/ongeki-score/workflows/Test:%20master%20branch/badge.svg)
+
 
 ## 概要
 
