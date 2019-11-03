@@ -5,8 +5,7 @@ import * as qs from 'qs';
 (function () {
   const NET_DOMAIN = "ongeki-net.com";
   const NET_URL = "https://" + NET_DOMAIN + "/ongeki-mobile/";
-  // const TOOL_URL = "http://127.0.0.1:8000";
-  const TOOL_URL = "https://ongeki-score.net";
+  const TOOL_URL = process.env.MIX_APP_URL;
   const API_URL = TOOL_URL + "/api/user/update";
 
   const REQUEST_KEY = "?t="
