@@ -1,4 +1,4 @@
-FROM php:7.3.10-fpm-alpine3.10 AS base
+FROM php:7.3.11-fpm-alpine3.10 AS base
 LABEL maintainer "slime-hatena <Slime-hatena@aki-memo.net>"
 WORKDIR /app
 EXPOSE 80
@@ -19,7 +19,7 @@ RUN yarn install \
 
 FROM base AS final
 ARG supervisor_version="3.3.5-r0"
-ARG nginx_version="1.16.1-r0"
+ARG nginx_version="1.16.1-r1"
 COPY --from=node /src /app
 COPY docker/docker-entrypoint.sh /etc/
 COPY docker/supervisor/supervisord.conf /etc/
