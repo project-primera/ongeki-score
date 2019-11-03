@@ -1,8 +1,8 @@
-name: 'Test: develop branch'
+name: 'Test: other branch'
 on:
   push:
-    branches:
-      - develop
+    branches-ignore:
+      - master
 
 jobs:
   dockle:
