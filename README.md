@@ -1,11 +1,11 @@
 # ProjectPrimera/ongeki-score
 
-[![](https://img.shields.io/github/v/release/projectprimera/ongeki-score.svg?style=plastic)](https://github.com/ProjectPrimera/ongeki-score/releases/latest)
-[![](https://img.shields.io/github/v/release/projectprimera/ongeki-score.svg?include_prereleases&style=plastic)](https://github.com/ProjectPrimera/ongeki-score/releases)
-[![](https://img.shields.io/docker/pulls/projectprimera/ongeki-score.svg?style=plastic)](https://hub.docker.com/r/projectprimera/ongeki-score)
+[![Latest version.](https://img.shields.io/github/v/release/projectprimera/ongeki-score.svg?style=plastic)](https://github.com/ProjectPrimera/ongeki-score/releases/latest)
+[![Latest pre-release version.](https://img.shields.io/github/v/release/projectprimera/ongeki-score.svg?include_prereleases&style=plastic)](https://github.com/ProjectPrimera/ongeki-score/releases)
+[![Docker pulls](https://img.shields.io/docker/pulls/projectprimera/ongeki-score.svg?style=plastic)](https://hub.docker.com/r/projectprimera/ongeki-score)
 
-![](https://github.com/ProjectPrimera/ongeki-score/workflows/Release:%20Publish%20To%20Docker%20Hub/badge.svg)
-![](https://github.com/ProjectPrimera/ongeki-score/workflows/Test:%20master%20branch/badge.svg)
+![Release: Publish To Docker Hub](https://github.com/ProjectPrimera/ongeki-score/workflows/Release:%20Publish%20To%20Docker%20Hub/badge.svg)
+![Test: master branch ](https://github.com/ProjectPrimera/ongeki-score/workflows/Test:%20master%20branch/badge.svg)
 
 ## 概要
 
