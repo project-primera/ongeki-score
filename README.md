@@ -11,7 +11,7 @@ OngekiScoreLogはSEGAのアーケード音楽ゲーム「オンゲキ」のス�
 ## ビルド
 
 ```sh
-docker build ./ -t project-primera/ongeki-score
+docker build ./ -t projectprimera/ongeki-score
 ```
 
 ## 開発環境
