@@ -25,7 +25,7 @@ Visual Studio Code
 
 ## 動作環境
 
-PHP 7.3.9+  
+PHP 7.3.11+  
 MariaDB 10.4.8+  
 
 ## コミット時のプレフィックスルール
