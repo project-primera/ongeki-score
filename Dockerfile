@@ -1,4 +1,4 @@
-FROM php:7.3.11-fpm-alpine3.10 AS base
+FROM php:7.3.14-fpm-alpine3.11 AS base
 LABEL maintainer "slime-hatena <Slime-hatena@aki-memo.net>"
 WORKDIR /app
 EXPOSE 80
@@ -9,7 +9,9 @@ HEALTHCHECK --start-period=60s --interval=60s --timeout=10s --retries=3 \
 FROM composer:1.9.0 AS composer
 WORKDIR /src
 COPY ./OngekiScoreLog /src
-RUN composer install --optimize-autoloader
+RUN composer config -g repos.packagist composer https://packagist.jp \
+    && composer global require hirak/prestissimo \
+    && composer install --optimize-autoloader
 
 FROM node:10.16.3-alpine AS node
 WORKDIR /src
@@ -18,8 +20,8 @@ RUN yarn install \
     && yarn run production
 
 FROM base AS final
-ARG supervisor_version="3.3.5-r0"
-ARG nginx_version="1.16.1-r1"
+ARG supervisor_version="4.1.0-r0"
+ARG nginx_version="1.16.1-r6"
 COPY --from=node /src /app
 COPY docker/docker-entrypoint.sh /etc/
 COPY docker/supervisor/supervisord.conf /etc/
