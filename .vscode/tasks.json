@@ -4,38 +4,38 @@
     "version": "2.0.0",
     "tasks": [
         {
-            "label": "Run all tasks",
+            "label": "1. Build",
+            "type": "shell",
+            "command": "docker",
+            "args": [
+                "build", "./", "-t", "ongeki-score-local", "--file", "Dockerfile",
+            ],
+        },
+        {
+            "label": "2. Trivy scan",
+            "type": "shell",
+            "command": "docker",
+            "args": [
+                "run", "--rm", "-v", "/var/run/docker.sock:/var/run/docker.sock", "-v", "trivy:/root/.cache/", "aquasec/trivy", "--only-update", "alpine", "-q", "--severity", "HIGH,CRITICAL", "--exit-code", "1", "ongeki-score-local"
+            ],
+            "dependsOn": [
+                "1. Build"
+            ]
+        },
+        {
+            "label": "3. Dockle scan",
+            "type": "shell",
             "group": {
                 "kind": "build",
                 "isDefault": true
-              },
-              "dependsOn": [
-                "Watch OngekiScoreLog webpack mix files",
-                "Run OngekiScoreLog server",
-              ],
-        },
-        {
-            "label": "Watch OngekiScoreLog webpack mix files",
-            "type": "shell",
-            "command": "cd OngekiScoreLog; npm run watch",
-            "presentation": {
-                "reveal": "always",
-                "panel": "new",
-                "echo": true
-            }
-        },
-        {
-            "label": "Run OngekiScoreLog server",
-            "type": "shell",
-            "command": "php",
+            },
+            "command": "docker",
             "args": [
-                "-S", "127.0.0.1:8000", "-t", "OngekiScoreLog\\public"
+                "run", "--rm", "-v", "/var/run/docker.sock:/var/run/docker.sock", "goodwithtech/dockle:latest"," --exit-code", "1", "--exit-level", "warn", "-i", "CIS-DI-0001", "-i", "DKL-DI-0006", "ongeki-score-local",
             ],
-            "presentation": {
-                "reveal": "always",
-                "panel": "new",
-                "echo": true
-            }
+            "dependsOn": [
+                "2. Trivy scan"
+            ],
         },
     ]
 }

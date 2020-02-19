@@ -3,6 +3,8 @@ return [
     'ongeki-version' => env('ONGEKI_VERSION'),
     'ongeki-version-date' => env('ONGEKE_VERSION_DATE'),
 
+    'is-maintenance-api-user-update' => env('IS_MAINTENANCE_API_USER_UPDATE'),
+
     'twitter-consumer-key' => env('TWITTER_CONSUMER_KEY'),
     'twitter-consumer-secret' => env('TWITTER_CONSUMER_SECRET'),
     'twitter-admin-account-access-token' => env('TWITTER_ADMIN_ACCOUNT_ACCESS_TOKEN'),
