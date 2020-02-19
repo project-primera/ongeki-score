@@ -9,7 +9,8 @@ HEALTHCHECK --start-period=60s --interval=60s --timeout=10s --retries=3 \
 FROM composer:1.9.0 AS composer
 WORKDIR /src
 COPY ./OngekiScoreLog /src
-RUN composer install --optimize-autoloader
+RUN composer config -g repos.packagist composer https://packagist.jp \
+    && composer install --optimize-autoloader
 
 FROM node:10.16.3-alpine AS node
 WORKDIR /src
