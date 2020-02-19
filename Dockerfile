@@ -40,5 +40,6 @@ RUN set -ex \
         /app/storage/app/log/Emergency \
         /app/storage/logs \
     && touch /app/storage/logs/laravel.log \
-    && chmod -R 777 /app/storage
+    && chmod -R 777 /app/storage \
+    && chmod 777 /etc/docker-entrypoint.sh
 ENTRYPOINT [ "/etc/docker-entrypoint.sh" ]
