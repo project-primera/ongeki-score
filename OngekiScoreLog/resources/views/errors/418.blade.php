@@ -8,4 +8,4 @@ If you are a good user, please return to this page.
 {{url("/")}}
 
 -----
-This site is powered by ProjectPrimera licensed under the MIT.
+This site is powered by ProjectPrimera licensed under the AGPL-3.0.

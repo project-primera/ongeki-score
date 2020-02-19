@@ -158,7 +158,7 @@
         </main>
 
         <footer>
-            This site is powered by <a href="https://github.com/Slime-hatena/ProjectPrimera" target="_blank">ProjectPrimera</a> licensed under the <a href="https://github.com/Slime-hatena/ProjectPrimera/blob/master/LICENSE" target="_blank">MIT</a>.<br>
+            This site is powered by <a href="https://github.com/Slime-hatena/ProjectPrimera" target="_blank">ProjectPrimera</a> licensed under the <a href="https://github.com/Slime-hatena/ProjectPrimera/blob/master/LICENSE" target="_blank">AGPL-3.0</a>.<br>
             お問い合わせ:&nbsp;<a href="https://twitter.com/ongeki_score" target="blank">Twitter@ongeki_score</a> / <a href="mailto:info&#64;ongeki-score.net">
                 info&nbsp;(at)&nbsp;ongeki-score.net
              </a>
