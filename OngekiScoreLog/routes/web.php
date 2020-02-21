@@ -51,6 +51,9 @@ Route::post('/tweet/image', 'TweetController@postTweetImage');
 
 // for admin
 Route::group(['middleware' => ['auth', 'can:admin']], function () {
+    Route::get('/admin', 'AdminController@GetIndex');
+    Route::get('/admin/config', 'AdminController@GetConfig');
+    Route::get('/admin/apply/{type}/{action?}', 'AdminController@GetApply');
     Route::get('/admin/log/{path}/{fileName}', 'SimpleViewController@getLogFile');
 });
 

@@ -102,6 +102,11 @@
                                     ログアウト
                                 </a>
                             @endif
+                            @if (!is_null(\Auth::user()) && \Auth::user()->role >= 7)
+                                <a class="button is-primary" href="/admin">
+                                    <strong>管理ページ</strong>
+                                </a>
+                            @endif
                         </div>
                     </div>
                 </div>
