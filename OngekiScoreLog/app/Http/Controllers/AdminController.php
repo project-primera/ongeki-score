@@ -5,11 +5,25 @@ use \Artisan;
 
 class AdminController extends Controller{
 
+    /**
+     * '/'にgetリクエストがあったときに呼び出されます。
+     *
+     * @param Request $request
+     * @return \Illuminate\View\View|\Illuminate\Contracts\View\Factory
+     */
     public function GetIndex(Request $request){
         $message = $request->input('message', null);
         return view('admin/index', compact(['message']));
     }
 
+    /**
+     * 受け取った$valueを解析し表示します。
+     * 配列を受け取った場合は再帰的に解析します。
+     *
+     * @param string $key configのkey
+     * @param Array|string $value configのvalue
+     * @return Array[string] 解析結果
+     */
     private function parseConfig($key, $value){
         if(is_array($value)){
             $result = [];
@@ -40,6 +54,12 @@ class AdminController extends Controller{
         return [$key => $value];
     }
 
+    /**
+     * '/config'にgetリクエストがあったときに呼び出されます。
+     * configに設定された全値を出力し、表示します。
+     *
+     * @return \Illuminate\View\View|\Illuminate\Contracts\View\Factory
+     */
     public function GetConfig(){
         $config = \Config::all();
         $result = [];
@@ -49,6 +69,14 @@ class AdminController extends Controller{
         return view('admin/config', compact(['result']));
     }
 
+    /**
+     * '/config'にgetリクエストがあったときに呼び出されます。
+     * パラメータに合致する処理を行い、'/'にリダイレクトします。
+     *
+     * @param string $type 処理内容
+     * @param string $action 処理内容
+     * @return \Illuminate\Routing\Redirector|\Illuminate\Http\RedirectResponse
+     */
     public function GetApply($type, $action = null){
         $message = "パスが間違っています。";
 
