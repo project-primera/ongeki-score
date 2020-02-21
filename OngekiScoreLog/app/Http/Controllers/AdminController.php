@@ -10,6 +10,45 @@ class AdminController extends Controller{
         return view('admin/index', compact(['message']));
     }
 
+    private function parseConfig($key, $value){
+        if(is_array($value)){
+            $result = [];
+            foreach ($value as $k => $v) {
+                $result = $result + $this->parseConfig($key . "->" . $k , $v);
+            }
+            return $result;
+        }
+        $secret_keys = [
+            'key',
+            'secret',
+            'mysql->password',
+            'pgsql->password',
+            'sqlsrv->password',
+            'access-token',
+            'slack-webhook-url',
+            'mail->host',
+            'mail->port',
+            'mail->username',
+            'mail->password'
+        ];
+        foreach ($secret_keys as $item) {
+            if(strpos($key, $item) !== false && $value !== ''){
+                return [$key => '************'];
+            }
+        }
+
+        return [$key => $value];
+    }
+
+    public function GetConfig(){
+        $config = \Config::all();
+        $result = [];
+        foreach ($config as $key => $value) {
+            $result = $result + $this->parseConfig($key, $value);
+        }
+        return view('admin/config', compact(['result']));
+    }
+
     public function GetApply($type, $action = null){
         $message = "パスが間違っています。";
 
