@@ -50,6 +50,13 @@ class UserController extends Controller{
             'begin_at' => Carbon::now(),
             'generation' => $generation,
         ]);
+
+        $user = Auth::user();
+        $content = "スコア登録: " . "<" . url("/user/" . $user->id) . "|" . $result['name'] . "(" . $user->id . ")>";
+        $fileContent = "ip: " . \Request::ip() . "\nUser agent: " . $_SERVER['HTTP_USER_AGENT'] . "\n\nUser:\nid: " . $user->id . "\nemail: " . $user->email . "\nrole: " . $user->role . "\n\nRequest:\n" . var_export($request, true);
+        $fields = ["IP Address" => \Request::ip(), "User id" => $user->id];
+        Slack::Info($content, $fileContent, $fields, "success");
+
         return $result;
     }
 
