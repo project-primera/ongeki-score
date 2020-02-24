@@ -10,7 +10,7 @@ import * as qs from 'qs';
 
   const REQUEST_KEY = "?t="
   const PRODUCT_NAME = "Project Primera - getScore.js";
-  const VERSION = "20190823";
+  const VERSION = process.env.MIX_BOOKMARKLET_VERSION;
 
   const SLEEP_MSEC = 2000;
 
