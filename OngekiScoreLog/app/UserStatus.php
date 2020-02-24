@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\DB;
 class UserStatus extends Model
 {
     protected $table = "user_status";
-    protected $guarded = ['id', 'user_id'];
+    protected $guarded = ['id'];
 
     function getRecentUserData($id){
         $sql = DB::table($this->table)->select('*')

@@ -348,3 +348,4 @@ ASALocalRun/
 # User files
 .vsls.json
 OngekiScoreLog/supervisord.pid
+OngekiScoreLog/public/mix-manifest.json
