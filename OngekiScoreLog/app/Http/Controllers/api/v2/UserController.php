@@ -249,4 +249,15 @@ class UserController extends Controller{
             ]);
         }
     }
+    private function setPaymentStatus($data, $dateTime, $uniqueID){
+        \App\UserInformation ::updateOrCreate(
+            ['user_id' => Auth::id()], [
+                'is_standard_plan' => $data['isStandardPlan'] === "true" ? 1 : 0,
+                'is_premium_plan' => $data['isPremiumPlan'] === "true" ? 1 : 0,
+                'unique_id' => $uniqueID,
+                'created_at' => $dateTime,
+                'updated_at' => $dateTime
+            ]
+        );
+    }
 }
