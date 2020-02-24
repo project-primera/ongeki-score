@@ -26,7 +26,7 @@ class UserController extends Controller{
         $result['name'] = Auth::user()->name;
 
         if(config('env.is-maintenance-api-user-update')){
-            $result['message'][] = "<p>只今新バージョン対応に向けたメンテナンスを行っています。メンテナンス中はスコアデータの登録は行なえません。</p><p>詳細は<a href='https://twitter.com/ongeki_score' target='_blank' style='color:#222'>Twitter@ongeki_score</a>にてお知らせします。</p>";
+            $result['message'][] = "<p>只今メンテナンスを行っています。スコアデータの登録は行なえません。</p><p>詳細は<a href='https://twitter.com/ongeki_score' target='_blank' style='color:#222'>Twitter@ongeki_score</a>にてお知らせします。</p>";
 
             $user = Auth::user();
             if($request->input('PlayerData') !== null){
