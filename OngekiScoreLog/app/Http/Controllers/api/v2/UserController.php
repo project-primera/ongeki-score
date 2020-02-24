@@ -50,5 +50,26 @@ class UserController extends Controller{
         ]);
         return $result;
     }
+
+    private function setPlayer($data, $dateTime, $uniqueID){
+        $userId = Auth::id();
+        \App\UserStatus::create([
+            'user_id' => $userId,
+            'trophy' => $data['trophy'],
+            'level' => $data['level'],
+            'name' => $data['name'],
+            'battle_point' => $data['battle_point'],
+            'rating' => $data['rating'],
+            'rating_max' => $data['rating_max'],
+            'money' => $data['money'],
+            'total_money' => $data['total_money'],
+            'total_play' => $data['total_play'],
+            'comment' => $data['comment'],
+            'friend_code' => $data['friend_code'],
+            'unique_id' => $uniqueID,
+            'created_at' => $dateTime,
+            'updated_at' => $dateTime,
+        ]);
+    }
     }
 }
