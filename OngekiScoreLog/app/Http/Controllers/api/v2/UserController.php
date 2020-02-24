@@ -153,7 +153,7 @@ class UserController extends Controller{
         }
         return $message;
     }
-    private function addMusic($data, $dateTime, $uniqueID){
+    private function addMusic($data, $uniqueID){
         $message = [];
         $titles = [];
 
