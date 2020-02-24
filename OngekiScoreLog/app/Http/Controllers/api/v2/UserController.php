@@ -52,7 +52,65 @@ class UserController extends Controller{
         ]);
         return $result;
     }
+
+    public function PostUpdate(Request $request){
+        $result = [];
+        $result['id'] = null;
+        $result['isError'] = false;
+        $result['message'] = [];
+
+        $hash = $request->input('hash', null);
+        $data = $request->input('data', null);
+        $methodType = $request->input('methodType', null);
+
+        if(Auth::id() === null){
+            $result['message'][] = "認証に失敗しました。";
+            $result['isError'] = true;
+            return $result;
+        }
+        if($hash === null || $data === null || $methodType === null){
+            $result['message'][] = "送信内容を確認できませんでした。";
+            $result['isError'] = true;
+            return $result;
+        }
+
+        $userStatus = \App\UserUpdateStatus::where('hash', $hash)->first();
+
+        if($userStatus === null){
+            $result['message'][] = "送信内容が正しくありません。";
+            $result['isError'] = true;
+            return $result;
+        }
+
+        $uniqueID = md5(uniqid(rand(),1));
+        \App\UniqueIDForRequest::create([
+            'ip_address' => \Request::ip(),
+            'unique_id' => $uniqueID,
         ]);
+
+        if($methodType === "0"){
+            $this->setPlayer($data, $userStatus->begin_at, $uniqueID);
+        }else if($methodType === "1"){
+            if(Auth::user()->role >= 7){
+                $result['message'] = array_merge($result['message'], $this->addMusic($data, $uniqueID));
+            }
+            $result['message'] = array_merge($result['message'], $this->setScore($data, $userStatus->begin_at, $uniqueID, $userStatus->generation));
+
+        }else if($methodType === "2"){
+            $this->setTrophy($data, $userStatus->begin_at, $uniqueID);
+        }else if($methodType === "3"){
+            $this->setCharacterFriendly($data, $userStatus->begin_at, $uniqueID);
+        }else if($methodType === "4"){
+            $this->setRatingRecentMusic($data, $userStatus->begin_at, $uniqueID);
+        }else if($methodType === "5"){
+            $this->setPaymentStatus($data, $userStatus->begin_at, $uniqueID);
+        }else{
+            $result['message'][] = "未知のtypeが渡されました。 type:" . $methodType;
+            $result['isError'] = true;
+            return $result;
+        }
+
+        $result['data'] = $data;
         return $result;
     }
 
@@ -153,6 +211,7 @@ class UserController extends Controller{
         }
         return $message;
     }
+
     private function addMusic($data, $uniqueID){
         $message = [];
         $titles = [];
@@ -172,6 +231,7 @@ class UserController extends Controller{
             }
             $musicData->genre = $v['genre'];
             $difficulty = "";
+
             if($v['difficulty'] === "0"){
                 $difficulty = "basic";
                 $musicData->basic_level = $v['level'];
@@ -205,6 +265,7 @@ class UserController extends Controller{
 
         return $message;
     }
+
     private $trophyGrade = ["Normal" => 0, "Silver" => 1, "Gold" => 2, "Platinum" => 3, "Rainbow" => 4];
     private function setTrophy($data, $dateTime, $uniqueID){
         foreach ($data as $k => $v) {
@@ -227,6 +288,7 @@ class UserController extends Controller{
             ]);
         }
     }
+
     private function setCharacterFriendly($data, $dateTime, $uniqueID){
         foreach ($data['friendly'] as $key => $value) {
             \App\CharacterFriendly::create([
@@ -239,6 +301,7 @@ class UserController extends Controller{
             ]);
         }
     }
+
     private function setRatingRecentMusic($data, $dateTime, $uniqueID){
         \App\RatingRecentMusic::where('user_id', Auth::id())->delete();
         foreach ($data['ratingRecentMusicObject'] as $key => $value) {
@@ -254,6 +317,7 @@ class UserController extends Controller{
             ]);
         }
     }
+
     private function setPaymentStatus($data, $dateTime, $uniqueID){
         \App\UserInformation ::updateOrCreate(
             ['user_id' => Auth::id()], [
