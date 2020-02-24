@@ -8,5 +8,5 @@ class RatingRecentMusic extends Model
 {
     //
     protected $table = "rating_recent_musics";
-    protected $guarded = ['id', 'user_id', 'rank'];
+    protected $guarded = ['id'];
 }
