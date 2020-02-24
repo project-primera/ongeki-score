@@ -71,6 +71,83 @@ class UserController extends Controller{
             'updated_at' => $dateTime,
         ]);
     }
+    private function setScore($data, $dateTime, $uniqueID){
+        $message = [];
+        $generation = (new \App\ScoreData())->getMaxGeneration(Auth::id()) + 1;
+        foreach ($data as $key => $value) {
+            if($value['difficulty'] !== "0" && $value['difficulty'] !== "1" && $value['difficulty'] !== "2" && $value['difficulty'] !== "3" && $value['difficulty'] !== "10"){
+                throw new RuntimeException("未知の難易度が送信されました。(" . $value['difficulty'] . ")");
+            }
+            $music = \App\MusicData::where("title", "=", $value['title'])->first();
+            if($music === null){
+                $message[] = "未知の曲: " . $value['title'];
+                continue;
+            }
+            $recentScore = (new \App\ScoreData())->getRecentGenerationOfScoreData(Auth::id(), $music->id, $value['difficulty'])->getValue();
+            $isUpdate = false;
+
+            $full_bell = ($value['full_bell'] === "true" ? 1 : 0);
+            $full_combo = ($value['full_combo'] === "true" ? 1 : 0);
+            $all_break = ($value['all_break'] === "true" ? 1 : 0);
+            if((bool)$recentScore === false){
+                $isUpdate = true;
+            }else{
+                if($value['over_damage_high_score'] > $recentScore->over_damage_high_score){
+                    $isUpdate = true;
+                }else{
+                    $value['over_damage_high_score'] = $recentScore->over_damage_high_score;
+                }
+
+                if($value['battle_high_score'] > $recentScore->battle_high_score){
+                    $isUpdate = true;
+                }else{
+                    $value['battle_high_score'] = $recentScore->battle_high_score;
+                }
+
+                if($value['technical_high_score'] > $recentScore->technical_high_score){
+                    $isUpdate = true;
+                }else{
+                    $value['technical_high_score'] = $recentScore->technical_high_score;
+                }
+
+                if($full_bell > $recentScore->full_bell){
+                    $isUpdate = true;
+                }else{
+                    $full_bell = $recentScore->full_bell;
+                }
+
+                if($full_combo > $recentScore->full_combo){
+                    $isUpdate = true;
+                }else{
+                    $full_combo = $recentScore->full_combo;
+                }
+
+                if($all_break > $recentScore->all_break){
+                    $isUpdate = true;
+                }else{
+                    $all_break = $recentScore->all_break;
+                }
+            }
+            if($isUpdate){
+                \App\ScoreData::create([
+                    'user_id' => Auth::id(),
+                    'generation' => $generation,
+                    'song_id' => $music->id,
+                    'difficulty' => $value['difficulty'],
+                    'over_damage_high_score' => $value['over_damage_high_score'],
+                    'battle_high_score' => $value['battle_high_score'],
+                    'technical_high_score' => $value['technical_high_score'],
+                    'full_bell' => $full_bell,
+                    'full_combo' => $full_combo,
+                    'all_break' => $all_break,
+                    'unique_id' => $uniqueID,
+                    'created_at' => $dateTime,
+                    'updated_at' => $dateTime,
+                ]);
+            }
+        }
+        return $message;
+    }
     private function addMusic($data, $dateTime, $uniqueID){
         $message = [];
         $titles = [];
