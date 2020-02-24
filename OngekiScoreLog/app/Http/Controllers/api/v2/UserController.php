@@ -68,6 +68,23 @@ class UserController extends Controller{
             $result['isError'] = true;
             return $result;
         }
+
+        if(config('env.is-maintenance-api-user-update') && Auth::user()->role < 7){
+            $result['message'][] = "<p>只今メンテナンスを行っています。スコアデータの登録は行なえません。</p><p>詳細は<a href='https://twitter.com/ongeki_score' target='_blank' style='color:#222'>Twitter@ongeki_score</a>にてお知らせします。</p>";
+
+            $user = Auth::user();
+            if($request->input('PlayerData') !== null){
+                $name = $request->input('PlayerData')['name'];
+            }else{
+                $name = "<Unknown>";
+            }
+            $content = "スコア登録: " . $name . "(" . $user->id . ")\n" . url("/user/" . $user->id);
+            $fileContent = "ip: " . \Request::ip() . "\nUser agent: " . $_SERVER['HTTP_USER_AGENT'] . "\n\nUser:\nid: " . $user->id . "\nemail: " . $user->email . "\nrole: " . $user->role . "\n\nCookie:\n" . var_export(Cookie::get(), true) . "\n\nRequest:\n" . var_export($request, true);
+            $fields = ["IP Address" => \Request::ip(), "User id" => $user->id];
+            Slack::Warning($content, $fileContent, $fields, "success");
+            return $result;
+        }
+
         if($hash === null || $data === null || $methodType === null){
             $result['message'][] = "送信内容を確認できませんでした。";
             $result['isError'] = true;
