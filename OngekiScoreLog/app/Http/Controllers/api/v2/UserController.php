@@ -71,5 +71,56 @@ class UserController extends Controller{
             'updated_at' => $dateTime,
         ]);
     }
+    private function addMusic($data, $dateTime, $uniqueID){
+        $message = [];
+        $titles = [];
+
+        $currentVersion = config('env.ongeki-version', null);
+        if($currentVersion === null){
+            throw new RuntimeException("現在のバージョンが取得できませんでした。");
+        }
+
+        foreach ($data as $v) {
+            $musicData = \App\MusicData::where("title", $v['title'])->first();
+            if(is_null($musicData)){
+                $musicData = new \App\MusicData();
+                $musicData->title = $v['title'];
+                $message[] =  "[楽曲データ追加] ". $v['title'];
+                $titles[] = $v['title'];
+            }
+            $musicData->genre = $v['genre'];
+            $difficulty = "";
+            if($v['difficulty'] === "0"){
+                $difficulty = "basic";
+                $musicData->basic_level = $v['level'];
+            }else if($v['difficulty'] === "1"){
+                $difficulty = "advanced";
+                $musicData->advanced_level = $v['level'];
+            }else if($v['difficulty'] === "2"){
+                $difficulty = "expert";
+                $musicData->expert_level = $v['level'];
+            }else if($v['difficulty'] === "3"){
+                $difficulty = "master";
+                $musicData->master_level = $v['level'];
+            }else if($v['difficulty'] === "10"){
+                $difficulty = "lunatic";
+                $musicData->lunatic_level = $v['level'];
+            }else{
+                throw new RuntimeException("未知の難易度が送信されました。(" . $v['difficulty'] . ")");
+            }
+            if($difficulty === "lunatic" && is_null($musicData->lunatic_added_version)){
+                $musicData->lunatic_added_version = $currentVersion;
+            }else if($difficulty !== "lunatic" && is_null($musicData->normal_added_version)){
+                $musicData->normal_added_version = $currentVersion;
+            }
+            $musicData->unique_id = $uniqueID;
+            $musicData->save();
+        }
+        if(count($titles) !== 0){
+            $message[] = "楽曲情報の追加を行いました。";
+            (new \App\AdminTweet())->tweetMusicUpdate($titles);
+        }
+
+        return $message;
     }
 }
