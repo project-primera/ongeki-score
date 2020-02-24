@@ -43,10 +43,15 @@ class UserController extends Controller{
         $result['message'] = 'ok';
         $result['hash'] = hash('sha256', $result['id'] . '_' . microtime(true));
 
+        $generation = (new \App\ScoreData())->getMaxGeneration(Auth::id()) + 1;
         \App\UserUpdateStatus::create([
             'user_id' => $result['id'],
             'hash' => $result['hash'],
             'begin_at' => Carbon::now(),
+            'generation' => $generation,
+        ]);
+        return $result;
+    }
         ]);
         return $result;
     }
@@ -71,9 +76,9 @@ class UserController extends Controller{
             'updated_at' => $dateTime,
         ]);
     }
-    private function setScore($data, $dateTime, $uniqueID){
+
+    private function setScore($data, $dateTime, $uniqueID, $generation){
         $message = [];
-        $generation = (new \App\ScoreData())->getMaxGeneration(Auth::id()) + 1;
         foreach ($data as $key => $value) {
             if($value['difficulty'] !== "0" && $value['difficulty'] !== "1" && $value['difficulty'] !== "2" && $value['difficulty'] !== "3" && $value['difficulty'] !== "10"){
                 throw new RuntimeException("未知の難易度が送信されました。(" . $value['difficulty'] . ")");

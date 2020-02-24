@@ -18,6 +18,7 @@ class CreateUserUpdateStatus extends Migration
             $table->integer("user_id");
             $table->string('hash');
             $table->timestamp('begin_at');
+            $table->integer("generation");
             $table->timestamps();
             $table->index('user_id');
             $table->index('hash');
