@@ -200,4 +200,26 @@ class UserController extends Controller{
 
         return $message;
     }
+    private $trophyGrade = ["Normal" => 0, "Silver" => 1, "Gold" => 2, "Platinum" => 3, "Rainbow" => 4];
+    private function setTrophy($data, $dateTime, $uniqueID){
+        foreach ($data as $k => $v) {
+            $record = \App\UserTrophy::where([
+                ['user_id', '=', Auth::id()],
+                ['name', '=', $v['name']],
+            ])->get();
+            if(count($record) > 0){
+                continue;
+            }
+
+            \App\UserTrophy::create([
+                'user_id' => Auth::id(),
+                'grade' => $this->trophyGrade[$v['rank']],
+                'name' => $v['name'],
+                'detail' => $v['detail'],
+                'unique_id' => $uniqueID,
+                'created_at' => $dateTime,
+                'updated_at' => $dateTime,
+            ]);
+        }
+    }
 }

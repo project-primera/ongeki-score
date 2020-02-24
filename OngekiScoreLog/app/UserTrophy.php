@@ -8,5 +8,5 @@ class UserTrophy extends Model
 {
     //
     protected $table = "user_trophies";
-    protected $guarded = ['id', 'user_id'];
+    protected $guarded = ['id'];
 }
