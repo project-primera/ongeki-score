@@ -8,5 +8,5 @@ class CharacterFriendly extends Model
 {
     //
     protected $table = "character_friendlies";
-    protected $guarded = ['id', 'user_id'];
+    protected $guarded = ['id'];
 }

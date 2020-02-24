@@ -222,4 +222,16 @@ class UserController extends Controller{
             ]);
         }
     }
+    private function setCharacterFriendly($data, $dateTime, $uniqueID){
+        foreach ($data['friendly'] as $key => $value) {
+            \App\CharacterFriendly::create([
+                'user_id' => Auth::id(),
+                'character_id' => $key,
+                'value' => $value,
+                'unique_id' => $uniqueID,
+                'created_at' => $dateTime,
+                'updated_at' => $dateTime,
+            ]);
+        }
+    }
 }
