@@ -18,6 +18,6 @@ Route::middleware('cors')->match(['post', 'options'], '/user/update', 'Bookmarkl
 
 Route::namespace('api')->group(function(){
     Route::namespace('v2')->prefix('v2')->group(function(){
-        Route::middleware('cors')->match(['post', 'options'], '/user/update', 'UserController@PostUpdate'); //->middleware('auth:api');
+        Route::middleware('cors')->get('/user/update/status', 'UserController@GetUpdateStatus')->middleware('auth:api');
     });
 });
