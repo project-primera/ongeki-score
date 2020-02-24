@@ -25,7 +25,7 @@ class UserController extends Controller{
         $result['id'] = Auth::id();
         $result['name'] = Auth::user()->name;
 
-        if(config('env.is-maintenance-api-user-update')){
+        if(config('env.is-maintenance-api-user-update') && Auth::user()->role < 7){
             $result['message'][] = "<p>只今メンテナンスを行っています。スコアデータの登録は行なえません。</p><p>詳細は<a href='https://twitter.com/ongeki_score' target='_blank' style='color:#222'>Twitter@ongeki_score</a>にてお知らせします。</p>";
 
             $user = Auth::user();
