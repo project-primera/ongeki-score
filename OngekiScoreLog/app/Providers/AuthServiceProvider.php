@@ -30,16 +30,16 @@ class AuthServiceProvider extends ServiceProvider
 
 
         /* Laravel Gate Setting
-         * 10: 
-         *  9: 
-         *  8: 
+         * 10:
+         *  9:
+         *  8:
          *  7: 管理者
-         *  6: 
-         *  5: 
-         *  4: 
-         *  3: 
-         *  2: Ongeki-Net プレミアムプランユーザー
-         *  1: Ongeki-Net スタンダードプランユーザー
+         *  6:
+         *  5:
+         *  4:
+         *  3:
+         *  2: (deprecated) Ongeki-Net プレミアムプランユーザー
+         *  1: (deprecated) Ongeki-Net スタンダードプランユーザー
          *  0: 一般ユーザー
          */
         Gate::define('admin', function ($user) {

@@ -43,9 +43,9 @@ class ViewUserController extends Controller
         if($user->role == 7){
             $status[0]->badge .= '&nbsp;<span class="tag developer">ProjectPrimera Developer</span>';
         }
-        if($user->role >= 2){
+        if(\App\UserInformation::IsPremiumPlan($user->id)){
             $status[0]->badge .= '&nbsp;<span class="tag net-premium">OngekiNet Premium</span>';
-        }else if($user->role >= 1){
+        }else if(\App\UserInformation::IsStandardPlan($user->id)){
             $status[0]->badge .= '&nbsp;<span class="tag net-standard">OngekiNet Standard</span>';
         }
 
@@ -133,7 +133,7 @@ class ViewUserController extends Controller
 
         foreach ($score as $key => $value) {
             // レート値を表示していいユーザーなら取得 だめなら隠す
-            if($user->role >= 2){
+            if(\App\UserInformation::IsPremiumPlan($user->id)){
                 $score[$key]->ratingValue = sprintf("%.2f", OngekiUtility::RateValueFromTitle($score[$key]->title, $score[$key]->difficulty, $score[$key]->technical_high_score));
                 $score[$key]->ratingValueRaw = $score[$key]->ratingValue;
                 if(OngekiUtility::IsEstimatedRateValueFromTitle($score[$key]->title, $score[$key]->difficulty, $score[$key]->technical_high_score)){
@@ -142,7 +142,7 @@ class ViewUserController extends Controller
                     $score[$key]->ratingValue = "<i><span class='max-rating'>" . $score[$key]->ratingValue . "</span></i>";
                 }
             }else{
-                $score[$key]->ratingValue = "|||||||||"; 
+                $score[$key]->ratingValue = "|||||||||";
                 $score[$key]->ratingValueRaw = 0;
             }
 
