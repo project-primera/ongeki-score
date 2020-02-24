@@ -13,6 +13,25 @@ import * as qs from 'qs';
   const VERSION = process.env.MIX_BOOKMARKLET_VERSION;
 
   const SLEEP_MSEC = 2000;
+  class PaymentStatus {
+    private isStandardPlan: boolean = false;
+    private isPremiumPlan: boolean = false;
+
+    public async GetPaymentStatus(){
+      await axios.get(NET_URL + '/courseDetail/', {
+      }).then(async (response) => {
+        await this.parsePaymentStatus(response.data);
+      }).catch(function (error) {
+        throw new Error("課金状況の取得に失敗しました。<br>" + error);
+      });
+    }
+
+    private async parsePaymentStatus(html: string){
+      var parseHTML = $.parseHTML(html);
+      this.isStandardPlan = ($(parseHTML).find(".back_course_standard").find("span").text() === "利用中");
+      this.isPremiumPlan = ($(parseHTML).find(".back_course_premium").find("span").text() === "利用中");
+    }
+  }
 
   class PlayerData {
     trophy: string = "";
