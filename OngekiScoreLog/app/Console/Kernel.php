@@ -5,7 +5,6 @@ namespace App\Console;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 use App\ApplicationVersion;
-use App\User;
 use App\Console\Commands\Maintenance;
 
 class Kernel extends ConsoleKernel
@@ -34,7 +33,7 @@ class Kernel extends ConsoleKernel
 
         // 全ユーザーの月初課金情報初期化
         $schedule->call(function () {
-            (new User())->setRoleAllUser(0, 2);
+            \App\UserInformation::ResetAllUserPaymentState();
         })->monthlyOn(1, '4:00');
     }
 
