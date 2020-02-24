@@ -34,6 +34,7 @@ class Kernel extends ConsoleKernel
         // 全ユーザーの月初課金情報初期化
         $schedule->call(function () {
             \App\UserInformation::ResetAllUserPaymentState();
+            \App\Facades\Slack::Info("<!here> すべてのユーザーの課金情報をリセットしました。");
         })->monthlyOn(1, '4:00');
     }
 
