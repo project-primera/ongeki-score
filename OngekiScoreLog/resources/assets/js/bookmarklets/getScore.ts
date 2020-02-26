@@ -5,12 +5,13 @@ import * as qs from 'qs';
 (function () {
   const NET_DOMAIN = "ongeki-net.com";
   const NET_URL = "https://" + NET_DOMAIN + "/ongeki-mobile";
-  const TOOL_URL = process.env.MIX_APP_URL;
+  const TOOL_URL = "https://ongeki-score.net";
+  // const TOOL_URL = process.env.MIX_APP_URL;
   const API_URL = TOOL_URL + "/api/v2";
 
   const REQUEST_KEY = "?t="
   const PRODUCT_NAME = "Project Primera - Bookmarklet";
-  const VERSION = process.env.MIX_BOOKMARKLET_VERSION;
+  // const VERSION = process.env.MIX_BOOKMARKLET_VERSION;
 
   const SLEEP_MSEC = 1000;
 
@@ -425,9 +426,9 @@ class PostData {
     $textarea = $("<div>").attr("style","background-color: #eee; width:480px; height:100%; margin:0 auto; padding: 0.5em 1em;  overflow-y: scroll;")
     $overlay.append($textarea);
     echo(PRODUCT_NAME, false)
-    if(VERSION != void 0){
-      echo(" ver." + VERSION, false);
-    }
+    // if(VERSION != void 0){
+    //   echo(" ver." + VERSION, false);
+    // }
     let token: string = getToken();
     let userId: number = 0;
     let hash: string = "";
