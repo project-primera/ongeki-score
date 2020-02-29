@@ -203,5 +203,13 @@
         "aliases": [
             "Docker"
         ]
+    },
+    {
+        "name": "Type: Release",
+        "color": "137cb8",
+        "description": "Pull Request for release",
+        "aliases": [
+            "release"
+        ]
     }
 ]
