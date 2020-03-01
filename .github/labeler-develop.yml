@@ -1,0 +1,9 @@
+"Scope: Application":
+  - "OngekiScoreLog/**/*"
+
+"Scope: Bookmarklet":
+  - "OngekiScoreLog/resources/assets/js/bookmarklets/**/*"
+
+"Scope: Docker":
+  - "Dockerfile"
+  - "docker/**/*"
