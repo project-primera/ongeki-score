@@ -1,4 +1,4 @@
-name: 'check: Pull Request'
+name: 'Pull requests: all'
 on:
   pull_request:
       branches-ignore:
