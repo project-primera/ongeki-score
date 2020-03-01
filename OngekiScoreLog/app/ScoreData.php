@@ -11,7 +11,7 @@ class ScoreData extends Model
 {
     //
     protected $table = "score_datas";
-    protected $guarded = ['id', 'user_id'];
+    protected $guarded = ['id'];
     private $value;
 
     function getValue(){

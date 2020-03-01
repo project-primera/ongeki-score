@@ -64,7 +64,7 @@ class ViewUserRatingController extends Controller
             $sidemark = "sidemark_mypage_rating";
         }
 
-        if($user->role < 2){
+        if(!\App\UserInformation::IsPremiumPlan($user->id)){
             return view("user_rating_error", compact('id', 'status', 'sidemark'));
         }
 

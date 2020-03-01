@@ -31,9 +31,9 @@ class ViewUserTrophyController extends Controller
         if($user->role == 7){
             $status[0]->badge .= '&nbsp;<span class="tag developer">ProjectPrimera Developer</span>';
         }
-        if($user->role >= 2){
+        if(\App\UserInformation::IsPremiumPlan($user->id)){
             $status[0]->badge .= '&nbsp;<span class="tag net-premium">OngekiNet Premium</span>';
-        }else if($user->role >= 1){
+        }else if(\App\UserInformation::IsStandardPlan($user->id)){
             $status[0]->badge .= '&nbsp;<span class="tag net-standard">OngekiNet Standard</span>';
         }
 

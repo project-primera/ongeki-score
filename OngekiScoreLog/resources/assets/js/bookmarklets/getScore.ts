@@ -4,15 +4,40 @@ import * as qs from 'qs';
 
 (function () {
   const NET_DOMAIN = "ongeki-net.com";
-  const NET_URL = "https://" + NET_DOMAIN + "/ongeki-mobile/";
-  const TOOL_URL = process.env.MIX_APP_URL;
-  const API_URL = TOOL_URL + "/api/user/update";
+  const NET_URL = "https://" + NET_DOMAIN + "/ongeki-mobile";
+  const TOOL_URL = "https://ongeki-score.net";
+  // const TOOL_URL = process.env.MIX_APP_URL;
+  const API_URL = TOOL_URL + "/api/v2";
 
   const REQUEST_KEY = "?t="
-  const PRODUCT_NAME = "Project Primera - getScore.js";
-  const VERSION = "20190823";
+  const PRODUCT_NAME = "Project Primera - Bookmarklet";
+  // const VERSION = process.env.MIX_BOOKMARKLET_VERSION;
 
-  const SLEEP_MSEC = 2000;
+  const SLEEP_MSEC = 1000;
+
+  class PaymentStatus {
+    private isStandardPlan: boolean = false;
+    private isPremiumPlan: boolean = false;
+
+    public IsPremiumPlan(){
+      return this.isPremiumPlan;
+    }
+
+    public async GetPaymentStatus(){
+      await axios.get(NET_URL + '/courseDetail/', {
+      }).then(async (response) => {
+        await this.parsePaymentStatus(response.data);
+      }).catch(function (error) {
+        throw new Error("課金状況の取得に失敗しました。<br>" + error);
+      });
+    }
+
+    private async parsePaymentStatus(html: string){
+      var parseHTML = $.parseHTML(html);
+      this.isStandardPlan = ($(parseHTML).find(".back_course_standard").find("span").text() === "利用中");
+      this.isPremiumPlan = ($(parseHTML).find(".back_course_premium").find("span").text() === "利用中");
+    }
+  }
 
   class PlayerData {
     trophy: string = "";
@@ -27,18 +52,24 @@ import * as qs from 'qs';
     comment: string = "";
     friend_code: number = 0;
 
-    async getData() {
+    public async GetData() {
       await this.getPlayerDataFromNet();
       await sleep(SLEEP_MSEC);
       await this.getFriendCodeDataFromNet();
     }
 
+    public async Validate(){
+      if(this.level == -1){
+        throw Error("プレイヤー情報を取得できませんでした。オンゲキNETにログインしてもう一度実行してください。<br>ログインしている場合は時間を開けてお試しください。(一定期間にアクセスをしすぎると制限が掛かります)");
+      }
+    }
+
     private async getPlayerDataFromNet() {
-      await axios.get(NET_URL + 'home/playerDataDetail/', {
+      await axios.get(NET_URL + '/home/playerDataDetail/', {
       }).then(async (response) => {
         await this.parsePlayerData(response.data);
       }).catch(function (error) {
-        //TODO: エラー処理書く
+        throw new Error("プレイヤー情報の取得に失敗しました。<br>" + error);
       });
     }
 
@@ -58,11 +89,11 @@ import * as qs from 'qs';
     }
 
     private async getFriendCodeDataFromNet() {
-      await axios.get(NET_URL + 'friend/userFriendCode/', {
+      await axios.get(NET_URL + '/friend/userFriendCode/', {
       }).then(async (response) => {
         await this.parseUserFriendCodeData(response.data);
       }).catch(function (error) {
-        //TODO: エラー処理書く
+        throw new Error("フレンドコードの取得に失敗しました。" + error);
       });
     }
 
@@ -74,6 +105,7 @@ import * as qs from 'qs';
 
   class SongInfo {
     title: string = "";
+    difficulty: Difficulty = -1;
     genre: string = "";
     level: number = 0;
     over_damage_high_score: number = 0;
@@ -83,8 +115,9 @@ import * as qs from 'qs';
     full_combo: boolean = false;
     all_break: boolean = false;
 
-    constructor(title: string, genre: string, level: number, over_damage_high_score: number, battle_high_score: number, technical_high_score: number, full_bell: boolean, full_combo: boolean, all_break: boolean) {
+    constructor(title: string, difficulty: Difficulty, genre: string, level: number, over_damage_high_score: number, battle_high_score: number, technical_high_score: number, full_bell: boolean, full_combo: boolean, all_break: boolean) {
       this.title = title;
+      this.difficulty = difficulty;
       this.genre = genre;
       this.level = level;
       this.over_damage_high_score = over_damage_high_score;
@@ -96,26 +129,35 @@ import * as qs from 'qs';
     }
   }
 
+  enum Difficulty{
+    Basic = 0,
+    Advanced = 1,
+    Expert = 2,
+    Master = 3,
+    Lunatic = 10,
+  }
+
   class ScoreData {
-    basicSongInfos = new Array<SongInfo>();
-    advancedSongInfos = new Array<SongInfo>();
-    expertSongInfos = new Array<SongInfo>();
-    masterSongInfos = new Array<SongInfo>();
-    lunaticSongInfos = new Array<SongInfo>();
+    private songInfos = new Array<SongInfo>();
 
-    async getData() {
-      await this.getAllDifficultyScoreDataFromNet();
+    public async GetArrayLength(){
+      return this.songInfos.length;
     }
 
-    private async getAllDifficultyScoreDataFromNet() {
-      await [0, 1, 2, 3, 10].forEach(async (value, index, array) => {
-        await this.getScoreHtmlFromNet(value);
-        await sleep(SLEEP_MSEC);
-      });
+    public async GetPartialArray($page = 0){
+      return this.songInfos.slice($page * 50, $page * 50 + 50);
     }
 
-    private async getScoreHtmlFromNet(difficulty: number) {
-      await axios.get(NET_URL + 'record/musicGenre/search/', {
+    public async Clear(){
+      this.songInfos = new Array<SongInfo>();
+    }
+
+    public async GetDifficultyScoreData(difficulty: Difficulty){
+      await this.getScoreHtmlFromNet(difficulty);
+    }
+
+    private async getScoreHtmlFromNet(difficulty: Difficulty) {
+      await axios.get(NET_URL + '/record/musicGenre/search/', {
         params: {
           genre: 99,
           diff: difficulty
@@ -123,11 +165,11 @@ import * as qs from 'qs';
       }).then(async (response) => {
         await this.parseScoreData(response.data, difficulty);
       }).catch(function (error) {
-        //TODO: エラー処理書く
+        throw new Error("難易度" + difficulty + "のスコア取得に失敗しました。" + error);
       });
     }
 
-    private async parseScoreData(html: string, difficulty: number) {
+    private async parseScoreData(html: string, difficulty: Difficulty) {
       var parseHTML = $.parseHTML(html);
       var $innerContainer3 = $(parseHTML).find(".container3").find("div");
 
@@ -135,11 +177,11 @@ import * as qs from 'qs';
       await $innerContainer3.each((key, value) => {
         if($(value).hasClass("p_5 f_20")){
           genre = $(value).text();
-          
         }else if($(value).hasClass("basic_btn")){
           $(value).each((k, v) => {
             var song = new SongInfo(
               $(v).find(".music_label").text(),
+              difficulty,
               genre,
               +($(v).find(".score_level").text().replace("+", ".5")),
               +$($(v).find(".score_value")[0]).text().replace(/,/g, "").replace(/%/g, ""),
@@ -149,14 +191,8 @@ import * as qs from 'qs';
               $(v).find("[src*='music_icon_fc.png']").length > 0 || $(v).find("[src*='music_icon_ab.png']").length > 0,
               $(v).find("[src*='music_icon_ab.png']").length > 0,
             );
-            switch (difficulty) {
-              case 0: this.basicSongInfos.push(song); break;
-              case 1: this.advancedSongInfos.push(song); break;
-              case 2: this.expertSongInfos.push(song); break;
-              case 3: this.masterSongInfos.push(song); break;
-              case 10: this.lunaticSongInfos.push(song); break;
-            }
-          }); 
+            this.songInfos.push(song);
+          });
         }
       });
     }
@@ -165,51 +201,51 @@ import * as qs from 'qs';
   class TrophyInfo {
     name: string;
     detail: string;
+    rank: string;
 
-    constructor(name: string, detail: string) {
+    constructor(name: string, detail: string, rank: string) {
       this.name = name;
       this.detail = detail;
+      this.rank = rank;
     }
   }
 
   class TrophyData {
-    normalTrophyInfos: Array<TrophyInfo> = new Array<TrophyInfo>();
-    silverTrophyInfos: Array<TrophyInfo> = new Array<TrophyInfo>();
-    goldTrophyInfos: Array<TrophyInfo> = new Array<TrophyInfo>();
-    platinumTrophyInfo: Array<TrophyInfo> = new Array<TrophyInfo>();
-    rainbowTrophyInfo: Array<TrophyInfo> = new Array<TrophyInfo>();
+     trophyInfos: Array<TrophyInfo> = new Array<TrophyInfo>();
+
+    public async GetArrayLength(){
+      return this.trophyInfos.length;
+    }
+
+    public async GetPartialArray($page = 0){
+      return this.trophyInfos.slice($page * 50, $page * 50 + 50);
+    }
 
     async getData() {
       await this.getAllRankTrophyDataFromNet();
     }
 
     private async getAllRankTrophyDataFromNet() {
-      axios.get(NET_URL + 'collection/trophy/', {
+      await axios.get(NET_URL + '/collection/trophy/', {
       }).then(async (response) => {
         await this.parseAllTrophyData(response.data);
       }).catch(function (error) {
-        //TODO: エラー処理書く
+        throw new Error("称号の取得に失敗しました。" + error);
       });
     }
 
     private async parseAllTrophyData(html: string) {
       var parseHTML = $.parseHTML(html);
 
-      // 虹称号未検証 流石に獲得できない
       await ["Normal", "Silver", "Gold", "Platinum", "Rainbow"].forEach(async (value, index, array) => {
         var $listDiv = $(parseHTML).find("#" + value + "List");
         $listDiv.find(".m_10").each((key, v) => {
           var trophy = new TrophyInfo(
             $($(v).find(".f_14")).text(),
-            $($(v).find(".detailText")).text()
+            $($(v).find(".detailText")).text(),
+            value
           );
-          switch (value) {
-            case "Normal": this.normalTrophyInfos.push(trophy); break;
-            case "Silver": this.silverTrophyInfos.push(trophy); break;
-            case "Gold": this.goldTrophyInfos.push(trophy); break;
-            case "Platinum": this.platinumTrophyInfo.push(trophy); break;
-            case "Rainbow": this.rainbowTrophyInfo.push(trophy); break;
-          }
+          this.trophyInfos.push(trophy);
         });
       });
     }
@@ -223,11 +259,11 @@ import * as qs from 'qs';
     }
 
     private async getCharacterFriendlyDataFromNet() {
-      await axios.get(NET_URL + 'character/', {
+      await axios.get(NET_URL + '/character/', {
       }).then(async (response) => {
         await this.parseCharacterFriendlyData(response.data);
       }).catch(function (error) {
-        //TODO: エラー処理書く
+        throw new Error("親密度情報の取得に失敗しました。" + error);
       });
     }
 
@@ -265,11 +301,11 @@ import * as qs from 'qs';
     }
 
     private async getRatingRecentMusicDataFromNet() {
-      await axios.get(NET_URL + 'home/ratingTargetMusic/', {
+      await axios.get(NET_URL + '/home/ratingTargetMusic/', {
       }).then(async (response) => {
         await this.parseRatingRecentMusicData(response.data);
       }).catch(function (error) {
-        //TODO: エラー処理書く
+        throw new Error("レーティング対象曲の取得に失敗しました。" + error);
       });
     }
 
@@ -303,12 +339,47 @@ import * as qs from 'qs';
     }
   }
 
-  class AllData {
-    PlayerData: PlayerData = new PlayerData();
-    ScoreData: ScoreData = new ScoreData();
-    TrophyData: TrophyData = new TrophyData();
-    CharacterFriendlyData: CharacterFriendlyData = new CharacterFriendlyData();
-    RatingRecentMusicData: RatingRecentMusicData = new RatingRecentMusicData();
+  enum MethodType {
+    Player,
+    Score,
+    Trophy,
+    CharacterFriendly,
+    RatingRecentMusic,
+    Payment,
+  }
+
+class PostData {
+  token: string;
+  hash: string;
+
+  constructor(token: string, hash: string){
+    this.token = token;
+    this.hash = hash;
+  }
+
+  public async Post(methodType: MethodType, data: PaymentStatus|PlayerData|Array<SongInfo>|Array<TrophyInfo>|CharacterFriendlyData|RatingRecentMusicData){
+    let d = {
+      'hash': this.hash,
+      'methodType': methodType,
+      'data': data,
+    };
+    await axios.post(API_URL + "/user/update", qs.stringify(d), {
+      headers: {
+        Authorization: "Bearer " + this.token,
+      }
+    }).then(async result => {
+        if (result.data.isError === void 0 || result.data.isError) {
+          throw new Error("データの登録に失敗しました。<br>" + result.data.message.join("<br>"));
+        }
+        echo("完了", false);
+
+        if(result.data.message.length !== 0){
+          echo(result.data.message.join('<br>'));
+        }
+      }).catch(async function (error){
+        throw new Error("不明なエラーが発生しました。<br>" + error);
+      });
+    }
   }
 
   var sleep = (function(milliseconds: number) {
@@ -333,119 +404,185 @@ import * as qs from 'qs';
     return url.slice(url.indexOf(REQUEST_KEY) + REQUEST_KEY.length);
   });
 
-  var getErrorMessage = (function(message: string = "") {
-    let now = new Date();
-    let today = new Date();
-    return "データ送信に失敗しました。" + message + "お手数をおかけしますが以下のリンクまで以下のデータを添えてご報告をお願い致します。<br><a href='https://twitter.com/ongeki_score' style='color:#222'>Twitter</a> / <a href='https://github.com/Slime-hatena/ProjectPrimera/issues' style='color:#222'>Github issue</a><br>" + today.getFullYear() + "/" +  (today.getMonth() + 1) + "/" + today.getDate() + " " + now.toLocaleTimeString();
-  });
+  let $textarea = null;
+  let echo = async (message: string, isNewLine: boolean = true) => {
+    if(isNewLine){
+      $textarea.append("<br>" + message);
+    }else{
+      $textarea.append(message);
+    }
+    $textarea.scrollTop(Number.MAX_SAFE_INTEGER);
+  }
 
+  let getTime = async () => {
+    let d = new Date();
+    return (("0"+d.getHours().toString()).slice(-2) + ":" + ("0"+d.getMinutes().toString()).slice(-2) + ":" + ("0"+d.getSeconds().toString()).slice(-2) + " ");
+  }
 
-  let main = async () => {;
-    let allData: AllData = new AllData();
-
+  let main = async () => {
+    $("body").scrollTop(0).attr("style","overflow-y: hidden;");
     let $overlay = $("<div>").addClass("ongeki_score").attr("style","color:#222; font-size: 1em; padding-top: 120px; width: 100%; height:100%; position: fixed; top: 0; z-index: 1000; background: rgba(0,0,0,0.3);");
     $("body").append($overlay);
-    var $textarea = $("<div>").attr("style","background-color: #eee; width:480px; height:calc(100% - 120px); margin:0 auto; padding: 0.5em 1em;  overflow-y: scroll;")
+    $textarea = $("<div>").attr("style","background-color: #eee; width:480px; height:100%; margin:0 auto; padding: 0.5em 1em;  overflow-y: scroll;")
     $overlay.append($textarea);
-
-    $textarea.append(PRODUCT_NAME + " v." + VERSION + "<br>");
+    echo(PRODUCT_NAME, false)
+    // if(VERSION != void 0){
+    //   echo(" ver." + VERSION, false);
+    // }
+    let token: string = getToken();
+    let userId: number = 0;
+    let hash: string = "";
+    let name: string = "";
 
     try {
       // メンテナンスチェック
-      // 後の /api/user/update net::ERR_ABORTED 401 何故・・・？ 
-      /*
-      await axios.get(TOOL_URL + "/api/live").then(function(){
-        // ignore
+      await axios.get(API_URL + "/user/update/status", {
+        headers: {
+          Authorization: "Bearer " + token,
+        }
+      }).then(result => {
+        if(result.data.message === void 0 || result.data.id === void 0 || result.data.name === void 0 || result.data.hash === void 0){
+          throw new Error("不明なエラーが発生しました。<br>ブックマークレットの再生成をお試しください。");
+        }else if(result.data.message != "ok"){
+          throw new Error(result.data.message);
+        }
+        userId = result.data.id;
+        hash = result.data.hash;
+        name = result.data.name;
+
       }).catch(await function (error) {
-        $textarea.append("<br>スコアツールサーバーへの接続に失敗しました。<br>多くの場合メンテナンス中です。<br>予告のないメンテナンスは1分程度で終了します。<br>情報については<a href='https://twitter.com/ongeki_score' target='_blank' style='color:#222'>Twitter@ongeki_score</a>にてお知らせします。<br><a href='https://ongeki-net.com'  style='color:#222'>オンゲキNETに戻る</a>");
-        throw new Error();
+        throw new Error(error + "<br>スコアツールサーバーへの接続に失敗しました。<br>多くの場合メンテナンス中です。<br>予告のないメンテナンスは5分程度で終了します。<br>情報については<a href='https://twitter.com/ongeki_score' target='_blank' style='color:#222'>Twitter@ongeki_score</a>にてお知らせします。<br>長時間解決しない場合はブックマークレットの再生成をお試しください。");
       });
-      */
 
+      echo("ユーザー確認: " + name + "さん(id: " + userId + ")<hr>");
+
+      // 実行場所チェック
       if(NET_DOMAIN != window.location.hostname){
-        $textarea.append("<a href='https://ongeki-net.com'>オンゲキNET</a>で実行してください。");
-        throw new Error();
+        throw new Error("オンゲキNETで実行してください。");
       }
-    } catch (ignore) {
-      throw new Error();
+
+      let postData = new PostData(token, hash);
+
+      echo(await getTime() + "課金状況を取得します。");
+      let paymentStatus = new PaymentStatus;
+      await paymentStatus.GetPaymentStatus();
+      echo(await getTime() + "課金状況を送信します...");
+      await postData.Post(MethodType.Payment, paymentStatus);
+      await sleep(SLEEP_MSEC);
+
+      echo(await getTime() + "プレイヤーデータを取得します。");
+      let playerData = new PlayerData;
+      await playerData.GetData();
+      await playerData.Validate();
+      echo(await getTime() + "プレイヤーデータを送信します...");
+      await postData.Post(MethodType.Player, playerData);
+      await sleep(SLEEP_MSEC);
+
+      echo(await getTime() + "Basicのスコアデータを取得します。");
+      let scoreData = new ScoreData;
+      await scoreData.GetDifficultyScoreData(Difficulty.Basic);
+      echo(await getTime() + "スコアデータを送信します。");
+      let length = Math.ceil(await scoreData.GetArrayLength() / 50);
+      for (let index = 0; index < length; ++index) {
+        echo(await getTime() + " " + (index + 1) + ": 送信...");
+        await postData.Post(MethodType.Score, await scoreData.GetPartialArray(index));
+        await sleep(SLEEP_MSEC / 10);
+      }
+      await sleep(SLEEP_MSEC);
+
+      echo(await getTime() + "Advancedのスコアデータを取得します。");
+      scoreData.Clear();
+      await scoreData.GetDifficultyScoreData(Difficulty.Advanced);
+      echo(await getTime() + "スコアデータを送信します。");
+      length = Math.ceil(await scoreData.GetArrayLength() / 50);
+      for (let index = 0; index < length; ++index) {
+        echo(await getTime() + " " + (index + 1) + ": 送信...");
+        await postData.Post(MethodType.Score, await scoreData.GetPartialArray(index));
+        await sleep(SLEEP_MSEC / 10);
+      }
+      await sleep(SLEEP_MSEC);
+
+      echo(await getTime() + "Expertのスコアデータを取得します。");
+      scoreData.Clear();
+      await scoreData.GetDifficultyScoreData(Difficulty.Expert);
+      echo(await getTime() + "スコアデータを送信します。");
+      length = Math.ceil(await scoreData.GetArrayLength() / 50);
+      for (let index = 0; index < length; ++index) {
+        echo(await getTime() + " " + (index + 1) + ": 送信...");
+        await postData.Post(MethodType.Score, await scoreData.GetPartialArray(index));
+        await sleep(SLEEP_MSEC / 10);
+      }
+      await sleep(SLEEP_MSEC);
+
+      echo(await getTime() + "Masterのスコアデータを取得します。");
+      scoreData.Clear();
+      await scoreData.GetDifficultyScoreData(Difficulty.Master);
+      echo(await getTime() + "スコアデータを送信します。");
+      length = Math.ceil(await scoreData.GetArrayLength() / 50);
+      for (let index = 0; index < length; ++index) {
+        echo(await getTime() + " " + (index + 1) + ": 送信...");
+        await postData.Post(MethodType.Score, await scoreData.GetPartialArray(index));
+        await sleep(SLEEP_MSEC / 10);
+      }
+      await sleep(SLEEP_MSEC);
+
+      echo(await getTime() + "Lunaticのスコアデータを取得します。");
+      scoreData.Clear();
+      await scoreData.GetDifficultyScoreData(Difficulty.Lunatic);
+      echo(await getTime() + "スコアデータを送信します。");
+      length = Math.ceil(await scoreData.GetArrayLength() / 50);
+      for (let index = 0; index < length; ++index) {
+        echo(await getTime() + " " + (index + 1) + ": 送信...");
+        await postData.Post(MethodType.Score, await scoreData.GetPartialArray(index));
+        await sleep(SLEEP_MSEC / 10);
+      }
+      await sleep(SLEEP_MSEC);
+
+      echo(await getTime() + "称号獲得状況を取得します。");
+      let trophyData = new TrophyData;
+      await trophyData.getData();
+      echo(await getTime() + "称号獲得状況を送信します。");
+      length = Math.ceil(await trophyData.GetArrayLength() / 50);
+      for (let index = 0; index < length; ++index) {
+        echo(await getTime() + " " + index + ": 送信...");
+        await postData.Post(MethodType.Trophy, await trophyData.GetPartialArray(index));
+        await sleep(SLEEP_MSEC / 10);
+      }
+      await sleep(SLEEP_MSEC);
+
+      // echo(await getTime() + "キャラクターの親密度情報を取得します。");
+      // let characterFriendlyData = new CharacterFriendlyData;
+      // await characterFriendlyData.getData();
+      // echo(await getTime() + "キャラクターの親密度情報を送信します...");
+      // await postData.Post(MethodType.CharacterFriendly, characterFriendlyData);
+      // await sleep(SLEEP_MSEC);
+
+      console.log(paymentStatus);
+      console.log(paymentStatus.IsPremiumPlan());
+      
+      if(paymentStatus.IsPremiumPlan()){
+        echo(await getTime() + "レーティング対象曲情報を取得します。");
+        let ratingRecentMusicData = new RatingRecentMusicData;
+        await ratingRecentMusicData.getData();
+        echo(await getTime() + "レーティング対象曲情報を送信します...");
+        await postData.Post(MethodType.RatingRecentMusic, ratingRecentMusicData);
+        await sleep(SLEEP_MSEC);
+      }else{
+        echo(await getTime() + "スタンダードプランの為、レーティング対象曲情報取得をスキップします。");
+      }
+      
+
+      echo("データの登録に成功しました！");
+
+    } catch (error) {
+      echo("エラーが発生しました。<br>" + error.message + "<br>");
+      let now = new Date();
+      let today = new Date();
+      echo("再度お試しいただいても解決しない場合は、お手数をおかけしますが以下のリンクまで以下のデータを添えてご報告をお願い致します。");
+      echo(" <a href='https://twitter.com/ongeki_score' style='color:#222'>Twitter</a> / <a href='https://github.com/Slime-hatena/ProjectPrimera/issues' style='color:#222'>Github issue</a>");
+      echo(today.getFullYear() + "/" +  (today.getMonth() + 1) + "/" + today.getDate() + " " + now.toLocaleTimeString());
     }
-
-    $textarea.append("スコアを取得します。しばらくお待ち下さい・・・<br><br>");
-    
-
-    $textarea.append("プレイヤーデータを取得します・・・(1/5)<br>");
-    let token: string = getToken();
-
-    await allData.PlayerData.getData();
-    try {
-      if(allData.PlayerData.level == -1){
-        $textarea.append("プレイヤー情報を取得できませんでした。<br>オンゲキNETにログインしてもう一度実行してください。<br><a href='https://ongeki-net.com'  style='color:#222'>オンゲキNET</a><br><br>ログインしている場合は時間を開けてお試しください。(一定期間にアクセスをしすぎると制限が掛かります)");
-        throw Error();
-      }
-    } catch (ignore) {
-      throw new Error();
-    }
-    
-    $textarea.append("完了(1/5)<br>");
-    await sleep(SLEEP_MSEC);
-
-    $textarea.append("スコアデータを取得します・・・(2/5)<br>");
-    await allData.ScoreData.getData();
-    $textarea.append("完了(2/5)<br>");
-    await sleep(SLEEP_MSEC);
-
-    $textarea.append("称号獲得状況を取得します・・・(3/5)<br>");
-    await allData.TrophyData.getData();
-    $textarea.append("完了(3/5)<br>");
-    await sleep(SLEEP_MSEC);
-
-    $textarea.append("キャラクターの親密度情報を取得します・・・(4/5)<br>");
-    await allData.CharacterFriendlyData.getData();
-    $textarea.append("完了(4/5)<br>");
-    await sleep(SLEEP_MSEC);
-
-    $textarea.append("レーティング対象曲情報を取得します・・・(5/5)<br>");
-    await allData.RatingRecentMusicData.getData();
-    $textarea.append("完了(5/5)<br>");
-    await sleep(SLEEP_MSEC);
-
-    console.log(allData);
-    $textarea.append("スコアデータを送信します・・・<br><br>");
-
-    await axios.post(API_URL, qs.stringify(allData), {
-      headers: { 
-        Authorization: "Bearer " + token,
-      }
-    }).then(result => {
-      if(result['data'] == "error"){
-        throw new Error();
-      }
-      $textarea.append(result['data']['info'] + "<br>");
-      $textarea.append(result['data']['result'] + "<br>");
-      $textarea.append("<a href='" + TOOL_URL + "/user/" + result['data']['id'] + "' style='color:#222'>スコアツール ユーザーページ</a><br>");
-      $textarea.append("<a href='" + TOOL_URL + "/user/" + result['data']['id'] + "/progress' style='color:#222'>スコアツール 更新差分ページ(画像付きツイート機能はこちらから)</a><br><br>");
-      $textarea.append("<a href='" + NET_URL + "/home' style='color:#222'>オンゲキNETに戻る</a>");
-
-    }).catch(async function (error){
-      // await axios.get(TOOL_URL + "/api/live").then(function(){
-      //   // ignore
-      // }).catch(await function (error) {
-      //   $textarea.append("スコアツールサーバーへの接続に失敗しました。<br>多くの場合メンテナンス中です。<br>予告のないメンテナンスは1分程度で終了します。<br>情報については<a href='https://twitter.com/ongeki_score' target='_blank' style='color:#222'>Twitter@ongeki_score</a>にてお知らせします。<br><a href='https://ongeki-net.com'  style='color:#222'>オンゲキNETに戻る</a>");
-      //   throw new Error();
-      // });
-
-      if (error.response != void 0) {
-        // 2xx系エラー
-        $textarea.append(getErrorMessage(error.response));
-      } else if (error.request != void 0) {
-        // 4xx系エラー
-        $textarea.append(getErrorMessage("<br>一度ブックマークレットの再生性をお試しください。解決しない場合は"));
-      } else {
-        // よくわからないエラー
-        $textarea.append(getErrorMessage());
-      }
-    });
+    echo("<br><a href='" + NET_URL + "/home' style='color:#222'>オンゲキNETに戻る</a> / <a href='" + TOOL_URL + "' style='color:#222'>OngekiScoreLogに戻る</a>");
   }
-  
   main();
 })();

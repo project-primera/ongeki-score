@@ -1,5 +1,8 @@
 <?php
 return [
+    'application-version' => env('APPLICATION_VERSION'),
+    'mix-bookmarklet-version' => env('MIX_BOOKMARKLET_VERSION'),
+
     'ongeki-version' => env('ONGEKI_VERSION'),
     'ongeki-version-date' => env('ONGEKE_VERSION_DATE'),
 
