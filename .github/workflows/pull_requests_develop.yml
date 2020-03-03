@@ -1,0 +1,15 @@
+name: 'Pull requests: all'
+on:
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  labeler:
+    name: Set label
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/labeler@v2
+        with:
+          repo-token: "${{ secrets.GITHUB_TOKEN }}"
+          configuration-path: ".github/labeler-develop.yml"
