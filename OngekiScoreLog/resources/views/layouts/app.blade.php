@@ -147,7 +147,7 @@
             </div>
             <div class="submenu column is-3">
                 @component('layouts/components/sidebar')
-                    @slot('box')
+                    @slot('boxBottom')
                         @php
                             $applicationVersion =  new App\ApplicationVersion();
                             $version = $applicationVersion->getLatestVersion();
