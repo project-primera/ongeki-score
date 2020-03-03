@@ -26,11 +26,6 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        $schedule->call(function () {
-            $v = new ApplicationVersion();
-            $v->fetchAllVersion();
-        })->everyFiveMinutes();
-
         // 全ユーザーの月初課金情報初期化
         $schedule->call(function () {
             \App\UserInformation::ResetAllUserPaymentState();
