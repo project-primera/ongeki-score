@@ -148,15 +148,16 @@
             <div class="submenu column is-3">
                 @component('layouts/components/sidebar')
                     @slot('boxBottom')
-                        @php
-                            $applicationVersion =  new App\ApplicationVersion();
-                            $version = $applicationVersion->getLatestVersion();
-                            echo '<p class="menu-label">更新履歴</p><p>';
-                            echo '<b>' . (isset($version[0]->name) ? $version[0]->name : "") . '</b><br>';
-                            echo (isset($version[0]->tag_name) ? $version[0]->tag_name : "") . (isset($version[0]->published_at) ? date('(Y/m/d)', strtotime($version[0]->published_at)) : "") . '<br>';
-                            echo (isset($version[0]->body) ? nl2br($version[0]->body) : "") . '</p>';
-                        @endphp
-                    <a href="/changelog">過去の更新</a>
+                        <p class="menu-label">バージョン情報</p>
+                        <p>
+                            <b><?=config('env.application-version')?></b>
+                            @if (config('env.commit-hash', NULL) !== NULL)
+                                (<?=config('env.commit-hash')?>)
+                            @endif
+                            @if (config('env.github-repo-url', NULL) !== NULL)
+                                <br>詳細は<a href="<?=config('env.github-repo-url')?>/releases/latest" target="_blank">GitHub release</a>をご覧ください。
+                            @endif
+                        </p>
                     @endslot
                 @endcomponent
             </div>
@@ -164,7 +165,7 @@
 
         <footer>
             This site is powered by <a href="https://github.com/Slime-hatena/ProjectPrimera" target="_blank">ProjectPrimera</a> licensed under the <a href="https://github.com/Slime-hatena/ProjectPrimera/blob/master/LICENSE" target="_blank">AGPL-3.0</a>.<br>
-            お問い合わせ:&nbsp;<a href="https://twitter.com/ongeki_score" target="blank">Twitter@ongeki_score</a> / <a href="mailto:info&#64;ongeki-score.net">
+            お問い合わせ:&nbsp;<a href="https://twitter.com/ongeki_score" target="_blank">Twitter@ongeki_score</a> / <a href="mailto:info&#64;ongeki-score.net">
                 info&nbsp;(at)&nbsp;ongeki-score.net
              </a>
         </footer>
