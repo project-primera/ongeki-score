@@ -1,7 +1,7 @@
 name: 'Pull requests: all'
 on:
   pull_request:
-    branches:
+    branches-ignore:
       - master
 
 jobs:
