@@ -1,0 +1,120 @@
+name: 'push: master'
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  dockle:
+    name: Dockle scan
+    runs-on: ubuntu-18.04
+    steps:
+      - uses: actions/checkout@master
+      - name: Build docker image
+        run: docker build ./ -t ${IMAGE_NAME} --file Dockerfile
+      - name: Install dockle
+        run: |
+          VERSION=$(curl --silent "https://api.github.com/repos/goodwithtech/dockle/releases/latest" | \
+          grep '"tag_name":' | \
+          sed -E 's/.*"v([^"]+)".*/\1/' \
+          )
+          curl -L -o dockle.deb https://github.com/goodwithtech/dockle/releases/download/v${VERSION}/dockle_${VERSION}_Linux-64bit.deb
+          sudo dpkg -i dockle.deb
+          rm dockle.deb
+      - name: Check image with dockle
+        # CIS-DI-0001: Create a user for the container
+        # DKL-DI-0006: Avoid latest tag
+        run: dockle --exit-code 1 --exit-level warn -i CIS-DI-0001 -i DKL-DI-0006 ${IMAGE_NAME}
+      - name: Slack Notification
+        uses: 8398a7/action-slack@v2
+        if: cancelled() || failure()
+        with:
+          status: ${{ job.status }}
+          author_name: ProjectPrimera/ongeki-score
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_TEST }}
+    env:
+      IMAGE_NAME: projectprimera/ongeki-score
+  trivy:
+    name: Trivy scan
+    runs-on: ubuntu-18.04
+    steps:
+      - uses: actions/checkout@master
+      - name: Build docker image
+        run: docker build ./ -t ${IMAGE_NAME} --file Dockerfile
+      - name: Install trivy
+        run: |
+          sudo apt-get install apt-transport-https gnupg
+          wget -qO - https://aquasecurity.github.io/trivy-repo/deb/public.key | sudo apt-key add -
+          echo deb https://aquasecurity.github.io/trivy-repo/deb $(lsb_release -cs) main | sudo tee -a /etc/apt/sources.list.d/trivy.list
+          sudo apt-get update
+          sudo apt-get install trivy
+      - name: Vulnerability scan with trivy
+        run: trivy --only-update alpine -q --severity HIGH,CRITICAL --exit-code 1 ${IMAGE_NAME}
+      - name: Slack Notification
+        uses: 8398a7/action-slack@v2
+        if: cancelled() || failure()
+        with:
+          status: ${{ job.status }}
+          author_name: ProjectPrimera/ongeki-score
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_TEST }}
+    env:
+      IMAGE_NAME: projectprimera/ongeki-score
+  release:
+    name: Create Release
+    runs-on: ubuntu-latest
+    needs: [dockle, trivy]
+    steps:
+      - uses: actions/checkout@v2
+      - shell: bash
+        id: validate
+        run: |
+          VERSION='${{github.event.head_commit.message}}'
+          if [[ $VERSION =~ ([0-9]+\.[0-9]+\.[0-9]+) ]]; then
+            echo "::set-output name=version::${BASH_REMATCH[1]}"
+          else
+            exit 1
+          fi
+      - shell: bash
+        name: Make tag test.
+        run: |
+          git tag ${{steps.validate.outputs.version}}
+          git tag -d ${{steps.validate.outputs.version}}
+      - shell: bash
+        id: changelog
+        run: |
+          git fetch --prune --unshallow
+          yarn install --production=false
+          description=$(yarn run --silent changelog | sed -e 's/^## .*$//')
+          description="${description//'%'/'%25'}"
+          description="${description//$'\n'/'%0A'}"
+          description="${description//$'\r'/'%0D'}"
+          echo "::set-output name=body::${description}"
+        env:
+          GITHUB_AUTH: ${{ secrets.LERNA_CHANGELOG_GITHUB_AUTH }}
+      - uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{steps.validate.outputs.version}}
+          release_name: Version ${{steps.validate.outputs.version}}
+          body: ${{steps.changelog.outputs.body}}
+          draft: false
+          prerelease: false
+  slack:
+    name: Slack Notification
+    runs-on: ubuntu-18.04
+    needs: [dockle, trivy, release]
+    steps:
+      - name: Slack Notification
+        uses: 8398a7/action-slack@v2
+        if: always()
+        with:
+          status: ${{ job.status }}
+          author_name: ProjectPrimera/ongeki-score
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_TEST }}

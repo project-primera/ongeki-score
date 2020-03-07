@@ -1,7 +1,9 @@
-<aside class="box">
+@if (isset($box))
+    <aside class="box">
         {{ $box }}
-</aside>
-    <div class="side_sticky">
+    </aside>
+@endif
+<div class="side_sticky">
     <aside class="box menu" id="side_menu">
         <p class="menu-label">メニュー</p>
         <ul class="menu-list">
@@ -38,4 +40,9 @@
             <a class="twitter-timeline" data-lang="ja" data-height="480" href="https://twitter.com/ongeki_score?ref_src=twsrc%5Etfw">Tweets by ongeki_score</a> <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
         </div>
     </aside>
+    @if (isset($boxBottom))
+        <aside class="box">
+            {{ $boxBottom }}
+        </aside>
+    @endif
 </div>

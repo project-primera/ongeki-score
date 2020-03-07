@@ -1,0 +1,22 @@
+{
+  "name": "ongeki-score",
+  "repository": "https://github.com/ProjectPrimera/ongeki-score.git",
+  "author": "Slime_hatena <git@aki-memo.net>",
+  "license": "AGPL-3.0",
+  "devDependencies": {
+    "lerna-changelog": "^1.0.0"
+  },
+  "changelog": {
+    "labels": {
+      "Type: Breaking Change": "Breaking Change",
+      "Type: Feature": "Feature",
+      "Type: Bug": "Bug",
+      "Type: Maintenance": "Maintenance",
+      "Type: Documentation": "Documentation",
+      "Type: Refactoring": "Refactoring"
+    }
+  },
+  "scripts": {
+    "changelog": "lerna-changelog"
+  }
+}
