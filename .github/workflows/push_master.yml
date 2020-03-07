@@ -112,10 +112,6 @@ jobs:
       - uses: actions/checkout@master
       - name: Build docker image
         run: docker build ./ -t ${IMAGE_NAME} --file Dockerfile
-      - name: Set version tag
-        run: |
-          TAG=`echo $GITHUB_REF | sed 's/refs\/tags\///g'`
-          docker tag ${IMAGE_NAME} ${IMAGE_NAME}:${TAG}
       - shell: bash
         id: validate
         run: |
