@@ -104,10 +104,53 @@ jobs:
           body: ${{steps.changelog.outputs.body}}
           draft: false
           prerelease: false
+  docker_hub:
+    name: Publish to Docker Hub
+    runs-on: ubuntu-18.04
+    needs: [dockle, trivy, release]
+    steps:
+      - uses: actions/checkout@master
+      - name: Build docker image
+        run: docker build ./ -t ${IMAGE_NAME} --file Dockerfile
+      - name: Set version tag
+        run: |
+          TAG=`echo $GITHUB_REF | sed 's/refs\/tags\///g'`
+          docker tag ${IMAGE_NAME} ${IMAGE_NAME}:${TAG}
+      - shell: bash
+        id: validate
+        run: |
+          VERSION='${{github.event.head_commit.message}}'
+          if [[ $VERSION =~ ([0-9]+\.[0-9]+\.[0-9]+) ]]; then
+            echo "::set-output name=version::${BASH_REMATCH[1]}"
+          else
+            exit 1
+          fi
+      - run: |
+          docker tag ${IMAGE_NAME} ${IMAGE_NAME}:latest
+          TAG=${{steps.validate.outputs.version}}
+          docker tag ${IMAGE_NAME} ${IMAGE_NAME}:${TAG}
+      - run: docker login --username slimehatena --password ${{ secrets.DOCKER_HUB_TOKEN }}
+      - name: Publish
+        run: |
+          TAG=${{steps.validate.outputs.version}}
+          docker push ${IMAGE_NAME}:${TAG}
+          docker push ${IMAGE_NAME}:latest
+      - name: Slack Notification
+        uses: 8398a7/action-slack@v2
+        if: always()
+        with:
+          status: ${{ job.status }}
+          author_name: ProjectPrimera/ongeki-score
+          text: <!channel>
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK }}
+    env:
+      IMAGE_NAME: projectprimera/ongeki-score
   slack:
     name: Slack Notification
     runs-on: ubuntu-18.04
-    needs: [dockle, trivy, release]
+    needs: [dockle, trivy, release, docker_hub]
     steps:
       - name: Slack Notification
         uses: 8398a7/action-slack@v2
