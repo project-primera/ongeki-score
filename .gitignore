@@ -120,3 +120,6 @@ tmp/
 temp/
 
 # End of https://www.gitignore.io/api/node
+
+# User
+OngekiScoreLog/public/mix-manifest.json
