@@ -55,24 +55,23 @@ class ViewUserProgressController extends Controller
         $version = isset($version[0]->tag_name) ? $version[0]->tag_name : "";
 
         $progress = [];
+        $isLoggedIn = false;
+        $isTwitterEnabled = false;
+        $twitterScreenName = '';
 
         $user = \Auth::user();
         if($user !== null){
+            $isLoggedIn = true;
             $external = new ExternalServiceCoordination();
             $ret = $external->get($user->id);
-            $display = [];
-            if(count($ret) === 0){
-                $display['screenName'] = '<p>認証していません。認証は<a href="/setting">こちら</a>。<br><button class="button" disabled>以下を画像化してツイート</button></p>';
-            }else{
+            if(count($ret) !== 0){
+                // Twitterの連携情報を実際に使ってみて確認
                 $twitter = $external->getTwitter($ret[0]->twitter_access_token, $ret[0]->twitter_access_token_secret);
-                if(is_null($twitter)){
-                    $display['screenName'] = '<p>認証していません。認証は<a href="/setting">こちら</a>。</p>';
-                }else{
-                    $display['screenName'] = '<p>このアカウントでツイートします: ' . $twitter->screen_name . '</p><form id="tweet_form" action="/tweet/image" method="post" onsubmit="document.getElementById(\'submit_button\').disabled = true">' . csrf_field() . '<div class="field"><label class="label">ツイートの内容(100文字まで)</label><div class="control"><textarea name="status" class="textarea" maxlength="100">' . $status[0]->name . 'さんの更新差分 https://ongeki-score.net/user/' . $id . ' #OngekiScoreLog</textarea></div></div><button type="button" id="submit_button" class="button convert-to-image-button">以下を画像化してツイート</button></form><div style="padding: 0.75em 0"><div class="progress-message"></div><progress class="progress is-progress is-link" value="0" max="100">0%</progress></div><p>全ての記録をツイートします。４枚に収まらない場合はインリプライに続きます。(1枚につき7曲)<br><b>初めてこの機能を使用する場合は大量のツイートがされる可能性があります。十分注意して使用いただくようお願いいたします。</b></p>';
+                if($twitter !== null){
+                    $isTwitterEnabled = true;
+                    $twitterScreenName = $twitter->screen_name;
                 }
             }
-        }else{
-            $display['screenName'] = '<p>ツイート機能を使うにはログインしてください。<br><button class="button" disabled>以下を画像化してツイート</button></p>';
         }
 
         $score = [
@@ -275,6 +274,6 @@ class ViewUserProgressController extends Controller
             ]
         ];
 
-        return view('user_progress', compact('status', 'progress', 'date', 'score', 'version', 'display', 'id', 'sidemark'));
+        return view('user_progress', compact('status', 'progress', 'date', 'score', 'version', 'display', 'id', 'sidemark', 'isLoggedIn', 'isTwitterEnabled', 'twitterScreenName'));
     }
 }
