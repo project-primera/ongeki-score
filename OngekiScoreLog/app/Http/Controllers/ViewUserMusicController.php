@@ -45,14 +45,16 @@ class ViewUserMusicController extends Controller
         $isExist->normal = !is_null($musicData->normal_added_version);
         $isExist->lunatic = !is_null($musicData->lunatic_added_version); 
 
-        $score = ScoreData::join('music_datas','score_datas.song_id','=','music_datas.id')->where(['user_id' => $id,'song_id' => $music, 'difficulty' => $dif])->get();
-
+        $score = ScoreData::join('music_datas','score_datas.song_id','=','music_datas.id')
+            ->where(['user_id' => $id,'song_id' => $music, 'difficulty' => $dif])
+            ->select('score_datas.technical_high_score', 'score_datas.battle_high_score', 'score_datas.over_damage_high_score', 'score_datas.created_at')
+            ->get();
 
         $technical = [];
         $battle = [];
         $damage = [];
         $date = [];
-        
+
         $prev = new \stdClass();
         $prev->technical = 0;
         $prev->battle = 0;
@@ -62,7 +64,7 @@ class ViewUserMusicController extends Controller
             $technical[] = (int)($value->technical_high_score);
             $battle[] = (int)($value->battle_high_score);
             $damage[] = (float)$value->over_damage_high_score;
-            $date[] = date('n/j', strtotime($value->updated_at));
+            $date[] = date('y/n/j', strtotime($value->created_at));
 
             $value->differenceTechnical = $value->technical_high_score - $prev->technical;
             $value->differenceBattle = $value->battle_high_score - $prev->battle;
