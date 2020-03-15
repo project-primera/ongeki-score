@@ -26,6 +26,7 @@ class ViewUserRatingController extends Controller
 
         // レート値上昇推定スコア計算
         $stdClass->extraLevel = OngekiUtility::ExtraLevelFromTitle($stdClass->title, $stdClass->difficulty);
+        $stdClass->extraLevelStr = sprintf("%.1f", $stdClass->extraLevel);
         $stdClass->targetMusicRateMusic = OngekiUtility::ExpectedScoreFromExtraLevel($stdClass->extraLevel, $stdClass->rawRatingValue + 0.01);
         if($stdClass->targetMusicRateMusic !== false){
             $stdClass->targetMusicRateMusic = number_format($stdClass->technical_high_score - $stdClass->targetMusicRateMusic);
@@ -190,7 +191,7 @@ class ViewUserRatingController extends Controller
                 }
                 $recentScore[$i]['song_id'] = OngekiUtility::GetIDFromTitle($recentScore[$i]['title']);
                 $recentScore[$i]['difficulty_str'] = $this->difficultyToStr[$recentScore[$i]['difficulty']];
-                $recentScore[$i]['level_str'] = OngekiUtility::GetMusicLevel($recentScore[$i]['title'], $recentScore[$i]['difficulty'], true);
+                $recentScore[$i]['level_str'] = sprintf("%.1f", OngekiUtility::ExtraLevelFromTitle($recentScore[$i]['title'], $recentScore[$i]['difficulty']));
 
                 $statistics->recentRatingTotal += $recentScore[$i]['rawRatingValue'];
                 if($statistics->recentRatingTop < $recentScore[$i]['rawRatingValue']){
