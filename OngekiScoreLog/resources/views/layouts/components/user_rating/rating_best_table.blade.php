@@ -32,7 +32,7 @@
                         <td class="sort_title">{{$array[$i]->title}}</td>
                     @endif
                     <td>{{substr($array[$i]->difficulty_str, 0, 3)}}</td>
-                    <td>{{$array[$i]->level_str}}</td>
+                    <td>{{$array[$i]->extraLevelStr}}</td>
                     <td>{{number_format($array[$i]->technical_high_score)}}</td>
                     <td>{!!$array[$i]->ratingValue!!}</td>
                     <td>{{$array[$i]->targetMusicRateMusic}}</td>
@@ -78,7 +78,7 @@
                             <td class="sort_title">{{$array[$i]->title}}</td>
                         @endif
                         <td>{{substr($array[$i]->difficulty_str, 0, 3)}}</td>
-                        <td>{{$array[$i]->level_str}}</td>
+                        <td>{{$array[$i]->extraLevelStr}}</td>
                         <td>{{number_format($array[$i]->technical_high_score)}}</td>
                         <td>{!!$array[$i]->ratingValue!!}</td>
                         <td>{{sprintf("%.2f", $array[$i]->minDifferenceRate)}}</td>

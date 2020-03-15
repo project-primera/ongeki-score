@@ -71,8 +71,12 @@ class ScoreData extends Model
 
     function addDetailedData(){
         foreach ($this->value as $key => $value) {
-            $this->value[$key]->over_damage_high_score_next = floor(fmod($this->value[$key]->over_damage_high_score, 100.0) - 100.0 * pow(10, 3)) / pow(10, 3);
-            
+            if($this->value[$key]->over_damage_high_score >= 500){
+                $this->value[$key]->over_damage_high_score_next = "";
+            }else{
+                $this->value[$key]->over_damage_high_score_next = floor((fmod($this->value[$key]->over_damage_high_score, 100.0) - 100.0) * pow(10, 2)) / pow(10, 2);
+            }
+
             if($this->value[$key]->battle_high_score == 0){
                 $this->value[$key]->over_damage_high_score_rank = "-";
             }else if($this->value[$key]->over_damage_high_score <= 0){

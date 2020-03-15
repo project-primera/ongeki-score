@@ -88,7 +88,7 @@
                                 <td>+{{$item->differenceDamage}}%</td>
                             @endif
 
-                            <td>{{date("Y/m/d H:i", strtotime($item->updated_at))}}</td>
+                            <td>{{date("Y/m/d H:i", strtotime($item->created_at))}}</td>
                         </tr>
                     @endforeach
                 </tbody>
