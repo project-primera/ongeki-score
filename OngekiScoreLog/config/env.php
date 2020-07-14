@@ -1,8 +1,9 @@
 <?php
 return [
     'application-version' => env('APPLICATION_VERSION'),
+    'mix-application-version' => env('MIX_APPLICATION_VERSION'),
     'commit-hash' => env('COMMIT_HASH'),
-    'mix-bookmarklet-version' => env('MIX_BOOKMARKLET_VERSION'),
+    'mix-commit-hash' => env('MIX_COMMIT_HASH'),
     'github-repo-url' => env('GITHUB_REPO_URL'),
 
     'ongeki-version' => env('ONGEKI_VERSION'),
