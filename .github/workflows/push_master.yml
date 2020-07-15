@@ -125,7 +125,7 @@ jobs:
           docker tag ${IMAGE_NAME} ${IMAGE_NAME}:latest
           TAG=${{steps.validate.outputs.version}}
           docker tag ${IMAGE_NAME} ${IMAGE_NAME}:${TAG}
-      - run: docker login --username slimehatena --password ${{ secrets.DOCKER_HUB_TOKEN }}
+      - run: docker login --username ${{ secrets.DOCKER_HUB_USER }} --password ${{ secrets.DOCKER_HUB_TOKEN }}
       - name: Publish
         run: |
           TAG=${{steps.validate.outputs.version}}
