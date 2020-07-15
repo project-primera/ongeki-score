@@ -165,9 +165,9 @@ class UserController extends Controller{
             if($value['difficulty'] !== "0" && $value['difficulty'] !== "1" && $value['difficulty'] !== "2" && $value['difficulty'] !== "3" && $value['difficulty'] !== "10"){
                 throw new RuntimeException("未知の難易度が送信されました。(" . $value['difficulty'] . ")");
             }
-            $music = \App\MusicData::where("title", "=", $value['title'])->first();
+            $music = \App\MusicData::where("title", $value['title'])->where("genre", $value['genre'])->first();
             if($music === null){
-                $message[] = "未知の曲: " . $value['title'];
+                $message[] = "未知の曲: " . $value['title'] . " / " . $value['genre'];
                 continue;
             }
             $recentScore = (new \App\ScoreData())->getRecentGenerationOfScoreData(Auth::id(), $music->id, $value['difficulty'])->getValue();
@@ -246,7 +246,7 @@ class UserController extends Controller{
         }
 
         foreach ($data as $v) {
-            $musicData = \App\MusicData::where("title", $v['title'])->first();
+            $musicData = \App\MusicData::where("title", $v['title'])->where("genre", $v['genre'])->first();
             if(is_null($musicData)){
                 $musicData = new \App\MusicData();
                 $musicData->title = $v['title'];
