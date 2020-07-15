@@ -28,6 +28,8 @@ RUN set -ex \
     && docker-php-ext-install pdo_mysql mysqli >/dev/null \
     && apk add --update-cache --no-cache supervisor=${supervisor_version} nginx=${nginx_version} nodejs=${nodejs_version} npm=${npm_version} \
     && npm install --global yarn@${yarn_version} \
+    && apk del --purge npm \
+    && rm -r /root/.npm \
     && mkdir -p /run/nginx \
         && mkdir -p /app/storage/app/log/Debug \
         /app/storage/app/log/Info \
