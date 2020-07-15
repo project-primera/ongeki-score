@@ -416,7 +416,7 @@ class PostData {
 
   let getTime = async () => {
     let d = new Date();
-    return (("0"+d.getHours().toString()).slice(-2) + ":" + ("0"+d.getMinutes().toString()).slice(-2) + ":" + ("0"+d.getSeconds().toString()).slice(-2) + " ");
+    return (("0" + d.getHours().toString()).slice(-2) + ":" + ("0" + d.getMinutes().toString()).slice(-2) + ":" + ("0" + d.getSeconds().toString()).slice(-2) + " ");
   }
 
   let main = async () => {
