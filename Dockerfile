@@ -13,22 +13,20 @@ RUN composer config -g repos.packagist composer https://packagist.jp \
     && composer global require hirak/prestissimo \
     && composer install --optimize-autoloader
 
-FROM node:10.16.3-alpine AS node
-WORKDIR /src
-COPY --from=composer /src /src
-RUN yarn install \
-    && yarn run production
-
 FROM base AS final
 ARG supervisor_version="4.1.0-r0"
 ARG nginx_version="1.16.1-r6"
-COPY --from=node /src /app
+ARG nodejs_version="12.15.0-r1"
+ARG npm_version="12.15.0-r1"
+ARG yarn_version="1.22.4"
+COPY --from=composer /src /app
 COPY docker/docker-entrypoint.sh /etc/
 COPY docker/supervisor/supervisord.conf /etc/
 COPY docker/cron/crontabs/root /var/spool/cron/crontabs/root
 RUN set -ex \
     && docker-php-ext-install pdo_mysql mysqli >/dev/null \
-    && apk add --update-cache --no-cache supervisor=${supervisor_version} nginx=${nginx_version} \
+    && apk add --update-cache --no-cache supervisor=${supervisor_version} nginx=${nginx_version} nodejs=${nodejs_version} npm=${npm_version} \
+    && npm install --global yarn@${yarn_version} \
     && mkdir -p /run/nginx \
         && mkdir -p /app/storage/app/log/Debug \
         /app/storage/app/log/Info \

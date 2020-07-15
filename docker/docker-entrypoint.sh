@@ -1,5 +1,8 @@
 #!/bin/sh
 
+yarn install
+yarn run production
+
 php artisan config:cache
 php artisan route:cache
 php artisan view:cache
