@@ -14,6 +14,7 @@ return [
     */
 
     'name' => env('APP_NAME', 'Laravel'),
+    'mix_name' => env('MIX_APP_NAME', 'Laravel'),
 
     /*
     |--------------------------------------------------------------------------
@@ -147,7 +148,7 @@ return [
         Illuminate\Translation\TranslationServiceProvider::class,
         Illuminate\Validation\ValidationServiceProvider::class,
         Illuminate\View\ViewServiceProvider::class,
-        
+
         /*
          * Package Service Providers...
          */
@@ -220,5 +221,4 @@ return [
         'OngekiUtility' => App\Facades\OngekiUtility::class,
         'Slack' => App\Facades\Slack::class,
     ],
-
 ];

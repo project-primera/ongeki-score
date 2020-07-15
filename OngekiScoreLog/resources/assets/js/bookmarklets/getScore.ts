@@ -5,13 +5,13 @@ import * as qs from 'qs';
 (function () {
   const NET_DOMAIN = "ongeki-net.com";
   const NET_URL = "https://" + NET_DOMAIN + "/ongeki-mobile";
-  const TOOL_URL = "https://ongeki-score.net";
-  // const TOOL_URL = process.env.MIX_APP_URL;
+  const TOOL_URL = process.env.MIX_APP_URL;
   const API_URL = TOOL_URL + "/api/v2";
 
-  const REQUEST_KEY = "?t="
-  const PRODUCT_NAME = "Project Primera - Bookmarklet";
-  // const VERSION = process.env.MIX_BOOKMARKLET_VERSION;
+  const REQUEST_KEY = "?t=";
+  const PRODUCT_NAME = process.env.MIX_APP_NAME;
+  const VERSION = process.env.MIX_APPLICATION_VERSION;
+  const COMMIT_HASH = process.env.MIX_COMMIT_HASH;
 
   const SLEEP_MSEC = 1000;
 
@@ -416,7 +416,7 @@ class PostData {
 
   let getTime = async () => {
     let d = new Date();
-    return (("0"+d.getHours().toString()).slice(-2) + ":" + ("0"+d.getMinutes().toString()).slice(-2) + ":" + ("0"+d.getSeconds().toString()).slice(-2) + " ");
+    return (("0" + d.getHours().toString()).slice(-2) + ":" + ("0" + d.getMinutes().toString()).slice(-2) + ":" + ("0" + d.getSeconds().toString()).slice(-2) + " ");
   }
 
   let main = async () => {
@@ -425,10 +425,15 @@ class PostData {
     $("body").append($overlay);
     $textarea = $("<div>").attr("style","background-color: #eee; width:480px; height:100%; margin:0 auto; padding: 0.5em 1em;  overflow-y: scroll;")
     $overlay.append($textarea);
+
     echo(PRODUCT_NAME, false)
-    // if(VERSION != void 0){
-    //   echo(" ver." + VERSION, false);
-    // }
+    if(VERSION != void 0){
+      echo(" ver." + VERSION, false);
+    }
+    if(COMMIT_HASH != void 0){
+        echo("/" + COMMIT_HASH, false);
+    }
+
     let token: string = getToken();
     let userId: number = 0;
     let hash: string = "";
@@ -557,9 +562,6 @@ class PostData {
       // await postData.Post(MethodType.CharacterFriendly, characterFriendlyData);
       // await sleep(SLEEP_MSEC);
 
-      console.log(paymentStatus);
-      console.log(paymentStatus.IsPremiumPlan());
-      
       if(paymentStatus.IsPremiumPlan()){
         echo(await getTime() + "レーティング対象曲情報を取得します。");
         let ratingRecentMusicData = new RatingRecentMusicData;
@@ -570,7 +572,7 @@ class PostData {
       }else{
         echo(await getTime() + "スタンダードプランの為、レーティング対象曲情報取得をスキップします。");
       }
-      
+
 
       echo("データの登録に成功しました！");
 
