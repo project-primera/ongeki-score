@@ -562,9 +562,6 @@ class PostData {
       // await postData.Post(MethodType.CharacterFriendly, characterFriendlyData);
       // await sleep(SLEEP_MSEC);
 
-      console.log(paymentStatus);
-      console.log(paymentStatus.IsPremiumPlan());
-      
       if(paymentStatus.IsPremiumPlan()){
         echo(await getTime() + "レーティング対象曲情報を取得します。");
         let ratingRecentMusicData = new RatingRecentMusicData;
