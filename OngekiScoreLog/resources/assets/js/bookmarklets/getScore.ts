@@ -582,7 +582,8 @@ class PostData {
       echo(" <a href='https://twitter.com/ongeki_score' style='color:#222'>Twitter</a> / <a href='https://github.com/Slime-hatena/ProjectPrimera/issues' style='color:#222'>Github issue</a>");
       echo(today.getFullYear() + "/" +  (today.getMonth() + 1) + "/" + today.getDate() + " " + now.toLocaleTimeString());
     }
-    echo("<br><a href='" + NET_URL + "/home' style='color:#222'>オンゲキNETに戻る</a> / <a href='" + TOOL_URL + "' style='color:#222'>OngekiScoreLogに戻る</a>");
+    echo("<br><a href='" + TOOL_URL + "/user/" + userId + "/progress' style='color:#222'>更新差分はこちら</a>");
+    echo("<br><a href='" + NET_URL + "/home' style='color:#222'>オンゲキNETに戻る</a> / <a href='" + TOOL_URL + "' style='color:#222'>OngekiScoreLogに戻る</a>")
   }
   main();
 })();
