@@ -24,7 +24,7 @@ jobs:
       - name: Check image with dockle
         # CIS-DI-0001: Create a user for the container
         # DKL-DI-0006: Avoid latest tag
-        run: dockle --exit-code 1 --exit-level warn -i CIS-DI-0001 -i DKL-DI-0006 ${IMAGE_NAME}
+        run: dockle -i CIS-DI-0001 -i DKL-DI-0006 ${IMAGE_NAME}
       - name: Slack Notification
         uses: 8398a7/action-slack@v2
         if: cancelled() || failure()
@@ -51,7 +51,7 @@ jobs:
           sudo apt-get update
           sudo apt-get install trivy
       - name: Vulnerability scan with trivy
-        run: trivy --only-update alpine -q --severity HIGH,CRITICAL --exit-code 1 ${IMAGE_NAME}
+        run: trivy -q --severity HIGH,CRITICAL ${IMAGE_NAME}
       - name: Slack Notification
         uses: 8398a7/action-slack@v2
         if: cancelled() || failure()
@@ -125,7 +125,7 @@ jobs:
           docker tag ${IMAGE_NAME} ${IMAGE_NAME}:latest
           TAG=${{steps.validate.outputs.version}}
           docker tag ${IMAGE_NAME} ${IMAGE_NAME}:${TAG}
-      - run: docker login --username slimehatena --password ${{ secrets.DOCKER_HUB_TOKEN }}
+      - run: docker login --username ${{ secrets.DOCKER_HUB_USER }} --password ${{ secrets.DOCKER_HUB_TOKEN }}
       - name: Publish
         run: |
           TAG=${{steps.validate.outputs.version}}
