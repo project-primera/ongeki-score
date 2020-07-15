@@ -15,6 +15,8 @@ RUN composer config -g repos.packagist composer https://packagist.jp \
     && rm /src/vendor/mockery/mockery/docker/php56/Dockerfile
 
 FROM base AS final
+ARG application_version=""
+ARG commit_hash=""
 ARG supervisor_version="4.1.0-r0"
 ARG nginx_version="1.16.1-r6"
 ARG nodejs_version="12.15.0-r1"
@@ -25,6 +27,10 @@ COPY docker/docker-entrypoint.sh /etc/
 COPY docker/supervisor/supervisord.conf /etc/
 COPY docker/cron/crontabs/root /var/spool/cron/crontabs/root
 RUN set -ex \
+    && touch /etc/version \
+    && echo \"${application_version}\" > /etc/version \
+    && touch /etc/hash \
+    && echo \"${commit_hash}\" > /etc/hash \
     && docker-php-ext-install pdo_mysql mysqli >/dev/null \
     && apk add --update-cache --no-cache supervisor=${supervisor_version} nginx=${nginx_version} nodejs=${nodejs_version} npm=${npm_version} \
     && npm install --global yarn@${yarn_version} \
