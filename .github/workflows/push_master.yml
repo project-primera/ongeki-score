@@ -110,8 +110,6 @@ jobs:
     needs: [dockle, trivy, release]
     steps:
       - uses: actions/checkout@master
-      - name: Build docker image
-        run: docker build ./ -t ${IMAGE_NAME} --file Dockerfile
       - shell: bash
         id: validate
         run: |
@@ -121,6 +119,11 @@ jobs:
           else
             exit 1
           fi
+      - name: Get commit commit
+        id: hash
+        run: echo "::set-output name=hash::"$(git rev-parse --short HEAD)
+      - name: Build docker image
+        run: docker build ./ -t ${IMAGE_NAME} --file Dockerfile --build-arg application_version=${{steps.validate.outputs.version}} --build-arg commit_hash=${{steps.hash.outputs.hash}}
       - run: |
           docker tag ${IMAGE_NAME} ${IMAGE_NAME}:latest
           TAG=${{steps.validate.outputs.version}}
