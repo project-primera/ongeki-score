@@ -1,5 +1,19 @@
 #!/bin/sh
 
+cp /etc/.env /app/.env
+sed -i '/^APPLICATION_VERSION/d' /app/.env
+sed -i '/^MIX_APPLICATION_VERSION/d' /app/.env
+sed -i '/^COMMIT_HASH/d' /app/.env
+sed -i '/^MIX_COMMIT_HASH/d' /app/.env
+
+echo -n "APPLICATION_VERSION=" | cat - /etc/version >> /app/.env
+echo "MIX_APPLICATION_VERSION=\"\${APPLICATION_VERSION}\"" >> /app/.env
+echo -n "COMMIT_HASH=" | cat - /etc/hash >> /app/.env
+echo "MIX_COMMIT_HASH=\"\${COMMIT_HASH}\"" >> /app/.env
+
+yarn install
+yarn run production
+
 php artisan config:cache
 php artisan route:cache
 php artisan view:cache
