@@ -6,9 +6,16 @@ on:
       - master
 
 jobs:
+  skip:
+    name: Check release skip
+    runs-on: ubuntu-18.04
+    if: "! contains(github.event.head_commit.message, '[release skip]')"
+    steps:
+      - run: echo "${{ github.event.head_commit.message }}"
   check_release_name:
     name: Check release name
     runs-on: ubuntu-latest
+    needs: [skip]
     steps:
       - uses: actions/checkout@master
       - shell: bash
@@ -45,6 +52,7 @@ jobs:
   dockle:
     name: Dockle scan
     runs-on: ubuntu-18.04
+    needs: [skip]
     steps:
       - uses: actions/checkout@master
       - name: Build docker image
@@ -76,6 +84,7 @@ jobs:
   trivy:
     name: Trivy scan
     runs-on: ubuntu-18.04
+    needs: [skip]
     steps:
       - uses: actions/checkout@master
       - name: Build docker image
@@ -103,7 +112,7 @@ jobs:
   slack:
     name: Slack Notification
     runs-on: ubuntu-18.04
-    needs: [check_release_name, dockle, trivy]
+    needs: [skip, check_release_name, dockle, trivy]
     steps:
       - name: Slack Notification
         uses: 8398a7/action-slack@v2
