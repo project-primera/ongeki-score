@@ -1,7 +1,8 @@
-name: 'Label maintenance'
+name: 'Label maintenance (dry-run)'
 on:
-  schedule:
-    - cron: '0 4 * * *'
+  push:
+    paths:
+      - '.github/labels.json'
 
 jobs:
   label_maintenance:
@@ -15,4 +16,4 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          `yarn global bin`/github-label-setup --token ${GITHUB_TOKEN} --labels /home/runner/work/repository-template/repository-template/.github/labels.json
+          `yarn global bin`/github-label-setup --token ${GITHUB_TOKEN} --labels /home/runner/work/repository-template/repository-template/.github/labels.json --dry-run
