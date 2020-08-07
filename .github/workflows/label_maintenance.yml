@@ -15,4 +15,4 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          `yarn global bin`/github-label-setup --token ${GITHUB_TOKEN} --labels /home/runner/work/repository-template/repository-template/.github/labels.json
+          `yarn global bin`/github-label-setup --token ${GITHUB_TOKEN} --labels ${GITHUB_WORKSPACE}/.github/labels.json

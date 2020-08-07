@@ -3,10 +3,11 @@ on:
   push:
     paths:
       - '.github/labels.json'
+      - '.github/workflows/label_maintenance_dryrun.yml'
 
 jobs:
   label_maintenance:
-    name: Label maintenance
+    name: Label maintenance (dry-run)
     runs-on: ubuntu-18.04
     steps:
       - uses: actions/checkout@master
@@ -16,4 +17,4 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          `yarn global bin`/github-label-setup --token ${GITHUB_TOKEN} --labels /home/runner/work/repository-template/repository-template/.github/labels.json --dry-run
+          `yarn global bin`/github-label-setup --token ${GITHUB_TOKEN} --labels ${GITHUB_WORKSPACE}/.github/labels.json --dry-run
