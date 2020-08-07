@@ -1,7 +1,7 @@
 name: 'Label maintenance'
 on:
   schedule:
-    - cron: '0 4 * * *'
+    - cron: '0 19 * * *' # 4:00 UTC+0900
 
 jobs:
   label_maintenance:
