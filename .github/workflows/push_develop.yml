@@ -10,6 +10,7 @@ jobs:
     runs-on: ubuntu-18.04
     steps:
       - uses: actions/checkout@master
+      - run: docker login --username ${{ secrets.DOCKER_HUB_USER }} --password ${{ secrets.DOCKER_HUB_TOKEN }}
       - name: Build docker image
         run: docker build ./ -t ${IMAGE_NAME} --file Dockerfile
       - name: Install dockle
@@ -41,6 +42,7 @@ jobs:
     runs-on: ubuntu-18.04
     steps:
       - uses: actions/checkout@master
+      - run: docker login --username ${{ secrets.DOCKER_HUB_USER }} --password ${{ secrets.DOCKER_HUB_TOKEN }}
       - name: Build docker image
         run: docker build ./ -t ${IMAGE_NAME} --file Dockerfile
       - name: Install trivy

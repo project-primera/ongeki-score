@@ -55,6 +55,7 @@ jobs:
     needs: [skip]
     steps:
       - uses: actions/checkout@master
+      - run: docker login --username ${{ secrets.DOCKER_HUB_USER }} --password ${{ secrets.DOCKER_HUB_TOKEN }}
       - name: Build docker image
         run: docker build ./ -t ${IMAGE_NAME} --file Dockerfile
       - name: Install dockle
@@ -87,6 +88,7 @@ jobs:
     needs: [skip]
     steps:
       - uses: actions/checkout@master
+      - run: docker login --username ${{ secrets.DOCKER_HUB_USER }} --password ${{ secrets.DOCKER_HUB_TOKEN }}
       - name: Build docker image
         run: docker build ./ -t ${IMAGE_NAME} --file Dockerfile
       - name: Install trivy
