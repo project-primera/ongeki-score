@@ -17,6 +17,7 @@ jobs:
     needs: [skip]
     steps:
       - uses: actions/checkout@master
+      - run: docker login --username ${{ secrets.DOCKER_HUB_USER }} --password ${{ secrets.DOCKER_HUB_TOKEN }}
       - name: Build docker image
         run: docker build ./ -t ${IMAGE_NAME} --file Dockerfile
       - name: Install dockle
@@ -49,6 +50,7 @@ jobs:
     needs: [skip]
     steps:
       - uses: actions/checkout@master
+      - run: docker login --username ${{ secrets.DOCKER_HUB_USER }} --password ${{ secrets.DOCKER_HUB_TOKEN }}
       - name: Build docker image
         run: docker build ./ -t ${IMAGE_NAME} --file Dockerfile
       - name: Install trivy
@@ -118,6 +120,7 @@ jobs:
     needs: [skip, dockle, trivy, release]
     steps:
       - uses: actions/checkout@master
+      - run: docker login --username ${{ secrets.DOCKER_HUB_USER }} --password ${{ secrets.DOCKER_HUB_TOKEN }}
       - shell: bash
         id: validate
         run: |
@@ -136,7 +139,6 @@ jobs:
           docker tag ${IMAGE_NAME} ${IMAGE_NAME}:latest
           TAG=${{steps.validate.outputs.version}}
           docker tag ${IMAGE_NAME} ${IMAGE_NAME}:${TAG}
-      - run: docker login --username ${{ secrets.DOCKER_HUB_USER }} --password ${{ secrets.DOCKER_HUB_TOKEN }}
       - name: Publish
         run: |
           TAG=${{steps.validate.outputs.version}}
