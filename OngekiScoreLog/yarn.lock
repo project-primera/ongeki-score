@@ -4138,7 +4138,7 @@ isstream@~0.1.2:
   resolved "https://registry.yarnpkg.com/isstream/-/isstream-0.1.2.tgz#47e63f7af55afa6f92e1500e690eb8b8529c099a"
   integrity sha1-R+Y/evVa+m+S4VAOaQ64uFKcCZo=
 
-jquery@^3.4.1:
+jquery@^3.5.0:
   version "3.5.1"
   resolved "https://registry.yarnpkg.com/jquery/-/jquery-3.5.1.tgz#d7b4d08e1bfdb86ad2f1a3d039ea17304717abb5"
   integrity sha512-XwIBPqcMn57FxfT+Go5pzySnm4KWkT1Tv7gjrpT1srtf8Weynl6R273VJ5GjkRb51IzMp5nbaPjJXMWeju2MKg==
@@ -6929,10 +6929,10 @@ svgo@^1.0.0:
     unquote "~1.1.1"
     util.promisify "~1.0.0"
 
-sweet-scroll@^3.0.1:
-  version "3.0.1"
-  resolved "https://registry.yarnpkg.com/sweet-scroll/-/sweet-scroll-3.0.1.tgz#6472a9b97915550c3213970d1a33c7cec8657328"
-  integrity sha512-jjBkRZ22ojwwYRtraRL5IlR9LHaa+GmhXMnz1TaqeCL5xdiMCZ86fNBilbF3WHz9sab2ihmCX3BiIZI6FmpAPg==
+sweet-scroll@^4.0.0:
+  version "4.0.0"
+  resolved "https://registry.yarnpkg.com/sweet-scroll/-/sweet-scroll-4.0.0.tgz#1f546157eb9754bb473780bb89546b1ca1ad9a25"
+  integrity sha512-mR6fRsAQANtm3zpzhUE73KAOt2aT4ZsWzNSggiEsSqdO6Zh4gM7ioJG81EngrZEl0XAc3ZvzEfhxggOoEBc8jA==
 
 tapable@^1.0.0, tapable@^1.1.3:
   version "1.1.3"
