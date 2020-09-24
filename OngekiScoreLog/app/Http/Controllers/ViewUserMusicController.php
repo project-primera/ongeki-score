@@ -37,13 +37,13 @@ class ViewUserMusicController extends Controller
         }
 
         $musicData = MusicData::find($music);
-        if(is_null($musicData)){
+        if(count($status) === 0 || is_null($musicData)){
             abort(404);
         }
 
         $isExist = new \stdClass;
         $isExist->normal = !is_null($musicData->normal_added_version);
-        $isExist->lunatic = !is_null($musicData->lunatic_added_version); 
+        $isExist->lunatic = !is_null($musicData->lunatic_added_version);
 
         $score = ScoreData::join('music_datas','score_datas.song_id','=','music_datas.id')
             ->where(['user_id' => $id,'song_id' => $music, 'difficulty' => $dif])

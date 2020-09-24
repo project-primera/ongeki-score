@@ -87,13 +87,14 @@ class ViewUserRatingController extends Controller
         $statistics->totalRatingTop = 0;
         $statistics->totalRatingMin = null;
         $statistics->potentialRatingTop = null;
-        
+
         $notExistMusic = new \stdClass;
         $notExistMusic->title = "-";
         $notExistMusic->difficulty_str = "-";
         $notExistMusic->level_str = "-";
         $notExistMusic->technical_high_score = 0;
         $notExistMusic->technical_score = 0;
+        $notExistMusic->extraLevelStr = "-";
         $notExistMusic->ratingValue = "-";
         $notExistMusic->rawRatingValue = 0;
         $notExistMusic->targetMusicRateMusic = "";
@@ -136,7 +137,7 @@ class ViewUserRatingController extends Controller
         }
 
         // 旧曲枠対象曲 統計情報の処理
-        for ($i = 0; $i < $statistics->oldBestRatingCount; ++$i) { 
+        for ($i = 0; $i < $statistics->oldBestRatingCount; ++$i) {
             if(!array_key_exists($i, $oldScore)){
                 $oldScore[] = $notExistMusic;
             }else{
@@ -178,7 +179,7 @@ class ViewUserRatingController extends Controller
 
         // リーセント枠のレート計算
         $notExistMusic = json_decode(json_encode($notExistMusic), true);
-        for ($i = 0; $i < $statistics->recentRatingCount; ++$i) { 
+        for ($i = 0; $i < $statistics->recentRatingCount; ++$i) {
             if(!array_key_exists($i, $recentScore)){
                 $recentScore[] = $notExistMusic;
             }else{
