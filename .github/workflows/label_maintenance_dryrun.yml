@@ -1,0 +1,20 @@
+name: 'Label maintenance (dry-run)'
+on:
+  push:
+    paths:
+      - '.github/labels.json'
+      - '.github/workflows/label_maintenance_dryrun.yml'
+
+jobs:
+  label_maintenance:
+    name: Label maintenance (dry-run)
+    runs-on: ubuntu-18.04
+    steps:
+      - uses: actions/checkout@master
+      - name: Get @azu/github-label-setup
+        run: yarn global add @azu/github-label-setup
+      - name: Run github-label-setup
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          `yarn global bin`/github-label-setup --token ${GITHUB_TOKEN} --labels ${GITHUB_WORKSPACE}/.github/labels.json --dry-run

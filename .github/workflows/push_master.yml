@@ -5,11 +5,19 @@ on:
       - master
 
 jobs:
+  skip:
+    name: Check release skip
+    runs-on: ubuntu-18.04
+    if: "! contains(github.event.head_commit.message, '[release skip]')"
+    steps:
+      - run: echo "${{ github.event.head_commit.message }}"
   dockle:
     name: Dockle scan
     runs-on: ubuntu-18.04
+    needs: [skip]
     steps:
       - uses: actions/checkout@master
+      - run: docker login --username ${{ secrets.DOCKER_HUB_USER }} --password ${{ secrets.DOCKER_HUB_TOKEN }}
       - name: Build docker image
         run: docker build ./ -t ${IMAGE_NAME} --file Dockerfile
       - name: Install dockle
@@ -39,8 +47,10 @@ jobs:
   trivy:
     name: Trivy scan
     runs-on: ubuntu-18.04
+    needs: [skip]
     steps:
       - uses: actions/checkout@master
+      - run: docker login --username ${{ secrets.DOCKER_HUB_USER }} --password ${{ secrets.DOCKER_HUB_TOKEN }}
       - name: Build docker image
         run: docker build ./ -t ${IMAGE_NAME} --file Dockerfile
       - name: Install trivy
@@ -66,7 +76,7 @@ jobs:
   release:
     name: Create Release
     runs-on: ubuntu-latest
-    needs: [dockle, trivy]
+    needs: [skip, dockle, trivy]
     steps:
       - uses: actions/checkout@v2
       - shell: bash
@@ -107,9 +117,10 @@ jobs:
   docker_hub:
     name: Publish to Docker Hub
     runs-on: ubuntu-18.04
-    needs: [dockle, trivy, release]
+    needs: [skip, dockle, trivy, release]
     steps:
       - uses: actions/checkout@master
+      - run: docker login --username ${{ secrets.DOCKER_HUB_USER }} --password ${{ secrets.DOCKER_HUB_TOKEN }}
       - shell: bash
         id: validate
         run: |
@@ -128,7 +139,6 @@ jobs:
           docker tag ${IMAGE_NAME} ${IMAGE_NAME}:latest
           TAG=${{steps.validate.outputs.version}}
           docker tag ${IMAGE_NAME} ${IMAGE_NAME}:${TAG}
-      - run: docker login --username ${{ secrets.DOCKER_HUB_USER }} --password ${{ secrets.DOCKER_HUB_TOKEN }}
       - name: Publish
         run: |
           TAG=${{steps.validate.outputs.version}}
@@ -149,7 +159,7 @@ jobs:
   slack:
     name: Slack Notification
     runs-on: ubuntu-18.04
-    needs: [dockle, trivy, release, docker_hub]
+    needs: [skip, dockle, trivy, release, docker_hub]
     steps:
       - name: Slack Notification
         uses: 8398a7/action-slack@v2
