@@ -23,8 +23,9 @@ class ViewUserProgressController extends Controller
 
         $userStatus = new UserStatus();
         $status = $userStatus->getRecentUserData($id);
+        $gen = (new ScoreData)->getAllGenerationUserScore($id)->getValue();
 
-        if(count($status) === 0){
+        if(count($status) === 0 || count($gen) === 0){
             if(is_null(User::where('id' ,$id)->first())){
                 abort(404);
             }else{
@@ -34,11 +35,10 @@ class ViewUserProgressController extends Controller
 
         // 設計がゆるふわだったときのユーザーにgeneration 0を持っているユーザーが居るので補正
         $fixedGeneration = 0;
-        $gen = (new ScoreData)->getAllGenerationUserScore($id)->getValue();
         if($gen[0]->generation == 0){
             $fixedGeneration = 1;
         }
-        
+
         $prevGeneration = (new ScoreData)->getMaxGeneration($id) - 1 + $fixedGeneration;
         if($generation === null){
             $generation = $prevGeneration;
@@ -129,7 +129,7 @@ class ViewUserProgressController extends Controller
         ];
 
 
-        
+
         $display['url'] = "/user/" . $id . "/progress";
         $display['select'] = [];
         $display['select'][0]["value"] = "初回登録";
@@ -151,10 +151,10 @@ class ViewUserProgressController extends Controller
 
         $old = shapingKeys((new ScoreData)->getSpecifiedGenerationUserScore($id, $generation - $fixedGeneration)->addDetailedData()->getValue());
         $new = shapingKeys((new ScoreData)->getRecentUserScore($id)->addMusicData()->addDetailedData()->getValue());
-        
+
         $date["new"] = date("Y/m/d H:i", strtotime($display['select_last']["value"]));
         if($date["new"] === date("Y/m/d H:i", strtotime(0))){
-            $date["new"] = "N/A"; 
+            $date["new"] = "N/A";
         }
         if(array_key_exists($generation - 1, $display['select'])){
             $date["old"] = date("Y/m/d H:i", strtotime($display['select'][$generation]["value"]));
@@ -186,7 +186,7 @@ class ViewUserProgressController extends Controller
                         $progress[$music][$difficulty]["difference"]['new-lamp-is-fb'] = $value->full_bell ? "full-bell" : "not-light";
                         $progress[$music][$difficulty]["difference"]['new-lamp-is-fc'] = $value->full_combo ? "full-combo" : "not-light";
                         $progress[$music][$difficulty]["difference"]['new-lamp-is-ab'] = $value->all_break ? "all-break" : "not-light";
-                        
+
                     }
                 }else{
                     $score['old'][$difficultyToStr[$difficulty]]['battle_high_score'] += $old[$music][$difficulty]->battle_high_score;
@@ -234,7 +234,7 @@ class ViewUserProgressController extends Controller
                             $progress[$music][$difficulty]["difference"]['new-lamp-is-fb'] = $value->full_bell ? "full-bell" : "not-light";
                             $progress[$music][$difficulty]["difference"]['new-lamp-is-fc'] = $value->full_combo ? "full-combo" : "not-light";
                             $progress[$music][$difficulty]["difference"]['new-lamp-is-ab'] = $value->all_break ? "all-break" : "not-light";
-                            
+
                             $progress[$music][$difficulty]["new"] = $value;
                         }
                     }
