@@ -23,40 +23,6 @@ class ApplicationVersion extends Model
     }
 
     public function fetchAllVersion(){
-        $opts = [
-            'http' => [
-                'method' => 'GET',
-                'header' => [
-                        'User-Agent: PHP'
-                ]
-            ]
-        ];
-        $context = stream_context_create($opts);
-        $response = file_get_contents('https://api.github.com/repos/Slime-hatena/ProjectPrimera/releases', false, stream_context_create($opts));
-        $response = json_decode($response, true);
-        $response = array_reverse($response);
-
-        $isTweet = false;
-        
-        foreach ($response as $key => $value) {
-            $result = DB::table("application_versions")->where('tag_name', $value['tag_name'])->get();
-            if(count($result) != 0){
-                continue;
-            }
-
-            $applicationVersion = new ApplicationVersion();
-            $applicationVersion->tag_name = $value['tag_name'];
-            $applicationVersion->name = $value['name'];
-            $applicationVersion->body = $value['body'];
-            $applicationVersion->published_at = (new DateTime($value['published_at']))->setTimeZone(new DateTimeZone('Asia/Tokyo'))->format('Y-m-d H:i:s');
-            $applicationVersion->save();
-
-            $isTweet = true;
-        }
-
-        if($isTweet){
-            $a = new AdminTweet();
-            $a->tweetLatestVersion();
-        }
+        //
     }
 }

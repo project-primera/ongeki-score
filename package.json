@@ -4,7 +4,7 @@
   "author": "Slime_hatena <git@aki-memo.net>",
   "license": "AGPL-3.0",
   "devDependencies": {
-    "lerna-changelog": "^1.0.0"
+    "lerna-changelog": "^1.0.1"
   },
   "changelog": {
     "labels": {
