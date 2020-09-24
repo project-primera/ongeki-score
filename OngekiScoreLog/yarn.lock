@@ -3587,10 +3587,10 @@ html-minifier@^3.5.8:
     relateurl "0.2.x"
     uglify-js "3.4.x"
 
-html2canvas@^1.0.0-rc.5:
-  version "1.0.0-rc.5"
-  resolved "https://registry.yarnpkg.com/html2canvas/-/html2canvas-1.0.0-rc.5.tgz#4ee3cac9f6e20a0fa0c2f35a6f99c960ae7ec4c1"
-  integrity sha512-DtNqPxJNXPoTajs+lVQzGS1SULRI4GQaROeU5R41xH8acffHukxRh/NBVcTBsfCkJSkLq91rih5TpbEwUP9yWA==
+html2canvas@^1.0.0-rc.7:
+  version "1.0.0-rc.7"
+  resolved "https://registry.yarnpkg.com/html2canvas/-/html2canvas-1.0.0-rc.7.tgz#70c159ce0e63954a91169531894d08ad5627ac98"
+  integrity sha512-yvPNZGejB2KOyKleZspjK/NruXVQuowu8NnV2HYG7gW7ytzl+umffbtUI62v2dCHQLDdsK6HIDtyJZ0W3neerA==
   dependencies:
     css-line-break "1.1.1"
 
@@ -4138,7 +4138,7 @@ isstream@~0.1.2:
   resolved "https://registry.yarnpkg.com/isstream/-/isstream-0.1.2.tgz#47e63f7af55afa6f92e1500e690eb8b8529c099a"
   integrity sha1-R+Y/evVa+m+S4VAOaQ64uFKcCZo=
 
-jquery@^3.4.1:
+jquery@^3.5.0:
   version "3.5.1"
   resolved "https://registry.yarnpkg.com/jquery/-/jquery-3.5.1.tgz#d7b4d08e1bfdb86ad2f1a3d039ea17304717abb5"
   integrity sha512-XwIBPqcMn57FxfT+Go5pzySnm4KWkT1Tv7gjrpT1srtf8Weynl6R273VJ5GjkRb51IzMp5nbaPjJXMWeju2MKg==
