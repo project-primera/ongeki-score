@@ -56,14 +56,19 @@
                 </select>
             </div>
         </div>
-            
+
         <span id="current-url" style="display: none;">{{$display['url']}}</span>
         <hr>
         <div class="user-progress">
             <div class="info">
                 <div class="right">
                     <span class="site-name">{{config('app.name')}}</span>&nbsp;
-                    <span class="version">(v.{{$version}})</span>&nbsp;
+                    <span class="version">
+                        {{config('env.application-version')}}</b>
+                        @if (config('env.commit-hash', NULL) !== NULL)
+                            ({{config('env.commit-hash')}})
+                        @endif
+                    </span>&nbsp;
                     <span class="url">{{config('app.url')}}</span>
                 </div>
             </div>
@@ -175,7 +180,7 @@
                             <div class="user-progress">
                             <div class="music">
                             @php
-                                $count = 0;   
+                                $count = 0;
                             @endphp
                         @endif
                     @endforeach
