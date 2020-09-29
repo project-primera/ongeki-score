@@ -7,3 +7,18 @@
 "Scope: Docker":
   - "Dockerfile"
   - "docker/**/*"
+
+"dependencies: /docker":
+  - "Dockerfile"
+
+"dependencies: /yarn":
+  - "package.json"
+  - "yarn.lock"
+
+"dependencies: /OngekiScoreLog/yarn":
+  - "OngekiScoreLog/package.json"
+  - "OngekiScoreLog/yarn.lock"
+
+"dependencies: /OngekiScoreLog/composer":
+  - "OngekiScoreLog/composer.json"
+  - "OngekiScoreLog/composer.lock"
