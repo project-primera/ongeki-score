@@ -10,7 +10,7 @@
     "labels": {
       "Type: Breaking Change": "Breaking Change",
       "Type: Feature": "Feature",
-      "Type: Bug": "Bug",
+      "Type: Bug": "Bug fix",
       "Type: Maintenance": "Maintenance",
       "Type: Documentation": "Documentation",
       "Type: Refactoring": "Refactoring"

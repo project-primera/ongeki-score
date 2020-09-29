@@ -211,5 +211,25 @@
         "aliases": [
             "release"
         ]
+    },
+    {
+        "name": "dependencies: /docker",
+        "color": "769204",
+        "description": "Edited /Dockerfile"
+    },
+    {
+        "name": "dependencies: /yarn",
+        "color": "688104",
+        "description": "Edited /package.json & /yarn.lock"
+    },
+    {
+        "name": "dependencies: /OngekiScoreLog/yarn",
+        "color": "5b7103",
+        "description": "Edited /OngekiScoreLog/package.json & /OngekiScoreLog/yarn.lock"
+    },
+    {
+        "name": "dependencies: /OngekiScoreLog/composer",
+        "color": "4e6003",
+        "description": "Edited /OngekiScoreLog/composer.json & /OngekiScoreLog/composer.lock"
     }
 ]
