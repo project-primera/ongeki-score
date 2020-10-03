@@ -20,7 +20,7 @@ class ScoreData extends Model
 
     function addMusicData(){
         $temp = MusicData::all();
-        
+
         foreach ($temp as $key => $value) {
             $title[$value->id] = $value;
         }
@@ -123,7 +123,7 @@ class ScoreData extends Model
                 $this->value[$key]->technical_high_score_next = $this->value[$key]->technical_high_score - 990000;
 
             }else if($this->value[$key]->technical_high_score < 1000000){
-                $this->value[$key]->technical_high_score_rank = "SS"; 
+                $this->value[$key]->technical_high_score_rank = "SS";
                 $this->value[$key]->technical_high_score_next = $this->value[$key]->technical_high_score - 1000000;
 
             }else if($this->value[$key]->technical_high_score < 1007500){
@@ -200,7 +200,7 @@ class ScoreData extends Model
      * @return object this
      */
     function getSpecifiedGenerationUserScore(int $id, int $generation){
-        $this->value = DB::select('SELECT * FROM score_datas AS t1 
+        $this->value = DB::select('SELECT * FROM score_datas AS t1
             WHERE user_id = ? AND generation <= ? AND NOT EXISTS (
             SELECT * FROM score_datas AS t2
                 WHERE generation <= ?
@@ -220,7 +220,7 @@ class ScoreData extends Model
      * @return object this
      */
     function getAllGenerationUserScore(int $id){
-        $this->value = DB::select('SELECT * FROM score_datas AS t1 
+        $this->value = DB::select('SELECT * FROM score_datas AS t1
             WHERE user_id = ? AND NOT EXISTS (
             SELECT * FROM score_datas AS t2
                 WHERE t1.generation = t2.generation
@@ -234,7 +234,7 @@ class ScoreData extends Model
     function getMaxGeneration($id){
         return DB::select('SELECT MAX(generation) FROM score_datas WHERE user_id = ?;', [$id])[0]->{"MAX(generation)"};
     }
-    
+
     /**
      * ユーザーのスコアデータのうち Rating新曲枠対象曲をすべて取得します。
      * @param integer $id 取得するユーザーid
@@ -244,12 +244,14 @@ class ScoreData extends Model
         $version = config('env.ongeki-version');
 
         $this->value = DB::select("SELECT * FROM score_datas AS t1 INNER JOIN music_datas ON t1.song_id = music_datas.id
-        WHERE user_id = ? AND (
-            CASE 
+        WHERE user_id = ?
+        AND (unrated IS NULL OR unrated = 0)
+        AND (
+            CASE
                 WHEN difficulty = '10' THEN lunatic_added_version
                 ELSE normal_added_version
             END
-        ) = ? AND 
+        ) = ? AND
         NOT EXISTS (
             SELECT * FROM score_datas AS t2
             WHERE t1.user_id = t2.user_id
@@ -270,12 +272,14 @@ class ScoreData extends Model
         $version = config('env.ongeki-version');
 
         $this->value = DB::select("SELECT * FROM score_datas AS t1 INNER JOIN music_datas ON t1.song_id = music_datas.id
-        WHERE user_id = ? AND (
-            CASE 
+        WHERE user_id = ?
+        AND (unrated IS NULL OR unrated = 0)
+        AND (
+            CASE
                 WHEN difficulty = '10' THEN lunatic_added_version
                 ELSE normal_added_version
             END
-        ) < ? AND 
+        ) < ? AND
         NOT EXISTS (
             SELECT * FROM score_datas AS t2
             WHERE t1.user_id = t2.user_id
