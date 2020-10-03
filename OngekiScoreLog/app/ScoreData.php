@@ -244,12 +244,14 @@ class ScoreData extends Model
         $version = config('env.ongeki-version');
 
         $this->value = DB::select("SELECT * FROM score_datas AS t1 INNER JOIN music_datas ON t1.song_id = music_datas.id
-        WHERE user_id = ? AND (
-            CASE 
+        WHERE user_id = ?
+        AND (unrated IS NULL OR unrated = 0)
+        AND (
+            CASE
                 WHEN difficulty = '10' THEN lunatic_added_version
                 ELSE normal_added_version
             END
-        ) = ? AND 
+        ) = ? AND
         NOT EXISTS (
             SELECT * FROM score_datas AS t2
             WHERE t1.user_id = t2.user_id
@@ -270,7 +272,9 @@ class ScoreData extends Model
         $version = config('env.ongeki-version');
 
         $this->value = DB::select("SELECT * FROM score_datas AS t1 INNER JOIN music_datas ON t1.song_id = music_datas.id
-        WHERE user_id = ? AND (
+        WHERE user_id = ?
+        AND (unrated IS NULL OR unrated = 0)
+        AND (
             CASE
                 WHEN difficulty = '10' THEN lunatic_added_version
                 ELSE normal_added_version
