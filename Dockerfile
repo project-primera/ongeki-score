@@ -6,7 +6,7 @@ EXPOSE 443
 HEALTHCHECK --start-period=60s --interval=60s --timeout=10s --retries=3 \
     CMD php artisan health:check
 
-FROM composer:1.9.0 AS composer
+FROM composer:2.0.6 AS composer
 WORKDIR /src
 COPY ./OngekiScoreLog /src
 RUN composer config -g repos.packagist composer https://packagist.jp \
