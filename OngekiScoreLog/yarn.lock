@@ -4473,10 +4473,10 @@ levenary@^1.1.1:
   dependencies:
     leven "^3.1.0"
 
-list.js@^1.5.0:
-  version "1.5.0"
-  resolved "https://registry.yarnpkg.com/list.js/-/list.js-1.5.0.tgz#a4cbfc8281ddefc02fdb2d30c8748bfae25fbcda"
-  integrity sha1-pMv8goHd78Av2y0wyHSL+uJfvNo=
+list.js@^2.1.0:
+  version "2.1.0"
+  resolved "https://registry.yarnpkg.com/list.js/-/list.js-2.1.0.tgz#1a6d1df25c18ea6fce3b4f4f86664f279beccf6a"
+  integrity sha512-hm+hPI1R0LFyZ1W5HvmIy/lOwwtkpfn4oyZp+4OxO6uRCVC2wtMUGJUj10YfrDFE72AHeCDvcfcj3+nx5Baypg==
   dependencies:
     string-natural-compare "^2.0.2"
 
