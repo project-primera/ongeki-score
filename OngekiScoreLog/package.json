@@ -33,7 +33,7 @@
         "sass": "^1.20.1",
         "sweet-scroll": "^3.0.1",
         "tar": "^4.4.8",
-        "ts-loader": "^6.0.4",
+        "ts-loader": "^8.0.12",
         "typescript": "^3.4.2"
     }
 }
