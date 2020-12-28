@@ -285,11 +285,20 @@ import * as qs from 'qs';
         title: string = "";
         difficulty: number = 0;
         technicalScore: number = 0;
+        genre: string = "";
 
-        constructor(title: string, difficulty: number, technicalScore: number) {
+        constructor(title: string, difficulty: number, technicalScore: number, genre: string = "") {
             this.title = title;
             this.difficulty = difficulty;
             this.technicalScore = technicalScore;
+            this.genre = genre;
+        }
+    }
+
+    class SameNameMusicList {
+        static async get() {
+            let result = await axios.get(API_URL + "/music/samename");
+            return result.data;
         }
     }
 
@@ -310,10 +319,11 @@ import * as qs from 'qs';
         }
 
         private async parseRatingRecentMusicData(html: string) {
+            let sameNameList = await SameNameMusicList.get();
             var parseHTML = $.parseHTML(html);
             var $basic_btn = $(parseHTML).find(".basic_btn");
 
-            await $basic_btn.each((key, value) => {
+            for await (const value of $basic_btn) {
                 if ($(value).html().match(/TECHNICAL SCORE/)) {
                     var difficulty: number = -1;
                     if ($(value).hasClass('lunatic_score_back')) {
@@ -328,14 +338,25 @@ import * as qs from 'qs';
                         difficulty = 0;
                     }
 
+                    let name = $(value).find(".music_label").text();
+                    let genre = "";
+                    if (sameNameList.indexOf(name) !== -1) {
+                        console.log("曲名が重複している楽曲名: " + name);
+                        let result = await axios.get(NET_URL + '/record/musicDetail/?idx=' + encodeURIComponent($(value).find("[name=idx]").prop("value")));
+                        var parse = $.parseHTML(result.data);
+                        genre = $(parse).find("div.t_r.f_12.main_color").text().trim();
+                        console.log(genre);
+                    }
+
                     var info: RecentMusicInfo = new RecentMusicInfo(
-                        $(value).find(".music_label").text(),
+                        name,
                         difficulty,
-                        +$(value).find(".score_value").text().replace(/,/g, "")
+                        +$(value).find(".score_value").text().replace(/,/g, ""),
+                        genre
                     );
                     this.ratingRecentMusicObject.push(info);
                 }
-            });
+            }
         }
     }
 
