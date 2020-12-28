@@ -37,7 +37,7 @@ class ViewUserRatingController extends Controller
         }
 
         // レート値が理論値 / 推定値なら文字装飾
-        if(OngekiUtility::IsEstimatedRateValueFromTitle($stdClass->title, $stdClass->difficulty, $stdClass->technical_high_score)){
+        if (OngekiUtility::IsEstimatedRateValueFromTitle($stdClass->title, $stdClass->difficulty)) {
             $stdClass->ratingValue = "<i><span class='estimated-rating'>" . $stdClass->ratingValue . "</span></i>";
         }else if($stdClass->technical_high_score >= 1007500){
             $stdClass->ratingValue = "<i><span class='max-rating'>" . $stdClass->ratingValue . "</span></i>";
@@ -185,7 +185,7 @@ class ViewUserRatingController extends Controller
             }else{
                 $recentScore[$i]['ratingValue'] = sprintf("%.2f", OngekiUtility::RateValueFromTitle($recentScore[$i]['title'], $recentScore[$i]['difficulty'], $recentScore[$i]['technical_score']));
                 $recentScore[$i]['rawRatingValue'] = $recentScore[$i]['ratingValue'];
-                if(OngekiUtility::IsEstimatedRateValueFromTitle($recentScore[$i]['title'], $recentScore[$i]['difficulty'], $recentScore[$i]['technical_score'])){
+                if (OngekiUtility::IsEstimatedRateValueFromTitle($recentScore[$i]['title'], $recentScore[$i]['difficulty'])) {
                     $recentScore[$i]['ratingValue'] = "<i><span class='estimated-rating'>" . $recentScore[$i]['ratingValue'] . "</span></i>";
                 }else if($recentScore[$i]['technical_score'] >= 1007500){
                     $recentScore[$i]['ratingValue'] = "<i><span class='max-rating'>" . $recentScore[$i]['ratingValue'] . "</span></i>";

@@ -15,7 +15,7 @@ class OngekiUtility {
         }
     }
 
-    public function IsEstimatedRateValueFromTitle(string $title, $difficulty, int $technicalScore){
+    public function IsEstimatedRateValueFromTitle(string $title, $difficulty){
         if(is_int($difficulty)){
             $keys = [
                 0 => "basic_extra_level_estimated",

@@ -72,7 +72,7 @@ class ViewUserController extends Controller
                     break;
             }
         }
-        
+
         switch (true) {
             case ($mode === "technical"):
                 $mode = "song_status_technical";
@@ -92,9 +92,9 @@ class ViewUserController extends Controller
                 break;
         }
 
-        
 
-        
+
+
         $stat['difficulty'] = [
             "Basic" => ['technical' => 0, "battle" => 0, "overDamage" => 0],
             "Advanced" => ['technical' => 0, "battle" => 0, "overDamage" => 0],
@@ -136,7 +136,7 @@ class ViewUserController extends Controller
             if(\App\UserInformation::IsPremiumPlan($user->id)){
                 $score[$key]->ratingValue = sprintf("%.2f", OngekiUtility::RateValueFromTitle($score[$key]->title, $score[$key]->difficulty, $score[$key]->technical_high_score));
                 $score[$key]->ratingValueRaw = $score[$key]->ratingValue;
-                if(OngekiUtility::IsEstimatedRateValueFromTitle($score[$key]->title, $score[$key]->difficulty, $score[$key]->technical_high_score)){
+                if (OngekiUtility::IsEstimatedRateValueFromTitle($score[$key]->title, $score[$key]->difficulty)) {
                     $score[$key]->ratingValue = "<i><span class='estimated-rating'>" . $score[$key]->ratingValue . "</span></i>";
                 }else if($score[$key]->technical_high_score >= 1007500){
                     $score[$key]->ratingValue = "<i><span class='max-rating'>" . $score[$key]->ratingValue . "</span></i>";
@@ -181,7 +181,7 @@ class ViewUserController extends Controller
             }else{
                 $score[$key]->rawTechnicalRank = $value->technical_high_score_rank;
             }
-            
+
             // ソート用隠しキー 難易度
             $score[$key]->rawDifficulty = $score[$key]->difficulty_str;
 
@@ -198,7 +198,7 @@ class ViewUserController extends Controller
 				$stat['difficulty'][$value->difficulty_str][$key] = 0;
             }
             $stat['difficulty'][$value->difficulty_str][$key] += 1;
-            
+
             // 対応する難易度のオーバーダメージランク総数を追加
             if(!isset($stat['difficulty'][$value->difficulty_str][$value->over_damage_high_score_rank])){
 				$stat['difficulty'][$value->difficulty_str][$value->over_damage_high_score_rank] = 0;
@@ -210,19 +210,19 @@ class ViewUserController extends Controller
 				$stat['difficulty'][$value->difficulty_str]["fc"] = 0;
             }
             $stat['difficulty'][$value->difficulty_str]["fc"] += $value->full_combo;
-            
+
             // 対応する難易度のallbreak総数を追加
             if(!isset($stat['difficulty'][$value->difficulty_str]["ab"])){
 				$stat['difficulty'][$value->difficulty_str]["ab"] = 0;
             }
             $stat['difficulty'][$value->difficulty_str]["ab"] += $value->all_break;
-            
+
             // 対応する難易度のfullbell総数を追加
             if(!isset($stat['difficulty'][$value->difficulty_str]["fb"])){
 				$stat['difficulty'][$value->difficulty_str]["fb"] = 0;
             }
             $stat['difficulty'][$value->difficulty_str]["fb"] += $value->full_bell;
-            
+
             $stat['difficulty'][$value->difficulty_str]["technical"] += $value->technical_high_score;
             $stat['difficulty'][$value->difficulty_str]["battle"] += $value->battle_high_score;
             $stat['difficulty'][$value->difficulty_str]["overDamage"] += $value->over_damage_high_score;
@@ -244,13 +244,13 @@ class ViewUserController extends Controller
                 $stat['level']["Lv." . $value->level_str]["fc"] = 0;
             }
             $stat['level']["Lv." . $value->level_str]["fc"] += $value->full_combo;
-            
+
             // 対応するレベルのallbreak総数を追加
             if(!isset($stat['level']["Lv." . $value->level_str]["ab"])){
                 $stat['level']["Lv." . $value->level_str]["ab"] = 0;
             }
             $stat['level']["Lv." . $value->level_str]["ab"] += $value->all_break;
-            
+
             // 対応するレベルのfullbell総数を追加
             if(!isset($stat['level']["Lv." . $value->level_str]["fb"])){
                 $stat['level']["Lv." . $value->level_str]["fb"] = 0;
@@ -263,7 +263,7 @@ class ViewUserController extends Controller
                 $stat['average']["Lv." . $value->level_str][$value->difficulty_str]['count'] = 0;
             }
             $stat['average']["Lv." . $value->level_str][$value->difficulty_str]['count']++;
-    
+
             // レベル平均のスコアを追加 表示時に割る
             if(!isset($stat['average']["Lv." . $value->level_str][$value->difficulty_str]["score"])){
                 $stat['average']["Lv." . $value->level_str][$value->difficulty_str]['score'] = 0;
@@ -275,7 +275,7 @@ class ViewUserController extends Controller
                 $stat['average']["Lv." . $value->level_str]["total"]['count'] = 0;
             }
             $stat['average']["Lv." . $value->level_str]["total"]['count']++;
-    
+
             // // レベル平均のトータルスコアを追加 表示時に割る
             if(!isset($stat['average']["Lv." . $value->level_str]["total"]["score"])){
                 $stat['average']["Lv." . $value->level_str]["total"]['score'] = 0;
@@ -287,7 +287,7 @@ class ViewUserController extends Controller
                 $stat['average']["All"][$value->difficulty_str]['count'] = 0;
             }
             $stat['average']["All"][$value->difficulty_str]['count']++;
-    
+
             // 全曲平均の難易度別スコアを追加 表示時に割る
             if(!isset($stat['average']["All"][$value->difficulty_str]["score"])){
                 $stat['average']["All"][$value->difficulty_str]['score'] = 0;
@@ -299,7 +299,7 @@ class ViewUserController extends Controller
                 $stat['average']["All"]["total"]['count'] = 0;
             }
             $stat['average']["All"]["total"]['count']++;
-    
+
             // 全曲平均のトータルスコアを追加 表示時に割る
             if(!isset($stat['average']["All"]["total"]["score"])){
                 $stat['average']["All"]["total"]['score'] = 0;
@@ -313,7 +313,7 @@ class ViewUserController extends Controller
                     $stat['averageExist']["Lv." . $value->level_str][$value->difficulty_str]['count'] = 0;
                 }
                 $stat['averageExist']["Lv." . $value->level_str][$value->difficulty_str]['count']++;
-    
+
                 // レベル平均のスコアを追加 表示時に割る
                 if(!isset($stat['averageExist']["Lv." . $value->level_str][$value->difficulty_str]["score"])){
                     $stat['averageExist']["Lv." . $value->level_str][$value->difficulty_str]['score'] = 0;
@@ -325,7 +325,7 @@ class ViewUserController extends Controller
                     $stat['averageExist']["Lv." . $value->level_str]["total"]['count'] = 0;
                 }
                 $stat['averageExist']["Lv." . $value->level_str]["total"]['count']++;
-    
+
                 // レベル平均のトータルスコアを追加 表示時に割る
                 if(!isset($stat['averageExist']["Lv." . $value->level_str]["total"]["score"])){
                     $stat['averageExist']["Lv." . $value->level_str]["total"]['score'] = 0;
@@ -337,26 +337,26 @@ class ViewUserController extends Controller
                     $stat['averageExist']["All"][$value->difficulty_str]['count'] = 0;
                 }
                 $stat['averageExist']["All"][$value->difficulty_str]['count']++;
-        
+
                 // 全曲平均の難易度別スコアを追加 表示時に割る
                 if(!isset($stat['averageExist']["All"][$value->difficulty_str]["score"])){
                     $stat['averageExist']["All"][$value->difficulty_str]['score'] = 0;
                 }
                 $stat['averageExist']["All"][$value->difficulty_str]['score'] += $value->technical_high_score;
-    
+
                 // 全曲平均のトータル曲数を追加
                 if(!isset($stat['averageExist']["All"]["total"]["count"])){
                     $stat['averageExist']["All"]["total"]['count'] = 0;
                 }
                 $stat['averageExist']["All"]["total"]['count']++;
-        
+
                 // 全曲平均のトータルスコアを追加 表示時に割る
                 if(!isset($stat['averageExist']["All"]["total"]["score"])){
                     $stat['averageExist']["All"]["total"]['score'] = 0;
                 }
                 $stat['averageExist']["All"]["total"]['score'] += $value->technical_high_score;
             }
-            
+
         }
         return view('user', compact('id', 'status', 'score', 'stat', 'mode', 'submenuActive', 'sidemark'));
     }
