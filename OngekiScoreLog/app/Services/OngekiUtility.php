@@ -14,7 +14,6 @@ class OngekiUtility {
             $title = $value['title'];
             if (array_key_exists($title, $sameNameList)) {
                 $title .= "." . $value['genre'];
-                var_dump($title);
             }
             $this::$MusicList[$title] = $value;
             unset($this::$MusicList[$title]['title']);
