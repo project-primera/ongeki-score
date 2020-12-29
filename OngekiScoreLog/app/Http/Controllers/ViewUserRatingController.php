@@ -66,7 +66,8 @@ class ViewUserRatingController extends Controller
         }
 
         if(!\App\UserInformation::IsPremiumPlan($user->id)){
-            return view("user_rating_error", compact('id', 'status', 'sidemark'));
+            $message = "この機能を利用するにはオンゲキNETのプレミアムプランに課金する必要があります。課金情報は毎月1日にリセットされます。もし課金している場合は再度ブックマークを実行してください。";
+            return view("user_rating_error", compact('id', 'status', 'sidemark', 'message'));
         }
 
         $statistics = new \stdClass;

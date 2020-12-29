@@ -24,7 +24,6 @@
 
 @section('content')
     <article class="box">
-        <p>この機能を利用するにはオンゲキNETのプレミアムプランに課金する必要があります。<br>
-        課金情報は毎月1日にリセットされます。もし課金している場合は再度ブックマークを実行してください。</p>
+        <p>{{$message}}</p>
     </article>
 @endsection
