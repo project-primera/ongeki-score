@@ -8,6 +8,7 @@ use App\UserStatus;
 use App\ScoreData;
 use App\RatingRecentMusic;
 use App\Facades\OngekiUtility;
+use App\Facades\Slack;
 
 class ViewUserRatingController extends Controller
 {
@@ -106,6 +107,7 @@ class ViewUserRatingController extends Controller
         $oldScore = (new ScoreData())->getRatingOldUserScore($id)->addMusicData()->getValue();
         $recentScore = json_decode(json_encode(RatingRecentMusic::where('user_id', $id)->get()), true);
 
+        try {
         // 新曲枠のレート計算
         foreach ($newScore as $key => $value) {
             self::editMusicStdClass($value, $statistics->totalRatingCount);
@@ -117,6 +119,12 @@ class ViewUserRatingController extends Controller
             self::editMusicStdClass($value, $statistics->totalRatingCount);
         }
         array_multisort(array_column($oldScore, 'rawRatingValue'), SORT_DESC, $oldScore);
+        } catch (\OutOfBoundsException $e) {
+            $message = "レーティング枠に未知の楽曲が含まれるため、正常に計算を行えませんでした。ブックマークレットでのデータ取得をお試しください。解消しない場合はこちらの情報を添えてご報告いただけますと幸いです。" . $e->getMessage();
+            $ua = isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : "N/A";
+            Slack::Warning($e->getMessage() . "\n" . get_class($e) . "\n" . url()->full(), "ip: " . \Request::ip() . "\nUser agent: " . $ua . "\nReferer: " . (isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : "N/A") . "\n\n", ["File" => $e->getFile(), "Line" => $e->getLine(), "IP Address" => \Request::ip(), "User page id" => $user->id], "warning");
+            return view("user_rating_error", compact('id', 'status', 'sidemark', 'message'));
+        }
 
         // 新曲枠対象曲 統計情報の処理
         for ($i = 0; $i < $statistics->newBestRatingCount; ++$i) {
