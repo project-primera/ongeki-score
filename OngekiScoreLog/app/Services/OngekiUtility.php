@@ -5,11 +5,14 @@ use App\MusicData;
 
 class OngekiUtility {
 
+    private static $MusicData = null;
     private static $MusicList = null;
 
-    function __construct()	{
-        $temp = (new MusicData())->getEstimateExtraLevel();
-        $sameNameList = array_flip((new MusicData())->getSameMusicList());
+    function __construct()
+    {
+        $this::$MusicData = new MusicData;
+        $temp = $this::$MusicData->getEstimateExtraLevel();
+        $sameNameList = array_flip($this::$MusicData->getSameMusicList());
         foreach ($temp as $value) {
             $title = $value['title'];
             if (array_key_exists($title, $sameNameList)) {
@@ -20,7 +23,8 @@ class OngekiUtility {
         }
     }
 
-    public function IsEstimatedRateValueFromTitle(string $title, $difficulty){
+    public function IsEstimatedRateValueFromTitle(string $title, $difficulty, $genre)
+    {
         if(is_int($difficulty)){
             $keys = [
                 0 => "basic_extra_level_estimated",
@@ -32,6 +36,11 @@ class OngekiUtility {
             $difficulty = $keys[$difficulty];
         }else if(!is_string($difficulty)){
             throw new InvalidArgumentException();
+        }
+
+        $sameNameList = array_flip($this::$MusicData->getSameMusicList());
+        if (array_key_exists($title, $sameNameList)) {
+            $title .= "." . $genre;
         }
 
         if(!array_key_exists($title, $this::$MusicList)){
@@ -47,27 +56,7 @@ class OngekiUtility {
      * @param integer|string $difficulty 難易度
      * @return float 譜面定数
      */
-    public function ExtraLevelFromTitle(string $title, $difficulty): float{
-        if(is_int($difficulty)){
-            $keys = [
-                0 => "basic_extra_level",
-                1 => "advanced_extra_level",
-                2 => "expert_extra_level",
-                3 => "master_extra_level",
-                10 => "lunatic_extra_level",
-            ];
-            $difficulty = $keys[$difficulty];
-        }else if(!is_string($difficulty)){
-            throw new InvalidArgumentException();
-        }
-
-        if(!array_key_exists($title, $this::$MusicList)){
-            throw new \OutOfBoundsException("title: " . $title . " / difficulty:" . $difficulty);
-        }
-        return $this::$MusicList[$title][$difficulty];
-    }
-
-    public function RateValueFromTitle(string $title, $difficulty, int $technicalScore)
+    public function ExtraLevelFromTitle(string $title, $difficulty, $genre): float
     {
         if(is_int($difficulty)){
             $keys = [
@@ -80,6 +69,37 @@ class OngekiUtility {
             $difficulty = $keys[$difficulty];
         }else if(!is_string($difficulty)){
             throw new InvalidArgumentException();
+        }
+
+        $sameNameList = array_flip($this::$MusicData->getSameMusicList());
+        if (array_key_exists($title, $sameNameList)) {
+            $title .= "." . $genre;
+        }
+
+        if(!array_key_exists($title, $this::$MusicList)){
+            throw new \OutOfBoundsException("title: " . $title . " / difficulty:" . $difficulty);
+        }
+        return $this::$MusicList[$title][$difficulty];
+    }
+
+    public function RateValueFromTitle(string $title, $difficulty, int $technicalScore, $genre)
+    {
+        if(is_int($difficulty)){
+            $keys = [
+                0 => "basic_extra_level",
+                1 => "advanced_extra_level",
+                2 => "expert_extra_level",
+                3 => "master_extra_level",
+                10 => "lunatic_extra_level",
+            ];
+            $difficulty = $keys[$difficulty];
+        }else if(!is_string($difficulty)){
+            throw new InvalidArgumentException();
+        }
+
+        $sameNameList = array_flip($this::$MusicData->getSameMusicList());
+        if (array_key_exists($title, $sameNameList)) {
+            $title .= "." . $genre;
         }
 
         if(!array_key_exists($title, $this::$MusicList)){
@@ -157,7 +177,13 @@ class OngekiUtility {
         }
     }
 
-    public function GetIDFromTitle(string $title){
+    public function GetIDFromTitle(string $title, $genre)
+    {
+        $sameNameList = array_flip($this::$MusicData->getSameMusicList());
+        if (array_key_exists($title, $sameNameList)) {
+            $title .= "." . $genre;
+        }
+
         if(!array_key_exists($title, $this::$MusicList)){
             throw new \OutOfBoundsException("title: " . $title);
         }
