@@ -5,7 +5,7 @@ use App\MusicData;
 
 class OngekiUtility {
 
-    private static $MusicData = null;
+    private static $MusicList = null;
 
     function __construct()	{
         $temp = (new MusicData())->getEstimateExtraLevel();
@@ -16,8 +16,8 @@ class OngekiUtility {
                 $title .= "." . $value['genre'];
                 var_dump($title);
             }
-            $this::$MusicData[$title] = $value;
-            unset($this::$MusicData[$title]['title']);
+            $this::$MusicList[$title] = $value;
+            unset($this::$MusicList[$title]['title']);
         }
     }
 
@@ -35,10 +35,10 @@ class OngekiUtility {
             throw new InvalidArgumentException();
         }
 
-        if(!array_key_exists($title, $this::$MusicData)){
+        if(!array_key_exists($title, $this::$MusicList)){
             throw new \OutOfBoundsException("title: " . $title . " / difficulty:" . $difficulty);
         }
-        return $this::$MusicData[$title][$difficulty];
+        return $this::$MusicList[$title][$difficulty];
     }
 
     /**
@@ -62,10 +62,10 @@ class OngekiUtility {
             throw new InvalidArgumentException();
         }
 
-        if(!array_key_exists($title, $this::$MusicData)){
+        if(!array_key_exists($title, $this::$MusicList)){
             throw new \OutOfBoundsException("title: " . $title . " / difficulty:" . $difficulty);
         }
-        return $this::$MusicData[$title][$difficulty];
+        return $this::$MusicList[$title][$difficulty];
     }
 
     public function RateValueFromTitle(string $title, $difficulty, int $technicalScore)
@@ -83,10 +83,10 @@ class OngekiUtility {
             throw new InvalidArgumentException();
         }
 
-        if(!array_key_exists($title, $this::$MusicData)){
+        if(!array_key_exists($title, $this::$MusicList)){
             throw new \OutOfBoundsException("title: " . $title . " / difficulty:" . $difficulty);
         }
-        return $this->RateValue($this::$MusicData[$title][$difficulty], $technicalScore);
+        return $this->RateValue($this::$MusicList[$title][$difficulty], $technicalScore);
     }
 
     private function RateValue(float $extraLevel, int $technicalScore)
@@ -148,20 +148,20 @@ class OngekiUtility {
             ];
             $difficulty = $keys[$difficulty];
         }
-        if(!array_key_exists($title, $this::$MusicData)){
+        if(!array_key_exists($title, $this::$MusicList)){
             throw new \OutOfBoundsException("title: " . $title . " / difficulty:" . $difficulty);
         }
         if($isStr){
-            return $this::$MusicData[$title][$difficulty . "_str"];
+            return $this::$MusicList[$title][$difficulty . "_str"];
         }else{
-            return $this::$MusicData[$title][$difficulty];
+            return $this::$MusicList[$title][$difficulty];
         }
     }
 
     public function GetIDFromTitle(string $title){
-        if(!array_key_exists($title, $this::$MusicData)){
+        if(!array_key_exists($title, $this::$MusicList)){
             throw new \OutOfBoundsException("title: " . $title);
         }
-        return $this::$MusicData[$title]["id"];
+        return $this::$MusicList[$title]["id"];
     }
 }
