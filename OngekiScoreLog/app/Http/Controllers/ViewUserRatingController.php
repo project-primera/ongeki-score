@@ -110,15 +110,15 @@ class ViewUserRatingController extends Controller
         try {
         // 新曲枠のレート計算
         foreach ($newScore as $key => $value) {
-            self::editMusicStdClass($value, $statistics->totalRatingCount);
         }
         array_multisort(array_column($newScore, 'rawRatingValue'), SORT_DESC, $newScore);
+                $this->editMusicStdClass($value, $statistics->totalRatingCount);
 
         // 旧曲枠のレート計算
         foreach ($oldScore as $key => $value) {
-            self::editMusicStdClass($value, $statistics->totalRatingCount);
         }
         array_multisort(array_column($oldScore, 'rawRatingValue'), SORT_DESC, $oldScore);
+                $this->editMusicStdClass($value, $statistics->totalRatingCount);
         } catch (\OutOfBoundsException $e) {
             $message = "レーティング枠に未知の楽曲が含まれるため、正常に計算を行えませんでした。ブックマークレットでのデータ取得をお試しください。解消しない場合はこちらの情報を添えてご報告いただけますと幸いです。" . $e->getMessage();
             $ua = isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : "N/A";
