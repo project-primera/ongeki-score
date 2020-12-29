@@ -10,9 +10,22 @@ class MusicData extends Model
     protected $table = "music_datas";
     protected $guarded = ['id'];
 
+    private $sameMusicList = [];
+
+    function getSameMusicList()
+    {
+        if (count($this->sameMusicList) === 0) {
+            $array = MusicData::groupBy('title')->having(DB::raw('count(*)'), '>', 1)->get(['title'])->toArray();
+            foreach ($array as $value) {
+                $this->sameMusicList[] = $value['title'];
+            }
+        }
+        return $this->sameMusicList;
+    }
+
     function getEstimateExtraLevel(){
         $music = MusicData::all();
-        
+
         $keys = [
             ['basic_level', 'basic_extra_level', 'basic_level_str'],
             ['advanced_level', 'advanced_extra_level', 'advanced_level_str'],
