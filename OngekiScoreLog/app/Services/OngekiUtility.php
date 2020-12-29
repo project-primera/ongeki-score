@@ -30,7 +30,7 @@ class OngekiUtility {
         }
 
         if(!array_key_exists($title, $this::$MusicData)){
-            throw new \OutOfBoundsException("title: " . $title . " difficulty:" . $difficulty);
+            throw new \OutOfBoundsException("title: " . $title . " / difficulty:" . $difficulty);
         }
         return $this::$MusicData[$title][$difficulty];
     }
@@ -57,7 +57,7 @@ class OngekiUtility {
         }
 
         if(!array_key_exists($title, $this::$MusicData)){
-            throw new \OutOfBoundsException("title: " . $title . " difficulty:" . $difficulty);
+            throw new \OutOfBoundsException("title: " . $title . " / difficulty:" . $difficulty);
         }
         return $this::$MusicData[$title][$difficulty];
     }
@@ -78,7 +78,7 @@ class OngekiUtility {
         }
 
         if(!array_key_exists($title, $this::$MusicData)){
-            throw new \OutOfBoundsException("title: " . $title . " difficulty:" . $difficulty);
+            throw new \OutOfBoundsException("title: " . $title . " / difficulty:" . $difficulty);
         }
         return $this->RateValue($this::$MusicData[$title][$difficulty], $technicalScore);
     }
@@ -143,7 +143,7 @@ class OngekiUtility {
             $difficulty = $keys[$difficulty];
         }
         if(!array_key_exists($title, $this::$MusicData)){
-            throw new \OutOfBoundsException("title: " . $title . " difficulty:" . $difficulty);
+            throw new \OutOfBoundsException("title: " . $title . " / difficulty:" . $difficulty);
         }
         if($isStr){
             return $this::$MusicData[$title][$difficulty . "_str"];
