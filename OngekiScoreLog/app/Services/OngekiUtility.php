@@ -8,10 +8,16 @@ class OngekiUtility {
     private static $MusicData = null;
 
     function __construct()	{
-		$temp = (new MusicData())->getEstimateExtraLevel();
-        foreach ($temp as $key => $value) {
-            $this::$MusicData[$value['title']] = $value;
-            unset($this::$MusicData[$value['title']]['title']);
+        $temp = (new MusicData())->getEstimateExtraLevel();
+        $sameNameList = array_flip((new MusicData())->getSameMusicList());
+        foreach ($temp as $value) {
+            $title = $value['title'];
+            if (array_key_exists($title, $sameNameList)) {
+                $title .= "." . $value['genre'];
+                var_dump($title);
+            }
+            $this::$MusicData[$title] = $value;
+            unset($this::$MusicData[$title]['title']);
         }
     }
 
