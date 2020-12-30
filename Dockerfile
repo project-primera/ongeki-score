@@ -21,7 +21,7 @@ ARG supervisor_version="4.1.0-r0"
 ARG nginx_version="1.16.1-r6"
 ARG nodejs_version="12.15.0-r1"
 ARG npm_version="12.15.0-r1"
-ARG yarn_version="1.22.4"
+ARG npm_yarn_version="1.22.10"
 COPY --from=composer /src /app
 COPY docker/docker-entrypoint.sh /etc/
 COPY docker/supervisor/supervisord.conf /etc/
@@ -33,7 +33,7 @@ RUN set -ex \
     && echo \"${commit_hash}\" > /etc/hash \
     && docker-php-ext-install pdo_mysql mysqli >/dev/null \
     && apk add --update-cache --no-cache supervisor=${supervisor_version} nginx=${nginx_version} nodejs=${nodejs_version} npm=${npm_version} \
-    && npm install --global yarn@${yarn_version} \
+    && npm install --global yarn@${npm_yarn_version} \
     && apk del --purge npm \
     && rm -r /root/.npm \
     && mkdir -p /run/nginx \
