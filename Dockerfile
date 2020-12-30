@@ -11,8 +11,7 @@ WORKDIR /src
 COPY ./OngekiScoreLog /src
 RUN composer config -g repos.packagist composer https://packagist.jp \
     && composer global require hirak/prestissimo \
-    && composer install --optimize-autoloader \
-    && rm /src/vendor/mockery/mockery/docker/php56/Dockerfile
+    && composer install --optimize-autoloader
 
 FROM base AS final
 ARG application_version=""
