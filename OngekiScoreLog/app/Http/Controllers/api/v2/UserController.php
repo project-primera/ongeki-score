@@ -87,7 +87,7 @@ class UserController extends Controller{
             }
             $content = "スコア登録(post): " . $name . "(" . $user->id . ")\n" . url("/user/" . $user->id);
             $fileContent = "ip: " . \Request::ip() . "\nUser agent: " . $_SERVER['HTTP_USER_AGENT'] . "\n\nUser:\nid: " . $user->id . "\nemail: " . $user->email . "\nrole: " . $user->role . "\n\nRequest:\n" . var_export($request, true);
-            $fields = ["IP Address" => \Request::ip(), "User id" => $user->id];Cookie
+            $fields = ["IP Address" => \Request::ip(), "User id" => $user->id];
             \App\Facades\Slack::Warning($content, $fileContent, $fields, "success");
             return $result;
         }
@@ -329,10 +329,15 @@ class UserController extends Controller{
     private function setRatingRecentMusic($data, $dateTime, $uniqueID){
         \App\RatingRecentMusic::where('user_id', Auth::id())->delete();
         foreach ($data['ratingRecentMusicObject'] as $key => $value) {
+            $genre = $value['genre'];
+            if ($genre === "") {
+                $genre = null;
+            }
             \App\RatingRecentMusic::create([
                 'user_id' => Auth::id(),
                 'rank' => $key,
                 'title' => $value['title'],
+                'genre' => $genre,
                 'difficulty' => $value['difficulty'],
                 'technical_score' => $value['technicalScore'],
                 'unique_id' => $uniqueID,
