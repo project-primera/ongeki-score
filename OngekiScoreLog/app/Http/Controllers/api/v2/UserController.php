@@ -329,9 +329,9 @@ class UserController extends Controller{
     private function setRatingRecentMusic($data, $dateTime, $uniqueID){
         \App\RatingRecentMusic::where('user_id', Auth::id())->delete();
         foreach ($data['ratingRecentMusicObject'] as $key => $value) {
-            $genre = $value['genre'];
-            if ($genre === "") {
-                $genre = null;
+            $genre = null;
+            if (array_key_exists('genre', $value) && $value['genre'] !== "") {
+                $genre = $value['genre'];
             }
             \App\RatingRecentMusic::create([
                 'user_id' => Auth::id(),
