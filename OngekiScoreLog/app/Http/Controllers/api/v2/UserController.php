@@ -125,7 +125,7 @@ class UserController extends Controller{
         }else if($methodType === "3"){
             $this->setCharacterFriendly($data, $userStatus->begin_at, $uniqueID);
         }else if($methodType === "4"){
-            $this->setRatingRecentMusic($data, $userStatus->begin_at, $uniqueID);
+            $result['message'] = $this->setRatingRecentMusic($data, $userStatus->begin_at, $uniqueID);
         }else if($methodType === "5"){
             $this->setPaymentStatus($data, $userStatus->begin_at, $uniqueID);
         }else{
@@ -327,10 +327,13 @@ class UserController extends Controller{
     }
 
     private function setRatingRecentMusic($data, $dateTime, $uniqueID){
+        $message = [];
         \App\RatingRecentMusic::where('user_id', Auth::id())->delete();
         foreach ($data['ratingRecentMusicObject'] as $key => $value) {
             $genre = null;
-            if (array_key_exists('genre', $value) && $value['genre'] !== "") {
+            if (!array_key_exists('genre', $value)) {
+                $message = ["古いブックマークレットが実行されている可能性があります。問題が発生する場合はブラウザのキャッシュクリアをお試しください。"];
+            } else if ($value['genre'] !== "") {
                 $genre = $value['genre'];
             }
             \App\RatingRecentMusic::create([
@@ -345,6 +348,7 @@ class UserController extends Controller{
                 'updated_at' => $dateTime,
             ]);
         }
+        return $message;
     }
 
     private function setPaymentStatus($data, $dateTime, $uniqueID){
