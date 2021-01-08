@@ -21,7 +21,7 @@
         "sass-loader": "^7.1.0",
         "vue": "^2.5.7",
         "vue-template-compiler": "^2.6.10",
-        "webpack": "^4.39.2"
+        "webpack": "^4.45.0"
     },
     "dependencies": {
         "@types/html2canvas": "0.0.35",
