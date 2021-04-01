@@ -165,9 +165,19 @@ class UserController extends Controller{
             if($value['difficulty'] !== "0" && $value['difficulty'] !== "1" && $value['difficulty'] !== "2" && $value['difficulty'] !== "3" && $value['difficulty'] !== "10"){
                 throw new RuntimeException("未知の難易度が送信されました。(" . $value['difficulty'] . ")");
             }
-            $music = \App\MusicData::where("title", $value['title'])->where("genre", $value['genre'])->first();
+            if ($value['artist'] != '') {
+                $music = \App\MusicData::where("title", $value['title'])->where("genre", $value['genre'])->where("artist", $value['artist'])->first();
+            } else {
+                $v['artist'] = null;
+                $music = \App\MusicData::where("title", $value['title'])->where("genre", $value['genre'])->first();
+            }
             if($music === null){
-                $message[] = "未知の曲: " . $value['title'] . " / " . $value['genre'];
+                $m = "未知の曲: " . $value['title'] . " / " . $value['genre'] . " / " . $value['artist'];
+                $message[] = $m;
+
+                $content = "未知の曲が送信されました。";
+                $fields = ["IP Address" => \Request::ip(), "User id" => Auth::id(), "Title" => $value['title'], "Artist" => $value['artist'], "Genre" => $value['genre']];
+                \App\Facades\Slack::Notice($content, "", $fields, "success");
                 continue;
             }
             $recentScore = (new \App\ScoreData())->getRecentGenerationOfScoreData(Auth::id(), $music->id, $value['difficulty'])->getValue();
@@ -246,16 +256,24 @@ class UserController extends Controller{
         }
 
         foreach ($data as $v) {
-            $musicData = \App\MusicData::where("title", $v['title'])->where("genre", $v['genre'])->first();
+            // FIXME: 同名楽曲が追加された際、先に既存曲のアーティストをいれないと不具合が起きる
+            if ($v['artist'] != '') {
+                $musicData = \App\MusicData::where("title", $v['title'])->where("genre", $v['genre'])->where("artist", $v['artist'])->first();
+            } else {
+                $v['artist'] = null;
+                $musicData = \App\MusicData::where("title", $v['title'])->where("genre", $v['genre'])->first();
+            }
+
             if(is_null($musicData)){
                 $musicData = new \App\MusicData();
                 $musicData->title = $v['title'];
-                $message[] =  "[楽曲データ追加] ". $v['title'];
+                $message[] = "[楽曲データ追加] " . $v['title'];
                 $titles[] = $v['title'];
             }
             $musicData->genre = $v['genre'];
-            $difficulty = "";
+            $musicData->artist = $v['artist'];
 
+            $difficulty = "";
             if($v['difficulty'] === "0"){
                 $difficulty = "basic";
                 $musicData->basic_level = $v['level'];
@@ -331,15 +349,23 @@ class UserController extends Controller{
         \App\RatingRecentMusic::where('user_id', Auth::id())->delete();
         foreach ($data['ratingRecentMusicObject'] as $key => $value) {
             $genre = null;
-            if (!array_key_exists('genre', $value)) {
+            $artist = null;
+            if (!array_key_exists('genre', $value) || !array_key_exists('artist', $value)) {
                 $message = ["古いブックマークレットが実行されている可能性があります。問題が発生する場合はブラウザのキャッシュクリアをお試しください。"];
-            } else if ($value['genre'] !== "") {
+            }
+
+            if ($value['genre'] !== "") {
                 $genre = $value['genre'];
             }
+            if ($value['artist'] !== "") {
+                $artist = $value['artist'];
+            }
+
             \App\RatingRecentMusic::create([
                 'user_id' => Auth::id(),
                 'rank' => $key,
                 'title' => $value['title'],
+                'artist' => $artist,
                 'genre' => $genre,
                 'difficulty' => $value['difficulty'],
                 'technical_score' => $value['technicalScore'],
