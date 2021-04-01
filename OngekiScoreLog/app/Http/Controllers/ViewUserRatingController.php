@@ -22,11 +22,11 @@ class ViewUserRatingController extends Controller
 
     private function editMusicStdClass(\stdClass $stdClass, int $totalMusicCount){
         // 譜面定数の取得
-        $stdClass->ratingValue = sprintf("%.2f", OngekiUtility::RateValueFromTitle($stdClass->title, $stdClass->difficulty, $stdClass->technical_high_score, $stdClass->genre));
+        $stdClass->ratingValue = sprintf("%.2f", OngekiUtility::RateValueFromTitle($stdClass->title, $stdClass->difficulty, $stdClass->technical_high_score, $stdClass->genre, $stdClass->artist));
         $stdClass->rawRatingValue = $stdClass->ratingValue;
 
         // レート値上昇推定スコア計算
-        $stdClass->extraLevel = OngekiUtility::ExtraLevelFromTitle($stdClass->title, $stdClass->difficulty, $stdClass->genre);
+        $stdClass->extraLevel = OngekiUtility::ExtraLevelFromTitle($stdClass->title, $stdClass->difficulty, $stdClass->genre, $stdClass->artist);
         $stdClass->extraLevelStr = sprintf("%.1f", $stdClass->extraLevel);
         $stdClass->targetMusicRateMusic = OngekiUtility::ExpectedScoreFromExtraLevel($stdClass->extraLevel, $stdClass->rawRatingValue + 0.01);
         if($stdClass->targetMusicRateMusic !== false){
@@ -38,7 +38,7 @@ class ViewUserRatingController extends Controller
         }
 
         // レート値が理論値 / 推定値なら文字装飾
-        if (OngekiUtility::IsEstimatedRateValueFromTitle($stdClass->title, $stdClass->difficulty, $stdClass->genre)) {
+        if (OngekiUtility::IsEstimatedRateValueFromTitle($stdClass->title, $stdClass->difficulty, $stdClass->genre, $stdClass->artist)) {
             $stdClass->ratingValue = "<i><span class='estimated-rating'>" . $stdClass->ratingValue . "</span></i>";
         }else if($stdClass->technical_high_score >= 1007500){
             $stdClass->ratingValue = "<i><span class='max-rating'>" . $stdClass->ratingValue . "</span></i>";
@@ -186,16 +186,16 @@ class ViewUserRatingController extends Controller
                 if(!array_key_exists($i, $recentScore)){
                     $recentScore[] = $notExistMusic;
                 }else{
-                    $recentScore[$i]['ratingValue'] = sprintf("%.2f", OngekiUtility::RateValueFromTitle($recentScore[$i]['title'], $recentScore[$i]['difficulty'], $recentScore[$i]['technical_score'], $recentScore[$i]['genre']));
+                    $recentScore[$i]['ratingValue'] = sprintf("%.2f", OngekiUtility::RateValueFromTitle($recentScore[$i]['title'], $recentScore[$i]['difficulty'], $recentScore[$i]['technical_score'], $recentScore[$i]['genre'], $recentScore[$i]['artist']));
                     $recentScore[$i]['rawRatingValue'] = $recentScore[$i]['ratingValue'];
-                    if (OngekiUtility::IsEstimatedRateValueFromTitle($recentScore[$i]['title'], $recentScore[$i]['difficulty'], $recentScore[$i]['genre'])) {
+                    if (OngekiUtility::IsEstimatedRateValueFromTitle($recentScore[$i]['title'], $recentScore[$i]['difficulty'], $recentScore[$i]['genre'], $recentScore[$i]['artist'])) {
                         $recentScore[$i]['ratingValue'] = "<i><span class='estimated-rating'>" . $recentScore[$i]['ratingValue'] . "</span></i>";
                     }else if($recentScore[$i]['technical_score'] >= 1007500){
                         $recentScore[$i]['ratingValue'] = "<i><span class='max-rating'>" . $recentScore[$i]['ratingValue'] . "</span></i>";
                     }
-                    $recentScore[$i]['song_id'] = OngekiUtility::GetIDFromTitle($recentScore[$i]['title'], $recentScore[$i]['genre']);
+                    $recentScore[$i]['song_id'] = OngekiUtility::GetIDFromTitle($recentScore[$i]['title'], $recentScore[$i]['genre'], $recentScore[$i]['artist']);
                     $recentScore[$i]['difficulty_str'] = $this->difficultyToStr[$recentScore[$i]['difficulty']];
-                    $recentScore[$i]['level_str'] = sprintf("%.1f", OngekiUtility::ExtraLevelFromTitle($recentScore[$i]['title'], $recentScore[$i]['difficulty'], $recentScore[$i]['genre']));
+                    $recentScore[$i]['level_str'] = sprintf("%.1f", OngekiUtility::ExtraLevelFromTitle($recentScore[$i]['title'], $recentScore[$i]['difficulty'], $recentScore[$i]['genre'], $recentScore[$i]['artist']));
 
                     $statistics->recentRatingTotal += $recentScore[$i]['rawRatingValue'];
                     if($statistics->recentRatingTop < $recentScore[$i]['rawRatingValue']){

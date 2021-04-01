@@ -1,4 +1,4 @@
-FROM php:7.3.25-fpm-alpine3.12 AS base
+FROM php:7.3.27-fpm-alpine3.13 AS base
 LABEL maintainer "slime-hatena <Slime-hatena@aki-memo.net>"
 WORKDIR /app
 EXPOSE 80
@@ -16,10 +16,10 @@ RUN composer config -g repos.packagist composer https://packagist.jp \
 FROM base AS final
 ARG application_version=""
 ARG commit_hash=""
-ARG supervisor_version="4.2.0-r0"
-ARG nginx_version="1.18.0-r1"
-ARG nodejs_version="12.18.4-r0"
-ARG npm_version="12.18.4-r0"
+ARG supervisor_version="4.2.1-r0"
+ARG nginx_version="1.18.0-r13"
+ARG nodejs_version="14.16.0-r0"
+ARG npm_version="14.16.0-r0"
 ARG npm_yarn_version="1.22.10"
 COPY --from=composer /src /app
 COPY docker/docker-entrypoint.sh /etc/
