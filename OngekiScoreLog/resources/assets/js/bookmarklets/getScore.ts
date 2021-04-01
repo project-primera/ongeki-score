@@ -316,12 +316,14 @@ import * as qs from 'qs';
         difficulty: number = 0;
         technicalScore: number = 0;
         genre: string = "";
+        artist: string = "";
 
-        constructor(title: string, difficulty: number, technicalScore: number, genre: string = "") {
+        constructor(title: string, difficulty: number, technicalScore: number, genre: string = "", artist: string = "") {
             this.title = title;
             this.difficulty = difficulty;
             this.technicalScore = technicalScore;
             this.genre = genre;
+            this.artist = artist;
         }
     }
 
@@ -363,19 +365,24 @@ import * as qs from 'qs';
 
                     let name = $(value).find(".music_label").text();
                     let genre = "";
+                    let artist = "";
                     if (sameNameList.indexOf(name) !== -1) {
                         console.log("曲名が重複している楽曲名: " + name);
+                        await sleep(SLEEP_MSEC);
                         let result = await axios.get(NET_URL + '/record/musicDetail/?idx=' + encodeURIComponent($(value).find("[name=idx]").prop("value")));
                         var parse = $.parseHTML(result.data);
                         genre = $(parse).find("div.t_r.f_12.main_color").text().trim();
-                        console.log(genre);
+                        artist = $(parse).find("div.m_5.f_13.break").text().trim();
+                        artist = artist.substring(0, artist.indexOf('\n'));
+                        console.log(genre + ' / ' + artist);
                     }
 
                     var info: RecentMusicInfo = new RecentMusicInfo(
                         name,
                         difficulty,
                         +$(value).find(".score_value").text().replace(/,/g, ""),
-                        genre
+                        genre,
+                        artist
                     );
                     this.ratingRecentMusicObject.push(info);
                 }

@@ -350,15 +350,23 @@ class UserController extends Controller{
         \App\RatingRecentMusic::where('user_id', Auth::id())->delete();
         foreach ($data['ratingRecentMusicObject'] as $key => $value) {
             $genre = null;
-            if (!array_key_exists('genre', $value)) {
+            $artist = null;
+            if (!array_key_exists('genre', $value) || !array_key_exists('artist', $value)) {
                 $message = ["古いブックマークレットが実行されている可能性があります。問題が発生する場合はブラウザのキャッシュクリアをお試しください。"];
-            } else if ($value['genre'] !== "") {
+            }
+
+            if ($value['genre'] !== "") {
                 $genre = $value['genre'];
             }
+            if ($value['artist'] !== "") {
+                $artist = $value['artist'];
+            }
+
             \App\RatingRecentMusic::create([
                 'user_id' => Auth::id(),
                 'rank' => $key,
                 'title' => $value['title'],
+                'artist' => $artist,
                 'genre' => $genre,
                 'difficulty' => $value['difficulty'],
                 'technical_score' => $value['technicalScore'],
