@@ -121,8 +121,9 @@ import * as qs from 'qs';
         full_bell: boolean = false;
         full_combo: boolean = false;
         all_break: boolean = false;
+        artist: string = "";
 
-        constructor(title: string, difficulty: Difficulty, genre: string, level: number, over_damage_high_score: number, battle_high_score: number, technical_high_score: number, full_bell: boolean, full_combo: boolean, all_break: boolean) {
+        constructor(title: string, difficulty: Difficulty, genre: string, level: number, over_damage_high_score: number, battle_high_score: number, technical_high_score: number, full_bell: boolean, full_combo: boolean, all_break: boolean, artist: string) {
             this.title = title;
             this.difficulty = difficulty;
             this.genre = genre;
@@ -133,6 +134,7 @@ import * as qs from 'qs';
             this.full_bell = full_bell;
             this.full_combo = full_combo;
             this.all_break = all_break;
+            this.artist = artist;
         }
     }
 
@@ -191,36 +193,38 @@ import * as qs from 'qs';
                     genre = $(value).text();
                 } else if ($(value).hasClass("basic_btn")) {
                     $(value).each((k, v) => {
-                        let name = $(v).find(".music_label").text();
-                        let artist = null;
-                        if (this.sameNameList.indexOf(name) !== -1) {
-                            console.log("曲名が重複している楽曲名: " + name + ' / ' + genre + ' / ' + difficulty);
-                            axios.get(NET_URL + '/record/musicDetail/?idx=' + encodeURIComponent($(value).find("[name=idx]").prop("value")), {
-                            }).then(async (response) => {
-                                var parse = $.parseHTML(response.data);
-                                artist = $(parse).find("div.m_5.f_13.break").text().trim();
-                                artist = artist.substring(0, artist.indexOf('\n'));
-                                console.log(artist);
-                            }).catch(function (error) {
-                                throw new Error("アーティスト名の取得に失敗しました。 " + error);
-                            });
-                        }
-                        var song = new SongInfo(
-                            name,
-                            difficulty,
-                            genre,
-                            +($(v).find(".score_level").text().replace("+", ".5")),
-                            +$($(v).find(".score_value")[0]).text().replace(/,/g, "").replace(/%/g, ""),
-                            +$($(v).find(".score_value")[1]).text().replace(/,/g, ""),
-                            +$($(v).find(".score_value")[2]).text().replace(/,/g, ""),
-                            $(v).find("[src*='music_icon_fb.png']").length > 0,
-                            $(v).find("[src*='music_icon_fc.png']").length > 0 || $(v).find("[src*='music_icon_ab.png']").length > 0,
-                            $(v).find("[src*='music_icon_ab.png']").length > 0,
-                        );
-                        this.songInfos.push(song);
+                        this.parseSingleMusic(v, value, difficulty, genre);
                     });
                 }
             });
+        }
+
+        private async parseSingleMusic(element, parentElement, difficulty, genre) {
+            let name = $(element).find(".music_label").text();
+            let artist = '';
+            if (this.sameNameList.indexOf(name) !== -1) {
+                console.log("曲名が重複している楽曲名: " + name + ' / ' + genre + ' / ' + difficulty);
+                await sleep(SLEEP_MSEC);
+                let response = await axios.get(NET_URL + '/record/musicDetail/?idx=' + encodeURIComponent($(parentElement).find("[name=idx]").prop("value")));
+                var parse = $.parseHTML(response.data);
+                artist = $(parse).find("div.m_5.f_13.break").text().trim();
+                artist = artist.substring(0, artist.indexOf('\n'));
+                console.log(artist);
+            }
+            var song = new SongInfo(
+                name,
+                difficulty,
+                genre,
+                +($(element).find(".score_level").text().replace("+", ".5")),
+                +$($(element).find(".score_value")[0]).text().replace(/,/g, "").replace(/%/g, ""),
+                +$($(element).find(".score_value")[1]).text().replace(/,/g, ""),
+                +$($(element).find(".score_value")[2]).text().replace(/,/g, ""),
+                $(element).find("[src*='music_icon_fb.png']").length > 0,
+                $(element).find("[src*='music_icon_fc.png']").length > 0 || $(element).find("[src*='music_icon_ab.png']").length > 0,
+                $(element).find("[src*='music_icon_ab.png']").length > 0,
+                artist
+            );
+            this.songInfos.push(song);
         }
     }
 

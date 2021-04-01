@@ -246,16 +246,25 @@ class UserController extends Controller{
         }
 
         foreach ($data as $v) {
-            $musicData = \App\MusicData::where("title", $v['title'])->where("genre", $v['genre'])->first();
+            // FIXME: 同名楽曲が追加された際、先に既存曲のアーティストをいれないと不具合が起きる
+            if ($v['artist'] != '') {
+                $message[] = "[アーティスト情報] " . $v['title'] . " / " . $v['artist'];
+                $musicData = \App\MusicData::where("title", $v['title'])->where("genre", $v['genre'])->where("artist", $v['artist'])->first();
+            } else {
+                $v['artist'] = null;
+                $musicData = \App\MusicData::where("title", $v['title'])->where("genre", $v['genre'])->first();
+            }
+
             if(is_null($musicData)){
                 $musicData = new \App\MusicData();
                 $musicData->title = $v['title'];
-                $message[] =  "[楽曲データ追加] ". $v['title'];
+                $message[] = "[楽曲データ追加] " . $v['title'];
                 $titles[] = $v['title'];
             }
             $musicData->genre = $v['genre'];
-            $difficulty = "";
+            $musicData->artist = $v['artist'];
 
+            $difficulty = "";
             if($v['difficulty'] === "0"){
                 $difficulty = "basic";
                 $musicData->basic_level = $v['level'];
