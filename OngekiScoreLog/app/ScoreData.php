@@ -29,6 +29,7 @@ class ScoreData extends Model
             // song_id
             $this->value[$key]->title = $title[$value->song_id]->title;
             $this->value[$key]->genre = $title[$value->song_id]->genre;
+            $this->value[$key]->artist = $title[$value->song_id]->artist;
 
             switch (true) {
                 case ($this->value[$key]->difficulty === 0):
