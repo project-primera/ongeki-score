@@ -15,6 +15,13 @@ import * as qs from 'qs';
 
     const SLEEP_MSEC = 1000;
 
+    class SameNameMusicList {
+        static async get() {
+            let result = await axios.get(API_URL + "/music/samename");
+            return result.data;
+        }
+    }
+
     class PaymentStatus {
         private isStandardPlan: boolean = false;
         private isPremiumPlan: boolean = false;
@@ -139,6 +146,7 @@ import * as qs from 'qs';
 
     class ScoreData {
         private songInfos = new Array<SongInfo>();
+        private sameNameList = null;
 
         public async GetArrayLength() {
             return this.songInfos.length;
@@ -170,6 +178,10 @@ import * as qs from 'qs';
         }
 
         private async parseScoreData(html: string, difficulty: Difficulty) {
+            if (this.sameNameList === null) {
+                this.sameNameList = await SameNameMusicList.get();
+            }
+
             var parseHTML = $.parseHTML(html);
             var $innerContainer3 = $(parseHTML).find(".container3").find("div");
 
@@ -179,8 +191,22 @@ import * as qs from 'qs';
                     genre = $(value).text();
                 } else if ($(value).hasClass("basic_btn")) {
                     $(value).each((k, v) => {
+                        let name = $(v).find(".music_label").text();
+                        let artist = null;
+                        if (this.sameNameList.indexOf(name) !== -1) {
+                            console.log("曲名が重複している楽曲名: " + name + ' / ' + genre + ' / ' + difficulty);
+                            axios.get(NET_URL + '/record/musicDetail/?idx=' + encodeURIComponent($(value).find("[name=idx]").prop("value")), {
+                            }).then(async (response) => {
+                                var parse = $.parseHTML(response.data);
+                                artist = $(parse).find("div.m_5.f_13.break").text().trim();
+                                artist = artist.substring(0, artist.indexOf('\n'));
+                                console.log(artist);
+                            }).catch(function (error) {
+                                throw new Error("アーティスト名の取得に失敗しました。 " + error);
+                            });
+                        }
                         var song = new SongInfo(
-                            $(v).find(".music_label").text(),
+                            name,
                             difficulty,
                             genre,
                             +($(v).find(".score_level").text().replace("+", ".5")),
@@ -292,13 +318,6 @@ import * as qs from 'qs';
             this.difficulty = difficulty;
             this.technicalScore = technicalScore;
             this.genre = genre;
-        }
-    }
-
-    class SameNameMusicList {
-        static async get() {
-            let result = await axios.get(API_URL + "/music/samename");
-            return result.data;
         }
     }
 
