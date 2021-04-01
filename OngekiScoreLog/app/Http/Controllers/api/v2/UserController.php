@@ -258,7 +258,6 @@ class UserController extends Controller{
         foreach ($data as $v) {
             // FIXME: 同名楽曲が追加された際、先に既存曲のアーティストをいれないと不具合が起きる
             if ($v['artist'] != '') {
-                $message[] = "[アーティスト情報] " . $v['title'] . " / " . $v['artist'];
                 $musicData = \App\MusicData::where("title", $v['title'])->where("genre", $v['genre'])->where("artist", $v['artist'])->first();
             } else {
                 $v['artist'] = null;
