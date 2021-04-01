@@ -165,9 +165,19 @@ class UserController extends Controller{
             if($value['difficulty'] !== "0" && $value['difficulty'] !== "1" && $value['difficulty'] !== "2" && $value['difficulty'] !== "3" && $value['difficulty'] !== "10"){
                 throw new RuntimeException("未知の難易度が送信されました。(" . $value['difficulty'] . ")");
             }
-            $music = \App\MusicData::where("title", $value['title'])->where("genre", $value['genre'])->first();
+            if ($value['artist'] != '') {
+                $music = \App\MusicData::where("title", $value['title'])->where("genre", $value['genre'])->where("artist", $value['artist'])->first();
+            } else {
+                $v['artist'] = null;
+                $music = \App\MusicData::where("title", $value['title'])->where("genre", $value['genre'])->first();
+            }
             if($music === null){
-                $message[] = "未知の曲: " . $value['title'] . " / " . $value['genre'];
+                $message = "未知の曲: " . $value['title'] . " / " . $value['genre'] . " / " . $value['artist'];
+                $message[] = $message;
+
+                $content = "未知の曲が送信されました。";
+                $fields = ["IP Address" => \Request::ip(), "User id" => Auth::id(), "Title" => $value['title'], "Genre" => $value['genre'], "Artist" => $value['artist']];
+                \App\Facades\Slack::Notice($content, false, $fields, "success");
                 continue;
             }
             $recentScore = (new \App\ScoreData())->getRecentGenerationOfScoreData(Auth::id(), $music->id, $value['difficulty'])->getValue();
