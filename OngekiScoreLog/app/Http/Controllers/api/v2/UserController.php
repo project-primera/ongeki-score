@@ -172,12 +172,12 @@ class UserController extends Controller{
                 $music = \App\MusicData::where("title", $value['title'])->where("genre", $value['genre'])->first();
             }
             if($music === null){
-                $message = "未知の曲: " . $value['title'] . " / " . $value['genre'] . " / " . $value['artist'];
-                $message[] = $message;
+                $m = "未知の曲: " . $value['title'] . " / " . $value['genre'] . " / " . $value['artist'];
+                $message[] = $m;
 
                 $content = "未知の曲が送信されました。";
-                $fields = ["IP Address" => \Request::ip(), "User id" => Auth::id(), "Title" => $value['title'], "Genre" => $value['genre'], "Artist" => $value['artist']];
-                \App\Facades\Slack::Notice($content, false, $fields, "success");
+                $fields = ["IP Address" => \Request::ip(), "User id" => Auth::id(), "Title" => $value['title'], "Artist" => $value['artist'], "Genre" => $value['genre']];
+                \App\Facades\Slack::Notice($content, "", $fields, "success");
                 continue;
             }
             $recentScore = (new \App\ScoreData())->getRecentGenerationOfScoreData(Auth::id(), $music->id, $value['difficulty'])->getValue();
