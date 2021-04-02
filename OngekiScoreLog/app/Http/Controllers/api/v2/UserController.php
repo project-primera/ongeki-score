@@ -170,6 +170,10 @@ class UserController extends Controller{
             if($value['difficulty'] !== "0" && $value['difficulty'] !== "1" && $value['difficulty'] !== "2" && $value['difficulty'] !== "3" && $value['difficulty'] !== "10"){
                 throw new RuntimeException("未知の難易度が送信されました。(" . $value['difficulty'] . ")");
             }
+            if (!array_key_exists('artist', $value)) {
+                throw new RuntimeException("アーティスト情報が送信されませんでした。古いブックマークレットが実行されています。ブラウザのキャッシュクリアをお試しください。");
+            }
+
             if ($value['artist'] != '') {
                 $music = \App\MusicData::where("title", $value['title'])->where("genre", $value['genre'])->where("artist", $value['artist'])->first();
             } else {
