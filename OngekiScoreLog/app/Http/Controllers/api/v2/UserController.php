@@ -112,29 +112,34 @@ class UserController extends Controller{
             'unique_id' => $uniqueID,
         ]);
 
-        if($methodType === "0"){
-            $this->setPlayer($data, $userStatus->begin_at, $uniqueID);
-        }else if($methodType === "1"){
-            if(Auth::user()->role >= 7){
-                $result['message'] = array_merge($result['message'], $this->addMusic($data, $uniqueID));
+        try {
+            if ($methodType === "0") {
+                $this->setPlayer($data, $userStatus->begin_at, $uniqueID);
+            } else if ($methodType === "1") {
+                if (Auth::user()->role >= 7) {
+                    $result['message'] = array_merge($result['message'], $this->addMusic($data, $uniqueID));
+                }
+                $result['message'] = array_merge($result['message'], $this->setScore($data, $userStatus->begin_at, $uniqueID, $userStatus->generation));
+            } else if ($methodType === "2") {
+                $this->setTrophy($data, $userStatus->begin_at, $uniqueID);
+            } else if ($methodType === "3") {
+                $this->setCharacterFriendly($data, $userStatus->begin_at, $uniqueID);
+            } else if ($methodType === "4") {
+                $result['message'] = $this->setRatingRecentMusic($data, $userStatus->begin_at, $uniqueID);
+            } else if ($methodType === "5") {
+                $this->setPaymentStatus($data, $userStatus->begin_at, $uniqueID);
+            } else {
+                $result['message'][] = "未知のtypeが渡されました。 type:" . $methodType;
+                $result['isError'] = true;
+                return $result;
             }
-            $result['message'] = array_merge($result['message'], $this->setScore($data, $userStatus->begin_at, $uniqueID, $userStatus->generation));
 
-        }else if($methodType === "2"){
-            $this->setTrophy($data, $userStatus->begin_at, $uniqueID);
-        }else if($methodType === "3"){
-            $this->setCharacterFriendly($data, $userStatus->begin_at, $uniqueID);
-        }else if($methodType === "4"){
-            $result['message'] = $this->setRatingRecentMusic($data, $userStatus->begin_at, $uniqueID);
-        }else if($methodType === "5"){
-            $this->setPaymentStatus($data, $userStatus->begin_at, $uniqueID);
-        }else{
-            $result['message'][] = "未知のtypeが渡されました。 type:" . $methodType;
+            $result['data'] = $data;
+        } catch (\Throwable $th) {
+            $result['message'][] = $th->getMessage();
             $result['isError'] = true;
-            return $result;
         }
 
-        $result['data'] = $data;
         return $result;
     }
 
@@ -165,6 +170,10 @@ class UserController extends Controller{
             if($value['difficulty'] !== "0" && $value['difficulty'] !== "1" && $value['difficulty'] !== "2" && $value['difficulty'] !== "3" && $value['difficulty'] !== "10"){
                 throw new RuntimeException("未知の難易度が送信されました。(" . $value['difficulty'] . ")");
             }
+            if (!array_key_exists('artist', $value)) {
+                throw new RuntimeException("アーティスト情報が送信されませんでした。古いブックマークレットが実行されています。ブラウザのキャッシュクリアをお試しください。");
+            }
+
             if ($value['artist'] != '') {
                 $music = \App\MusicData::where("title", $value['title'])->where("genre", $value['genre'])->where("artist", $value['artist'])->first();
             } else {
