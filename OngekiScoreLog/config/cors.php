@@ -11,9 +11,9 @@ return [
     | to accept any value.
     |
     */
-   
+
     'supportsCredentials' => true,
-    'allowedOrigins' => ['*'],
+    'allowedOrigins' => ['https://ongeki-net.com'],
     'allowedOriginsPatterns' => [],
     'allowedHeaders' => ['*'],
     'allowedMethods' => ['*'],
