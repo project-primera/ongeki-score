@@ -112,29 +112,34 @@ class UserController extends Controller{
             'unique_id' => $uniqueID,
         ]);
 
-        if($methodType === "0"){
-            $this->setPlayer($data, $userStatus->begin_at, $uniqueID);
-        }else if($methodType === "1"){
-            if(Auth::user()->role >= 7){
-                $result['message'] = array_merge($result['message'], $this->addMusic($data, $uniqueID));
+        try {
+            if ($methodType === "0") {
+                $this->setPlayer($data, $userStatus->begin_at, $uniqueID);
+            } else if ($methodType === "1") {
+                if (Auth::user()->role >= 7) {
+                    $result['message'] = array_merge($result['message'], $this->addMusic($data, $uniqueID));
+                }
+                $result['message'] = array_merge($result['message'], $this->setScore($data, $userStatus->begin_at, $uniqueID, $userStatus->generation));
+            } else if ($methodType === "2") {
+                $this->setTrophy($data, $userStatus->begin_at, $uniqueID);
+            } else if ($methodType === "3") {
+                $this->setCharacterFriendly($data, $userStatus->begin_at, $uniqueID);
+            } else if ($methodType === "4") {
+                $result['message'] = $this->setRatingRecentMusic($data, $userStatus->begin_at, $uniqueID);
+            } else if ($methodType === "5") {
+                $this->setPaymentStatus($data, $userStatus->begin_at, $uniqueID);
+            } else {
+                $result['message'][] = "未知のtypeが渡されました。 type:" . $methodType;
+                $result['isError'] = true;
+                return $result;
             }
-            $result['message'] = array_merge($result['message'], $this->setScore($data, $userStatus->begin_at, $uniqueID, $userStatus->generation));
 
-        }else if($methodType === "2"){
-            $this->setTrophy($data, $userStatus->begin_at, $uniqueID);
-        }else if($methodType === "3"){
-            $this->setCharacterFriendly($data, $userStatus->begin_at, $uniqueID);
-        }else if($methodType === "4"){
-            $result['message'] = $this->setRatingRecentMusic($data, $userStatus->begin_at, $uniqueID);
-        }else if($methodType === "5"){
-            $this->setPaymentStatus($data, $userStatus->begin_at, $uniqueID);
-        }else{
-            $result['message'][] = "未知のtypeが渡されました。 type:" . $methodType;
+            $result['data'] = $data;
+        } catch (\Throwable $th) {
+            $result['message'][] = $th->getMessage();
             $result['isError'] = true;
-            return $result;
         }
 
-        $result['data'] = $data;
         return $result;
     }
 
