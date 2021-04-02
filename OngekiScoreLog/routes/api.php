@@ -14,7 +14,7 @@ use Illuminate\Http\Request;
 */
 
 // From Bookmarklet
-Route::middleware('cors')->match(['post', 'options'], '/user/update', 'BookmarkletAccessController@postUserUpdate')->middleware('auth:api');
+Route::match(['post', 'options'], '/user/update', 'BookmarkletAccessController@postUserUpdate')->middleware('auth:api');
 
 Route::namespace('api')->group(function(){
     Route::namespace('v2')->prefix('v2')->group(function(){
