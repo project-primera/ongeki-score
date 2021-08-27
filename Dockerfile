@@ -1,4 +1,4 @@
-FROM php:7.3.27-fpm-alpine3.13 AS base
+FROM php:8.0.10-fpm-alpine3.13 AS base
 LABEL maintainer "slime-hatena <Slime-hatena@aki-memo.net>"
 WORKDIR /app
 EXPOSE 80
