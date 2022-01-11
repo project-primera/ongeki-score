@@ -851,10 +851,10 @@
   dependencies:
     "@types/jquery" "*"
 
-"@types/jquery@*", "@types/jquery@^3.3.29":
-  version "3.5.5"
-  resolved "https://registry.yarnpkg.com/@types/jquery/-/jquery-3.5.5.tgz#2c63f47c9c8d96693d272f5453602afd8338c903"
-  integrity sha512-6RXU9Xzpc6vxNrS6FPPapN1SxSHgQ336WC6Jj/N8q30OiaBZ00l1GBgeP7usjVZPivSkGUfL1z/WW6TX989M+w==
+"@types/jquery@*", "@types/jquery@^3.5.12":
+  version "3.5.12"
+  resolved "https://registry.yarnpkg.com/@types/jquery/-/jquery-3.5.12.tgz#f5275e26f34dc30400d78ccdf29d0386a0b10098"
+  integrity sha512-AlX/K29WByFhZ3UbVVn8eywPFwhDZGc/qhDWgy5mu4VVr9b+OQZKBegtS6Tqi9pk8A1aXVrYXuLhnjFJX8Wc/w==
   dependencies:
     "@types/sizzle" "*"
 
