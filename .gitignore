@@ -123,3 +123,5 @@ temp/
 
 # User
 OngekiScoreLog/public/mix-manifest.json
+.dockle-scan
+.trivy-scan
