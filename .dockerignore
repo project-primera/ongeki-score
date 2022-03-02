@@ -1,6 +1,8 @@
+.dockle-scan
 .git
 .github
 .gitignore
+.trivy-scan
 .vscode
 LICENSE
 README.md
