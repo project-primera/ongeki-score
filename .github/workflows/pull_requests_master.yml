@@ -32,7 +32,7 @@ jobs:
         run: |
           git tag ${{steps.validate.outputs.version}}
           git tag -d ${{steps.validate.outputs.version}}
-      - uses: thollander/actions-comment-pull-request@master
+      - uses: thollander/actions-comment-pull-request@main
         with:
           message: |
             **Merging this request will create release:**  
@@ -41,7 +41,7 @@ jobs:
 
             _Don't edit the merge commit message._
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - uses: thollander/actions-comment-pull-request@master
+      - uses: thollander/actions-comment-pull-request@main
         with:
           message: |
             Failed. The possible causes are as:
