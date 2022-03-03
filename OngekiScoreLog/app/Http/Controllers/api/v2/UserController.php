@@ -311,7 +311,6 @@ class UserController extends Controller{
         }
         if(count($titles) !== 0){
             $message[] = "楽曲情報の追加を行いました。";
-            (new \App\AdminTweet())->tweetMusicUpdate($titles);
         }
 
         return $message;
