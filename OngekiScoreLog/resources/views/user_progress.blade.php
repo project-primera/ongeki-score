@@ -95,9 +95,52 @@
             <table class="table is-narrow user-progress-total-table">
                 <thead>
                     <tr>
-                        <th>Difficulty</th>
-                        <th colspan="2">Battle Score</th>
+                        <th></th>
                         <th colspan="2">Technical Score</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Total</td>
+                        <td class="right">{{number_format($score['new']['Total']['technical_high_score'])}}</td>
+                        <td class="right difference">{{($score['difference']['Total']['technical_high_score'] === 0) ? "" : "+" . number_format($score['difference']['Total']['technical_high_score'])}}</td>
+
+                    </tr>
+                    <tr>
+                        <td>Basic</td>
+                        <td class="right">{{number_format($score['new']['Basic']['technical_high_score'])}}</td>
+                        <td class="right difference">{{($score['difference']['Basic']['technical_high_score'] === 0) ? "" : "+" . number_format($score['difference']['Basic']['technical_high_score'])}}</td>
+
+                    </tr>
+                    <tr>
+                        <td>Advanced</td>
+                        <td class="right">{{number_format($score['new']['Advanced']['technical_high_score'])}}</td>
+                        <td class="right difference">{{($score['difference']['Advanced']['technical_high_score'] === 0) ? "" : "+" . number_format($score['difference']['Advanced']['technical_high_score'])}}</td>
+
+                    </tr>
+                    <tr>
+                        <td>Expert</td>
+                        <td class="right">{{number_format($score['new']['Expert']['technical_high_score'])}}</td>
+                        <td class="right difference">{{($score['difference']['Expert']['technical_high_score'] === 0) ? "" : "+" . number_format($score['difference']['Expert']['technical_high_score'])}}</td>
+                    </tr>
+                    <tr>
+                        <td>Master</td>
+                        <td class="right">{{number_format($score['new']['Master']['technical_high_score'])}}</td>
+                        <td class="right difference">{{($score['difference']['Master']['technical_high_score'] === 0) ? "" : "+" . number_format($score['difference']['Master']['technical_high_score'])}}</td>
+                    </tr>
+                    <tr>
+                        <td>Lunatic</td>
+                        <td class="right">{{number_format($score['new']['Lunatic']['technical_high_score'])}}</td>
+                        <td class="right difference">{{($score['difference']['Lunatic']['technical_high_score'] === 0) ? "" : "+" . number_format($score['difference']['Lunatic']['technical_high_score'])}}</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <table class="table is-narrow user-progress-total-table">
+                <thead>
+                    <tr>
+                        <th></th>
+                        <th colspan="2">Battle Score</th>
                         <th colspan="2">Over Damage</th>
                     </tr>
                 </thead>
@@ -106,8 +149,6 @@
                         <td>Total</td>
                         <td class="right">{{number_format($score['new']['Total']['battle_high_score'])}}</td>
                         <td class="right difference">{{($score['difference']['Total']['battle_high_score'] === 0) ? "" : "+" . number_format($score['difference']['Total']['battle_high_score'])}}</td>
-                        <td class="right">{{number_format($score['new']['Total']['technical_high_score'])}}</td>
-                        <td class="right difference">{{($score['difference']['Total']['technical_high_score'] === 0) ? "" : "+" . number_format($score['difference']['Total']['technical_high_score'])}}</td>
                         <td class="right">{{number_format($score['new']['Total']['over_damage_high_score'], 2)}}%</td>
                         <td class="right difference">{{($score['difference']['Total']['over_damage_high_score'] === 0.0) ? "" : "+" . number_format($score['difference']['Total']['over_damage_high_score'], 2) . "%"}}</td>
 
@@ -116,8 +157,6 @@
                         <td>Basic</td>
                         <td class="right">{{number_format($score['new']['Basic']['battle_high_score'])}}</td>
                         <td class="right difference">{{($score['difference']['Basic']['battle_high_score'] === 0) ? "" : "+" . number_format($score['difference']['Basic']['battle_high_score'])}}</td>
-                        <td class="right">{{number_format($score['new']['Basic']['technical_high_score'])}}</td>
-                        <td class="right difference">{{($score['difference']['Basic']['technical_high_score'] === 0) ? "" : "+" . number_format($score['difference']['Basic']['technical_high_score'])}}</td>
                         <td class="right">{{number_format($score['new']['Basic']['over_damage_high_score'], 2)}}%</td>
                         <td class="right difference">{{($score['difference']['Basic']['over_damage_high_score'] === 0.0) ? "" : "+" . number_format($score['difference']['Basic']['over_damage_high_score'], 2) . "%"}}</td>
 
@@ -126,8 +165,6 @@
                         <td>Advanced</td>
                         <td class="right">{{number_format($score['new']['Advanced']['battle_high_score'])}}</td>
                         <td class="right difference">{{($score['difference']['Advanced']['battle_high_score'] === 0) ? "" : "+" . number_format($score['difference']['Advanced']['battle_high_score'])}}</td>
-                        <td class="right">{{number_format($score['new']['Advanced']['technical_high_score'])}}</td>
-                        <td class="right difference">{{($score['difference']['Advanced']['technical_high_score'] === 0) ? "" : "+" . number_format($score['difference']['Advanced']['technical_high_score'])}}</td>
                         <td class="right">{{number_format($score['new']['Advanced']['over_damage_high_score'], 2)}}%</td>
                         <td class="right difference">{{($score['difference']['Advanced']['over_damage_high_score'] === 0.0) ? "" : "+" . number_format($score['difference']['Advanced']['over_damage_high_score'], 2) . "%"}}</td>
 
@@ -136,8 +173,6 @@
                         <td>Expert</td>
                         <td class="right">{{number_format($score['new']['Expert']['battle_high_score'])}}</td>
                         <td class="right difference">{{($score['difference']['Expert']['battle_high_score'] === 0) ? "" : "+" . number_format($score['difference']['Expert']['battle_high_score'])}}</td>
-                        <td class="right">{{number_format($score['new']['Expert']['technical_high_score'])}}</td>
-                        <td class="right difference">{{($score['difference']['Expert']['technical_high_score'] === 0) ? "" : "+" . number_format($score['difference']['Expert']['technical_high_score'])}}</td>
                         <td class="right">{{number_format($score['new']['Expert']['over_damage_high_score'], 2)}}%</td>
                         <td class="right difference">{{($score['difference']['Expert']['over_damage_high_score'] === 0.0) ? "" : "+" . number_format($score['difference']['Expert']['over_damage_high_score'], 2) . "%"}}</td>
                     </tr>
@@ -145,8 +180,6 @@
                         <td>Master</td>
                         <td class="right">{{number_format($score['new']['Master']['battle_high_score'])}}</td>
                         <td class="right difference">{{($score['difference']['Master']['battle_high_score'] === 0) ? "" : "+" . number_format($score['difference']['Master']['battle_high_score'])}}</td>
-                        <td class="right">{{number_format($score['new']['Master']['technical_high_score'])}}</td>
-                        <td class="right difference">{{($score['difference']['Master']['technical_high_score'] === 0) ? "" : "+" . number_format($score['difference']['Master']['technical_high_score'])}}</td>
                         <td class="right">{{number_format($score['new']['Master']['over_damage_high_score'], 2)}}%</td>
                         <td class="right difference">{{($score['difference']['Master']['over_damage_high_score'] === 0.0) ? "" : "+" . number_format($score['difference']['Master']['over_damage_high_score'], 2) . "%"}}</td>
                     </tr>
@@ -154,8 +187,6 @@
                         <td>Lunatic</td>
                         <td class="right">{{number_format($score['new']['Lunatic']['battle_high_score'])}}</td>
                         <td class="right difference">{{($score['difference']['Lunatic']['battle_high_score'] === 0) ? "" : "+" . number_format($score['difference']['Lunatic']['battle_high_score'])}}</td>
-                        <td class="right">{{number_format($score['new']['Lunatic']['technical_high_score'])}}</td>
-                        <td class="right difference">{{($score['difference']['Lunatic']['technical_high_score'] === 0) ? "" : "+" . number_format($score['difference']['Lunatic']['technical_high_score'])}}</td>
                         <td class="right">{{number_format($score['new']['Lunatic']['over_damage_high_score'], 2)}}%</td>
                         <td class="right difference">{{($score['difference']['Lunatic']['over_damage_high_score'] === 0.0) ? "" : "+" . number_format($score['difference']['Lunatic']['over_damage_high_score'], 2) . "%"}}</td>
                     </tr>
@@ -164,7 +195,7 @@
 
             @php
                 // 最初はヘッダー部分があるのでその分の幅を用意
-                $count = 3;
+                $count = 4;
             @endphp
 
             <div class="music">

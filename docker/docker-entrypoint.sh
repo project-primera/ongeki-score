@@ -2,10 +2,20 @@
 
 cp /etc/.env /app/.env
 
-echo -n "APPLICATION_VERSION=" | cat - /etc/version >> ~/.profile
-echo -n "MIX_APPLICATION_VERSION=" | cat - /etc/version >> ~/.profile
-echo -n "COMMIT_HASH=" | cat - /etc/hash >> ~/.profile
-echo -n "MIX_COMMIT_HASH=" | cat - /etc/hash >> ~/.profile
+
+sed -i '/^APPLICATION_VERSION/d' /app/.env
+sed -i '/^MIX_APPLICATION_VERSION/d' /app/.env
+sed -i '/^COMMIT_HASH/d' /app/.env
+sed -i '/^MIX_COMMIT_HASH/d' /app/.env
+echo -n "APPLICATION_VERSION=" | cat - /etc/version >> /app/.env
+echo "MIX_APPLICATION_VERSION=\"\${APPLICATION_VERSION}\"" >> /app/.env
+echo -n "COMMIT_HASH=" | cat - /etc/hash >> /app/.env
+echo "MIX_COMMIT_HASH=\"\${COMMIT_HASH}\"" >> /app/.env
+
+echo -n "export APPLICATION_VERSION=" | cat - /etc/version >> ~/.profile
+echo -n "export MIX_APPLICATION_VERSION=" | cat - /etc/version >> ~/.profile
+echo -n "export COMMIT_HASH=" | cat - /etc/hash >> ~/.profile
+echo -n "export MIX_COMMIT_HASH=" | cat - /etc/hash >> ~/.profile
 
 yarn install
 yarn run production
