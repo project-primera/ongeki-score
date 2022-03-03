@@ -2,7 +2,7 @@ imageName := projectprimera/ongeki-score
 tagName := local
 
 build:
-	env DOCKER_CONTENT_TRUST=1 docker build --build-arg application_version=local_build --build-arg commit_hash=4b825dc642cb6eb9a060e54bf8d69288fbee4904 --no-cache -t $(imageName):$(tagName) --file Dockerfile ./
+	env DOCKER_CONTENT_TRUST=1 docker build --build-arg application_version=local_build --build-arg commit_hash=4b825dc6 --no-cache -t $(imageName):$(tagName) --file Dockerfile ./
 	make dockle
 	make trivy
 
