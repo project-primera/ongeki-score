@@ -125,3 +125,5 @@ temp/
 OngekiScoreLog/public/mix-manifest.json
 .dockle-scan
 .trivy-scan
+docker/oauth-private.key
+docker/oauth-public.key
