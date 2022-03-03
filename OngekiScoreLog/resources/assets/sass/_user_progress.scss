@@ -8,35 +8,36 @@
             text-align: right;
             padding-right: 0.5em;
         }
-    
+
     }
 
     .date{
         padding-bottom: 0.5em;
     }
-    
+
     .user-progress-total-table{
         width: auto;
-    
+        margin: .2em 1em;
+
         .right{
             text-align: right;
         }
-    
+
         .difference{
             color: #22f;
         }
     }
-    
+
     .music{
         .node{
             padding: 0 0 1em 1.5em;
-            
+
             .song-info{
                 font-size:  1.5em;
                 .difficulty{
                     display: inline-block;
                     width: 2.5em;
-        
+
                     &.Basic{
                         color: #1aa41c;
                     }
@@ -58,28 +59,28 @@
                     width: 4em;
                 }
             }
-    
+
             .score-info{
                 font-size: 1.2em;
-    
+
                 .score-title{
                     display: inline-block;
                     width: 7.5em;
                 }
-    
+
                 .score{
                     display: inline-block;
                     width: 6em;
                     text-align: right;
                 }
-    
+
                 .difference{
                     display: inline-block;
                     width: 6.5em;
                     text-align: right;
                     color: #22f;
                 }
-    
+
                 .score-rank{
                     &.update{
                         color: #d22;
