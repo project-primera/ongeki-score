@@ -9,9 +9,7 @@ HEALTHCHECK --start-period=60s --interval=60s --timeout=10s --retries=3 \
 FROM composer:1.10.19 AS composer
 WORKDIR /src
 COPY ./OngekiScoreLog /src
-RUN composer config -g repos.packagist composer https://packagist.jp \
-    && composer global require hirak/prestissimo \
-    && composer install --optimize-autoloader
+RUN composer install --optimize-autoloader
 
 FROM base AS final
 ARG application_version=""

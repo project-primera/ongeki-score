@@ -12,7 +12,7 @@ use App\ExternalServiceCoordination;
 
 class ViewUserProgressController extends Controller
 {
-    function getIndex(int $id, int $generation = null){
+    function getIndex(Request $request, int $id, int $generation = null){
         function shapingKeys($array){
             $ret = [];
             foreach ($array as $value) {
@@ -39,6 +39,11 @@ class ViewUserProgressController extends Controller
             $fixedGeneration = 1;
         }
 
+        $url = "/user/" . $id . "/progress/";
+        if($generation !== null){
+            $url = "/user/" . $id . "/progress/" . $generation;
+        }
+
         $prevGeneration = (new ScoreData)->getMaxGeneration($id) - 1 + $fixedGeneration;
         if($generation === null){
             $generation = $prevGeneration;
@@ -49,6 +54,17 @@ class ViewUserProgressController extends Controller
         $sidemark = null;
         if(Auth::check() && \Auth::user()->id == $id){
             $sidemark = "sidemark_mypage_progress";
+        }
+
+        $filter = "";
+        if($request->filter === "bs"){
+            $filter = "Battle Scoreのみ表示中";
+        }
+        if($request->filter === "ts"){
+            $filter = "Technical Scoreのみ表示中";
+        }
+        if($request->filter === "od"){
+            $filter = "Over Damageのみ表示中";
         }
 
         $version = (new ApplicationVersion())->getLatestVersion();
@@ -79,44 +95,54 @@ class ViewUserProgressController extends Controller
                 'Basic' => [
                     'battle_high_score' => 0,
                     'technical_high_score' => 0,
+                    'over_damage_high_score' => 0,
                 ],
                 'Advanced' => [
                     'battle_high_score' => 0,
                     'technical_high_score' => 0,
+                    'over_damage_high_score' => 0,
                 ],
                 'Expert' => [
                     'battle_high_score' => 0,
                     'technical_high_score' => 0,
+                    'over_damage_high_score' => 0,
                 ],
                 'Master' => [
                     'battle_high_score' => 0,
                     'technical_high_score' => 0,
+                    'over_damage_high_score' => 0,
                 ],
                 'Lunatic' => [
                     'battle_high_score' => 0,
                     'technical_high_score' => 0,
+                    'over_damage_high_score' => 0,
                 ],
             ],
             'old' =>[
                 'Basic' => [
                     'battle_high_score' => 0,
                     'technical_high_score' => 0,
+                    'over_damage_high_score' => 0,
                 ],
                 'Advanced' => [
                     'battle_high_score' => 0,
                     'technical_high_score' => 0,
+                    'over_damage_high_score' => 0,
                 ],
                 'Expert' => [
                     'battle_high_score' => 0,
                     'technical_high_score' => 0,
+                    'over_damage_high_score' => 0,
                 ],
                 'Master' => [
                     'battle_high_score' => 0,
                     'technical_high_score' => 0,
+                    'over_damage_high_score' => 0,
                 ],
                 'Lunatic' => [
                     'battle_high_score' => 0,
                     'technical_high_score' => 0,
+                    'over_damage_high_score' => 0,
                 ],
             ]
         ];
@@ -166,6 +192,7 @@ class ViewUserProgressController extends Controller
             foreach ($temp as $difficulty => $value) {
                 $score['new'][$difficultyToStr[$difficulty]]['battle_high_score'] += $value->battle_high_score;
                 $score['new'][$difficultyToStr[$difficulty]]['technical_high_score'] += $value->technical_high_score;
+                $score['new'][$difficultyToStr[$difficulty]]['over_damage_high_score'] += $value->over_damage_high_score;
 
                 if(!array_key_exists($music, $old) || !array_key_exists($difficulty, $old[$music])){
                     if($value->battle_high_score !== 0){
@@ -191,6 +218,7 @@ class ViewUserProgressController extends Controller
                 }else{
                     $score['old'][$difficultyToStr[$difficulty]]['battle_high_score'] += $old[$music][$difficulty]->battle_high_score;
                     $score['old'][$difficultyToStr[$difficulty]]['technical_high_score'] += $old[$music][$difficulty]->technical_high_score;
+                    $score['old'][$difficultyToStr[$difficulty]]['over_damage_high_score'] +=  $old[$music][$difficulty]->over_damage_high_score;
 
                     if($old[$music][$difficulty]->over_damage_high_score < $value->over_damage_high_score
                     || $old[$music][$difficulty]->battle_high_score < $value->battle_high_score
@@ -220,6 +248,23 @@ class ViewUserProgressController extends Controller
                         }else{
                             // played → played
                             // echo "[update] " . $value->title . " / " . $value->difficulty_str . "<br>";
+
+                            if($request->filter === "bs"){
+                                if($old[$music][$difficulty]->battle_high_score >= $value->battle_high_score){
+                                    continue;
+                                }
+                            }
+                            if($request->filter === "ts"){
+                                if($old[$music][$difficulty]->technical_high_score >= $value->technical_high_score){
+                                    continue;
+                                }
+                            }
+                            if($request->filter === "od"){
+                                if($old[$music][$difficulty]->over_damage_high_score >= $value->over_damage_high_score){
+                                    continue;
+                                }
+                            }
+
                             $progress[$music][$difficulty]["difference"]['battle_high_score'] = ($value->battle_high_score - $old[$music][$difficulty]->battle_high_score) != 0 ? "+" . number_format($value->battle_high_score - $old[$music][$difficulty]->battle_high_score) : "";
                             $progress[$music][$difficulty]["difference"]['technical_high_score'] = ($value->technical_high_score - $old[$music][$difficulty]->technical_high_score) != 0 ? "+" . number_format($value->technical_high_score - $old[$music][$difficulty]->technical_high_score) : "";
                             $progress[$music][$difficulty]["difference"]['over_damage_high_score'] = ($value->over_damage_high_score - $old[$music][$difficulty]->over_damage_high_score) != 0 ? "+" . ($value->over_damage_high_score - $old[$music][$difficulty]->over_damage_high_score) . "%" : "";
@@ -243,37 +288,45 @@ class ViewUserProgressController extends Controller
         }
         $score['new']['Total']['battle_high_score'] = $score['new']['Basic']['battle_high_score'] + $score['new']['Advanced']['battle_high_score'] + $score['new']['Expert']['battle_high_score'] + $score['new']['Master']['battle_high_score'] + $score['new']['Lunatic']['battle_high_score'];
         $score['new']['Total']['technical_high_score'] = $score['new']['Basic']['technical_high_score'] + $score['new']['Advanced']['technical_high_score'] + $score['new']['Expert']['technical_high_score'] + $score['new']['Master']['technical_high_score'] + $score['new']['Lunatic']['technical_high_score'];
+        $score['new']['Total']['over_damage_high_score'] = $score['new']['Basic']['over_damage_high_score'] + $score['new']['Advanced']['over_damage_high_score'] + $score['new']['Expert']['over_damage_high_score'] + $score['new']['Master']['over_damage_high_score'] + $score['new']['Lunatic']['over_damage_high_score'];
 
         $score['old']['Total']['battle_high_score'] = $score['old']['Basic']['battle_high_score'] + $score['old']['Advanced']['battle_high_score'] + $score['old']['Expert']['battle_high_score'] + $score['old']['Master']['battle_high_score'] + $score['old']['Lunatic']['battle_high_score'];
         $score['old']['Total']['technical_high_score'] = $score['old']['Basic']['technical_high_score'] + $score['old']['Advanced']['technical_high_score'] + $score['old']['Expert']['technical_high_score'] + $score['old']['Master']['technical_high_score'] + $score['old']['Lunatic']['technical_high_score'];
+        $score['old']['Total']['over_damage_high_score'] = $score['old']['Basic']['over_damage_high_score'] + $score['old']['Advanced']['over_damage_high_score'] + $score['old']['Expert']['over_damage_high_score'] + $score['old']['Master']['over_damage_high_score'] + $score['old']['Lunatic']['over_damage_high_score'];
 
         $score['difference'] = [
             'Total' => [
                 'battle_high_score' => $score['new']['Total']['battle_high_score'] - $score['old']['Total']['battle_high_score'],
                 'technical_high_score' => $score['new']['Total']['technical_high_score'] - $score['old']['Total']['technical_high_score'],
+                'over_damage_high_score' => $score['new']['Total']['over_damage_high_score'] - $score['old']['Total']['over_damage_high_score'],
             ],
             'Basic' => [
                 'battle_high_score' => $score['new']['Basic']['battle_high_score'] - $score['old']['Basic']['battle_high_score'],
                 'technical_high_score' => $score['new']['Basic']['technical_high_score'] - $score['old']['Basic']['technical_high_score'],
+                'over_damage_high_score' => $score['new']['Basic']['over_damage_high_score'] - $score['old']['Basic']['over_damage_high_score'],
             ],
             'Advanced' => [
                 'battle_high_score' => $score['new']['Advanced']['battle_high_score'] - $score['old']['Advanced']['battle_high_score'],
                 'technical_high_score' => $score['new']['Advanced']['technical_high_score'] - $score['old']['Advanced']['technical_high_score'],
+                'over_damage_high_score' => $score['new']['Advanced']['over_damage_high_score'] - $score['old']['Advanced']['over_damage_high_score'],
             ],
             'Expert' => [
                 'battle_high_score' => $score['new']['Expert']['battle_high_score'] - $score['old']['Expert']['battle_high_score'],
                 'technical_high_score' => $score['new']['Expert']['technical_high_score'] - $score['old']['Expert']['technical_high_score'],
+                'over_damage_high_score' => $score['new']['Expert']['over_damage_high_score'] - $score['old']['Expert']['over_damage_high_score'],
             ],
             'Master' => [
                 'battle_high_score' => $score['new']['Master']['battle_high_score'] - $score['old']['Master']['battle_high_score'],
                 'technical_high_score' => $score['new']['Master']['technical_high_score'] - $score['old']['Master']['technical_high_score'],
+                'over_damage_high_score' => $score['new']['Master']['over_damage_high_score'] - $score['old']['Master']['over_damage_high_score'],
             ],
             'Lunatic' => [
                 'battle_high_score' => $score['new']['Lunatic']['battle_high_score'] - $score['old']['Lunatic']['battle_high_score'],
                 'technical_high_score' => $score['new']['Lunatic']['technical_high_score'] - $score['old']['Lunatic']['technical_high_score'],
+                'over_damage_high_score' => $score['new']['Lunatic']['over_damage_high_score'] - $score['old']['Lunatic']['over_damage_high_score'],
             ]
         ];
 
-        return view('user_progress', compact('status', 'progress', 'date', 'score', 'version', 'display', 'id', 'sidemark', 'isLoggedIn', 'isTwitterEnabled', 'twitterScreenName'));
+        return view('user_progress', compact('filter', 'url', 'status', 'progress', 'date', 'score', 'version', 'display', 'id', 'sidemark', 'isLoggedIn', 'isTwitterEnabled', 'twitterScreenName'));
     }
 }

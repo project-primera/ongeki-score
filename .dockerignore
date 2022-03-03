@@ -6,7 +6,12 @@
 .vscode
 LICENSE
 README.md
+Makefile
+OngekiScoreLog/public/mix-manifest.json
+docker/oauth-private.key
+docker/oauth-public.key
 docker/nginx/conf.d/sample.conf
+docker-compose.yml
 OngekiScoreLog/node_modules
 OngekiScoreLog/vendor
 OngekiScoreLog/.env

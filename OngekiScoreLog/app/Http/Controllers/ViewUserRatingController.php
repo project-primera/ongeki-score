@@ -71,6 +71,8 @@ class ViewUserRatingController extends Controller
             return view("user_rating_error", compact('id', 'status', 'sidemark', 'message'));
         }
 
+        $messages = [];
+
         $statistics = new \stdClass;
         $statistics->newBestRatingCount = 15;
         $statistics->newBestRatingTotal = 0;
@@ -186,30 +188,43 @@ class ViewUserRatingController extends Controller
                 if(!array_key_exists($i, $recentScore)){
                     $recentScore[] = $notExistMusic;
                 }else{
-                    $recentScore[$i]['ratingValue'] = sprintf("%.2f", OngekiUtility::RateValueFromTitle($recentScore[$i]['title'], $recentScore[$i]['difficulty'], $recentScore[$i]['technical_score'], $recentScore[$i]['genre'], $recentScore[$i]['artist']));
-                    $recentScore[$i]['rawRatingValue'] = $recentScore[$i]['ratingValue'];
-                    if (OngekiUtility::IsEstimatedRateValueFromTitle($recentScore[$i]['title'], $recentScore[$i]['difficulty'], $recentScore[$i]['genre'], $recentScore[$i]['artist'])) {
-                        $recentScore[$i]['ratingValue'] = "<i><span class='estimated-rating'>" . $recentScore[$i]['ratingValue'] . "</span></i>";
-                    }else if($recentScore[$i]['technical_score'] >= 1007500){
-                        $recentScore[$i]['ratingValue'] = "<i><span class='max-rating'>" . $recentScore[$i]['ratingValue'] . "</span></i>";
-                    }
-                    $recentScore[$i]['song_id'] = OngekiUtility::GetIDFromTitle($recentScore[$i]['title'], $recentScore[$i]['genre'], $recentScore[$i]['artist']);
-                    $recentScore[$i]['difficulty_str'] = $this->difficultyToStr[$recentScore[$i]['difficulty']];
-                    $recentScore[$i]['level_str'] = sprintf("%.1f", OngekiUtility::ExtraLevelFromTitle($recentScore[$i]['title'], $recentScore[$i]['difficulty'], $recentScore[$i]['genre'], $recentScore[$i]['artist']));
+                    try {
+                        $recentScore[$i]['ratingValue'] = sprintf("%.2f", OngekiUtility::RateValueFromTitle($recentScore[$i]['title'], $recentScore[$i]['difficulty'], $recentScore[$i]['technical_score'], $recentScore[$i]['genre'], $recentScore[$i]['artist']));
+                        $recentScore[$i]['rawRatingValue'] = $recentScore[$i]['ratingValue'];
+                        if (OngekiUtility::IsEstimatedRateValueFromTitle($recentScore[$i]['title'], $recentScore[$i]['difficulty'], $recentScore[$i]['genre'], $recentScore[$i]['artist'])) {
+                            $recentScore[$i]['ratingValue'] = "<i><span class='estimated-rating'>" . $recentScore[$i]['ratingValue'] . "</span></i>";
+                        }else if($recentScore[$i]['technical_score'] >= 1007500){
+                            $recentScore[$i]['ratingValue'] = "<i><span class='max-rating'>" . $recentScore[$i]['ratingValue'] . "</span></i>";
+                        }
+                        $recentScore[$i]['song_id'] = OngekiUtility::GetIDFromTitle($recentScore[$i]['title'], $recentScore[$i]['genre'], $recentScore[$i]['artist']);
+                        $recentScore[$i]['difficulty_str'] = $this->difficultyToStr[$recentScore[$i]['difficulty']];
+                        $recentScore[$i]['level_str'] = sprintf("%.1f", OngekiUtility::ExtraLevelFromTitle($recentScore[$i]['title'], $recentScore[$i]['difficulty'], $recentScore[$i]['genre'], $recentScore[$i]['artist']));
 
-                    $statistics->recentRatingTotal += $recentScore[$i]['rawRatingValue'];
-                    if($statistics->recentRatingTop < $recentScore[$i]['rawRatingValue']){
-                        $statistics->recentRatingTop = $recentScore[$i]['rawRatingValue'];
-                    }
-                    if(is_null($statistics->recentRatingMin) || $statistics->recentRatingMin > $recentScore[$i]['rawRatingValue']){
-                        $statistics->recentRatingMin = $recentScore[$i]['rawRatingValue'];
+                        $statistics->recentRatingTotal += $recentScore[$i]['rawRatingValue'];
+                        if($statistics->recentRatingTop < $recentScore[$i]['rawRatingValue']){
+                            $statistics->recentRatingTop = $recentScore[$i]['rawRatingValue'];
+                        }
+                        if(is_null($statistics->recentRatingMin) || $statistics->recentRatingMin > $recentScore[$i]['rawRatingValue']){
+                            $statistics->recentRatingMin = $recentScore[$i]['rawRatingValue'];
+                        }
+                    } catch (\OutOfBoundsException $e) {
+                        $ua = isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : "N/A";
+                        Slack::Notice("リーセント枠に未知の楽曲が含まれているユーザーがいます。". $e->getMessage() . "\n" . get_class($e) . "\n" . url()->full(), "ip: " . \Request::ip() . "\nUser agent: " . $ua . "\nReferer: " . (isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : "N/A") . "\n\n", ["File" => $e->getFile(), "Line" => $e->getLine(), "IP Address" => \Request::ip(), "User page id" => $user->id], "warning");
+
+                        $recent = $recentScore[$i];
+                        $recentScore[$i] = $notExistMusic;
+                        $recentScore[$i]['title'] = "(未知の楽曲) " . $recent['title'];
+                        $recentScore[$i]['technical_score'] = $recent['technical_score'];
+                        $recentScore[$i]['ratingValue'] = "<i><span class='estimated-rating'>0.00</span></i>";
+                        $statistics->recentRatingMin = 0;
+                        $messages[] = "リーセント枠に未知の楽曲が含まれるため、正常に計算を行えませんでした。この画面の情報は間違っている可能性があります。 対象: " . $recent['title'];
                     }
                 }
             }
         } catch (\OutOfBoundsException $e) {
             $message = "レーティング枠に未知の楽曲が含まれるため、正常に計算を行えませんでした。ブックマークレットでのデータ取得をお試しください。解消しない場合はこちらの情報を添えてご報告いただけますと幸いです。" . $e->getMessage();
             $ua = isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : "N/A";
-            Slack::Warning($e->getMessage() . "\n" . get_class($e) . "\n" . url()->full(), "ip: " . \Request::ip() . "\nUser agent: " . $ua . "\nReferer: " . (isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : "N/A") . "\n\n", ["File" => $e->getFile(), "Line" => $e->getLine(), "IP Address" => \Request::ip(), "User page id" => $user->id], "warning");
+            Slack::Warning("レーティング枠に未知の楽曲が含まれているユーザーがいます。" . $e->getMessage() . "\n" . get_class($e) . "\n" . url()->full(), "ip: " . \Request::ip() . "\nUser agent: " . $ua . "\nReferer: " . (isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : "N/A") . "\n\n", ["File" => $e->getFile(), "Line" => $e->getLine(), "IP Address" => \Request::ip(), "User page id" => $user->id], "warning");
             return view("user_rating_error", compact('id', 'status', 'sidemark', 'message'));
         }
 
@@ -219,6 +234,6 @@ class ViewUserRatingController extends Controller
 
         $statistics->maxRatingTotal = $statistics->newBestRatingTotal + $statistics->oldBestRatingTotal + ($statistics->potentialRatingTop * $statistics->recentRatingCount);
 
-        return view("user_rating", compact('status', 'id', 'sidemark', 'statistics', 'newScore', 'oldScore', 'recentScore'));
+        return view("user_rating", compact('messages', 'status', 'id', 'sidemark', 'statistics', 'newScore', 'oldScore', 'recentScore'));
     }
 }
