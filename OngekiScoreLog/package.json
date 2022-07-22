@@ -19,8 +19,8 @@
         "popper.js": "^1.12",
         "resolve-url-loader": "^3.1.1",
         "sass-loader": "^7.1.0",
-        "vue": "^2.5.7",
-        "vue-template-compiler": "^2.6.10",
+        "vue": "^2.7.8",
+        "vue-template-compiler": "^2.7.8",
         "webpack": "^4.39.2"
     },
     "dependencies": {
