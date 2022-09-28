@@ -34,6 +34,6 @@
         "sweet-scroll": "^3.0.1",
         "tar": "^4.4.8",
         "ts-loader": "^6.0.4",
-        "typescript": "^3.4.2"
+        "typescript": "^4.8.4"
     }
 }
