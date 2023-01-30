@@ -16,7 +16,7 @@
             譜面定数が灰斜体のものは推定値です。
         </p>
         <div class="notification">
-            掲載されている譜面定数データは、<a href="https://twitter.com/ongeki_level" target="_blank">オンゲキ譜面定数部</a>様のデータを活用しております。
+            譜面定数データは、<a href="https://twitter.com/ongeki_level" target="_blank">オンゲキ譜面定数部(Twitter@ongeki_level)</a>様のデータを活用しております。
         </div>
 
         <div id="sort_table" class="table_wrap">
