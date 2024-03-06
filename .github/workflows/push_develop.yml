@@ -7,7 +7,7 @@ on:
 jobs:
   dockle:
     name: Dockle scan
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@master
       - run: docker login --username ${{ secrets.DOCKER_HUB_USER }} --password ${{ secrets.DOCKER_HUB_TOKEN }}
@@ -39,7 +39,7 @@ jobs:
       IMAGE_NAME: projectprimera/ongeki-score
   trivy:
     name: Trivy scan
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@master
       - run: docker login --username ${{ secrets.DOCKER_HUB_USER }} --password ${{ secrets.DOCKER_HUB_TOKEN }}
@@ -68,7 +68,7 @@ jobs:
       IMAGE_NAME: projectprimera/ongeki-score
   slack:
     name: Slack Notification
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-latest
     needs: [dockle, trivy]
     steps:
       - name: Slack Notification

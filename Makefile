@@ -10,7 +10,7 @@ dockle:
 	docker run --rm --disable-content-trust -v /var/run/docker.sock:/var/run/docker.sock goodwithtech/dockle:latest $(imageName):$(tagName) | tee .dockle-scan
 
 trivy:
-	docker run --rm --disable-content-trust -v /var/run/docker.sock:/var/run/docker.sock -v ${PWD}/.cache:/root/.cache/ aquasec/trivy $(imageName):$(tagName) | tee .trivy-scan
+	docker run --rm --disable-content-trust -v /var/run/docker.sock:/var/run/docker.sock -v ${PWD}/.cache:/root/.cache/ aquasec/trivy image $(imageName):$(tagName) | tee .trivy-scan
 
 local:
 	make build

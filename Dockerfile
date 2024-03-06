@@ -16,8 +16,8 @@ ARG application_version=""
 ARG commit_hash=""
 ARG supervisor_version="4.2.1-r0"
 ARG nginx_version="1.18.0-r15"
-ARG nodejs_version="14.19.0-r0"
-ARG npm_version="14.19.0-r0"
+ARG nodejs_version="14.20.1-r0"
+ARG npm_version="14.20.1-r0"
 ARG npm_yarn_version="1.22.17"
 COPY --from=composer /src /app
 COPY docker/docker-entrypoint.sh /etc/
