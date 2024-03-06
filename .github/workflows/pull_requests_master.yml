@@ -8,7 +8,7 @@ on:
 jobs:
   skip:
     name: Check release skip
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-latest
     if: "! contains(github.event.pull_request.title, '[release skip]')"
     steps:
       - run: echo "${{ github.event.pull_request.title }}"
@@ -51,7 +51,7 @@ jobs:
         if: failure()
   dockle:
     name: Dockle scan
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-latest
     needs: [skip]
     steps:
       - uses: actions/checkout@master
@@ -84,7 +84,7 @@ jobs:
       IMAGE_NAME: projectprimera/ongeki-score
   trivy:
     name: Trivy scan
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-latest
     needs: [skip]
     steps:
       - uses: actions/checkout@master
@@ -114,7 +114,7 @@ jobs:
       IMAGE_NAME: projectprimera/ongeki-score
   slack:
     name: Slack Notification
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-latest
     needs: [skip, check_release_name, dockle, trivy]
     steps:
       - name: Slack Notification
