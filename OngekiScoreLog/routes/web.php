@@ -22,8 +22,11 @@ Route::get('/user/{id}/music/{music}/{difficulty}', 'ViewUserMusicController@get
 Route::get('/user/{id}/music/{music}', 'ViewUserMusicController@getRedirect')->where(['id' => '\d+', 'music' => '\d+']);
 Route::get('/user/{id}/{mode?}', 'ViewUserController@getUserPage')->where(['id' => '\d+']);
 
-Route::get('/music/{music}/{difficulty}', 'ViewMusicStatisticsController@getIndex')->where(['music' => '\d+', 'difficulty' => '\w+']);
-Route::get('/music/{music}', 'ViewMusicStatisticsController@getRedirect')->where(['music' => '\d+']);
+Route::middleware('throttle:3,1')->group(function () {
+    Route::get('/music/{music}/{difficulty}', 'ViewMusicStatisticsController@getIndex')->where(['music' => '\d+', 'difficulty' => '\w+']);
+    Route::get('/music/{music}', 'ViewMusicStatisticsController@getRedirect')->where(['music' => '\d+']);
+});
+
 Route::get('/music', 'ViewMusicExtraLevelController@getIndex');
 
 Route::get('/random', 'ViewUserController@redirectRandomUserPage');
