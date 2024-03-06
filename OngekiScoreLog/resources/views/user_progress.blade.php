@@ -23,29 +23,18 @@
 
 @section('content')
     <article class="box">
-        @if (!$isLoggedIn)
-            <p>ツイート機能を使うにはログインしてください。<br><button class="button" disabled>以下を画像化してツイート</button></p>
-        @elseif (!$isTwitterEnabled)
-            <p>Twitter連携を行っていません。連携は<a href="/setting">こちら</a>。<br>
-                <button class="button" disabled>以下を画像化してツイート</button></p>
-        @else
-            <p>このアカウントでツイートします: {{$twitterScreenName}}</p>
-            <form id="tweet_form" action="/tweet/image" method="post" onsubmit="document.getElementById(\'submit_button\').disabled = true">
-                {{csrf_field()}}
-                <div class="field">
-                    <label class="label">ツイートの内容(100文字まで)</label>
-                    <div class="control">
-                        <textarea name="status" class="textarea" maxlength="100">{{$status[0]->name}}さんの更新差分 https://ongeki-score.net/user/{{$id}} #OngekiScoreLog</textarea>
-                    </div>
-                </div>
-                <button type="button" id="submit_button" class="button convert-to-image-button">以下を画像化してツイート</button>
-            </form><div style="padding: 0.75em 0">
-                <div class="progress-message"></div>
-                <progress class="progress is-progress is-link" value="0" max="100">0%</progress>
-            </div>
-            <p>全ての記録をツイートします。４枚に収まらない場合はインリプライに続きます。(1枚につき7曲)<br>
-                <b>初めてこの機能を使用する場合は大量のツイートがされる可能性があります。十分注意して使用いただくようお願いいたします。</b></p>
-        @endif
+        <p>
+            Twitter連携機能はAPIを利用制限されたため、提供を終了いたしました。<br>
+            必要に応じて画像を保存し、各種SNSにてご利用ください。
+        </p>
+        <button type="button" id="submit_button" class="button convert-to-image-button">以下を画像化</button>
+        <div style="padding: 0.75em 0">
+            <div class="progress-message"></div>
+            <progress class="progress is-progress is-link" value="0" max="100">0%</progress>
+        </div>
+
+        <div id="generate_images"></div>
+
         <div class="field">
             <label class="label">表示期間</label>
             <div id="select-generation" class="select">

@@ -53,7 +53,7 @@ class ViewMusicStatisticsController extends Controller
         $technicalGrades = ["P", "SSS+", "SSS", "SS", "S", "AAA", "AA", "A", "B"];
 
         $rateKeys = [];
-        for ($i = 0; $i <= 16; ++$i) { 
+        for ($i = 0; $i <= 17; ++$i) {
             $rateKeys[] = $i . ".00";
             $rateKeys[] = $i . ".25";
             $rateKeys[] = $i . ".50";

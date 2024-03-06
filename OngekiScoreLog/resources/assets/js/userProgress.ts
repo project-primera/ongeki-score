@@ -10,21 +10,14 @@ async function convert(element: HTMLElement, index: number) {
     await pr.then(canvas => {
         ++renderingState
         let base64 = canvas.toDataURL();
-        base64 = base64.substring(base64.indexOf(",") + 1);
 
-        $('form').append(
-            $('<input type="hidden" name="img[' + index + ']">').val(base64)
+        $('div#generate_images').append(
+            $("<img>").attr("src", base64)
         );
 
         $('.progress').val(renderingState / images * 100);
         $(".progress-message").text("画像化中: " + renderingState + "/" + images + "(" + Math.round(renderingState / images * 100) + "%)");
 
-        if (images - 1 <= renderingState) {
-            // $('.user-progress').css('width','auto');
-            $('.progress').val(100);
-            $(".progress-message").text("ツイート中・・・");
-            $('.convert-to-image-button').prop("disabled", false);
-        }
     }).catch((res) => {
         $(".progress-message").text("エラーが発生しました。<br>" + JSON.stringify(res));
         throw res;
@@ -55,6 +48,5 @@ $(function ($) {
         }
 
         $('.progress').removeClass("is-progress").removeAttr("value").removeAttr("max");
-        $('#tweet_form').submit();
     })
 });
