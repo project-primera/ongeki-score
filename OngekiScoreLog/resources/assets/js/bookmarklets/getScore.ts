@@ -498,7 +498,7 @@ import * as qs from 'qs';
                 }
             }).then(result => {
                 if (result.data.message === void 0 || result.data.id === void 0 || result.data.name === void 0 || result.data.hash === void 0) {
-                    throw new Error("不明なエラーが発生しました。<br>ブックマークレットの再生成をお試しください。");
+                    throw new Error("不明なエラーが発生しました。");
                 } else if (result.data.message != "ok") {
                     throw new Error(result.data.message);
                 }
@@ -507,7 +507,7 @@ import * as qs from 'qs';
                 name = result.data.name;
 
             }).catch(await function (error) {
-                throw new Error(error + "<br>スコアツールサーバーへの接続に失敗しました。<br>多くの場合メンテナンス中です。<br>予告のないメンテナンスは5分程度で終了します。<br>情報については<a href='https://twitter.com/ongeki_score' target='_blank' style='color:#222'>Twitter@ongeki_score</a>にてお知らせします。<br>長時間解決しない場合はブックマークレットの再生成をお試しください。");
+                throw new Error(error + "<br>スコアツールサーバーへの接続に失敗しました。<br><br>まずは以下の手順をお試しください。<br>1)ブックマークレットの生性を行い、現在ご利用のブックマークレットに上書きして再度実行してください。<br>２）メンテナンス情報をご確認ください。情報については<a href='https://twitter.com/ongeki_score' target='_blank' style='color:#222'>Twitter@ongeki_score</a>にてお知らせします。");
             });
 
             echo("ユーザー確認: " + name + "さん(id: " + userId + ")<hr>");
