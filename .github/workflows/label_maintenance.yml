@@ -6,7 +6,7 @@ on:
 jobs:
   label_maintenance:
     name: Label maintenance
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@master
       - name: Get @azu/github-label-setup
