@@ -2,6 +2,10 @@ var progress = document.querySelectorAll(".user-progress");
 let images = progress.length;
 let renderingState = 0;
 
+function noscroll(e){
+    e.preventDefault();
+ }
+
 async function convert(element: HTMLElement, index: number) {
     try {
         let pr: Html2CanvasPromise<HTMLCanvasElement> = html2canvas(element, {
@@ -42,7 +46,8 @@ $(function ($) {
         $('html').css('overflow', 'hidden');
         $('body').css('overflow', 'hidden');
         window.scrollTo(0, 0);
-        document.addEventListener('touchmove', function (e) { e.preventDefault(); }, { passive: false });
+        document.addEventListener('touchmove', noscroll, {passive: false});
+        document.addEventListener('wheel', noscroll, {passive: false});
 
         $(".progress-message").text("画像化中: " + renderingState + "/" + images + "(0%)");
 
@@ -54,9 +59,10 @@ $(function ($) {
         // 固定解除
         $('html').css('overflow', 'visible');
         $('body').css('overflow', 'visible');
-        document.addEventListener('touchmove', function (e) { /* */ }, { passive: false });
+
+        document.removeEventListener('touchmove', noscroll);
+        document.removeEventListener('wheel', noscroll);
 
         $(".progress-message").text("画像化完了！ (" + renderingState + "枚)");
-        // $('.progress').removeClass("is-progress").removeAttr("value").removeAttr("max");
     })
 });
