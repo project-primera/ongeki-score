@@ -3,25 +3,30 @@ let images = progress.length;
 let renderingState = 0;
 
 async function convert(element: HTMLElement, index: number) {
-    let pr: Html2CanvasPromise<HTMLCanvasElement> = html2canvas(element, {
-        width: 640,
-    });
+    try {
+        let pr: Html2CanvasPromise<HTMLCanvasElement> = html2canvas(element, {
+            width: 640,
+        });
 
-    await pr.then(canvas => {
-        ++renderingState
-        let base64 = canvas.toDataURL();
+        await pr.then(canvas => {
+            ++renderingState
+            let base64 = canvas.toDataURL();
 
-        $('div#generate_images').append(
-            $("<img>").attr("src", base64)
-        );
+            $('div#generate_images').append(
+                $("<img>").attr("src", base64)
+            );
 
-        $('.progress').val(renderingState / images * 100);
-        $(".progress-message").text("画像化中: " + renderingState + "/" + images + "(" + Math.round(renderingState / images * 100) + "%)");
+            $('.progress').val(renderingState / images * 100);
+            $(".progress-message").text("画像化中: " + renderingState + "/" + images + "(" + Math.round(renderingState / images * 100) + "%)");
 
-    }).catch((res) => {
-        $(".progress-message").text("エラーが発生しました。<br>" + JSON.stringify(res));
-        throw res;
-    });
+        }).catch((res) => {
+            // $(".progress-message").text("エラーが発生しました。<br>" + JSON.stringify(res));
+            throw res;
+        });
+    } catch (error) {
+        // エラったらとりあえず無視 特定環境でたまに起きるらしい
+    }
+
 }
 
 $(function ($) {
@@ -43,10 +48,15 @@ $(function ($) {
 
         for (let index = 0; index < progress.length; index++) {
             const element: HTMLElement = <HTMLScriptElement>progress[index];
-
             await convert(element, index);
         }
 
-        $('.progress').removeClass("is-progress").removeAttr("value").removeAttr("max");
+        // 固定解除
+        $('html').css('overflow', 'visible');
+        $('body').css('overflow', 'visible');
+        document.addEventListener('touchmove', function (e) { /* */ }, { passive: false });
+
+        $(".progress-message").text("画像化完了！ (" + renderingState + "枚)");
+        // $('.progress').removeClass("is-progress").removeAttr("value").removeAttr("max");
     })
 });
