@@ -109,8 +109,8 @@ jobs:
           TAG=${{steps.validate.outputs.version}}
           docker push ${IMAGE_NAME}:${TAG}
           docker push ${IMAGE_NAME}:latest
-          docker push ${IMAGE_NAME_GITHUB}:${TAG}
-          docker push ${IMAGE_NAME_GITHUB}:latest
+        # docker push ${IMAGE_NAME_GITHUB}:${TAG}
+        # docker push ${IMAGE_NAME_GITHUB}:latest
       - name: Slack Notification
         uses: 8398a7/action-slack@v2
         if: always()
