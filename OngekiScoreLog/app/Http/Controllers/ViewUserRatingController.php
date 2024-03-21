@@ -28,10 +28,19 @@ class ViewUserRatingController extends Controller
         // レート値上昇推定スコア計算
         $stdClass->extraLevel = OngekiUtility::ExtraLevelFromTitle($stdClass->title, $stdClass->difficulty, $stdClass->genre, $stdClass->artist);
         $stdClass->extraLevelStr = sprintf("%.1f", $stdClass->extraLevel);
+
         $stdClass->targetMusicRateMusic = OngekiUtility::ExpectedScoreFromExtraLevel($stdClass->extraLevel, $stdClass->rawRatingValue + 0.01);
         if($stdClass->targetMusicRateMusic !== false){
             $stdClass->targetMusicRateMusic = number_format($stdClass->technical_high_score - $stdClass->targetMusicRateMusic);
         }
+
+        // この曲のレート値が0.xのしきい値になるために必要なスコア 例) 15.25→15.30
+        $targetRating = ceil(($stdClass->rawRatingValue + 0.01) * 10) / 10;
+        $stdClass->targetMusicRateBorder = OngekiUtility::ExpectedScoreFromExtraLevel($stdClass->extraLevel, $targetRating);
+        if($stdClass->targetMusicRateBorder !== false){
+            $stdClass->targetMusicRateBorder = number_format($stdClass->technical_high_score - $stdClass->targetMusicRateBorder);
+        }
+
         $stdClass->targetMusicRateUser = OngekiUtility::ExpectedScoreFromExtraLevel($stdClass->extraLevel, $stdClass->rawRatingValue + sprintf("%.2f", $totalMusicCount / 100));
         if($stdClass->targetMusicRateUser !== false){
             $stdClass->targetMusicRateUser = number_format($stdClass->technical_high_score - $stdClass->targetMusicRateUser);
@@ -103,6 +112,7 @@ class ViewUserRatingController extends Controller
         $notExistMusic->ratingValue = "-";
         $notExistMusic->rawRatingValue = 0;
         $notExistMusic->targetMusicRateMusic = "";
+        $notExistMusic->targetMusicRateBorder = "";
         $notExistMusic->targetMusicRateUser = "";
         $notExistMusic->updated_at = date("Y/m/d");
 
