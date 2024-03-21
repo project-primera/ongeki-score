@@ -39,6 +39,7 @@ class ViewUserRatingController extends Controller
 
         // レート値が理論値 / 推定値なら文字装飾
         if (OngekiUtility::IsEstimatedRateValueFromTitle($stdClass->title, $stdClass->difficulty, $stdClass->genre, $stdClass->artist)) {
+            $stdClass->extraLevelStr = "<i><span class='estimated-rating'>" . $stdClass->extraLevelStr . "?</span></i>";
             $stdClass->ratingValue = "<i><span class='estimated-rating'>" . $stdClass->ratingValue . "</span></i>";
         }else if($stdClass->technical_high_score >= 1007500){
             $stdClass->ratingValue = "<i><span class='max-rating'>" . $stdClass->ratingValue . "</span></i>";
@@ -191,14 +192,16 @@ class ViewUserRatingController extends Controller
                     try {
                         $recentScore[$i]['ratingValue'] = sprintf("%.2f", OngekiUtility::RateValueFromTitle($recentScore[$i]['title'], $recentScore[$i]['difficulty'], $recentScore[$i]['technical_score'], $recentScore[$i]['genre'], $recentScore[$i]['artist']));
                         $recentScore[$i]['rawRatingValue'] = $recentScore[$i]['ratingValue'];
-                        if (OngekiUtility::IsEstimatedRateValueFromTitle($recentScore[$i]['title'], $recentScore[$i]['difficulty'], $recentScore[$i]['genre'], $recentScore[$i]['artist'])) {
-                            $recentScore[$i]['ratingValue'] = "<i><span class='estimated-rating'>" . $recentScore[$i]['ratingValue'] . "</span></i>";
-                        }else if($recentScore[$i]['technical_score'] >= 1007500){
-                            $recentScore[$i]['ratingValue'] = "<i><span class='max-rating'>" . $recentScore[$i]['ratingValue'] . "</span></i>";
-                        }
                         $recentScore[$i]['song_id'] = OngekiUtility::GetIDFromTitle($recentScore[$i]['title'], $recentScore[$i]['genre'], $recentScore[$i]['artist']);
                         $recentScore[$i]['difficulty_str'] = $this->difficultyToStr[$recentScore[$i]['difficulty']];
                         $recentScore[$i]['level_str'] = sprintf("%.1f", OngekiUtility::ExtraLevelFromTitle($recentScore[$i]['title'], $recentScore[$i]['difficulty'], $recentScore[$i]['genre'], $recentScore[$i]['artist']));
+
+                        if (OngekiUtility::IsEstimatedRateValueFromTitle($recentScore[$i]['title'], $recentScore[$i]['difficulty'], $recentScore[$i]['genre'], $recentScore[$i]['artist'])) {
+                            $recentScore[$i]['ratingValue'] = "<i><span class='estimated-rating'>" . $recentScore[$i]['ratingValue'] . "</span></i>";
+                            $recentScore[$i]['level_str'] = "<i><span class='estimated-rating'>" . $recentScore[$i]['level_str'] . "?</span></i>";
+                        }else if($recentScore[$i]['technical_score'] >= 1007500){
+                            $recentScore[$i]['ratingValue'] = "<i><span class='max-rating'>" . $recentScore[$i]['ratingValue'] . "</span></i>";
+                        }
 
                         $statistics->recentRatingTotal += $recentScore[$i]['rawRatingValue'];
                         if($statistics->recentRatingTop < $recentScore[$i]['rawRatingValue']){
