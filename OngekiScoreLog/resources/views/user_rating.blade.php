@@ -143,7 +143,7 @@
                                 <td class="sort_title">{{$recentScore[$i]['title']}}</td>
                             @endif
                             <td>{{substr($recentScore[$i]['difficulty_str'], 0, 3)}}</td>
-                            <td>{{$recentScore[$i]['level_str']}}</td>
+                            <td>{!!$recentScore[$i]['level_str']!!}</td>
                             <td>{{number_format($recentScore[$i]['technical_score'])}}</td>
                             <td>{!!$recentScore[$i]['ratingValue']!!}</td>
                             <td>{{sprintf("%.2f", $recentScore[$i]['rawRatingValue'] - $statistics->totalRatingTop)}}</td>
