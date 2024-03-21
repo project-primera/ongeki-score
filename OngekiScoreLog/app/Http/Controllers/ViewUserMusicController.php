@@ -61,6 +61,11 @@ class ViewUserMusicController extends Controller
         $prev->damage = 0;
 
         foreach ($score as $key => $value) {
+            if($value->technical_high_score === 0 && $value->battle_high_score === 0 && (float)$value->over_damage_high_score === (float)0){
+                unset($score[$key]);
+                continue;
+            }
+
             $technical[] = (int)($value->technical_high_score);
             $battle[] = (int)($value->battle_high_score);
             $damage[] = (float)$value->over_damage_high_score;
