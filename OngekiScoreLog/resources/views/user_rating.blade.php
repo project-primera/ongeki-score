@@ -72,14 +72,16 @@
             </table>
         </div>
         <p>
-        <span class="subtitle is-5">到達可能レーティング: {{sprintf("%.4f",floor($statistics->maxRatingTotal / $statistics->totalRatingCount * 10000) / 10000)}}</span><br>
-            現在のスコアデータのうち、最大レート({{$statistics->potentialRatingTop}})の曲でリーセント枠を全て埋めたときの値です。
-            @foreach ($messages as $message)
-                <p>
-                    <span style="color: #dd3333">{{$message}}</span>
-                </p>
-            @endforeach
+            <span class="subtitle is-5">到達可能レーティング: {{sprintf("%.4f",floor($statistics->maxRatingTotal / $statistics->totalRatingCount * 10000) / 10000)}}</span>
         </p>
+            現在のスコアデータのうち、最大レート({{$statistics->potentialRatingTop}})の曲でリーセント枠を全て埋めたときの値です。<br>
+            なお、枠にAAA以下の曲が含まれる場合、計算が正確でない場合があります。
+        </p>
+        @foreach ($messages as $message)
+            <p>
+                <span style="color: #dd3333">{{$message}}</span>
+            </p>
+        @endforeach
     </article>
 
     <article id="rating_new" class="box">
