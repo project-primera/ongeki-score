@@ -60,7 +60,7 @@ p{
     padding-bottom: 2em;
 
     .title.is-4{
-        margin-bottom: 0.3em;   
+        margin-bottom: 0.3em;
     }
 }
 
@@ -109,7 +109,7 @@ td.table-tag{
 .tag{
     &.full-bell{
         background-color: #c1b400;
-        color: #fff; 
+        color: #fff;
     }
 
     &.full-combo{
@@ -163,11 +163,11 @@ div.column{
 
 .estimated-rating{
     font-style: italic;
-    color: #aaa;
+    color: #c5c5c5;
 }
 
 .max-rating{
-    font-weight: bold; 
+    font-weight: bold;
     color: #a00;
 }
 
@@ -179,7 +179,7 @@ div.column{
     $separation: #ccc;
 
     @function lamp-gradient($isFB, $isFC, $isAB){
-        @return linear-gradient(90deg, 
+        @return linear-gradient(90deg,
             if($isFB == true, $fb, $none) 32%, $separation 32%, $separation 35%, if($isFC == true, $fc, $none) 35%, if($isFC == true, $fc, $none) 65%, $separation 65%, $separation 68%, if($isAB == true, $ab, $none) 68%);
     }
 
