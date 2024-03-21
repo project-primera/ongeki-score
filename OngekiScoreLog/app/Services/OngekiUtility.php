@@ -105,6 +105,14 @@ class OngekiUtility {
         if(!array_key_exists($title, $this::$MusicList)){
             throw new \OutOfBoundsException("title: " . $title . " / artist:" . $artist . " / difficulty:" . $difficulty);
         }
+
+        $difficulty = "lunatic_extra_level";
+        if(!array_key_exists($difficulty, $this::$MusicList[$title])){
+            // なんか存在しない難易度の定数値取ろうとしてる
+            // 既に入ってる曲に後からlunatic追加されると起きがち
+            return 0;
+        }
+
         return $this->RateValue($this::$MusicList[$title][$difficulty], $technicalScore);
     }
 
