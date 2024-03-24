@@ -37,6 +37,12 @@ class ViewMusicStatisticsController extends Controller
         }
 
         $musicData = MusicData::find($music);
+
+        // 存在しない曲ページ
+        if($musicData === null){
+            abort(404);
+        }
+
         $isExist = new \stdClass;
         $isExist->normal = !is_null($musicData->normal_added_version);
         $isExist->lunatic = !is_null($musicData->lunatic_added_version);
