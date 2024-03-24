@@ -118,15 +118,15 @@ class Handler extends ExceptionHandler
             return parent::render($request, $exception);
         }
 
-        if(config('app.debug')){
-            return parent::render($request, $exception);
-        }
-
         if($this->isHttpException($exception)){
             switch(true){
                 case ($exception->getStatusCode() == 404):
                     return response()->view('errors/404', [], 404);
             }
+        }
+
+        if(config('app.debug')){
+            return parent::render($request, $exception);
         }
 
         return response()->view('errors/500', [], 500);
