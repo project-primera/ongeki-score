@@ -16,6 +16,11 @@
             </div>
         @endif
         <h3 class="title is-3">キャッシュ系クリア</h3>
+        <h4 class="title is-4">すべて</h4>
+        <p>
+            <a href="/admin/apply/all/clear"><button class="button is-danger">all:clear</button></a>
+            <a href="/admin/apply/all/cache"><button class="button is-warning">all:cache</button></a>
+        </p>
         <h4 class="title is-4">config</h4>
         <p>
             <a href="/admin/apply/config/clear"><button class="button is-danger">config:clear</button></a>
