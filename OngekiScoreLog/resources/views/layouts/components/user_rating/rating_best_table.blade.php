@@ -46,7 +46,8 @@
     </table>
 </div>
 <h4 class="title is-4">レーティング対象外 候補曲</h4>
-<p>スコアを上げることでレーティング対象曲入りを望める楽曲です。</p>
+<p>スコアを上げることでレーティング対象曲入りを望める楽曲です。<br>
+スコアが記録されている楽曲のみ表示されます。</p>
 <div class="table_wrap scalable">
     <table class="table">
         <thead>
@@ -73,7 +74,7 @@
         </tfoot>
         <tbody>
             @for ($i = $targetCount; $i < $end; $i++)
-                @if($array[$i]->minDifferenceScore !== "")
+                @if($array[$i]->minDifferenceScore !== "" && $array[$i]->technical_high_score !== 0)
                     <tr>
                         @if (array_key_exists($i, $array) && array_key_exists('song_id', $array[$i]))
                             <td class="sort_title"><a href="{{url("/user/" . $id . "/music/" . $array[$i]->song_id . "/" . strtolower($array[$i]->difficulty_str))}}">{{$array[$i]->title}}</a></td>
