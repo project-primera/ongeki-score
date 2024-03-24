@@ -31,10 +31,6 @@
                 <td>{{$total_play}}</td>
             </tr>
             <tr>
-                <th>フレンドコード</th>
-                <td>{{$friend_code}}</td>
-            </tr>
-            <tr>
                 <th>コメント</th>
                 <td>{{$comment}}</td>
             </tr>
