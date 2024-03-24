@@ -1,5 +1,9 @@
 @extends('layouts.app')
 
+@section('additional_head')
+    <meta name="robots" content="noindex">
+@endsection
+
 @section('title', $status[0]->name . " / [" . ucfirst($difficulty) . "] " . $musicData->title)
 @section('hero_subtitle', $status[0]->name . " - 楽曲詳細")
 @section('hero_title', "[" . ucfirst($difficulty) . "] " . $musicData->title)

@@ -1,5 +1,9 @@
 @extends('layouts.app')
 
+@section('additional_head')
+    <meta name="robots" content="noindex">
+@endsection
+
 @section('title', "[" . ucfirst($difficulty) . "] " . $musicData->title)
 @section('hero_subtitle', "楽曲統計情報")
 @section('hero_title', "[" . ucfirst($difficulty) . "] " . $musicData->title)
@@ -72,7 +76,7 @@
                             <td>{{$key}}</td>
                             <td>{{number_format($statistics->technicalAverageScore[$key])}}</td>
                             <td>{{$value}}</td>
-                        </tr> 
+                        </tr>
                     @endif
                     @endforeach
                 </tbody>
