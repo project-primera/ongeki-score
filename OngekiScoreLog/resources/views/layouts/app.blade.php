@@ -63,6 +63,7 @@
         <meta name="twitter:card" content="summary"/>
         <meta name="twitter:site" content="@ongeki_score" />
         <!--<meta property="fb:app_id" content="***************" />-->
+        @yield('additional_head')
     </head>
 
     <body>
@@ -183,7 +184,7 @@
                     });
                 }
             });
-        </script>  
+        </script>
         <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha256-3edrmyuQ0w65f8gfBsqowzjJe2iM6n0nKciPUp8y+7E=" crossorigin="anonymous"></script>
         <script type="text/javascript" src="{{ mix('/js/list.min.js') }}"></script>
         <script type="text/javascript" src="{{ mix('/js/sweet-scroll.min.js') }}"></script>

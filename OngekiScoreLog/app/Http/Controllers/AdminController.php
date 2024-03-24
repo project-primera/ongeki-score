@@ -80,7 +80,20 @@ class AdminController extends Controller{
     public function GetApply($type, $action = null){
         $message = "パスが間違っています。";
 
-        if($type === 'config'){
+        if($type === 'all'){
+            if($action === "clear"){
+                Artisan::call('config:clear');
+                Artisan::call('route:clear');
+                Artisan::call('view:clear');
+                Artisan::call('cache:clear');
+                $message = "all:clearを実行しました。本番環境の場合は、必ず生成を行ってください。";
+            }else if($action === "cache"){
+                Artisan::call('config:cache');
+                Artisan::call('route:cache');
+                Artisan::call('view:cache');
+                $message = "all:cacheを実行しました。";
+            }
+        }else if($type === 'config'){
             if($action === "clear"){
                 Artisan::call('config:clear');
                 $message = "config:clearを実行しました。本番環境の場合は、必ず生成を行ってください。";

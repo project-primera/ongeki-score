@@ -37,6 +37,7 @@
                         <th>対象曲数</th>
                         <th>Max</th>
                         <th>Min</th>
+                        <th>合計レート値</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -46,6 +47,7 @@
                         <td>{{$statistics->newBestRatingCount}}</td>
                         <td>{{sprintf("%.2f", $statistics->newBestRatingTop)}}</td>
                         <td>{{sprintf("%.2f", $statistics->newBestRatingMin)}}</td>
+                        <td>{{$statistics->newBestRatingTotal}}</td>
                     </tr>
                     <tr>
                         <td>ベスト枠</td>
@@ -53,6 +55,7 @@
                         <td>{{$statistics->oldBestRatingCount}}</td>
                         <td>{{sprintf("%.2f", $statistics->oldBestRatingTop)}}</td>
                         <td>{{sprintf("%.2f", $statistics->oldBestRatingMin)}}</td>
+                        <td>{{$statistics->oldBestRatingTotal}}</td>
                     </tr>
                     <tr>
                         <td>リーセント枠</td>
@@ -60,6 +63,7 @@
                         <td>{{$statistics->recentRatingCount}}</td>
                         <td>{{sprintf("%.2f", $statistics->recentRatingTop)}}</td>
                         <td>{{sprintf("%.2f", $statistics->recentRatingMin)}}</td>
+                        <td>{{$statistics->recentRatingTotal}}</td>
                     </tr>
                     <tr>
                         <td>全対象曲</td>
@@ -67,6 +71,7 @@
                         <td>{{$statistics->totalRatingCount}}</td>
                         <td>{{sprintf("%.2f", $statistics->totalRatingTop)}}</td>
                         <td>{{sprintf("%.2f", $statistics->totalRatingMin)}}</td>
+                        <td>{{$statistics->totalRatingTotal}}</td>
                     </tr>
                 </tbody>
             </table>
