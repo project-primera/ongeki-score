@@ -66,12 +66,12 @@ class Handler extends ExceptionHandler
                 "feed" => "",
                 "blog" => "",
             ];
-    
+
             switch (true) {
                 case ($exception instanceof \Illuminate\Foundation\Http\Exceptions\MaintenanceModeException):
                     Slack::Notice($content, $fileContent, $fields, "warning");
                     break;
-                
+
                 case ($exception instanceof \League\OAuth2\Server\Exception\OAuthServerException):
                 case ($exception instanceof \Illuminate\Auth\AuthenticationException):
                 case ($exception instanceof \Illuminate\Validation\ValidationException):
@@ -119,9 +119,9 @@ class Handler extends ExceptionHandler
         }
 
         if($this->isHttpException($exception)){
-            switch(true){
-                case ($exception->getStatusCode() == 404):
-                    return response()->view('errors/404', [], 404);
+            $catchErrorCodes = [404, 418, 429, 500, 503];
+            if(in_array($exception->getStatusCode(), $catchErrorCodes)){
+                return response()->view('errors/' . $exception->getStatusCode(), [], $exception->getStatusCode());
             }
         }
 
