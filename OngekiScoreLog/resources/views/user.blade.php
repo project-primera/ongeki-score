@@ -14,8 +14,9 @@
 @section('submenu')
     <li class="{{$submenuActive[0]}}"><a href="/user/{{$id}}">簡易</a></li>
     <li class="{{$submenuActive[1]}}"><a href="/user/{{$id}}/details">詳細</a></li>
-    <li class="{{$submenuActive[2]}}"><a href="/user/{{$id}}/battle">Battle</a></li>
     <li class="{{$submenuActive[3]}}"><a href="/user/{{$id}}/technical">Technical</a></li>
+    <li class="{{$submenuActive[2]}}"><a href="/user/{{$id}}/battle">Battle</a></li>
+    <li><a href="/user/{{$id}}/overdamage">OverDamage</a></li>
     <li><a href="/user/{{$id}}/trophy">称号</a></li>
     <li><a href="/user/{{$id}}/rating">Rating</a></li>
     <li><a href="/user/{{$id}}/progress">更新差分</a></li>
