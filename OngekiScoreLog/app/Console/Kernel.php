@@ -31,6 +31,11 @@ class Kernel extends ConsoleKernel
             \App\UserInformation::ResetAllUserPaymentState();
             \App\Facades\Slack::Info("<!here> すべてのユーザーの課金情報をリセットしました。");
         })->monthlyOn(1, '7:00');
+
+        // Max OverDamageの集計
+        $schedule->call(function () {
+            \App\AggregateOverdamage::execute();
+        })->dailyAt('4:30');
     }
 
     /**
