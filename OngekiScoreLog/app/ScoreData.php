@@ -193,6 +193,19 @@ class ScoreData extends Model
         return $this;
     }
 
+    function getTopRankerScore(){
+        $sql = DB::table($this->table)
+            ->select('song_id', 'difficulty',
+                DB::raw('MAX(over_damage_high_score) as max_over_damage_high_score'),
+                DB::raw('MAX(battle_high_score) as max_battle_high_score'),
+                DB::raw('MAX(technical_high_score) as max_technical_high_score'),)
+            ->from($this->table)
+            ->groupBy('song_id', 'difficulty')
+        ;
+        $this->value = $sql->get();
+        return $this;
+    }
+
     /**
      * 指定した世代のスコアデータを取得します。
      *
