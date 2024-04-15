@@ -69,6 +69,11 @@ class AdminController extends Controller{
         return view('admin/config', compact(['result']));
     }
 
+    public function GetAggregate(){
+        $result = \App\AggregateOverdamage::all();
+        return view('admin/aggregate', compact(['result']));
+    }
+
     /**
      * '/config'にgetリクエストがあったときに呼び出されます。
      * パラメータに合致する処理を行い、'/'にリダイレクトします。
@@ -123,5 +128,11 @@ class AdminController extends Controller{
         }
 
         return redirect('/admin?message=' . $message);
+    }
+
+    public function GetGenerateOverDamage(){
+        ini_set("max_execution_time", 0);
+        \App\AggregateOverdamage::execute();
+        return redirect('/admin?message=' . "Generate Over Damage: max. 実行しました！");
     }
 }
