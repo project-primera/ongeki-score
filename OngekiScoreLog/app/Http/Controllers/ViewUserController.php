@@ -363,4 +363,65 @@ class ViewUserController extends Controller
         }
         return view('user', compact('id', 'status', 'score', 'stat', 'mode', 'submenuActive', 'sidemark'));
     }
+
+    public function getOverDamegePage($id){
+        $userStatus = new UserStatus();
+        $user = User::where('id' ,$id)->first();
+        $status = $userStatus->getRecentUserData($id);
+        if(count($status) === 0){
+            if(is_null($user)){
+                abort(404);
+            }else{
+                return view("user_error", ['message' => '<p>このユーザーはOngekiScoreLogに登録していますが、オンゲキNETからスコア取得を行っていません。(UserID: ' . $id . ')</p><p>スコアの取得方法は<a href="/howto">こちら</a>をお読みください。</p>']);
+            }
+        }
+        $status[0]->badge = "";
+        if($user->role == 7){
+            $status[0]->badge .= '&nbsp;<span class="tag developer">ProjectPrimera Developer</span>';
+        }
+        if(\App\UserInformation::IsPremiumPlan($user->id)){
+            $status[0]->badge .= '&nbsp;<span class="tag net-premium">OngekiNet Premium</span>';
+        }else if(\App\UserInformation::IsStandardPlan($user->id)){
+            $status[0]->badge .= '&nbsp;<span class="tag net-standard">OngekiNet Standard</span>';
+        }
+
+        // トップランカーのスコアを取得してkey: song_id, difficulty, value: over_damage_high_score の配列を作る
+        $topRankerScore = [];
+        {
+            $temp = (new ScoreData)->getTopRankerScore()->getValue();
+            foreach ($temp as $value) {
+                $key = $value->song_id . "_" . $value->difficulty;
+                if(!isset($topRankerScore[$key])){
+                    $topRankerScore[$key] = $value->max_over_damage_high_score;
+                }
+            }
+        }
+
+        // 自分のスコアを取得
+        $score = (new ScoreData)->getRecentUserScore($id)->addMusicData()->getValue();
+
+        // 難易度を通常難易度1つ+LUNATICだけに絞る
+        // FIXME: こんなのコード側でやっちゃいけない... けどテーブル設計的にどうしようもなく...
+        $temp = [];
+        $scoreDatas = [];
+        {
+            foreach ($score as $value) {
+                $key = $value->song_id;
+                if($value->difficulty === 10){
+                    $scoreDatas[] = $value;
+                }else{
+                    $temp[$key][] = $value;
+                }
+            }
+
+            foreach ($temp as $value) {
+                array_multisort(array_column($value, 'over_damage_high_score'), SORT_DESC, $value);
+                if($value[0]->over_damage_high_score !== "0.00"){
+                    $scoreDatas[] = $value[0];
+                }
+            }
+        }
+
+        return view('user_overdamage', compact('id', 'status', 'scoreDatas', 'topRankerScore'));
+    }
 }
