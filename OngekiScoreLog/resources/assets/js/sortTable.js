@@ -1,5 +1,5 @@
 var options = {
-    valueNames: ['sort_title', 'sort_genre', 'sort_difficulty', 'sort_lv', 'sort_lamp', 'sort_fb', 'sort_fc', 'sort_ab', 'sort_rank0', 'sort_rank1', 'sort_bs', 'sort_od', 'sort_ts', 'sort_nod', 'sort_nts', 'sort_rate', 'sort_update', 'sort_raw_battle_rank', 'sort_raw_technical_rank', 'sort_raw_lamp', 'sort_raw_difficulty']
+    valueNames: ['sort_title', 'sort_genre', 'sort_difficulty', 'sort_lv', 'sort_lamp', 'sort_fb', 'sort_fc', 'sort_ab', 'sort_rank0', 'sort_rank1', 'sort_bs', 'sort_od', 'sort_topod', 'sort_ts', 'sort_nod', 'sort_nts', 'sort_rate', 'sort_update', 'sort_raw_battle_rank', 'sort_raw_technical_rank', 'sort_raw_lamp', 'sort_raw_difficulty', 'sort_key1', 'sort_key2', 'sort_key3']
 };
 var sortTable = new List('sort_table', options);
 
