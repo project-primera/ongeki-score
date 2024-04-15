@@ -46,7 +46,7 @@
                         @if (array_key_exists($s->song_id . "_" . $s->difficulty, $topRankerScore))
                             <td class="sort_key1">{{$topRankerScore[$s->song_id . "_" . $s->difficulty] . "%"}}</td>
                             <td class="sort_key2">{{number_format(abs((($s->over_damage_high_score * 100) - ($topRankerScore[$s->song_id . "_" . $s->difficulty] * 100))) / 100, 2)}}%</td>
-                            <td class="sort_key3">{{number_format(($topRankerScore[$s->song_id . "_" . $s->difficulty] != 0 && false) ? (($s->over_damage_high_score * 100) / ($topRankerScore[$s->song_id . "_" . $s->difficulty] * 100)) * 100 : 100, 2)}}%</td>
+                            <td class="sort_key3">{{number_format(($topRankerScore[$s->song_id . "_" . $s->difficulty] != 0) ? (($s->over_damage_high_score * 100) / ($topRankerScore[$s->song_id . "_" . $s->difficulty] * 100)) * 100 : 100, 2)}}%</td>
                         @else
                             <td class="sort_key1">?%</td>
                             <td class="sort_key2">?%</td>
