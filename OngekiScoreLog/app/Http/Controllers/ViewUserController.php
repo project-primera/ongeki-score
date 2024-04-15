@@ -8,7 +8,10 @@ use Illuminate\Http\Request;
 use App\User;
 use App\UserStatus;
 use App\ScoreData;
+use App\AggregateOverdamage;
 use App\Facades\OngekiUtility;
+use DateTime;
+
 use function GuzzleHttp\json_encode;
 
 class ViewUserController extends Controller
@@ -386,13 +389,17 @@ class ViewUserController extends Controller
         }
 
         // トップランカーのスコアを取得してkey: song_id, difficulty, value: over_damage_high_score の配列を作る
+        $lastUpdate = (new DateTime())->setTimestamp(0);
         $topRankerScore = [];
         {
-            $temp = (new ScoreData)->getTopRankerScore()->getValue();
+            $temp = AggregateOverdamage::all();
             foreach ($temp as $value) {
                 $key = $value->song_id . "_" . $value->difficulty;
-                if(!isset($topRankerScore[$key])){
-                    $topRankerScore[$key] = $value->max_over_damage_high_score;
+                $topRankerScore[$key] = $value->max;
+
+                // 最終更新日時を取得
+                if($lastUpdate < $value->updated_at){
+                    $lastUpdate = $value->updated_at;
                 }
             }
         }
@@ -422,6 +429,6 @@ class ViewUserController extends Controller
             }
         }
 
-        return view('user_overdamage', compact('id', 'status', 'scoreDatas', 'topRankerScore'));
+        return view('user_overdamage', compact('id', 'status', 'lastUpdate', 'scoreDatas', 'topRankerScore'));
     }
 }

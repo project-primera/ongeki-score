@@ -20,7 +20,7 @@ Route::get('/user/{id}/rating', 'ViewUserRatingController@getIndex')->where(['id
 Route::get('/user/{id}/trophy', 'ViewUserTrophyController@getIndex')->where(['id' => '\d+']);
 Route::get('/user/{id}/music/{music}/{difficulty}', 'ViewUserMusicController@getIndex')->where(['id' => '\d+', 'music' => '\d+', 'difficulty' => '\w+']);
 Route::get('/user/{id}/music/{music}', 'ViewUserMusicController@getRedirect')->where(['id' => '\d+', 'music' => '\d+']);
-Route::middleware('throttle:3,1')->group(function () {
+Route::middleware('throttle:5,1')->group(function () {
     Route::get('/user/{id}/overdamage', 'ViewUserController@getOverDamegePage')->where(['id' => '\d+']);
 });
 Route::get('/user/{id}/{mode?}', 'ViewUserController@getUserPage')->where(['id' => '\d+']);
@@ -59,7 +59,9 @@ Route::post('/tweet/image', 'TweetController@postTweetImage');
 Route::group(['middleware' => ['auth', 'can:admin']], function () {
     Route::get('/admin', 'AdminController@GetIndex');
     Route::get('/admin/config', 'AdminController@GetConfig');
+    Route::get('/admin/aggregate', 'AdminController@GetAggregate');
     Route::get('/admin/apply/{type}/{action?}', 'AdminController@GetApply');
+    Route::get('/admin/generate/over-damage', 'AdminController@GetGenerateOverDamage');
     Route::get('/admin/log/{path}/{fileName}', 'SimpleViewController@getLogFile');
 });
 
