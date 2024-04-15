@@ -30,7 +30,12 @@ class Kernel extends ConsoleKernel
         $schedule->call(function () {
             \App\UserInformation::ResetAllUserPaymentState();
             \App\Facades\Slack::Info("<!here> すべてのユーザーの課金情報をリセットしました。");
-        })->monthlyOn(1, '4:00');
+        })->monthlyOn(1, '7:00');
+
+        // Max OverDamageの集計
+        $schedule->call(function () {
+            \App\AggregateOverdamage::execute();
+        })->dailyAt('4:30');
     }
 
     /**

@@ -3,6 +3,9 @@
 @section('title', $status[0]->name)
 @section('hero_subtitle', $status[0]->trophy)
 @section('hero_title', $status[0]->name)
+@section('additional_head')
+    <meta name="robots" content="noindex">
+@endsection
 @section('additional_footer')
     <script type="text/javascript" src="{{ mix('/js/sortTable.js') }}"></script>
     <script type="text/javascript" src="{{ mix('/js/tableScalable.js') }}"></script>
@@ -63,7 +66,7 @@
     {{-- @component('layouts/components/user/song_filter')
     @endcomponent --}}
 
-    @component('layouts/components/user/song_status_overdamage', ['score' => $scoreDatas, 'topRankerScore' => $topRankerScore, 'id' => $id])
+    @component('layouts/components/user/song_status_overdamage', ['score' => $scoreDatas, 'topRankerScore' => $topRankerScore, 'id' => $id, 'lastUpdate' => $lastUpdate])
     @endcomponent
 
 @endsection

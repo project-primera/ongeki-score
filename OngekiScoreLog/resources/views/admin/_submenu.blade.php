@@ -11,3 +11,10 @@
     <li>
 @endif
 <a href="/admin/config">config</a></li>
+
+@if (isset($active) && $active === 'aggregate')
+    <li class="is-active">
+@else
+    <li>
+@endif
+<a href="/admin/aggregate">aggregate</a></li>
