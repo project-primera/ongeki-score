@@ -31,7 +31,7 @@ class ViewUserController extends Controller
         return redirect("/user/" . $user->id . "/" . $path);
     }
 
-    public function getUserPage($id, $mode = null){
+    public function getUserPage(Request $request, $id, $mode = null){
         $userStatus = new UserStatus();
         $user = User::where('id' ,$id)->first();
         $status = $userStatus->getRecentUserData($id);
@@ -52,7 +52,33 @@ class ViewUserController extends Controller
             $status[0]->badge .= '&nbsp;<span class="tag net-standard">OngekiNet Standard</span>';
         }
 
-        $score = (new ScoreData)->getRecentUserScore($id)->addMusicData()->addDetailedData()->getValue();
+        $scoreDataModel = new ScoreData();
+        $scoreDataModel
+            ->getRecentUserScore($id)
+            ->addMusicData();
+
+        // アーカイブモード判定: 表示譜面を変更する
+        $archive = (int)$request->get('archive');
+        if ($archive === 0) {
+            // 現行譜面 / ゼロスコアを除外
+            $scoreDataModel->exclusionZeroScore();
+        }elseif ($archive === 1) {
+            // 現行譜面表示
+            $scoreDataModel->exclusionDeletedMusic();
+        }elseif ($archive === 2) {
+            // 削除譜面のみ / ゼロスコアを除外
+            $score = $scoreDataModel->exclusionZeroScore()->exclusionNotDeletedMusic();
+        }elseif ($archive === 3) {
+            // 削除譜面のみ
+            $score = $scoreDataModel->exclusionNotDeletedMusic();
+        }elseif ($archive === 4) {
+            // すべて表示（従来モード）
+            // 何もしない
+        }else{
+            // 変な設定ならリダイレクトして消す
+            return redirect("/user/" . $id . "/" . $mode);
+        }
+        $score = $scoreDataModel->addDetailedData()->getValue();
 
         array_multisort(array_column($score, 'updated_at'), SORT_DESC, $score);
 
@@ -364,7 +390,7 @@ class ViewUserController extends Controller
             }
 
         }
-        return view('user', compact('id', 'status', 'score', 'stat', 'mode', 'submenuActive', 'sidemark'));
+        return view('user', compact('id', 'status', 'score', 'stat', 'mode', 'submenuActive', 'sidemark', 'archive'));
     }
 
     public function getOverDamegePage($id){
