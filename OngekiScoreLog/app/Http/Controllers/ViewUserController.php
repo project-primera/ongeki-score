@@ -158,11 +158,9 @@ class ViewUserController extends Controller
             "Lv.14+" => [],
             "Lv.15" => [],
             "Lv.15+" => [],
-            "Lv.0" => [],
         ];
 
         $stat['average'] = $stat['level'];
-        $stat['averageExist'] = $stat['level'];
 
         foreach ($score as $key => $value) {
             // レート値を表示していいユーザーなら取得 だめなら隠す
@@ -338,58 +336,6 @@ class ViewUserController extends Controller
                 $stat['average']["All"]["total"]['score'] = 0;
             }
             $stat['average']["All"]["total"]['score'] += $value->technical_high_score;
-
-            // 以下プレイ済み曲のみ
-            if($value->technical_high_score !== 0){
-                // レベル平均の曲数を追加
-                if(!isset($stat['averageExist']["Lv." . $value->level_str][$value->difficulty_str]["count"])){
-                    $stat['averageExist']["Lv." . $value->level_str][$value->difficulty_str]['count'] = 0;
-                }
-                $stat['averageExist']["Lv." . $value->level_str][$value->difficulty_str]['count']++;
-
-                // レベル平均のスコアを追加 表示時に割る
-                if(!isset($stat['averageExist']["Lv." . $value->level_str][$value->difficulty_str]["score"])){
-                    $stat['averageExist']["Lv." . $value->level_str][$value->difficulty_str]['score'] = 0;
-                }
-                $stat['averageExist']["Lv." . $value->level_str][$value->difficulty_str]['score'] += $value->technical_high_score;
-
-                // レベル平均のトータル曲数を追加
-                if(!isset($stat['averageExist']["Lv." . $value->level_str]["total"]["count"])){
-                    $stat['averageExist']["Lv." . $value->level_str]["total"]['count'] = 0;
-                }
-                $stat['averageExist']["Lv." . $value->level_str]["total"]['count']++;
-
-                // レベル平均のトータルスコアを追加 表示時に割る
-                if(!isset($stat['averageExist']["Lv." . $value->level_str]["total"]["score"])){
-                    $stat['averageExist']["Lv." . $value->level_str]["total"]['score'] = 0;
-                }
-                $stat['averageExist']["Lv." . $value->level_str]["total"]['score'] += $value->technical_high_score;
-
-                // 全曲平均の難易度別曲数を追加
-                if(!isset($stat['averageExist']["All"][$value->difficulty_str]["count"])){
-                    $stat['averageExist']["All"][$value->difficulty_str]['count'] = 0;
-                }
-                $stat['averageExist']["All"][$value->difficulty_str]['count']++;
-
-                // 全曲平均の難易度別スコアを追加 表示時に割る
-                if(!isset($stat['averageExist']["All"][$value->difficulty_str]["score"])){
-                    $stat['averageExist']["All"][$value->difficulty_str]['score'] = 0;
-                }
-                $stat['averageExist']["All"][$value->difficulty_str]['score'] += $value->technical_high_score;
-
-                // 全曲平均のトータル曲数を追加
-                if(!isset($stat['averageExist']["All"]["total"]["count"])){
-                    $stat['averageExist']["All"]["total"]['count'] = 0;
-                }
-                $stat['averageExist']["All"]["total"]['count']++;
-
-                // 全曲平均のトータルスコアを追加 表示時に割る
-                if(!isset($stat['averageExist']["All"]["total"]["score"])){
-                    $stat['averageExist']["All"]["total"]['score'] = 0;
-                }
-                $stat['averageExist']["All"]["total"]['score'] += $value->technical_high_score;
-            }
-
         }
         return view('user', compact('id', 'status', 'score', 'stat', 'mode', 'submenuActive', 'sidemark', 'archive'));
     }
