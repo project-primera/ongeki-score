@@ -71,7 +71,20 @@ class AdminController extends Controller{
 
     public function GetAggregate(){
         $result = \App\AggregateOverdamage::all();
-        return view('admin/aggregate', compact(['result']));
+        $difficultyToStr = [
+            0 => 'Basic',
+            1 => 'Advanced',
+            2 => 'Expert',
+            3 => 'Master',
+            10 => 'Lunatic',
+        ];
+
+        $musics = [];
+        $temp = \App\MusicData::all();
+        foreach ($temp as $value) {
+            $musics[$value->id] = $value->title;
+        }
+        return view('admin/aggregate', compact(['result', 'musics', 'difficultyToStr']));
     }
 
     /**

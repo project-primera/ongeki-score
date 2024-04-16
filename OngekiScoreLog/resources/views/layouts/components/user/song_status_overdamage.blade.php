@@ -1,8 +1,17 @@
 <div class="box">
     <p>登録されている全ユーザーのオーバーダメージのうち、一番高いものと比較することが出来ます。<br>
+    （※全国ランキング１位のスコアではありません！）<br>
     OD埋めなどにご活用ください。</p>
-    <p>プレイしている楽曲内で、一番ODが高い難易度のみ表示されます。全難易度のODが0の曲は表示されません。</p>
-    最終更新: {{$lastUpdate->format('Y-m-d H:i:s')}} （?%表示は未集計です）
+    <p>最終更新: {{$lastUpdate->format('Y-m-d H:i:s')}} （?%表示は未集計です）</p>
+
+    <div class="buttons has-addons">
+        <a href="/user/{{$id}}/overdamage" class="button{{($difficulty === "") ? "" : " is-primary"}}">Master + Lunatic</a>
+        <a href="/user/{{$id}}/overdamage/basic" class="button{{($difficulty === "basic") ? "" : " basic"}}">Basic</a>
+        <a href="/user/{{$id}}/overdamage/advanced" class="button{{($difficulty === "advanced") ? "" : " advanced"}}">Advanced</a>
+        <a href="/user/{{$id}}/overdamage/expert" class="button{{($difficulty === "expert") ? "" : " expert"}}">Expert</a>
+        <a href="/user/{{$id}}/overdamage/master" class="button{{($difficulty === "master") ? "" : " master"}}">Master</a>
+        <a href="/user/{{$id}}/overdamage/lunatic" class="button{{($difficulty === "lunatic") ? "" : " lunatic"}}">Lunatic</a>
+    </div>
 </div>
 
 <article class="box">

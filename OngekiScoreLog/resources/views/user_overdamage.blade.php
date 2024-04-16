@@ -66,7 +66,7 @@
     {{-- @component('layouts/components/user/song_filter')
     @endcomponent --}}
 
-    @component('layouts/components/user/song_status_overdamage', ['score' => $scoreDatas, 'topRankerScore' => $topRankerScore, 'id' => $id, 'lastUpdate' => $lastUpdate])
+    @component('layouts/components/user/song_status_overdamage', ['score' => $scoreDatas, 'topRankerScore' => $topRankerScore, 'id' => $id, 'difficulty' => $difficulty, 'lastUpdate' => $lastUpdate])
     @endcomponent
 
 @endsection
