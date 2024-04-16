@@ -340,7 +340,12 @@ class ViewUserController extends Controller
         return view('user', compact('id', 'status', 'score', 'stat', 'mode', 'submenuActive', 'sidemark', 'archive'));
     }
 
-    public function getOverDamegePage($id){
+    public function getOverDamegePage($id, $difficulty = ""){
+        // 存在しないdifficultyが指定された場合はリダイレクト
+        if(!in_array($difficulty, ["", "basic", "advanced", "expert", "master", "lunatic"])){
+            return redirect("/user/" . $id . "/overdamage");
+        }
+
         $userStatus = new UserStatus();
         $user = User::where('id' ,$id)->first();
         $status = $userStatus->getRecentUserData($id);
@@ -380,30 +385,24 @@ class ViewUserController extends Controller
         // 自分のスコアを取得
         $score = (new ScoreData)->getRecentUserScore($id)->addMusicData()->exclusionDeletedMusic()->getValue();
 
-        // 難易度を通常難易度1つ+LUNATICだけに絞る
-        // FIXME: こんなのコード側でやっちゃいけない... けどテーブル設計的にどうしようもなく...
-        $temp = [];
+        // 難易度を指定のものに絞る
         $scoreDatas = [];
         {
             foreach ($score as $value) {
                 $key = $value->song_id;
-                if($value->difficulty === 10){
-                    if($value->over_damage_high_score !== "0.00"){
+                if($value->over_damage_high_score !== "0.00"){
+                    if(($difficulty === "" && ($value->difficulty === 3 || $value->difficulty === 10))
+                        || ($difficulty === "basic" && $value->difficulty === 0)
+                        || ($difficulty === "advanced" && $value->difficulty === 1)
+                        || ($difficulty === "expert" && $value->difficulty === 2)
+                        || ($difficulty === "master" && $value->difficulty === 3)
+                        || ($difficulty === "lunatic" && $value->difficulty === 10)
+                    ){
                         $scoreDatas[] = $value;
                     }
-                }else{
-                    $temp[$key][] = $value;
-                }
-            }
-
-            foreach ($temp as $value) {
-                array_multisort(array_column($value, 'over_damage_high_score'), SORT_DESC, $value);
-                if($value[0]->over_damage_high_score !== "0.00"){
-                    $scoreDatas[] = $value[0];
                 }
             }
         }
-
-        return view('user_overdamage', compact('id', 'status', 'lastUpdate', 'scoreDatas', 'topRankerScore'));
+        return view('user_overdamage', compact('id', 'difficulty', 'status', 'lastUpdate', 'scoreDatas', 'topRankerScore'));
     }
 }
