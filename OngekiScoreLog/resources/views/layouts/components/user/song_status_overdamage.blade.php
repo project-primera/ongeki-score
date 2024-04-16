@@ -1,18 +1,13 @@
 <div class="box">
     <p>登録されている全ユーザーのオーバーダメージのうち、一番高いものと比較することが出来ます。<br>
     OD埋めなどにご活用ください。</p>
-    <p>プレイしている楽曲内で、一番ODが高い難易度のみ表示されます。全難易度のODが0の曲は表示されません。なお削除楽曲等も表示されます。ご了承下さい。</p>
+    <p>プレイしている楽曲内で、一番ODが高い難易度のみ表示されます。全難易度のODが0の曲は表示されません。</p>
     最終更新: {{$lastUpdate->format('Y-m-d H:i:s')}} （?%表示は未集計です）
 </div>
 
 <article class="box">
-    <p>
-        <b>表示倍率の変更</b><br>
-        <button class="button table_scale_change">25%</button>
-        <button class="button table_scale_change">50%</button>
-        <button class="button table_scale_change">75%</button>
-        <button class="button table_scale_change">100%</button>
-    </p>
+    @component('layouts/components/user/table_scale_button') @endcomponent
+
     <div id="sort_table" class="table_wrap scalable">
         <table class="table">
             <thead>

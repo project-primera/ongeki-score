@@ -30,6 +30,8 @@ class ScoreData extends Model
             $this->value[$key]->title = $title[$value->song_id]->title;
             $this->value[$key]->genre = $title[$value->song_id]->genre;
             $this->value[$key]->artist = $title[$value->song_id]->artist;
+            $this->value[$key]->deleted_normal = (bool)$title[$value->song_id]->deleted_normal;
+            $this->value[$key]->deleted_lunatic = (bool)$title[$value->song_id]->deleted_lunatic;
 
             switch (true) {
                 case ($this->value[$key]->difficulty === 0):
@@ -142,6 +144,46 @@ class ScoreData extends Model
             }
         }
 
+        return $this;
+    }
+
+    /**
+     * 削除済みフラグが立っている楽曲データを取り除きます。
+     *
+     * @return ScoreData
+     */
+    function exclusionDeletedMusic(){
+        foreach ($this->value as $key => $value) {
+            if ($value->difficulty === 10) {
+                if($value->deleted_lunatic){
+                    unset($this->value[$key]);
+                }
+            }else{
+                if($value->deleted_normal){
+                    unset($this->value[$key]);
+                }
+            }
+        }
+        return $this;
+    }
+
+    /**
+     * 削除済みフラグが立っていない楽曲データを取り除きます。
+     *
+     * @return ScoreData
+     */
+    function exclusionNotDeletedMusic(){
+        foreach ($this->value as $key => $value) {
+            if ($value->difficulty === 10) {
+                if(!!!$value->deleted_lunatic){
+                    unset($this->value[$key]);
+                }
+            }else{
+                if(!!!$value->deleted_normal){
+                    unset($this->value[$key]);
+                }
+            }
+        }
         return $this;
     }
 
