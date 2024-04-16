@@ -138,7 +138,7 @@ class ScoreData extends Model
                 $this->value[$key]->technical_high_score_next = 0;
 
             }else{
-                $this->value[$key]->technical_high_score_rank = "P";
+                $this->value[$key]->technical_high_score_rank = "AB+";
                 $this->value[$key]->technical_high_score_next = 0;
 
             }

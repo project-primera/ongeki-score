@@ -42,7 +42,7 @@
                     <thead>
                         <tr>
                             <th>&nbsp;</th>
-                            <th>P</th>
+                            <th>AB+</th>
                             <th>SSS+</th>
                             <th>SSS</th>
                             <th>SS</th>
@@ -71,7 +71,7 @@
                                     {{$key}}
                                 @endslot
                                 @slot('p')
-                                    {{isset($value['P']) ? $value['P'] : 0}}
+                                    {{isset($value['AB+']) ? $value['AB+'] : 0}}
                                 @endslot
                                 @slot('ssss')
                                     {{isset($value['SSS+']) ? $value['SSS+'] : 0}}
@@ -130,7 +130,7 @@
                                 @slot('b6')
                                 {{isset($value['不可']) ? $value['不可'] : 0}}
                                 @endslot
-                            @endcomponent    
+                            @endcomponent
                         @endforeach
                     </tbody>
                 </table>
@@ -146,7 +146,7 @@
                     <thead>
                         <tr>
                             <th>&nbsp;</th>
-                            <th>P</th>
+                            <th>AB+</th>
                             <th>SSS+</th>
                             <th>SSS</th>
                             <th>SS</th>
@@ -175,7 +175,7 @@
                                     {{$key}}
                                 @endslot
                                 @slot('p')
-                                    {{isset($value['P']) ? $value['P'] : 0}}
+                                    {{isset($value['AB+']) ? $value['AB+'] : 0}}
                                 @endslot
                                 @slot('ssss')
                                     {{isset($value['SSS+']) ? $value['SSS+'] : 0}}
@@ -234,7 +234,7 @@
                                 @slot('b6')
                                 {{isset($value['不可']) ? $value['不可'] : 0}}
                                 @endslot
-                            @endcomponent    
+                            @endcomponent
                         @endforeach
                     </tbody>
                 </table>

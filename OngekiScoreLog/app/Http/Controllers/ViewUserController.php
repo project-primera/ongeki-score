@@ -133,6 +133,7 @@ class ViewUserController extends Controller
         ];
 
         $stat['level'] = [
+            "Lv.0" => [],
             "Lv.1" => [],
             "Lv.2" => [],
             "Lv.3" => [],
