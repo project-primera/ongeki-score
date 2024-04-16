@@ -405,7 +405,7 @@ class ViewUserController extends Controller
         }
 
         // 自分のスコアを取得
-        $score = (new ScoreData)->getRecentUserScore($id)->addMusicData()->getValue();
+        $score = (new ScoreData)->getRecentUserScore($id)->addMusicData()->exclusionDeletedMusic()->getValue();
 
         // 難易度を通常難易度1つ+LUNATICだけに絞る
         // FIXME: こんなのコード側でやっちゃいけない... けどテーブル設計的にどうしようもなく...
@@ -415,7 +415,9 @@ class ViewUserController extends Controller
             foreach ($score as $value) {
                 $key = $value->song_id;
                 if($value->difficulty === 10){
-                    $scoreDatas[] = $value;
+                    if($value->over_damage_high_score !== "0.00"){
+                        $scoreDatas[] = $value;
+                    }
                 }else{
                     $temp[$key][] = $value;
                 }
