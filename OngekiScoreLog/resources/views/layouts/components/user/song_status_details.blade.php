@@ -4,6 +4,7 @@
         赤太字のものはその曲のレート値が理論値に達しているものです。<br>
         レート値はオンゲキNETのプレミアムプランに加入していないと表示されません。
     </p>
+    @component('layouts/components/user/archive_mode_button', ['mode' => 'details', 'id' => $id, 'archive' => $archive]) @endcomponent
     @component('layouts/components/user/table_scale_button') @endcomponent
 
     <div id="sort_table" class="table_wrap scalable">

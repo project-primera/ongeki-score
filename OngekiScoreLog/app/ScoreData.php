@@ -138,12 +138,26 @@ class ScoreData extends Model
                 $this->value[$key]->technical_high_score_next = 0;
 
             }else{
-                $this->value[$key]->technical_high_score_rank = "P";
+                $this->value[$key]->technical_high_score_rank = "AB+";
                 $this->value[$key]->technical_high_score_next = 0;
 
             }
         }
 
+        return $this;
+    }
+
+    /**
+     * スコアがゼロの楽曲データを取り除きます。
+     *
+     * @return ScoreData
+     */
+    function exclusionZeroScore(){
+        foreach ($this->value as $key => $value) {
+            if($value->over_damage_high_score === "0.00" && $value->battle_high_score === 0 && $value->technical_high_score === 0){
+                unset($this->value[$key]);
+            }
+        }
         return $this;
     }
 

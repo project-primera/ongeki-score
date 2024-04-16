@@ -1,4 +1,5 @@
 <article class="box">
+    <p>集計内容は選択する表示モードの内容に準じます。</p>
     <div class="accordion">
         <input id="tab-aggregate-total" type="checkbox" name="tabs">
         <label for="tab-aggregate-total">トータルスコア</label>
@@ -42,7 +43,7 @@
                     <thead>
                         <tr>
                             <th>&nbsp;</th>
-                            <th>P</th>
+                            <th>AB+</th>
                             <th>SSS+</th>
                             <th>SSS</th>
                             <th>SS</th>
@@ -71,7 +72,7 @@
                                     {{$key}}
                                 @endslot
                                 @slot('p')
-                                    {{isset($value['P']) ? $value['P'] : 0}}
+                                    {{isset($value['AB+']) ? $value['AB+'] : 0}}
                                 @endslot
                                 @slot('ssss')
                                     {{isset($value['SSS+']) ? $value['SSS+'] : 0}}
@@ -130,7 +131,7 @@
                                 @slot('b6')
                                 {{isset($value['不可']) ? $value['不可'] : 0}}
                                 @endslot
-                            @endcomponent    
+                            @endcomponent
                         @endforeach
                     </tbody>
                 </table>
@@ -146,7 +147,7 @@
                     <thead>
                         <tr>
                             <th>&nbsp;</th>
-                            <th>P</th>
+                            <th>AB+</th>
                             <th>SSS+</th>
                             <th>SSS</th>
                             <th>SS</th>
@@ -175,7 +176,7 @@
                                     {{$key}}
                                 @endslot
                                 @slot('p')
-                                    {{isset($value['P']) ? $value['P'] : 0}}
+                                    {{isset($value['AB+']) ? $value['AB+'] : 0}}
                                 @endslot
                                 @slot('ssss')
                                     {{isset($value['SSS+']) ? $value['SSS+'] : 0}}
@@ -234,7 +235,7 @@
                                 @slot('b6')
                                 {{isset($value['不可']) ? $value['不可'] : 0}}
                                 @endslot
-                            @endcomponent    
+                            @endcomponent
                         @endforeach
                     </tbody>
                 </table>
@@ -260,40 +261,6 @@
                     </thead>
                     <tbody>
                         @foreach ($stat['average'] as $key => $value)
-                        <tr>
-                            <td>{{$key}}</td>
-                            <td>{{array_key_exists("Basic", $value) ? number_format(floor($value['Basic']['score'] / $value['Basic']['count'])) : "-"}}</td>
-                            <td>{{array_key_exists("Advanced", $value) ? number_format(floor($value['Advanced']['score'] / $value['Advanced']['count'])) : "-"}}</td>
-                            <td>{{array_key_exists("Expert", $value) ? number_format(floor($value['Expert']['score'] / $value['Expert']['count'])) : "-"}}</td>
-                            <td>{{array_key_exists("Master", $value) ? number_format(floor($value['Master']['score'] / $value['Master']['count'])) : "-"}}</td>
-                            <td>{{array_key_exists("Lunatic", $value) ? number_format(floor($value['Lunatic']['score'] / $value['Lunatic']['count'])) : "-"}}</td>
-                            <td>{{array_key_exists("total", $value) ? number_format(floor($value['total']['score'] / $value['total']['count'])) : 0}}</td>
-                        </tr>
-                        @endforeach
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </div>
-    <div class="accordion">
-        <input id="tab-aggregate-average-exist" type="checkbox" name="tabs">
-        <label for="tab-aggregate-average-exist">レベル別平均テクニカルスコア(未プレイを除く)</label>
-        <div class="accordion-content">
-            <div class="table_wrap">
-                <table class="table">
-                    <thead>
-                        <tr>
-                            <th>&nbsp;</th>
-                            <th>Basic</th>
-                            <th>Advanced</th>
-                            <th>Expert</th>
-                            <th>Master</th>
-                            <th>Lunatic</th>
-                            <th>合計</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach ($stat['averageExist'] as $key => $value)
                         <tr>
                             <td>{{$key}}</td>
                             <td>{{array_key_exists("Basic", $value) ? number_format(floor($value['Basic']['score'] / $value['Basic']['count'])) : "-"}}</td>

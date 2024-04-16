@@ -1,4 +1,5 @@
 <article class="box">
+    @component('layouts/components/user/archive_mode_button', ['mode' => 'battle', 'id' => $id, 'archive' => $archive]) @endcomponent
     @component('layouts/components/user/table_scale_button') @endcomponent
 
     <div id="sort_table" class="table_wrap scalable">
