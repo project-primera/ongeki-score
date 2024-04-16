@@ -1,12 +1,12 @@
 <article class="box">
-    <p>レート値が灰斜体のものは譜面定数が不明のため、推定値で表示されているものです。<br>赤太字のものはその曲のレート値が理論値に達しているものです。<br>レート値はオンゲキNETのプレミアムプランに加入していないと表示されません。</p>
     <p>
-        <b>表示倍率の変更</b><br>
-        <button class="button table_scale_change">25%</button>
-        <button class="button table_scale_change">50%</button>
-        <button class="button table_scale_change">75%</button>
-        <button class="button table_scale_change">100%</button>
+        レート値が灰斜体のものは譜面定数が不明のため、推定値で表示されているものです。<br>
+        赤太字のものはその曲のレート値が理論値に達しているものです。<br>
+        レート値はオンゲキNETのプレミアムプランに加入していないと表示されません。
     </p>
+    @component('layouts/components/user/archive_mode_button', ['mode' => 'details', 'id' => $id, 'archive' => $archive]) @endcomponent
+    @component('layouts/components/user/table_scale_button') @endcomponent
+
     <div id="sort_table" class="table_wrap scalable">
         <table class="table">
             <thead>

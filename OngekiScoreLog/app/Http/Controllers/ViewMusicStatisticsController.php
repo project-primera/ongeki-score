@@ -56,7 +56,7 @@ class ViewMusicStatisticsController extends Controller
 
         $battleKeys = ["新入生", "十級", "九級", "八級", "七級", "六級", "五級", "四級", "三級", "二級", "一級",  "初段", "二段", "三段", "四段", "五段", "六段", "七段", "八段", "九段", "十段", "奏伝"];
 
-        $technicalGrades = ["P", "SSS+", "SSS", "SS", "S", "AAA", "AA", "A", "B"];
+        $technicalGrades = ["AB+", "SSS+", "SSS", "SS", "S", "AAA", "AA", "A", "B"];
 
         $rateKeys = [];
         for ($i = 0; $i <= 17; ++$i) {

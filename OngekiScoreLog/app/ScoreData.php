@@ -30,6 +30,8 @@ class ScoreData extends Model
             $this->value[$key]->title = $title[$value->song_id]->title;
             $this->value[$key]->genre = $title[$value->song_id]->genre;
             $this->value[$key]->artist = $title[$value->song_id]->artist;
+            $this->value[$key]->deleted_normal = (bool)$title[$value->song_id]->deleted_normal;
+            $this->value[$key]->deleted_lunatic = (bool)$title[$value->song_id]->deleted_lunatic;
 
             switch (true) {
                 case ($this->value[$key]->difficulty === 0):
@@ -136,12 +138,66 @@ class ScoreData extends Model
                 $this->value[$key]->technical_high_score_next = 0;
 
             }else{
-                $this->value[$key]->technical_high_score_rank = "P";
+                $this->value[$key]->technical_high_score_rank = "AB+";
                 $this->value[$key]->technical_high_score_next = 0;
 
             }
         }
 
+        return $this;
+    }
+
+    /**
+     * スコアがゼロの楽曲データを取り除きます。
+     *
+     * @return ScoreData
+     */
+    function exclusionZeroScore(){
+        foreach ($this->value as $key => $value) {
+            if($value->over_damage_high_score === "0.00" && $value->battle_high_score === 0 && $value->technical_high_score === 0){
+                unset($this->value[$key]);
+            }
+        }
+        return $this;
+    }
+
+    /**
+     * 削除済みフラグが立っている楽曲データを取り除きます。
+     *
+     * @return ScoreData
+     */
+    function exclusionDeletedMusic(){
+        foreach ($this->value as $key => $value) {
+            if ($value->difficulty === 10) {
+                if($value->deleted_lunatic){
+                    unset($this->value[$key]);
+                }
+            }else{
+                if($value->deleted_normal){
+                    unset($this->value[$key]);
+                }
+            }
+        }
+        return $this;
+    }
+
+    /**
+     * 削除済みフラグが立っていない楽曲データを取り除きます。
+     *
+     * @return ScoreData
+     */
+    function exclusionNotDeletedMusic(){
+        foreach ($this->value as $key => $value) {
+            if ($value->difficulty === 10) {
+                if(!!!$value->deleted_lunatic){
+                    unset($this->value[$key]);
+                }
+            }else{
+                if(!!!$value->deleted_normal){
+                    unset($this->value[$key]);
+                }
+            }
+        }
         return $this;
     }
 
