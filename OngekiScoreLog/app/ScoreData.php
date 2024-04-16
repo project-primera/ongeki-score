@@ -148,6 +148,20 @@ class ScoreData extends Model
     }
 
     /**
+     * スコアがゼロの楽曲データを取り除きます。
+     *
+     * @return ScoreData
+     */
+    function exclusionZeroScore(){
+        foreach ($this->value as $key => $value) {
+            if($value->over_damage_high_score === "0.00" && $value->battle_high_score === 0 && $value->technical_high_score === 0){
+                unset($this->value[$key]);
+            }
+        }
+        return $this;
+    }
+
+    /**
      * 削除済みフラグが立っている楽曲データを取り除きます。
      *
      * @return ScoreData
