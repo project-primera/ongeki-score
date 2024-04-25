@@ -20,6 +20,7 @@ Route::get('/user/{id}/rating', 'ViewUserRatingController@getIndex')->where(['id
 Route::get('/user/{id}/trophy', 'ViewUserTrophyController@getIndex')->where(['id' => '\d+']);
 Route::get('/user/{id}/music/{music}/{difficulty}', 'ViewUserMusicController@getIndex')->where(['id' => '\d+', 'music' => '\d+', 'difficulty' => '\w+']);
 Route::get('/user/{id}/music/{music}', 'ViewUserMusicController@getRedirect')->where(['id' => '\d+', 'music' => '\d+']);
+Route::get('/user/{id}/battlescore/{difficulty?}', 'ViewUserController@getBattleScorePage')->where(['id' => '\d+', 'difficulty' => '\w+']);
 Route::get('/user/{id}/overdamage/{difficulty?}', 'ViewUserController@getOverDamegePage')->where(['id' => '\d+', 'difficulty' => '\w+']);
 Route::get('/user/{id}/{mode?}', 'ViewUserController@getUserPage')->where(['id' => '\d+']);
 
@@ -59,6 +60,7 @@ Route::group(['middleware' => ['auth', 'can:admin']], function () {
     Route::get('/admin/config', 'AdminController@GetConfig');
     Route::get('/admin/aggregate', 'AdminController@GetAggregate');
     Route::get('/admin/apply/{type}/{action?}', 'AdminController@GetApply');
+    Route::get('/admin/generate/battle-score', 'AdminController@GetGenerateBattleScore');
     Route::get('/admin/generate/over-damage', 'AdminController@GetGenerateOverDamage');
     Route::get('/admin/log/{path}/{fileName}', 'SimpleViewController@getLogFile');
 });
