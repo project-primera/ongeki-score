@@ -170,7 +170,7 @@ jobs:
   slack:
     name: Slack Notification
     runs-on: ubuntu-latest
-    needs: [skip, dockle, trivy, publish, release]
+    needs: [skip, dockle, trivy, publish]
     steps:
       - name: Slack Notification
         uses: 8398a7/action-slack@v2
