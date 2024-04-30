@@ -69,7 +69,26 @@ class AdminController extends Controller{
         return view('admin/config', compact(['result']));
     }
 
-    public function GetAggregate(){
+    public function GetBattle(){
+        $result = \App\AggregateBattleScore::all();
+        $difficultyToStr = [
+            0 => 'Basic',
+            1 => 'Advanced',
+            2 => 'Expert',
+            3 => 'Master',
+            10 => 'Lunatic',
+        ];
+
+        $musics = [];
+        $temp = \App\MusicData::all();
+        foreach ($temp as $value) {
+            $musics[$value->id] = $value->title;
+        }
+        return view('admin/battle', compact(['result', 'musics', 'difficultyToStr']));
+    }
+
+
+    public function GetOverDamage(){
         $result = \App\AggregateOverdamage::all();
         $difficultyToStr = [
             0 => 'Basic',
@@ -84,7 +103,7 @@ class AdminController extends Controller{
         foreach ($temp as $value) {
             $musics[$value->id] = $value->title;
         }
-        return view('admin/aggregate', compact(['result', 'musics', 'difficultyToStr']));
+        return view('admin/overdamage', compact(['result', 'musics', 'difficultyToStr']));
     }
 
     /**
