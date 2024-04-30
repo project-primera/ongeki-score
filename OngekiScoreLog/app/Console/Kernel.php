@@ -32,10 +32,15 @@ class Kernel extends ConsoleKernel
             \App\Facades\Slack::Info("<!here> すべてのユーザーの課金情報をリセットしました。");
         })->monthlyOn(1, '7:00');
 
+        // Max BattleScoreの集計
+        $schedule->call(function () {
+            \App\AggregateBattleScore::execute();
+        })->dailyAt('4:10');
+
         // Max OverDamageの集計
         $schedule->call(function () {
             \App\AggregateOverdamage::execute();
-        })->dailyAt('4:30');
+        })->dailyAt('4:10');
     }
 
     /**

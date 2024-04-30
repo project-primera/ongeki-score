@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use App\User;
 use App\UserStatus;
 use App\ScoreData;
+use App\AggregateBattleScore;
 use App\AggregateOverdamage;
 use App\Facades\OngekiUtility;
 use DateTime;
@@ -44,7 +45,7 @@ class ViewUserController extends Controller
         }
         $status[0]->badge = "";
         if($user->role == 7){
-            $status[0]->badge .= '&nbsp;<span class="tag developer">ProjectPrimera Developer</span>';
+            $status[0]->badge .= '&nbsp;<a target="_blank" href="https://github.com/project-primera"><span class="tag developer">ProjectPrimera Developer</span></a>';
         }
         if(\App\UserInformation::IsPremiumPlan($user->id)){
             $status[0]->badge .= '&nbsp;<span class="tag net-premium">OngekiNet Premium</span>';
@@ -340,6 +341,73 @@ class ViewUserController extends Controller
         return view('user', compact('id', 'status', 'score', 'stat', 'mode', 'submenuActive', 'sidemark', 'archive'));
     }
 
+
+    public function getBattleScorePage($id, $difficulty = ""){
+        // 存在しないdifficultyが指定された場合はリダイレクト
+        if(!in_array($difficulty, ["", "basic", "advanced", "expert", "master", "lunatic"])){
+            return redirect("/user/" . $id . "/battlescore");
+        }
+
+        $userStatus = new UserStatus();
+        $user = User::where('id' ,$id)->first();
+        $status = $userStatus->getRecentUserData($id);
+        if(count($status) === 0){
+            if(is_null($user)){
+                abort(404);
+            }else{
+                return view("user_error", ['message' => '<p>このユーザーはOngekiScoreLogに登録していますが、オンゲキNETからスコア取得を行っていません。(UserID: ' . $id . ')</p><p>スコアの取得方法は<a href="/howto">こちら</a>をお読みください。</p>']);
+            }
+        }
+        $status[0]->badge = "";
+        if($user->role == 7){
+            $status[0]->badge .= '&nbsp;<a target="_blank" href="https://github.com/project-primera"><span class="tag developer">ProjectPrimera Developer</span></a>';
+        }
+        if(\App\UserInformation::IsPremiumPlan($user->id)){
+            $status[0]->badge .= '&nbsp;<span class="tag net-premium">OngekiNet Premium</span>';
+        }else if(\App\UserInformation::IsStandardPlan($user->id)){
+            $status[0]->badge .= '&nbsp;<span class="tag net-standard">OngekiNet Standard</span>';
+        }
+
+        // トップランカーのスコアを取得してkey: song_id, difficulty, value: over_damage_high_score の配列を作る
+        $lastUpdate = (new DateTime())->setTimestamp(0);
+        $topRankerScore = [];
+        {
+            $temp = AggregateBattleScore::all();
+            foreach ($temp as $value) {
+                $key = $value->song_id . "_" . $value->difficulty;
+                $topRankerScore[$key] = $value->max;
+
+                // 最終更新日時を取得
+                if($lastUpdate < $value->updated_at){
+                    $lastUpdate = $value->updated_at;
+                }
+            }
+        }
+
+        // 自分のスコアを取得
+        $score = (new ScoreData)->getRecentUserScore($id)->addMusicData()->exclusionDeletedMusic()->getValue();
+
+        // 難易度を指定のものに絞る
+        $scoreDatas = [];
+        {
+            foreach ($score as $value) {
+                $key = $value->song_id;
+                if($value->over_damage_high_score !== "0.00"){
+                    if(($difficulty === "" && ($value->difficulty === 3 || $value->difficulty === 10))
+                        || ($difficulty === "basic" && $value->difficulty === 0)
+                        || ($difficulty === "advanced" && $value->difficulty === 1)
+                        || ($difficulty === "expert" && $value->difficulty === 2)
+                        || ($difficulty === "master" && $value->difficulty === 3)
+                        || ($difficulty === "lunatic" && $value->difficulty === 10)
+                    ){
+                        $scoreDatas[] = $value;
+                    }
+                }
+            }
+        }
+        return view('user_battlescore', compact('id', 'difficulty', 'status', 'lastUpdate', 'scoreDatas', 'topRankerScore'));
+    }
+
     public function getOverDamegePage($id, $difficulty = ""){
         // 存在しないdifficultyが指定された場合はリダイレクト
         if(!in_array($difficulty, ["", "basic", "advanced", "expert", "master", "lunatic"])){
@@ -358,7 +426,7 @@ class ViewUserController extends Controller
         }
         $status[0]->badge = "";
         if($user->role == 7){
-            $status[0]->badge .= '&nbsp;<span class="tag developer">ProjectPrimera Developer</span>';
+            $status[0]->badge .= '&nbsp;<a target="_blank" href="https://github.com/project-primera"><span class="tag developer">ProjectPrimera Developer</span></a>';
         }
         if(\App\UserInformation::IsPremiumPlan($user->id)){
             $status[0]->badge .= '&nbsp;<span class="tag net-premium">OngekiNet Premium</span>';
