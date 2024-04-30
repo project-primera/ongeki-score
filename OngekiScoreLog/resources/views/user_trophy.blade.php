@@ -15,7 +15,7 @@
     <li><a href="/user/{{$id}}">簡易</a></li>
     <li><a href="/user/{{$id}}/details">詳細</a></li>
     <li><a href="/user/{{$id}}/technical">Technical</a></li>
-    <li><a href="/user/{{$id}}/battle">Battle</a></li>
+    <li><a href="/user/{{$id}}/battlescore">Battle</a></li>
     <li><a href="/user/{{$id}}/overdamage">OverDamage</a></li>
     <li class="is-active"><a href="/user/{{$id}}/trophy">称号</a></li>
     <li><a href="/user/{{$id}}/rating">Rating</a></li>
@@ -83,14 +83,14 @@
                     </tr>
                 </tfoot>
                 <tbody class="list">
-                    @for ($i = count($trophies) - 1; $i >= 0; --$i)
-                        <tr>
-                            <td class="sort_title">{{$trophies[$i]['name']}}</td>
-                            <td class="sort_grade"><span class="sort-key">{{$trophies[$i]['grade']}}</span>{{$trophyIdToStr[$trophies[$i]['grade']]}}</td>
-                            <td class="sort_detail">{{$trophies[$i]['detail']}}</td>
-                            <td class="sort_update">{{date('Y-m-d', strtotime($trophies[$i]['updated_at']))}}</td>
-                        </tr>
-                    @endfor
+                    @foreach ($trophies as $trophy)
+                    <tr>
+                        <td class="sort_title">{{$trophy['name']}}</td>
+                        <td class="sort_grade"><span class="sort-key">{{$trophy['grade']}}</span>{{$trophyIdToStr[$trophy['grade']]}}</td>
+                        <td class="sort_detail">{{$trophy['detail']}}</td>
+                        <td class="sort_update">{{date('Y-m-d', strtotime($trophy['updated_at']))}}</td>
+                    </tr>
+                    @endforeach
                 </tbody>
             </table>
         </div>

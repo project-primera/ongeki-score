@@ -43,6 +43,10 @@
         <hr>
         <h3 class="title is-3">統計データ生成</h3>
         <p>超絶重いので実行する時間とタイミングに注意！</p>
+        <h4 class="title is-4">Battle Score</h4>
+        <p>
+            <a href="/admin/generate/battle-score"><button class="button is-danger">max</button></a>
+        </p>
         <h4 class="title is-4">Over Damage</h4>
         <p>
             <a href="/admin/generate/over-damage"><button class="button is-danger">max</button></a>

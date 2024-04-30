@@ -29,7 +29,7 @@ class ViewUserTrophyController extends Controller
 
         $status[0]->badge = "";
         if($user->role == 7){
-            $status[0]->badge .= '&nbsp;<span class="tag developer">ProjectPrimera Developer</span>';
+            $status[0]->badge .= '&nbsp;<a target="_blank" href="https://github.com/project-primera"><span class="tag developer">ProjectPrimera Developer</span></a>';
         }
         if(\App\UserInformation::IsPremiumPlan($user->id)){
             $status[0]->badge .= '&nbsp;<span class="tag net-premium">OngekiNet Premium</span>';
@@ -37,7 +37,7 @@ class ViewUserTrophyController extends Controller
             $status[0]->badge .= '&nbsp;<span class="tag net-standard">OngekiNet Standard</span>';
         }
 
-        $trophies = json_decode(json_encode(UserTrophy::where('user_id', $id)->get()), true);
+        $trophies = json_decode(json_encode(UserTrophy::where('user_id', $id)->orderBy('grade', 'desc')->orderBy('updated_at', 'desc')->get()), true);
 
         $trophyIdToStr = [
             0 => "ノーマル",

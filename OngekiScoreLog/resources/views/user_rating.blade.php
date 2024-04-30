@@ -15,7 +15,7 @@
     <li><a href="/user/{{$id}}">簡易</a></li>
     <li><a href="/user/{{$id}}/details">詳細</a></li>
     <li><a href="/user/{{$id}}/technical">Technical</a></li>
-    <li><a href="/user/{{$id}}/battle">Battle</a></li>
+    <li><a href="/user/{{$id}}/battlescore">Battle</a></li>
     <li><a href="/user/{{$id}}/overdamage">OverDamage</a></li>
     <li><a href="/user/{{$id}}/trophy">称号</a></li>
     <li class="is-active"><a href="/user/{{$id}}/rating">Rating</a></li>

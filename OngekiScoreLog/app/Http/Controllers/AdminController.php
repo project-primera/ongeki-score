@@ -143,6 +143,12 @@ class AdminController extends Controller{
         return redirect('/admin?message=' . $message);
     }
 
+    public function GetGenerateBattleScore(){
+        ini_set("max_execution_time", 0);
+        \App\AggregateBattleScore::execute();
+        return redirect('/admin?message=' . "Generate Battle Score: max. 実行しました！");
+    }
+
     public function GetGenerateOverDamage(){
         ini_set("max_execution_time", 0);
         \App\AggregateOverdamage::execute();
