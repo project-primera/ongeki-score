@@ -12,9 +12,16 @@
 @endif
 <a href="/admin/config">config</a></li>
 
-@if (isset($active) && $active === 'aggregate')
+@if (isset($active) && $active === 'battle')
     <li class="is-active">
 @else
     <li>
 @endif
-<a href="/admin/aggregate">aggregate</a></li>
+<a href="/admin/battle">battle</a></li>
+
+@if (isset($active) && $active === 'overdamage')
+    <li class="is-active">
+@else
+    <li>
+@endif
+<a href="/admin/overdamage">overdamage</a></li>

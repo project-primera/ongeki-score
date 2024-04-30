@@ -60,7 +60,7 @@
                                 <td class="sort_key3">0.00%</td>
                             @else
                                 {{-- １位ではないので計算 --}}
-                                <td class="sort_key3">{{number_format((floor((($s->over_damage_high_score) / ($topRankerScore[$s->song_id . "_" . $s->difficulty])) * 100) / 100), 2)}}%</td>
+                                <td class="sort_key3">{{number_format(($s->battle_high_score / $topRankerScore[$s->song_id . "_" . $s->difficulty]) * 100, 2)}}%</td>
                                 @endif
                         @else
                             <td class="sort_key1">?%</td>
