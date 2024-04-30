@@ -37,7 +37,7 @@ class ViewUserTrophyController extends Controller
             $status[0]->badge .= '&nbsp;<span class="tag net-standard">OngekiNet Standard</span>';
         }
 
-        $trophies = json_decode(json_encode(UserTrophy::where('user_id', $id)->get()), true);
+        $trophies = json_decode(json_encode(UserTrophy::where('user_id', $id)->orderBy('grade', 'desc')->orderBy('updated_at', 'desc')->get()), true);
 
         $trophyIdToStr = [
             0 => "ノーマル",
