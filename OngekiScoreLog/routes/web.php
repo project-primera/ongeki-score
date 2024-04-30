@@ -58,7 +58,8 @@ Route::post('/tweet/image', 'TweetController@postTweetImage');
 Route::group(['middleware' => ['auth', 'can:admin']], function () {
     Route::get('/admin', 'AdminController@GetIndex');
     Route::get('/admin/config', 'AdminController@GetConfig');
-    Route::get('/admin/aggregate', 'AdminController@GetAggregate');
+    Route::get('/admin/battle', 'AdminController@GetBattle');
+    Route::get('/admin/overdamage', 'AdminController@GetOverDamage');
     Route::get('/admin/apply/{type}/{action?}', 'AdminController@GetApply');
     Route::get('/admin/generate/battle-score', 'AdminController@GetGenerateBattleScore');
     Route::get('/admin/generate/over-damage', 'AdminController@GetGenerateOverDamage');

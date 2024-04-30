@@ -5,7 +5,7 @@
 @section('hero_subtitle', "config")
 
 @section('submenu')
-    @include('admin/_submenu', ['active' => 'aggregate'])
+    @include('admin/_submenu', ['active' => 'overdamage'])
 @endsection
 
 @section('additional_footer')
