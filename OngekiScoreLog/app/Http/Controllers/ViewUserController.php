@@ -62,16 +62,16 @@ class ViewUserController extends Controller
         $archive = (int)$request->get('archive');
         if ($archive === 0) {
             // 現行譜面 / ゼロスコアを除外
-            $scoreDataModel->exclusionZeroScore();
+            $scoreDataModel->exclusionZeroScore()->exclusionDeletedMusic();
         }elseif ($archive === 1) {
             // 現行譜面表示
             $scoreDataModel->exclusionDeletedMusic();
         }elseif ($archive === 2) {
             // 削除譜面のみ / ゼロスコアを除外
-            $score = $scoreDataModel->exclusionZeroScore()->exclusionNotDeletedMusic();
+            $scoreDataModel->exclusionZeroScore()->exclusionNotDeletedMusic();
         }elseif ($archive === 3) {
             // 削除譜面のみ
-            $score = $scoreDataModel->exclusionNotDeletedMusic();
+            $scoreDataModel->exclusionNotDeletedMusic();
         }elseif ($archive === 4) {
             // すべて表示（従来モード）
             // 何もしない
