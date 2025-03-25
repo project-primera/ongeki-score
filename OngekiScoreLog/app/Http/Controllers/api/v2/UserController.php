@@ -230,6 +230,16 @@ class UserController extends Controller{
                     $value['technical_high_score'] = $recentScore->technical_high_score;
                 }
 
+                // 最悪取れなくてもいいように値チェック
+                if(!array_key_exists('platinum_score', $value)){
+                    $value['platinum_score'] = 0;
+                }
+                if($value['platinum_score'] > $recentScore->platinum_score){
+                    $isUpdate = true;
+                }else{
+                    $value['platinum_score'] = $recentScore->platinum_score;
+                }
+
                 if($full_bell > $recentScore->full_bell){
                     $isUpdate = true;
                 }else{
@@ -257,6 +267,7 @@ class UserController extends Controller{
                     'over_damage_high_score' => $value['over_damage_high_score'],
                     'battle_high_score' => $value['battle_high_score'],
                     'technical_high_score' => $value['technical_high_score'],
+                    'platinum_score' => $value['platinum_score'],
                     'full_bell' => $full_bell,
                     'full_combo' => $full_combo,
                     'all_break' => $all_break,
