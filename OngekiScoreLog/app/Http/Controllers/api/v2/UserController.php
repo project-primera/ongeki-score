@@ -174,13 +174,24 @@ class UserController extends Controller{
                 throw new RuntimeException("アーティスト情報が送信されませんでした。古いブックマークレットが実行されています。ブラウザのキャッシュクリアをお試しください。");
             }
 
+            $temp = null;
             if ($value['artist'] != '') {
-                $music = \App\MusicData::where("title", $value['title'])->where("genre", $value['genre'])->where("artist", $value['artist'])->first();
+                $temp = \App\MusicData::where("title", $value['title'])->where("genre", $value['genre'])->where("artist", $value['artist'])->get();
             } else {
                 $v['artist'] = null;
-                $music = \App\MusicData::where("title", $value['title'])->where("genre", $value['genre'])->first();
+                $temp = \App\MusicData::where("title", $value['title'])->where("genre", $value['genre'])->get();
             }
-            if($music === null){
+
+            // 複数取得、２つ以上あったらエラー出して継続
+            if(count($temp) > 1){
+                $m = "楽曲が特定できませんでした: " . $value['title'] . " / " . $value['genre'] . " / " . $value['artist'];
+                $message[] = $m;
+
+                $content = "同名楽曲が複数存在します。";
+                $fields = ["IP Address" => \Request::ip(), "User id" => Auth::id(), "Title" => $value['title'], "Artist" => $value['artist'], "Genre" => $value['genre']];
+                \App\Facades\Slack::Notice($content, "", $fields, "success");
+                continue;
+            } elseif ($temp === null){
                 $m = "未知の曲: " . $value['title'] . " / " . $value['genre'] . " / " . $value['artist'];
                 $message[] = $m;
 
@@ -189,6 +200,9 @@ class UserController extends Controller{
                 \App\Facades\Slack::Notice($content, "", $fields, "success");
                 continue;
             }
+            $music = $temp[0];
+
+
             $recentScore = (new \App\ScoreData())->getRecentGenerationOfScoreData(Auth::id(), $music->id, $value['difficulty'])->getValue();
             $isUpdate = false;
 
