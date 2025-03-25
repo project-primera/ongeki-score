@@ -128,6 +128,8 @@ class UserController extends Controller{
                 $result['message'] = $this->setRatingRecentMusic($data, $userStatus->begin_at, $uniqueID);
             } else if ($methodType === "5") {
                 $this->setPaymentStatus($data, $userStatus->begin_at, $uniqueID);
+            } else if ($methodType === "6") {
+                $result['message'] = $this->setRatingPlatinumMusic($data, $userStatus->begin_at, $uniqueID);
             } else {
                 $result['message'][] = "未知のtypeが渡されました。 type:" . $methodType;
                 $result['isError'] = true;
@@ -402,6 +404,37 @@ class UserController extends Controller{
                 'genre' => $genre,
                 'difficulty' => $value['difficulty'],
                 'technical_score' => $value['technicalScore'],
+                'unique_id' => $uniqueID,
+                'created_at' => $dateTime,
+                'updated_at' => $dateTime,
+            ]);
+        }
+        return $message;
+    }
+
+    private function setRatingPlatinumMusic($data, $dateTime, $uniqueID){
+        $message = [];
+        \App\RatingPlatinumMusic::where('user_id', Auth::id())->delete();
+        foreach ($data['ratingPlatinumMusicObject'] as $key => $value) {
+            $genre = null;
+            $artist = null;
+
+            if ($value['genre'] !== "") {
+                $genre = $value['genre'];
+            }
+            if ($value['artist'] !== "") {
+                $artist = $value['artist'];
+            }
+
+            \App\RatingPlatinumMusic::create([
+                'user_id' => Auth::id(),
+                'rank' => $key,
+                'title' => $value['title'],
+                'artist' => $artist,
+                'genre' => $genre,
+                'difficulty' => $value['difficulty'],
+                'platinum_score' => $value['platinum_score'],
+                'star' => $value['star'],
                 'unique_id' => $uniqueID,
                 'created_at' => $dateTime,
                 'updated_at' => $dateTime,
