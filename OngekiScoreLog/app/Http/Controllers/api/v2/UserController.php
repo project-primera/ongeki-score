@@ -139,6 +139,7 @@ class UserController extends Controller{
             $result['data'] = $data;
         } catch (\Throwable $th) {
             $result['message'][] = $th->getMessage();
+            $result['message'][] = $th->getLine();
             $result['isError'] = true;
         }
 
@@ -193,7 +194,7 @@ class UserController extends Controller{
                 $fields = ["IP Address" => \Request::ip(), "User id" => Auth::id(), "Title" => $value['title'], "Artist" => $value['artist'], "Genre" => $value['genre']];
                 \App\Facades\Slack::Notice($content, "", $fields, "success");
                 continue;
-            } elseif ($temp === null){
+            } elseif ($temp === null || count($temp) === 0){
                 $m = "未知の曲: " . $value['title'] . " / " . $value['genre'] . " / " . $value['artist'];
                 $message[] = $m;
 
@@ -211,6 +212,13 @@ class UserController extends Controller{
             $full_bell = ($value['full_bell'] === "true" ? 1 : 0);
             $full_combo = ($value['full_combo'] === "true" ? 1 : 0);
             $all_break = ($value['all_break'] === "true" ? 1 : 0);
+
+            $platinum_score = 0;
+            // 最悪取れなくてもいいように値チェック
+            if(isset($value['platinum_score'])){
+                $platinum_score = $value['platinum_score'];
+            }
+
             if((bool)$recentScore === false){
                 $isUpdate = true;
             }else{
@@ -232,14 +240,10 @@ class UserController extends Controller{
                     $value['technical_high_score'] = $recentScore->technical_high_score;
                 }
 
-                // 最悪取れなくてもいいように値チェック
-                if(!array_key_exists('platinum_score', $value)){
-                    $value['platinum_score'] = 0;
-                }
-                if($value['platinum_score'] > $recentScore->platinum_score){
+                if($platinum_score > $recentScore->platinum_score){
                     $isUpdate = true;
                 }else{
-                    $value['platinum_score'] = $recentScore->platinum_score;
+                    $platinum_score = $recentScore->platinum_score;
                 }
 
                 if($full_bell > $recentScore->full_bell){
@@ -269,7 +273,7 @@ class UserController extends Controller{
                     'over_damage_high_score' => $value['over_damage_high_score'],
                     'battle_high_score' => $value['battle_high_score'],
                     'technical_high_score' => $value['technical_high_score'],
-                    'platinum_score' => $value['platinum_score'],
+                    'platinum_score' => $platinum_score,
                     'full_bell' => $full_bell,
                     'full_combo' => $full_combo,
                     'all_break' => $all_break,
