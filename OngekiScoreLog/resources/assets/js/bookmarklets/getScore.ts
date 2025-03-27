@@ -404,12 +404,12 @@ import * as qs from 'qs';
     }
 
     enum MethodType {
-        Player,
-        Score,
-        Trophy,
-        CharacterFriendly,
-        RatingRecentMusic,
-        Payment,
+        Player = 0,
+        Score = 1,
+        Trophy = 2,
+        CharacterFriendly = 3,
+        RatingRecentMusic = 4,
+        Payment = 5,
     }
 
     class PostData {
