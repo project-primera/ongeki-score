@@ -166,7 +166,7 @@ class ViewUserController extends Controller
         foreach ($score as $key => $value) {
             // レート値を表示していいユーザーなら取得 だめなら隠す
             if(\App\UserInformation::IsPremiumPlan($user->id)){
-                $score[$key]->ratingValue = sprintf("%.2f", OngekiUtility::RateValueFromTitle($score[$key]->title, $score[$key]->difficulty, $score[$key]->technical_high_score, $score[$key]->genre, $score[$key]->artist));
+                $score[$key]->ratingValue = sprintf("%.3f", OngekiUtility::RateValueFromTitle($score[$key]->title, $score[$key]->difficulty, $score[$key]->technical_high_score, $score[$key]->genre, $score[$key]->artist));
                 $score[$key]->ratingValueRaw = $score[$key]->ratingValue;
                 if (OngekiUtility::IsEstimatedRateValueFromTitle($score[$key]->title, $score[$key]->difficulty, $score[$key]->genre, $score[$key]->artist)) {
                     $score[$key]->ratingValue = "<i><span class='estimated-rating'>" . $score[$key]->ratingValue . "</span></i>";

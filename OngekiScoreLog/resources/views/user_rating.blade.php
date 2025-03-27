@@ -44,18 +44,18 @@
                 <tbody>
                     <tr>
                         <td>新曲枠</td>
-                        <td>{{sprintf("%.2f", floor($statistics->newBestRatingTotal / $statistics->newBestRatingCount * 100) / 100)}}</td>
+                        <td>{{sprintf("%.3f", floor($statistics->newBestRatingTotal / $statistics->newBestRatingCount * 100) / 100)}}</td>
                         <td>{{$statistics->newBestRatingCount}}</td>
-                        <td>{{sprintf("%.2f", $statistics->newBestRatingTop)}}</td>
-                        <td>{{sprintf("%.2f", $statistics->newBestRatingMin)}}</td>
+                        <td>{{sprintf("%.3f", $statistics->newBestRatingTop)}}</td>
+                        <td>{{sprintf("%.3f", $statistics->newBestRatingMin)}}</td>
                         <td>{{$statistics->newBestRatingTotal}}</td>
                     </tr>
                     <tr>
                         <td>ベスト枠</td>
-                        <td>{{sprintf("%.2f", floor($statistics->oldBestRatingTotal / $statistics->oldBestRatingCount * 100) / 100)}}</td>
+                        <td>{{sprintf("%.3f", floor($statistics->oldBestRatingTotal / $statistics->oldBestRatingCount * 100) / 100)}}</td>
                         <td>{{$statistics->oldBestRatingCount}}</td>
-                        <td>{{sprintf("%.2f", $statistics->oldBestRatingTop)}}</td>
-                        <td>{{sprintf("%.2f", $statistics->oldBestRatingMin)}}</td>
+                        <td>{{sprintf("%.3f", $statistics->oldBestRatingTop)}}</td>
+                        <td>{{sprintf("%.3f", $statistics->oldBestRatingMin)}}</td>
                         <td>{{$statistics->oldBestRatingTotal}}</td>
                     </tr>
                     <tr>
@@ -68,10 +68,10 @@
                     </tr>
                     <tr>
                         <td>全対象曲</td>
-                        <td>{{sprintf("%.2f", floor($statistics->totalRatingTotal / $statistics->totalRatingCount * 100) / 100)}}</td>
+                        <td>{{sprintf("%.3f", floor($statistics->totalRatingTotal / $statistics->totalRatingCount * 100) / 100)}}</td>
                         <td>{{$statistics->totalRatingCount}}</td>
-                        <td>{{sprintf("%.2f", $statistics->totalRatingTop)}}</td>
-                        <td>{{sprintf("%.2f", $statistics->totalRatingMin)}}</td>
+                        <td>{{sprintf("%.3f", $statistics->totalRatingTop)}}</td>
+                        <td>{{sprintf("%.3f", $statistics->totalRatingMin)}}</td>
                         <td>{{$statistics->totalRatingTotal}}</td>
                     </tr>
                 </tbody>
