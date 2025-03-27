@@ -437,7 +437,7 @@ class UserController extends Controller{
                 'artist' => $artist,
                 'genre' => $genre,
                 'difficulty' => $value['difficulty'],
-                'platinum_score' => $value['platinum_score'],
+                'platinum_score' => $value['platinumScore'],
                 'star' => $value['star'],
                 'unique_id' => $uniqueID,
                 'created_at' => $dateTime,
