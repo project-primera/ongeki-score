@@ -547,33 +547,11 @@ import * as qs from 'qs';
             await postData.Post(MethodType.Player, playerData);
             await sleep(SLEEP_MSEC);
 
-            echo(await getTime() + "Basicのスコアデータを取得します。");
             let scoreData = new ScoreData;
-            await scoreData.GetDifficultyScoreData(Difficulty.Basic);
-            echo(await getTime() + "スコアデータを送信します。");
-            let length = Math.ceil(await scoreData.GetArrayLength() / 50);
-            for (let index = 0; index < length; ++index) {
-                echo(await getTime() + " " + (index + 1) + ": 送信...");
-                await postData.Post(MethodType.Score, await scoreData.GetPartialArray(index));
-                await sleep(SLEEP_MSEC / 10);
-            }
-            await sleep(SLEEP_MSEC);
-
-            echo(await getTime() + "Advancedのスコアデータを取得します。");
+            let length = 0;
+            echo(await getTime() + "Lunaticのスコアデータを取得します。");
             scoreData.Clear();
-            await scoreData.GetDifficultyScoreData(Difficulty.Advanced);
-            echo(await getTime() + "スコアデータを送信します。");
-            length = Math.ceil(await scoreData.GetArrayLength() / 50);
-            for (let index = 0; index < length; ++index) {
-                echo(await getTime() + " " + (index + 1) + ": 送信...");
-                await postData.Post(MethodType.Score, await scoreData.GetPartialArray(index));
-                await sleep(SLEEP_MSEC / 10);
-            }
-            await sleep(SLEEP_MSEC);
-
-            echo(await getTime() + "Expertのスコアデータを取得します。");
-            scoreData.Clear();
-            await scoreData.GetDifficultyScoreData(Difficulty.Expert);
+            await scoreData.GetDifficultyScoreData(Difficulty.Lunatic);
             echo(await getTime() + "スコアデータを送信します。");
             length = Math.ceil(await scoreData.GetArrayLength() / 50);
             for (let index = 0; index < length; ++index) {
@@ -595,9 +573,33 @@ import * as qs from 'qs';
             }
             await sleep(SLEEP_MSEC);
 
-            echo(await getTime() + "Lunaticのスコアデータを取得します。");
+            echo(await getTime() + "Expertのスコアデータを取得します。");
             scoreData.Clear();
-            await scoreData.GetDifficultyScoreData(Difficulty.Lunatic);
+            await scoreData.GetDifficultyScoreData(Difficulty.Expert);
+            echo(await getTime() + "スコアデータを送信します。");
+            length = Math.ceil(await scoreData.GetArrayLength() / 50);
+            for (let index = 0; index < length; ++index) {
+                echo(await getTime() + " " + (index + 1) + ": 送信...");
+                await postData.Post(MethodType.Score, await scoreData.GetPartialArray(index));
+                await sleep(SLEEP_MSEC / 10);
+            }
+            await sleep(SLEEP_MSEC);
+
+            echo(await getTime() + "Advancedのスコアデータを取得します。");
+            scoreData.Clear();
+            await scoreData.GetDifficultyScoreData(Difficulty.Advanced);
+            echo(await getTime() + "スコアデータを送信します。");
+            length = Math.ceil(await scoreData.GetArrayLength() / 50);
+            for (let index = 0; index < length; ++index) {
+                echo(await getTime() + " " + (index + 1) + ": 送信...");
+                await postData.Post(MethodType.Score, await scoreData.GetPartialArray(index));
+                await sleep(SLEEP_MSEC / 10);
+            }
+            await sleep(SLEEP_MSEC);
+
+            echo(await getTime() + "Basicのスコアデータを取得します。");
+            scoreData = new ScoreData;
+            await scoreData.GetDifficultyScoreData(Difficulty.Basic);
             echo(await getTime() + "スコアデータを送信します。");
             length = Math.ceil(await scoreData.GetArrayLength() / 50);
             for (let index = 0; index < length; ++index) {
@@ -626,16 +628,7 @@ import * as qs from 'qs';
             // await postData.Post(MethodType.CharacterFriendly, characterFriendlyData);
             // await sleep(SLEEP_MSEC);
 
-            if (paymentStatus.IsPremiumPlan()) {
-                echo(await getTime() + "レーティング対象曲情報を取得します。");
-                let ratingRecentMusicData = new RatingRecentMusicData;
-                await ratingRecentMusicData.getData();
-                echo(await getTime() + "レーティング対象曲情報を送信します...");
-                await postData.Post(MethodType.RatingRecentMusic, ratingRecentMusicData);
-                await sleep(SLEEP_MSEC);
-            } else {
-                echo(await getTime() + "スタンダードプランの為、レーティング対象曲情報取得をスキップします。");
-            }
+
 
 
             echo("データの登録に成功しました！");
