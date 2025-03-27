@@ -112,7 +112,7 @@ import * as qs from 'qs';
 
     class SongInfo {
         title: string = "";
-        difficulty: Difficulty = -1;
+        difficulty: Difficulty = 0;
         genre: string = "";
         level: number = 0;
         over_damage_high_score: number = 0;
@@ -122,8 +122,15 @@ import * as qs from 'qs';
         full_combo: boolean = false;
         all_break: boolean = false;
         artist: string = "";
+        platinum_score: number = 0;
+        star: number = 0;
 
-        constructor(title: string, difficulty: Difficulty, genre: string, level: number, over_damage_high_score: number, battle_high_score: number, technical_high_score: number, full_bell: boolean, full_combo: boolean, all_break: boolean, artist: string) {
+        constructor(title: string, difficulty: Difficulty, genre: string,
+            level: number, over_damage_high_score: number,
+            battle_high_score: number, technical_high_score: number,
+            full_bell: boolean, full_combo: boolean, all_break: boolean,
+            artist: string, platinum_score: number, star: number
+        ) {
             this.title = title;
             this.difficulty = difficulty;
             this.genre = genre;
@@ -135,6 +142,8 @@ import * as qs from 'qs';
             this.full_combo = full_combo;
             this.all_break = all_break;
             this.artist = artist;
+            this.platinum_score = platinum_score;
+            this.star = star;
         }
     }
 
@@ -206,12 +215,14 @@ import * as qs from 'qs';
                 console.log("曲名が重複している楽曲名: " + name + ' / ' + genre + ' / ' + difficulty);
                 await sleep(SLEEP_MSEC);
                 let response = await axios.get(NET_URL + '/record/musicDetail/?idx=' + encodeURIComponent($(parentElement).find("[name=idx]").prop("value")));
-                var parse = $.parseHTML(response.data);
+                let parse = $.parseHTML(response.data);
                 artist = $(parse).find("div.m_5.f_13.break").text().trim();
                 artist = artist.substring(0, artist.indexOf('\n'));
                 console.log(artist);
             }
-            var song = new SongInfo(
+            let platinumScore = +$($(element).find(".platinum_high_score_text_block")).text().replace(/,/g, "").split("/")[0];
+            let star = +($($(element).find(".platinum_high_score_star_block").find(".f_b")).text());
+            let song = new SongInfo(
                 name,
                 difficulty,
                 genre,
@@ -222,7 +233,9 @@ import * as qs from 'qs';
                 $(element).find("[src*='music_icon_fb.png']").length > 0,
                 $(element).find("[src*='music_icon_fc.png']").length > 0 || $(element).find("[src*='music_icon_ab.png']").length > 0,
                 $(element).find("[src*='music_icon_ab.png']").length > 0,
-                artist
+                artist,
+                platinumScore,
+                star,
             );
             this.songInfos.push(song);
         }
