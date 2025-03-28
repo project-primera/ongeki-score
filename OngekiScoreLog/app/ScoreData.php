@@ -67,6 +67,32 @@ class ScoreData extends Model
             }else{
                 $this->value[$key]->level_str = (string)(int)$this->value[$key]->level . "+";
             }
+
+            // レート計算用 ランプ処理
+            $this->value[$key]->lamp = "";
+            if ($this->value[$key]->technical_high_score == 1010000){
+                if ($this->value[$key]->full_bell == 1) {
+                    $this->value[$key]->lamp = "FB/AB+";
+                } else {
+                    $this->value[$key]->lamp = "AB+";
+                }
+            } elseif ($this->value[$key]->all_break == 1) {
+                if ($this->value[$key]->full_bell == 1) {
+                    $this->value[$key]->lamp = "FB/AB";
+                } else {
+                    $this->value[$key]->lamp = "AB";
+                }
+            } elseif ($this->value[$key]->full_combo == 1) {
+                if ($this->value[$key]->full_bell == 1) {
+                    $this->value[$key]->lamp = "FB/FC";
+                } else {
+                    $this->value[$key]->lamp = "FC";
+                }
+            } else {
+                if ($this->value[$key]->full_bell == 1) {
+                    $this->value[$key]->lamp = "FB";
+                }
+            }
         }
 
         return $this;
