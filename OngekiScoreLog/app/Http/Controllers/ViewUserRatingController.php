@@ -144,6 +144,8 @@ class ViewUserRatingController extends Controller
         $notExistMusic->level_str = "-";
         $notExistMusic->technical_high_score = 0;
         $notExistMusic->technical_score = 0;
+        $notExistMusic->platinum_score = 0;
+        $notExistMusic->star = 0;
         $notExistMusic->extraLevelStr = "-";
         $notExistMusic->ratingValue = "-";
         $notExistMusic->rawRatingValue = 0;
@@ -152,6 +154,7 @@ class ViewUserRatingController extends Controller
         $notExistMusic->targetMusicRateBorder = "";
         $notExistMusic->targetMusicRateUser = "";
         $notExistMusic->updated_at = date("Y/m/d");
+
 
         $newScore = (new ScoreData())->getRatingNewUserScore($id)->addMusicData()->getValue();
         $oldScore = (new ScoreData())->getRatingOldUserScore($id)->addMusicData()->getValue();
