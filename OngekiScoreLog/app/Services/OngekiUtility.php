@@ -23,6 +23,15 @@ class OngekiUtility {
         }
     }
 
+    /**
+     * 譜面定数が存在しない場合推定、譜面定数を返します
+     *
+     * @param string $title
+     * @param [type] $difficulty
+     * @param [type] $genre
+     * @param [type] $artist
+     * @return void
+     */
     public function IsEstimatedRateValueFromTitle(string $title, $difficulty, $genre, $artist)
     {
         if(is_int($difficulty)){
@@ -82,8 +91,9 @@ class OngekiUtility {
         return $this::$MusicList[$title][$difficulty];
     }
 
-    public function RateValueFromTitle(string $title, $difficulty, int $technicalScore, $genre, $artist)
-    {
+    public function RateValueFromTitle(string $title, $difficulty,
+        int $technicalScore, string $lamp, $genre, $artist
+    ) {
         if(is_int($difficulty)){
             $keys = [
                 0 => "basic_extra_level",
@@ -112,28 +122,109 @@ class OngekiUtility {
             return 0;
         }
 
-        return $this->RateValue($this::$MusicList[$title][$difficulty], $technicalScore);
+        $result = $this->calcRatingValue($this::$MusicList[$title][$difficulty], $technicalScore);
+        $result += $this->calcRankRatingValue($technicalScore);
+        $result += $this->calcLampRatingValue($lamp);
+        return $result;
     }
 
-    private function RateValue(float $extraLevel, int $technicalScore)
+    private function calcRatingValue(float $extraLevel, int $technicalScore)
     {
-        if($technicalScore >= 1007500){
-            // >= 1007500   定数+2.0    理論値
-            return $extraLevel + 2.0;
-        }else if($technicalScore >= 1000000){
-            // >= 1000000   定数+1.5    1000000を超えた150点毎に+0.01
-            return floor(($extraLevel * 100 + 150) + (floor(($technicalScore - 1000000) / 150))) / 100;
-        }else if($technicalScore >= 970000){
-            // >= 970000    定数+0.0    970000を超えた200点毎に+0.01
-            return floor($extraLevel * 100 + (floor(($technicalScore - 970000) / 200))) / 100;
-        }else{
-            // < 970000     定数+0.0    970000から175点を割るごとに-0.01
-            $v = floor($extraLevel * 100 - (floor((970000 - $technicalScore) / 175 + 1))) / 100;
-            if($v < 0){
-                $v = 0;
-            }
-            return $v;
+        // flort問題のためすべての値を1000倍して整数で計算する
+        $extra = $extraLevel * 1000;
+        $result = 0;
+
+        if($technicalScore == 1010000){ // 理論値: 2.0
+            $result = $extra + 2000;
+        }elseif($technicalScore >= 1007500){ // SSS+: 1.75 / 10点ごとに+0.001
+            $result = $extra + 1750 + (floor(($technicalScore - 1007500) / 10));
+        }elseif($technicalScore >= 1000000){ // SSS: 1.25 / 15点ごとに+0.001
+            $result = $extra + 1250 + (floor(($technicalScore - 1000000) / 15));
+        }elseif($technicalScore >= 990000){ // SS: 0.75 / 40点ごとに+0.001
+            $result = $extra + 750 + (floor(($technicalScore - 990000) / 400));
+        }elseif($technicalScore >= 970000){ // S: 0.00 / 26点ごとに+0.001
+            $result = $extra + (floor(($technicalScore - 970000) / 26.666));
+        }else{ // それ以下: -18点ごとに-0.001
+            // S未満の場合: 970000点以下では18点ごとに-0.001
+            $result = $extra - (floor((970000 - $technicalScore) / 18));
         }
+        return $result / 1000;
+    }
+
+    private function calcRankRatingValue(int $technicalScore)
+    {
+        if($technicalScore >= 1007500){ // 理論値: 2.0
+            return 0.3;
+        }elseif($technicalScore >= 1000000){
+            return 0.2;
+        }elseif($technicalScore >= 990000){
+            return 0.1;
+        }
+        return 0;
+    }
+
+    private function calcLampRatingValue(string $lamp)
+    {
+        if ($lamp == "FB/AB+") {
+            return 0.4;
+        } elseif ($lamp == "AB+") {
+            return 0.35;
+        } elseif ($lamp == "FB/AB") {
+            return 0.35;
+        } elseif ($lamp == "AB") {
+            return 0.3;
+        } elseif ($lamp == "FB/FC") {
+            return 0.15;
+        } elseif ($lamp == "FC") {
+            return 0.1;
+        } elseif ($lamp == "FB") {
+            return 0.05;
+        }
+        return 0;
+    }
+
+    public function RateValueFromTitleForPlatinum(string $title, $difficulty, int $platinuScore, int $starCount, $genre, $artist)
+    {
+        if(is_int($difficulty)){
+            $keys = [
+                0 => "basic_extra_level",
+                1 => "advanced_extra_level",
+                2 => "expert_extra_level",
+                3 => "master_extra_level",
+                10 => "lunatic_extra_level",
+            ];
+            $difficulty = $keys[$difficulty];
+        }elseif(!is_string($difficulty)){
+            throw new InvalidArgumentException();
+        }
+
+        // ☆6以上は5として扱う
+        if($starCount >= 6){
+            $starCount = 5;
+        }
+
+        $sameNameList = array_flip($this::$MusicData->getSameMusicList());
+        if (array_key_exists($title, $sameNameList)) {
+            $title .= "." . $artist . "." . $genre;
+        }
+
+        if(!array_key_exists($title, $this::$MusicList)){
+            throw new \OutOfBoundsException("title: " . $title . " / artist:" . $artist . " / difficulty:" . $difficulty);
+        }
+
+        if($this::$MusicList[$title][$difficulty] === null){
+            // なんか存在しない難易度の定数値取ろうとしてる
+            // 既に入ってる曲に後からlunatic追加されると起きがち
+            return 0;
+        }
+
+        return $this->calcPlatinumRatingValue($this::$MusicList[$title][$difficulty], $platinuScore, $starCount);
+    }
+
+    private function calcPlatinumRatingValue(float $extraLevel, int $platinumScore, int $starCount)
+    {
+        // 本当に何もわからない
+        return 0;
     }
 
     /**
