@@ -15,7 +15,7 @@
         "laravel/tinker": "^1.0",
         "lcobucci/jwt": "3.3",
         "mpyw/cowitter": "^1.0",
-        "predis/predis": "^1.1"
+        "predis/predis": "^2.3"
     },
     "require-dev": {
         "filp/whoops": "^2.0",
