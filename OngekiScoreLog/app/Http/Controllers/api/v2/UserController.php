@@ -128,6 +128,8 @@ class UserController extends Controller{
                 $result['message'] = $this->setRatingRecentMusic($data, $userStatus->begin_at, $uniqueID);
             } else if ($methodType === "5") {
                 $this->setPaymentStatus($data, $userStatus->begin_at, $uniqueID);
+            } else if ($methodType === "6") {
+                $result['message'] = $this->setRatingPlatinumMusic($data, $userStatus->begin_at, $uniqueID);
             } else {
                 $result['message'][] = "未知のtypeが渡されました。 type:" . $methodType;
                 $result['isError'] = true;
@@ -137,6 +139,7 @@ class UserController extends Controller{
             $result['data'] = $data;
         } catch (\Throwable $th) {
             $result['message'][] = $th->getMessage();
+            $result['message'][] = $th->getLine();
             $result['isError'] = true;
         }
 
@@ -174,13 +177,24 @@ class UserController extends Controller{
                 throw new RuntimeException("アーティスト情報が送信されませんでした。古いブックマークレットが実行されています。ブラウザのキャッシュクリアをお試しください。");
             }
 
+            $temp = null;
             if ($value['artist'] != '') {
-                $music = \App\MusicData::where("title", $value['title'])->where("genre", $value['genre'])->where("artist", $value['artist'])->first();
+                $temp = \App\MusicData::where("title", $value['title'])->where("genre", $value['genre'])->where("artist", $value['artist'])->get();
             } else {
                 $v['artist'] = null;
-                $music = \App\MusicData::where("title", $value['title'])->where("genre", $value['genre'])->first();
+                $temp = \App\MusicData::where("title", $value['title'])->where("genre", $value['genre'])->get();
             }
-            if($music === null){
+
+            // 複数取得、２つ以上あったらエラー出して継続
+            if(count($temp) > 1){
+                $m = "楽曲が特定できませんでした: " . $value['title'] . " / " . $value['genre'] . " / " . $value['artist'];
+                $message[] = $m;
+
+                $content = "同名楽曲が複数存在します。";
+                $fields = ["IP Address" => \Request::ip(), "User id" => Auth::id(), "Title" => $value['title'], "Artist" => $value['artist'], "Genre" => $value['genre']];
+                \App\Facades\Slack::Notice($content, "", $fields, "success");
+                continue;
+            } elseif ($temp === null || count($temp) === 0){
                 $m = "未知の曲: " . $value['title'] . " / " . $value['genre'] . " / " . $value['artist'];
                 $message[] = $m;
 
@@ -189,12 +203,22 @@ class UserController extends Controller{
                 \App\Facades\Slack::Notice($content, "", $fields, "success");
                 continue;
             }
+            $music = $temp[0];
+
+
             $recentScore = (new \App\ScoreData())->getRecentGenerationOfScoreData(Auth::id(), $music->id, $value['difficulty'])->getValue();
             $isUpdate = false;
 
             $full_bell = ($value['full_bell'] === "true" ? 1 : 0);
             $full_combo = ($value['full_combo'] === "true" ? 1 : 0);
             $all_break = ($value['all_break'] === "true" ? 1 : 0);
+
+            $platinum_score = 0;
+            // 最悪取れなくてもいいように値チェック
+            if(isset($value['platinum_score'])){
+                $platinum_score = $value['platinum_score'];
+            }
+
             if((bool)$recentScore === false){
                 $isUpdate = true;
             }else{
@@ -214,6 +238,12 @@ class UserController extends Controller{
                     $isUpdate = true;
                 }else{
                     $value['technical_high_score'] = $recentScore->technical_high_score;
+                }
+
+                if($platinum_score > $recentScore->platinum_score){
+                    $isUpdate = true;
+                }else{
+                    $platinum_score = $recentScore->platinum_score;
                 }
 
                 if($full_bell > $recentScore->full_bell){
@@ -243,6 +273,7 @@ class UserController extends Controller{
                     'over_damage_high_score' => $value['over_damage_high_score'],
                     'battle_high_score' => $value['battle_high_score'],
                     'technical_high_score' => $value['technical_high_score'],
+                    'platinum_score' => $platinum_score,
                     'full_bell' => $full_bell,
                     'full_combo' => $full_combo,
                     'all_break' => $all_break,
@@ -377,6 +408,37 @@ class UserController extends Controller{
                 'genre' => $genre,
                 'difficulty' => $value['difficulty'],
                 'technical_score' => $value['technicalScore'],
+                'unique_id' => $uniqueID,
+                'created_at' => $dateTime,
+                'updated_at' => $dateTime,
+            ]);
+        }
+        return $message;
+    }
+
+    private function setRatingPlatinumMusic($data, $dateTime, $uniqueID){
+        $message = [];
+        \App\RatingPlatinumMusic::where('user_id', Auth::id())->delete();
+        foreach ($data['ratingPlatinumMusicObject'] as $key => $value) {
+            $genre = null;
+            $artist = null;
+
+            if ($value['genre'] !== "") {
+                $genre = $value['genre'];
+            }
+            if ($value['artist'] !== "") {
+                $artist = $value['artist'];
+            }
+
+            \App\RatingPlatinumMusic::create([
+                'user_id' => Auth::id(),
+                'rank' => $key,
+                'title' => $value['title'],
+                'artist' => $artist,
+                'genre' => $genre,
+                'difficulty' => $value['difficulty'],
+                'platinum_score' => $value['platinumScore'],
+                'star' => $value['star'],
                 'unique_id' => $uniqueID,
                 'created_at' => $dateTime,
                 'updated_at' => $dateTime,
