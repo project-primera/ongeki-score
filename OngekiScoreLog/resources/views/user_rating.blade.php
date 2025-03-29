@@ -26,7 +26,6 @@
 @section('content')
     <article id="rating_statistics" class="box">
         <h3 class="title is-3">レーティング対象曲の統計</h3>
-        <p style="font-size: 1.2em;">レーティング計算式は調査中のため、<b>この画面の情報はすべて間違っています！！</b></p>
         <p>
             ■統計&nbsp;/&nbsp;<a data-scroll href="#rating_new">▼新曲枠</a>&nbsp;/&nbsp;<a data-scroll href="#rating_old">▼ベスト枠</a>&nbsp;/&nbsp;<a data-scroll href="#rating_platinum">▼プラチナスコア枠</a>
         </p>
