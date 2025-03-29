@@ -25,33 +25,33 @@ class ViewUserRatingController extends Controller
         for ($index = 0; $index < count($scores); $index++) {
             if (isset($scores[$index])) {
                     // ランプ情報追加
-                $scores[$index]->lamp = "";
+                $scores[$index]->lampForRating = "";
                 if ($scores[$index]->technical_high_score == 1010000){
                     if ($scores[$index]->full_bell == 1) {
-                        $scores[$index]->lamp = "FB/AB+";
+                        $scores[$index]->lampForRating = "FB/AB+";
                     } else {
-                        $scores[$index]->lamp = "AB+";
+                        $scores[$index]->lampForRating = "AB+";
                     }
                 } elseif ($scores[$index]->all_break == 1) {
                     if ($scores[$index]->full_bell == 1) {
-                        $scores[$index]->lamp = "FB/AB";
+                        $scores[$index]->lampForRating = "FB/AB";
                     } else {
-                        $scores[$index]->lamp = "AB";
+                        $scores[$index]->lampForRating = "AB";
                     }
                 } elseif ($scores[$index]->full_combo == 1) {
                     if ($scores[$index]->full_bell == 1) {
-                        $scores[$index]->lamp = "FB/FC";
+                        $scores[$index]->lampForRating = "FB/FC";
                     } else {
-                        $scores[$index]->lamp = "FC";
+                        $scores[$index]->lampForRating = "FC";
                     }
                 } else {
                     if ($scores[$index]->full_bell == 1) {
-                        $scores[$index]->lamp = "FB";
+                        $scores[$index]->lampForRating = "FB";
                     }
                 }
 
                 // 単極レート値の取得
-                $scores[$index]->ratingValue = sprintf("%.2f", OngekiUtility::RateValueFromTitle($scores[$index]->title, $scores[$index]->difficulty, $scores[$index]->technical_high_score, $scores[$index]->lamp, $scores[$index]->genre, $scores[$index]->artist));
+                $scores[$index]->ratingValue = sprintf("%.3f", OngekiUtility::RateValueFromTitle($scores[$index]->title, $scores[$index]->difficulty, $scores[$index]->technical_high_score, $scores[$index]->lampForRating, $scores[$index]->genre, $scores[$index]->artist));
                 $scores[$index]->rawRatingValue = $scores[$index]->ratingValue;
 
                 // レート値上昇推定スコア計算
@@ -79,8 +79,10 @@ class ViewUserRatingController extends Controller
                 if (OngekiUtility::IsEstimatedRateValueFromTitle($scores[$index]->title, $scores[$index]->difficulty, $scores[$index]->genre, $scores[$index]->artist)) {
                     $scores[$index]->extraLevelStr = "<i><span class='estimated-rating'>" . $scores[$index]->extraLevelStr . "?</span></i>";
                     $scores[$index]->ratingValue = "<i><span class='estimated-rating'>" . $scores[$index]->ratingValue . "</span></i>";
-                }else if($scores[$index]->technical_high_score >= 1007500){
+                }elseif($scores[$index]->technical_high_score == 1010000){
                     $scores[$index]->ratingValue = "<i><span class='max-rating'>" . $scores[$index]->ratingValue . "</span></i>";
+                }elseif($scores[$index]->technical_high_score >= 1007500){
+                    $scores[$index]->ratingValue = "<i><span class='upper-rating'>" . $scores[$index]->ratingValue . "</span></i>";
                 }
 
                 $scores[$index]->difficulty_str = $this->difficultyToStr[$scores[$index]->difficulty];
@@ -150,6 +152,7 @@ class ViewUserRatingController extends Controller
         $notExistMusic->ratingValue = "-";
         $notExistMusic->rawRatingValue = 0;
         $notExistMusic->lamp = "";
+        $notExistMusic->lampForRating = "";
         $notExistMusic->targetMusicRateMusic = "";
         $notExistMusic->targetMusicRateBorder = "";
         $notExistMusic->targetMusicRateUser = "";
@@ -248,6 +251,16 @@ class ViewUserRatingController extends Controller
                         }
                         if(is_null($statistics->platinumRatingMin) || $statistics->platinumRatingMin > $platinumMusic[$i]['rawRatingValue']){
                             $statistics->platinumRatingMin = $platinumMusic[$i]['rawRatingValue'];
+                        }
+
+                        // レート値が理論値 / 推定値なら文字装飾
+                        if (OngekiUtility::IsEstimatedRateValueFromTitle($platinumMusic[$i]['title'], $platinumMusic[$i]['difficulty'], $platinumMusic[$i]['platinum_score'], $platinumMusic[$i]['star'], $platinumMusic[$i]['genre'], $platinumMusic[$i]['artist'])) {
+                            $platinumMusic[$i]['level_str'] = "<i><span class='estimated-rating'>" . $platinumMusic[$i]['level_str'] . "?</span></i>";
+                            $platinumMusic[$i]['ratingValue'] = "<i><span class='estimated-rating'>" . $platinumMusic[$i]['ratingValue'] . "</span></i>";
+                        } elseif ($platinumMusic[$i]['star'] >= 5){
+                            $platinumMusic[$i]['ratingValue'] = "<i><span class='max-rating'>" . $platinumMusic[$i]['ratingValue'] . "</span></i>";
+                        } elseif($platinumMusic[$i]['star'] >= 4){
+                            $platinumMusic[$i]['ratingValue'] = "<i><span class='upper-rating'>" . $platinumMusic[$i]['ratingValue'] . "</span></i>";
                         }
                     } catch (\OutOfBoundsException $e) {
                         $ua = isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : "N/A";

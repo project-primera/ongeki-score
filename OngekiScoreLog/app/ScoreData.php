@@ -69,28 +69,28 @@ class ScoreData extends Model
             }
 
             // レート計算用 ランプ処理
-            $this->value[$key]->lamp = "";
+            $this->value[$key]->lampForRating = "";
             if ($this->value[$key]->technical_high_score == 1010000){
                 if ($this->value[$key]->full_bell == 1) {
-                    $this->value[$key]->lamp = "FB/AB+";
+                    $this->value[$key]->lampForRating = "FB/AB+";
                 } else {
-                    $this->value[$key]->lamp = "AB+";
+                    $this->value[$key]->lampForRating = "AB+";
                 }
             } elseif ($this->value[$key]->all_break == 1) {
                 if ($this->value[$key]->full_bell == 1) {
-                    $this->value[$key]->lamp = "FB/AB";
+                    $this->value[$key]->lampForRating = "FB/AB";
                 } else {
-                    $this->value[$key]->lamp = "AB";
+                    $this->value[$key]->lampForRating = "AB";
                 }
             } elseif ($this->value[$key]->full_combo == 1) {
                 if ($this->value[$key]->full_bell == 1) {
-                    $this->value[$key]->lamp = "FB/FC";
+                    $this->value[$key]->lampForRating = "FB/FC";
                 } else {
-                    $this->value[$key]->lamp = "FC";
+                    $this->value[$key]->lampForRating = "FC";
                 }
             } else {
                 if ($this->value[$key]->full_bell == 1) {
-                    $this->value[$key]->lamp = "FB";
+                    $this->value[$key]->lampForRating = "FB";
                 }
             }
         }
