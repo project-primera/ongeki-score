@@ -61,7 +61,7 @@
                         <td>{{sprintf("%.3f", $statistics->oldBestRatingTotal)}}</td>
                         <td>{{sprintf("%.3f", $statistics->oldBestRatingContribute)}}</td>
                     </tr>
-                    <tr>
+                    <!-- <tr>
                         <td>レート対象曲平均</td>
                         <td>{{sprintf("%.3f", $statistics->totalRatingAverage)}}</td>
                         <td>{{$statistics->totalRatingCount}}</td>
@@ -69,7 +69,7 @@
                         <td>{{sprintf("%.3f", $statistics->totalRatingMin)}}</td>
                         <td>{{sprintf("%.3f", $statistics->totalRatingTotal)}}</td>
                         <td>{{sprintf("%.3f", $statistics->totalRatingContribute)}}</td>
-                    </tr>
+                    </tr> -->
                     <tr>
                         <td>プラチナスコア枠</td>
                         <td>{{sprintf("%.3f", $statistics->platinumRatingAverage)}}</td>
