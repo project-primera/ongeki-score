@@ -79,8 +79,10 @@ class ViewUserRatingController extends Controller
                 if (OngekiUtility::IsEstimatedRateValueFromTitle($scores[$index]->title, $scores[$index]->difficulty, $scores[$index]->genre, $scores[$index]->artist)) {
                     $scores[$index]->extraLevelStr = "<i><span class='estimated-rating'>" . $scores[$index]->extraLevelStr . "?</span></i>";
                     $scores[$index]->ratingValue = "<i><span class='estimated-rating'>" . $scores[$index]->ratingValue . "</span></i>";
-                }else if($scores[$index]->technical_high_score == 1010000){
+                }elseif($scores[$index]->technical_high_score == 1010000){
                     $scores[$index]->ratingValue = "<i><span class='max-rating'>" . $scores[$index]->ratingValue . "</span></i>";
+                }elseif($scores[$index]->technical_high_score >= 1007500){
+                    $scores[$index]->ratingValue = "<i><span class='upper-rating'>" . $scores[$index]->ratingValue . "</span></i>";
                 }
 
                 $scores[$index]->difficulty_str = $this->difficultyToStr[$scores[$index]->difficulty];
@@ -256,6 +258,8 @@ class ViewUserRatingController extends Controller
                             $platinumMusic[$i]['ratingValue'] = "<i><span class='estimated-rating'>" . $platinumMusic[$i]['ratingValue'] . "</span></i>";
                         } elseif ($platinumMusic[$i]['star'] >= 5){
                             $platinumMusic[$i]['ratingValue'] = "<i><span class='max-rating'>" . $platinumMusic[$i]['ratingValue'] . "</span></i>";
+                        } elseif($platinumMusic[$i]['star'] >= 4){
+                            $platinumMusic[$i]['ratingValue'] = "<i><span class='upper-rating'>" . $platinumMusic[$i]['ratingValue'] . "</span></i>";
                         }
                     } catch (\OutOfBoundsException $e) {
                         $ua = isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : "N/A";
