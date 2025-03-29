@@ -35,7 +35,7 @@
                     <td>{{substr($array[$i]->difficulty_str, 0, 3)}}</td>
                     <td>{!!$array[$i]->extraLevelStr!!}</td>
                     <td>{{number_format($array[$i]->technical_high_score)}}</td>
-                    <td>{{ $array[$i]->lamp }}</td>
+                    <td>{{ $array[$i]->lampForRating }}</td>
                     <td>{!!$array[$i]->ratingValue!!}</td>
                 </tr>
             @endfor
@@ -90,7 +90,7 @@
                             <td>{{substr($array[$i]->difficulty_str, 0, 3)}}</td>
                             <td>{!!$array[$i]->extraLevelStr!!}</td>
                             <td>{{number_format($array[$i]->technical_high_score)}}</td>
-                            <td>{{$array[$i]->lamp}}</td>
+                            <td>{{$array[$i]->lampForRating}}</td>
                             <td>{!!$array[$i]->ratingValue!!}</td>
                             <td>{{sprintf("%.3f", $array[$i]->minDifferenceRate)}}</td>
                             <td>{{$array[$i]->minDifferenceScore}}</td>

@@ -92,7 +92,7 @@ class OngekiUtility {
     }
 
     public function RateValueFromTitle(string $title, $difficulty,
-        int $technicalScore, string $lamp, $genre, $artist
+        int $technicalScore, string $lampForRating, $genre, $artist
     ) {
         if(is_int($difficulty)){
             $keys = [
@@ -124,7 +124,7 @@ class OngekiUtility {
 
         $result = $this->calcRatingValue($this::$MusicList[$title][$difficulty], $technicalScore);
         $result += $this->calcRankRatingValue($technicalScore);
-        $result += $this->calcLampRatingValue($lamp);
+        $result += $this->calcLampRatingValue($lampForRating);
         return $result;
     }
 
@@ -163,21 +163,21 @@ class OngekiUtility {
         return 0;
     }
 
-    private function calcLampRatingValue(string $lamp)
+    private function calcLampRatingValue(string $lampForRating)
     {
-        if ($lamp == "FB/AB+") {
+        if ($lampForRating == "FB/AB+") {
             return 0.4;
-        } elseif ($lamp == "AB+") {
+        } elseif ($lampForRating == "AB+") {
             return 0.35;
-        } elseif ($lamp == "FB/AB") {
+        } elseif ($lampForRating == "FB/AB") {
             return 0.35;
-        } elseif ($lamp == "AB") {
+        } elseif ($lampForRating == "AB") {
             return 0.3;
-        } elseif ($lamp == "FB/FC") {
+        } elseif ($lampForRating == "FB/FC") {
             return 0.15;
-        } elseif ($lamp == "FC") {
+        } elseif ($lampForRating == "FC") {
             return 0.1;
-        } elseif ($lamp == "FB") {
+        } elseif ($lampForRating == "FB") {
             return 0.05;
         }
         return 0;
