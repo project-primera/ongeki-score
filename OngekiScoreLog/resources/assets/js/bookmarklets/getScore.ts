@@ -226,9 +226,10 @@ import * as qs from 'qs';
 
             let platinumScore = +$($(element).find(".platinum_high_score_text_block")).text().replace(/,/g, "").split("/")[0];
             let star = +($($(element).find(".platinum_high_score_star_block").find(".f_b")).text());
-            let isAb = ($(element).find("[src*='music_icon_fc.png']").length > 0 || $(element).find("[src*='music_icon_ab.png']").length > 0
-                || $(element).find("[src*='music_icon_fc.png']").length > 0 || $(element).find("[src*='music_icon_abplus.png']").length > 0);
-            let isFc = (isAb || $(element).find("[src*='music_icon_fc.png']").length > 0 || $(element).find("[src*='music_icon_fc.png']").length > 0);
+            let isAb = ($(element).find("[src*='music_icon_ab.png']").length > 0
+                || $(element).find("[src*='music_icon_abplus.png']").length > 0
+            );
+            let isFc = (isAb || $(element).find("[src*='music_icon_fc.png']").length > 0);
 
             let song = new SongInfo(
                 name,
