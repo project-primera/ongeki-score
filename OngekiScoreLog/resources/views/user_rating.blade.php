@@ -73,7 +73,7 @@
                     <tr>
                         <td>プラチナスコア枠</td>
                         <td>{{sprintf("%.3f", $statistics->platinumRatingAverage)}}</td>
-                        <td>{{$statistics->newBestRatingCount + $statistics->oldBestRatingCount}}</td>
+                        <td>{{$statistics->platinumRatingCount}}</td>
                         <td>{{sprintf("%.3f", $statistics->platinumRatingTop)}}</td>
                         <td>{{sprintf("%.3f", $statistics->platinumRatingMin)}}</td>
                         <td>{{sprintf("%.3f", $statistics->platinumRatingTotal)}}</td>
