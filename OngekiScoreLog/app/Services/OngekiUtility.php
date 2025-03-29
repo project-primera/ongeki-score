@@ -223,8 +223,10 @@ class OngekiUtility {
 
     private function calcPlatinumRatingValue(float $extraLevel, int $platinumScore, int $starCount)
     {
-        // 本当に何もわからない
-        return 0;
+        if($starCount > 5){
+            $starCount = 5;
+        }
+        return $extraLevel * $extraLevel * $starCount / 1000;
     }
 
     /**
