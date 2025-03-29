@@ -166,11 +166,11 @@ class ViewUserController extends Controller
         foreach ($score as $key => $value) {
             // レート値を表示していいユーザーなら取得 だめなら隠す
             if(\App\UserInformation::IsPremiumPlan($user->id)){
-                $score[$key]->ratingValue = sprintf("%.3f", OngekiUtility::RateValueFromTitle($score[$key]->title, $score[$key]->difficulty, $score[$key]->technical_high_score, $score[$key]->lamp, $score[$key]->genre, $score[$key]->artist));
+                $score[$key]->ratingValue = sprintf("%.3f", OngekiUtility::RateValueFromTitle($score[$key]->title, $score[$key]->difficulty, $score[$key]->technical_high_score, $score[$key]->lampForRating, $score[$key]->genre, $score[$key]->artist));
                 $score[$key]->ratingValueRaw = $score[$key]->ratingValue;
                 if (OngekiUtility::IsEstimatedRateValueFromTitle($score[$key]->title, $score[$key]->difficulty, $score[$key]->genre, $score[$key]->artist)) {
                     $score[$key]->ratingValue = "<i><span class='estimated-rating'>" . $score[$key]->ratingValue . "</span></i>";
-                }else if($score[$key]->technical_high_score >= 1007500){
+                }else if($score[$key]->technical_high_score == 1010000){
                     $score[$key]->ratingValue = "<i><span class='max-rating'>" . $score[$key]->ratingValue . "</span></i>";
                 }
             }else{
