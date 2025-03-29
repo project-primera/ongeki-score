@@ -39,45 +39,52 @@
                         <th>Max</th>
                         <th>Min</th>
                         <th>合計レート値</th>
+                        <th>レート寄与値</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr>
                         <td>新曲枠</td>
-                        <td>{{sprintf("%.3f", floor($statistics->newBestRatingTotal / $statistics->newBestRatingCount * 1000) / 1000)}}</td>
+                        <td>{{sprintf("%.3f", $statistics->newRatingAverage)}}</td>
                         <td>{{$statistics->newBestRatingCount}}</td>
                         <td>{{sprintf("%.3f", $statistics->newBestRatingTop)}}</td>
                         <td>{{sprintf("%.3f", $statistics->newBestRatingMin)}}</td>
                         <td>{{$statistics->newBestRatingTotal}}</td>
+                        <td>{{$statistics->newRatingContribute}}</td>
                     </tr>
                     <tr>
                         <td>ベスト枠</td>
-                        <td>{{sprintf("%.3f", floor($statistics->oldBestRatingTotal / $statistics->oldBestRatingCount * 1000) / 1000)}}</td>
+                        <td>{{sprintf("%.3f", $statistics->oldBestRatingAverage)}}</td>
                         <td>{{$statistics->oldBestRatingCount}}</td>
                         <td>{{sprintf("%.3f", $statistics->oldBestRatingTop)}}</td>
                         <td>{{sprintf("%.3f", $statistics->oldBestRatingMin)}}</td>
-                        <td>{{$statistics->oldBestRatingTotal}}</td>
+                        <td>{{sprintf("%.3f", $statistics->oldBestRatingTotal)}}</td>
+                        <td>{{sprintf("%.3f", $statistics->oldBestRatingContribute)}}</td>
                     </tr>
                     <tr>
-                        <td>プラチナスコア枠</td>
-                        <td>{{sprintf("%.3f", floor($statistics->platinumRatingTotal / $statistics->platinumRatingCount * 1000) / 1000)}}</td>
-                        <td>{{$statistics->platinumRatingCount}}</td>
-                        <td>{{sprintf("%.3f", $statistics->platinumRatingTop)}}</td>
-                        <td>{{sprintf("%.3f", $statistics->platinumRatingMin)}}</td>
-                        <td>{{$statistics->platinumRatingTotal}}</td>
-                    </tr>
-                    <tr>
-                        <td>全対象曲</td>
-                        <td><b>{{sprintf("%.3f", floor($statistics->totalRatingTotal / $statistics->totalRatingCount * 1000) / 1000)}}</b></td>
+                        <td>レート対象曲平均</td>
+                        <td>{{sprintf("%.3f", $statistics->totalRatingAverage)}}</td>
                         <td>{{$statistics->totalRatingCount}}</td>
                         <td>{{sprintf("%.3f", $statistics->totalRatingTop)}}</td>
                         <td>{{sprintf("%.3f", $statistics->totalRatingMin)}}</td>
-                        <td>{{$statistics->totalRatingTotal}}</td>
+                        <td>{{sprintf("%.3f", $statistics->totalRatingTotal)}}</td>
+                        <td>{{sprintf("%.3f", $statistics->totalRatingContribute)}}</td>
+                    </tr>
+                    <tr>
+                        <td>プラチナスコア枠</td>
+                        <td>{{sprintf("%.3f", $statistics->platinumRatingAverage)}}</td>
+                        <td>{{$statistics->newBestRatingCount + $statistics->oldBestRatingCount}}</td>
+                        <td>{{sprintf("%.3f", $statistics->platinumRatingTop)}}</td>
+                        <td>{{sprintf("%.3f", $statistics->platinumRatingMin)}}</td>
+                        <td>{{sprintf("%.3f", $statistics->platinumRatingTotal)}}</td>
+                        <td>{{sprintf("%.3f", $statistics->platinumRatingContribute)}}</td>
                     </tr>
                 </tbody>
             </table>
         </div>
-
+        </p>
+        <p>
+            <span style="font-size: 1.2em">RATING: {{sprintf("%.3f", $statistics->ratingCalc)}}</span><span style="font-size: .9em"> = ({{$statistics->newRatingContribute}} + {{sprintf("%.3f", $statistics->oldBestRatingContribute)}} + {{sprintf("%.3f", $statistics->platinumRatingContribute)}})</span>
         </p>
         @foreach ($messages as $message)
             <p>
@@ -133,8 +140,8 @@
                         <th><abbr title="Difficulty">Dif</abbr></th>
                         <th>Lv</th>
                         <th><abbr title="Technical Score">TS</abbr></th>
+                        <th>☆</th>
                         <th>Rate</th>
-                        <th>最大レートとの差</th>
                     </tr>
                 </tfoot>
                 <tbody>
@@ -156,5 +163,16 @@
                 </tbody>
             </table>
         </div>
+    </article>
+    <article id="rating_platinum" class="box">
+    <h3 class="title is-3">レーティング計算式</h3>
+    <h4>新曲枠 / ベスト枠</h4>
+    <p>
+
+    </p>
+    <h4>プラチナスコア枠</h4>
+    <p>
+
+    </p>
     </article>
 @endsection
