@@ -284,9 +284,26 @@ class ViewUserRatingController extends Controller
             return view("user_rating_error", compact('id', 'status', 'sidemark', 'message'));
         }
 
-        $statistics->totalRatingTotal = $statistics->newBestRatingTotal + $statistics->oldBestRatingTotal + $statistics->platinumRatingTotal;
-        $statistics->totalRatingTop = max([$statistics->newBestRatingTop, $statistics->oldBestRatingTop, $statistics->platinumRatingTop]);
-        $statistics->totalRatingMin = min([$statistics->newBestRatingMin, $statistics->oldBestRatingMin, $statistics->platinumRatingMin]);
+        // トータルの計算
+        $statistics->totalRatingCount = $statistics->newBestRatingCount + $statistics->oldBestRatingCount; // TODO: 上で代入してるんだけど間違っているので入れ直し そのへんの処理なおしたら統合してください
+        $statistics->totalRatingTotal = $statistics->newBestRatingTotal + $statistics->oldBestRatingTotal;
+        $statistics->totalRatingTop = max([$statistics->newBestRatingTop, $statistics->oldBestRatingTop]);
+        $statistics->totalRatingMin = min([$statistics->newBestRatingMin, $statistics->oldBestRatingMin]);
+
+        // レート統計 平均値計算
+        $statistics->newRatingAverage = floor($statistics->newBestRatingTotal / $statistics->newBestRatingCount * 1000) / 1000;
+        $statistics->oldBestRatingAverage = floor($statistics->oldBestRatingTotal / $statistics->oldBestRatingCount * 1000) / 1000;
+        $statistics->totalRatingAverage = floor(($statistics->newBestRatingTotal + $statistics->oldBestRatingTotal) / $statistics->totalRatingCount * 1000) / 1000;
+        $statistics->platinumRatingAverage = floor($statistics->platinumRatingTotal / $statistics->platinumRatingCount * 1000) / 1000;
+
+        // レート統計 レート寄与値
+        $statistics->newRatingContribute = floor($statistics->newRatingAverage / 5 * 1000) / 1000;
+        $statistics->oldBestRatingContribute = $statistics->oldBestRatingAverage;
+        $statistics->totalRatingContribute = $statistics->newRatingContribute + $statistics->oldBestRatingContribute;
+        $statistics->platinumRatingContribute = $statistics->platinumRatingAverage;
+
+        // レーティング
+        $statistics->ratingCalc = floor(($statistics->newRatingContribute + $statistics->oldBestRatingContribute + $statistics->platinumRatingContribute) * 1000) / 1000;
 
         return view("user_rating", compact('messages', 'status', 'id', 'sidemark', 'statistics', 'newScore', 'oldScore', 'platinumMusic'));
     }
