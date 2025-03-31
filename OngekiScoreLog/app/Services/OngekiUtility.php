@@ -122,9 +122,12 @@ class OngekiUtility {
             return 0;
         }
 
-        $result = $this->calcRatingValue($this::$MusicList[$title][$difficulty], $technicalScore);
-        $result += $this->calcRankRatingValue($technicalScore);
-        $result += $this->calcLampRatingValue($lampForRating);
+        $result = 0;
+        if($this::$MusicList[$title][$difficulty] != 0){
+            $result += $this->calcRatingValue($this::$MusicList[$title][$difficulty], $technicalScore);
+            $result += $this->calcRankRatingValue($technicalScore);
+            $result += $this->calcLampRatingValue($lampForRating);
+        }
         return $result;
     }
 
