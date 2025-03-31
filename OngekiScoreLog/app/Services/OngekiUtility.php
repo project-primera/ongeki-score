@@ -148,8 +148,10 @@ class OngekiUtility {
         }elseif($technicalScore >= 970000){ // S: 0.00 / 26点ごとに+0.001
             $result = $extra + (floor(($technicalScore - 970000) / 26.666));
         }else{ // それ以下: -18点ごとに-0.001
-            // S未満の場合: 970000点以下では18点ごとに-0.001
             $result = $extra - (floor((970000 - $technicalScore) / 18));
+        }
+        if($result < 0 ){
+            $result = 0;
         }
         return $result / 1000;
     }
