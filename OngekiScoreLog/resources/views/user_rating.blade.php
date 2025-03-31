@@ -164,7 +164,7 @@
             </table>
         </div>
     </article>
-    <article id="rating_platinum" class="box">
+    <!-- <article id="rating_platinum" class="box">
     <h3 class="title is-3">レーティング計算式</h3>
     <h4>新曲枠 / ベスト枠</h4>
     <p>
@@ -174,5 +174,5 @@
     <p>
 
     </p>
-    </article>
+    </article> -->
 @endsection
