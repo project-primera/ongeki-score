@@ -139,7 +139,7 @@
                         <th>Title</th>
                         <th><abbr title="Difficulty">Dif</abbr></th>
                         <th>Lv</th>
-                        <th><abbr title="Technical Score">TS</abbr></th>
+                        <th><abbr title="Platinum Score">PS</abbr></th>
                         <th>☆</th>
                         <th>Rate</th>
                     </tr>
