@@ -143,8 +143,8 @@ class OngekiUtility {
             $result = $extra + 1750 + (floor(($technicalScore - 1007500) / 10));
         }elseif($technicalScore >= 1000000){ // SSS: 1.25 / 15点ごとに+0.001
             $result = $extra + 1250 + (floor(($technicalScore - 1000000) / 15));
-        }elseif($technicalScore >= 990000){ // SS: 0.75 / 40点ごとに+0.001
-            $result = $extra + 750 + (floor(($technicalScore - 990000) / 40));
+        }elseif($technicalScore >= 990000){ // SS: 0.75 / 20点ごとに+0.001
+            $result = $extra + 750 + (floor(($technicalScore - 990000) / 20));
         }elseif($technicalScore >= 970000){ // S: 0.00 / 26点ごとに+0.001
             $result = $extra + (floor(($technicalScore - 970000) / 26.666));
         }else{ // それ以下: -18点ごとに-0.001
@@ -158,7 +158,7 @@ class OngekiUtility {
 
     private function calcRankRatingValue(int $technicalScore)
     {
-        if($technicalScore >= 1007500){ // 理論値: 2.0
+        if($technicalScore >= 1007500){
             return 0.3;
         }elseif($technicalScore >= 1000000){
             return 0.2;
