@@ -254,7 +254,7 @@ class ViewUserRatingController extends Controller
                         }
 
                         // レート値が理論値 / 推定値なら文字装飾
-                        if (OngekiUtility::IsEstimatedRateValueFromTitle($platinumMusic[$i]['title'], $platinumMusic[$i]['difficulty'], $platinumMusic[$i]['platinum_score'], $platinumMusic[$i]['star'], $platinumMusic[$i]['genre'], $platinumMusic[$i]['artist'])) {
+                        if (OngekiUtility::IsEstimatedRateValueFromTitle($platinumMusic[$i]['title'], $platinumMusic[$i]['difficulty'], $platinumMusic[$i]['genre'], $platinumMusic[$i]['artist'])) {
                             $platinumMusic[$i]['level_str'] = "<i><span class='estimated-rating'>" . $platinumMusic[$i]['level_str'] . "?</span></i>";
                             $platinumMusic[$i]['ratingValue'] = "<i><span class='estimated-rating'>" . $platinumMusic[$i]['ratingValue'] . "</span></i>";
                         } elseif ($platinumMusic[$i]['star'] >= 5){

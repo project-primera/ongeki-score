@@ -139,7 +139,7 @@
                         <th>Title</th>
                         <th><abbr title="Difficulty">Dif</abbr></th>
                         <th>Lv</th>
-                        <th><abbr title="Technical Score">TS</abbr></th>
+                        <th><abbr title="Platinum Score">PS</abbr></th>
                         <th>☆</th>
                         <th>Rate</th>
                     </tr>
@@ -164,7 +164,7 @@
             </table>
         </div>
     </article>
-    <article id="rating_platinum" class="box">
+    <!-- <article id="rating_platinum" class="box">
     <h3 class="title is-3">レーティング計算式</h3>
     <h4>新曲枠 / ベスト枠</h4>
     <p>
@@ -174,5 +174,5 @@
     <p>
 
     </p>
-    </article>
+    </article> -->
 @endsection
