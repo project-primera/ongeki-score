@@ -122,9 +122,12 @@ class OngekiUtility {
             return 0;
         }
 
-        $result = $this->calcRatingValue($this::$MusicList[$title][$difficulty], $technicalScore);
-        $result += $this->calcRankRatingValue($technicalScore);
-        $result += $this->calcLampRatingValue($lampForRating);
+        $result = 0;
+        if($this::$MusicList[$title][$difficulty] != 0){
+            $result += $this->calcRatingValue($this::$MusicList[$title][$difficulty], $technicalScore);
+            $result += $this->calcRankRatingValue($technicalScore);
+            $result += $this->calcLampRatingValue($lampForRating);
+        }
         return $result;
     }
 
@@ -141,12 +144,14 @@ class OngekiUtility {
         }elseif($technicalScore >= 1000000){ // SSS: 1.25 / 15点ごとに+0.001
             $result = $extra + 1250 + (floor(($technicalScore - 1000000) / 15));
         }elseif($technicalScore >= 990000){ // SS: 0.75 / 40点ごとに+0.001
-            $result = $extra + 750 + (floor(($technicalScore - 990000) / 400));
+            $result = $extra + 750 + (floor(($technicalScore - 990000) / 40));
         }elseif($technicalScore >= 970000){ // S: 0.00 / 26点ごとに+0.001
             $result = $extra + (floor(($technicalScore - 970000) / 26.666));
         }else{ // それ以下: -18点ごとに-0.001
-            // S未満の場合: 970000点以下では18点ごとに-0.001
             $result = $extra - (floor((970000 - $technicalScore) / 18));
+        }
+        if($result < 0 ){
+            $result = 0;
         }
         return $result / 1000;
     }
