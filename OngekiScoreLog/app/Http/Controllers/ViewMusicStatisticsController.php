@@ -59,11 +59,9 @@ class ViewMusicStatisticsController extends Controller
         $technicalGrades = ["AB+", "SSS+", "SSS", "SS", "S", "AAA", "AA", "A", "B"];
 
         $rateKeys = [];
-        for ($i = 0; $i <= 17; ++$i) {
+        for ($i = 0; $i <= 25; ++$i) {
             $rateKeys[] = $i . ".00";
-            $rateKeys[] = $i . ".25";
             $rateKeys[] = $i . ".50";
-            $rateKeys[] = $i . ".75";
         }
 
         foreach ($rateKeys as $value) {
@@ -77,12 +75,10 @@ class ViewMusicStatisticsController extends Controller
 
         foreach ($scoreData as $key => $value) {
             $rateKey = $users[$value->user_id]->rating;
-            $rateKey = floor(floor($rateKey * 40) / 10);
+            $rateKey = floor(floor($rateKey * 20) / 10);
             switch (true) {
-                case ($rateKey % 4 == 0): $rateKey = floor($rateKey / 4) . ".00"; break;
-                case ($rateKey % 4 == 1): $rateKey = floor($rateKey / 4) . ".25"; break;
-                case ($rateKey % 4 == 2): $rateKey = floor($rateKey / 4) . ".50"; break;
-                case ($rateKey % 4 == 3): $rateKey = floor($rateKey / 4) . ".75"; break;
+                case ($rateKey % 2 == 0): $rateKey = floor($rateKey / 2) . ".00"; break;
+                case ($rateKey % 2 == 1): $rateKey = floor($rateKey / 2) . ".50"; break;
             }
 
             $battleKey = $users[$value->user_id]->battle_point;
