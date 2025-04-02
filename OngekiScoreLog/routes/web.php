@@ -24,7 +24,7 @@ Route::get('/user/{id}/battlescore/{difficulty?}', 'ViewUserController@getBattle
 Route::get('/user/{id}/overdamage/{difficulty?}', 'ViewUserController@getOverDamegePage')->where(['id' => '\d+', 'difficulty' => '\w+']);
 Route::get('/user/{id}/{mode?}', 'ViewUserController@getUserPage')->where(['id' => '\d+']);
 
-Route::middleware('throttle:3,1')->group(function () {
+Route::middleware('throttle:1,1')->group(function () {
     Route::get('/music/{music}/{difficulty}', 'ViewMusicStatisticsController@getIndex')->where(['music' => '\d+', 'difficulty' => '\w+']);
     Route::get('/music/{music}', 'ViewMusicStatisticsController@getRedirect')->where(['music' => '\d+']);
 });
