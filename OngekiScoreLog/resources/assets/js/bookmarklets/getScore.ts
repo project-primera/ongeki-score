@@ -161,9 +161,15 @@ import * as qs from 'qs';
     class ScoreData {
         private songInfos = new Array<SongInfo>();
         private sameNameList = null;
+        // 空の場合は全曲取得のフラグとして扱う
+        private songToUpload = [];
 
         public async GetArrayLength() {
             return this.songInfos.length;
+        }
+
+        public async GetUploadArray() {
+            return this.songToUpload;
         }
 
         public async GetPartialArray($page = 0) {
@@ -191,6 +197,43 @@ import * as qs from 'qs';
             });
         }
 
+        public async getScoreHtmlFromRecent(timestamp: Date) {
+            await axios.get(NET_URL + '/record/playlog/'
+            ).then(async (response) => {
+                await this.checkNewScoreFromRecent(response.data, timestamp);
+            }).catch(function (error) {
+                throw new Error("プレイ履歴からのスコア取得に失敗しました。" + error)
+            })
+        }
+
+        private async checkNewScoreFromRecent(html: string, timestamp: Date) {
+            if (this.sameNameList === null) {
+                this.sameNameList = await SameNameMusicList.get();
+            }
+            var parseHTML = $.parseHTML(html);
+            var $innerContainer3 = $(parseHTML).find(".container3").children(".m_10")
+            // 50曲存在するなら50曲目をとって、更新日時が最終更新日時以降なら全曲取得に変更
+            if ($innerContainer3.length === 50) {
+                let recentUpdate = new Date($innerContainer3.last().find("span.f_r.h_10").text());
+                if (recentUpdate > timestamp) {
+                    this.songToUpload = [];
+                    return;
+                }
+            }
+            $innerContainer3.each((key, value) => {
+                if ($(value).hasClass("m_10")){
+                    if (new Date($(value).find("span.f_r.h_10").text()) > timestamp) {
+                        var $elem = $(value).find(".m_5.l_h_10.break");
+                        // 履歴から取得した曲名には改行コードとタブ制御文字が含まれているので削除
+                        var songTitle = $elem.text().replace(/\n/g,"").replace(/\t/g,"");
+                        if (this.songToUpload.indexOf(songTitle) === -1) {
+                            this.songToUpload.push(songTitle);
+                        }
+                    }
+                }
+            });
+        }
+
         private async parseScoreData(html: string, difficulty: Difficulty) {
             if (this.sameNameList === null) {
                 this.sameNameList = await SameNameMusicList.get();
@@ -214,6 +257,13 @@ import * as qs from 'qs';
         private async parseSingleMusic(element, parentElement, difficulty, genre) {
             let name = $(element).find(".music_label").text();
             let artist = '';
+
+            if (this.songToUpload.length !== 0) {
+                if (this.songToUpload.indexOf(name) === -1) {
+                    return;
+                }
+            }
+
             if (this.sameNameList.indexOf(name) !== -1) {
                 console.log("曲名が重複している楽曲名: " + name + ' / ' + genre + ' / ' + difficulty);
                 await sleep(SLEEP_MSEC);
@@ -611,6 +661,7 @@ import * as qs from 'qs';
         let userId: number = 0;
         let hash: string = "";
         let name: string = "";
+        let lastUpdate: Date = new Date();
 
         try {
             // メンテナンスチェック
@@ -627,6 +678,7 @@ import * as qs from 'qs';
                 userId = result.data.id;
                 hash = result.data.hash;
                 name = result.data.name;
+                lastUpdate = new Date(result.data.updateAt);
 
             }).catch(function (error) {
                     throw new Error(error + "<br>スコアツールサーバーへの接続に失敗しました。<br><br>まずは以下の手順をお試しください。<br>1)ブックマークレットの再生成を行い、現在ご利用のブックマークレットに上書きして再度実行してください。<br>２）メンテナンス情報をご確認ください。情報については<a href='https://twitter.com/ongeki_score' target='_blank' style='color:#222'>Twitter@ongeki_score</a>にてお知らせします。");
@@ -670,6 +722,13 @@ import * as qs from 'qs';
             } else {
                 echo(await getTime() + "スタンダードプランの為、レーティング対象曲情報取得をスキップします。");
             }
+
+            echo(await getTime() + "更新対象曲を取得します。");
+            await scoreData.getScoreHtmlFromRecent(lastUpdate);
+            if ((await scoreData.GetUploadArray()).length === 0) {
+                echo(await getTime() + "前回更新からのプレイ曲数が50曲を超えているか、プレイが行われていないため全曲取得を行います。");
+            }
+            await sleep(SLEEP_MSEC);
 
             echo(await getTime() + "Lunaticのスコアデータを取得します。");
             scoreData.Clear();
@@ -720,7 +779,7 @@ import * as qs from 'qs';
             await sleep(SLEEP_MSEC);
 
             echo(await getTime() + "Basicのスコアデータを取得します。");
-            scoreData = new ScoreData;
+            scoreData.Clear();
             await scoreData.GetDifficultyScoreData(Difficulty.Basic);
             echo(await getTime() + "スコアデータを送信します。");
             length = Math.ceil(await scoreData.GetArrayLength() / 50);
