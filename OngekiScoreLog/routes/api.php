@@ -22,5 +22,6 @@ Route::namespace('api')->group(function(){
         Route::middleware('cors')->match(['post', 'options'], '/user/update', 'UserController@PostUpdate')->middleware('auth:api');
 
         Route::middleware('cors')->get('/music/samename', 'MusicController@GetSameNameMusic');
+        Route::middleware('cors')->get('/music/firstdraft', 'MusicController@GetFirstDraftMusic');
     });
 });

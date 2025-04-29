@@ -11,6 +11,7 @@ class MusicData extends Model
     protected $guarded = ['id'];
 
     private $sameMusicList = [];
+    private $firstDraftMusicList = [];
 
     function getSameMusicList()
     {
@@ -21,6 +22,17 @@ class MusicData extends Model
             }
         }
         return $this->sameMusicList;
+    }
+
+    function getFirstDraftMusicList()
+    {
+        if (count($this->firstDraftMusicList) === 0) {
+            $array = MusicData::where('artist', '初稿')->get();
+            foreach ($array as $value) {
+                $this->firstDraftMusicList[] = $value['title'];
+            }
+        }
+        return $this->firstDraftMusicList;
     }
 
     function getEstimateExtraLevel(){
