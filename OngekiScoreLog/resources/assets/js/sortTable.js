@@ -3,52 +3,51 @@ var options = {
 };
 var sortTable = new List('sort_table', options);
 
-var filterList = [];
-function AddFilterList(key, value){
-    filterList.push({key: key, value: value});
-}
+var filters = new Map([
+    ["sort_lv", new Set()],
+    ["sort_raw_difficulty", new Set()],
+    ["sort_raw_battle_rank", new Set()],
+    ["sort_raw_technical_rank", new Set()],
+]);
 
-function DeleteFilterList(key, value){
-    index = filterList.findIndex(x => (x.key == key && x.value == value));
-    if(index != -1){
-        filterList.splice(index, 1);
-    }
-}
+var filterClearLamp = new Set();
 
 function SortTable(){
     var cnt = 0;
-    var allCnt = 0;
     sortTable.filter(function(item) {
-        ++allCnt;
-        if(filterList.length == 0){
-            return true;
+        for (const [key, filter] of filters) {
+            if (filter.size > 0) {
+                if (!filter.has(item.values()[key])) {
+                    return false;
+                }
+            }
         }
 
-        var isVisible = false;
-        $.each(filterList ,function(index,val){
-            if(item.values()[val.key] == val.value){
-                ++cnt;
-                isVisible = true;
-                return false;
+        if (filterClearLamp.size > 0) {
+            const lamps = new Set(item.values()["sort_raw_lamp"].split('+'));
+            for (const filter of filterClearLamp) {
+                if (!lamps.has(filter)) {
+                    return false;
+                }
             }
-        });
-        return isVisible;
+        }
+
+        ++cnt;
+        return true;
     });
-    if(filterList.length == 0){
-        $('.filter_cases').html(allCnt);
-    }else{
-        $('.filter_cases').html(cnt);
-    }
+
+    $('.filter_cases').html(cnt);
 }
 
 $('.filter_level_button').on('click',function(){
     var $text = $(this).text();
+    var filter = filters.get('sort_lv');
     if($(this).hasClass('is-info')){
-        DeleteFilterList('sort_lv', $text);
+        filter.delete($text);
         $(this).removeClass('is-info');
 
     } else {
-        AddFilterList('sort_lv', $text);
+        filter.add($text);
         $(this).addClass('is-info');
     }
     SortTable();
@@ -56,26 +55,27 @@ $('.filter_level_button').on('click',function(){
 
 $('.filter_difficulty_button').on('click',function(){
     var $text = $(this).text();
+    var filter = filters.get('sort_raw_difficulty');
     if($(this).hasClass('is-info')){
-        DeleteFilterList('sort_raw_difficulty', $text);
+        filter.delete($text);
         $(this).removeClass('is-info');
 
     } else {
-        AddFilterList('sort_raw_difficulty', $text);
+        filter.add($text);
         $(this).addClass('is-info');
     }
-    console.log(filterList);
     SortTable();
 });
 
 $('.filter_battle_rank_button').on('click',function(){
     var $text = $(this).text();
+    var filter = filters.get('sort_raw_battle_rank');
     if($(this).hasClass('is-info')){
-        DeleteFilterList('sort_raw_battle_rank', $text);
+        filter.delete($text);
         $(this).removeClass('is-info');
 
     } else {
-        AddFilterList('sort_raw_battle_rank', $text);
+        filter.add($text);
         $(this).addClass('is-info');
     }
     SortTable();
@@ -83,81 +83,47 @@ $('.filter_battle_rank_button').on('click',function(){
 
 $('.filter_technical_rank_button').on('click',function(){
     var $text = $(this).text();
+    var filter = filters.get('sort_raw_technical_rank');
     if($(this).hasClass('is-info')){
-        DeleteFilterList('sort_raw_technical_rank', $text);
+        filter.delete($text);
         $(this).removeClass('is-info');
 
     } else {
-        AddFilterList('sort_raw_technical_rank', $text);
+        filter.add($text);
         $(this).addClass('is-info');
     }
     SortTable();
 });
 
-class ClearLamp {
-    constructor (){
-        this.NoLamp = false;
-        this.FB = false;
-        this.FC = false;
-        this.AB = false;
-        this.state = "";
-    }
-
-    get() {
-        if(this.FB && this.AB){
-            this.state = "FB+FC+AB";
-        }else if(this.FB && this.FC){
-            this.state = "FB+FC";
-        }else if(this.AB){
-            this.state = "FC+AB";
-        }else if(this.FC){
-            this.state = "FC";
-        }else if(this.FB){
-            this.state = "FB";
-        }else if(this.NoLamp){
-            this.state = "-";
-        }else{
-            this.state = "";
-            return false;
-        }
-        return this.state;
-    }
-}
-
-clearLamp = new ClearLamp();
+var noLamp = false;
 
 $('.filter_lamp_button').on('click',function(){
     var $text = $(this).text();
 
-    if($text !== "NoLamp" && clearLamp.NoLamp){
-        return;
+    if ($text === 'NoLamp') {
+        $text = '-';
     }
 
-    if($(this).hasClass('is-info')){
-        DeleteFilterList('sort_raw_lamp', clearLamp.get());
-        clearLamp[$text] = false;
-        $(this).removeClass('is-info');
+    if ($text !== '-' && noLamp) {
+        $('.filter_lamp_button.nolamp').removeClass('is-info');
+        noLamp = false;
+        filterClearLamp.delete('-');
 
-    } else {
-        DeleteFilterList('sort_raw_lamp', clearLamp.get());
-        clearLamp[$text] = true;
-        $(this).addClass('is-info');
-    }
-
-    if(!clearLamp.FC && clearLamp.AB){
-        $('.filter_lamp_button.fc').addClass('is-info');
-        clearLamp.FC = true;
-    }else if(clearLamp.NoLamp || ($text === "NoLamp" && !clearLamp.NoLamp)){
+    } else if ($text === '-' && !noLamp) {
         $('.filter_lamp_button.fb').removeClass('is-info');
         $('.filter_lamp_button.fc').removeClass('is-info');
         $('.filter_lamp_button.ab').removeClass('is-info');
-        clearLamp.FB = false;
-        clearLamp.FC = false;
-        clearLamp.AB = false;
+        noLamp = true;
+        filterClearLamp.clear();
     }
 
-    if(clearLamp.get() !== false){
-        AddFilterList('sort_raw_lamp', clearLamp.get());
+    if($(this).hasClass('is-info')){
+        filterClearLamp.delete($text);
+        $(this).removeClass('is-info');
+
+    } else {
+        filterClearLamp.add($text);
+        $(this).addClass('is-info');
     }
 
     SortTable();
