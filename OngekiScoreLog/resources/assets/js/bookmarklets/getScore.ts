@@ -168,8 +168,8 @@ import * as qs from 'qs';
             return this.songInfos.length;
         }
 
-        public async GetUploadArray() {
-            return this.songToUpload;
+        public async GetUploadArrayLength() {
+            return this.songToUpload.length;
         }
 
         public async GetPartialArray($page = 0) {
@@ -725,7 +725,7 @@ import * as qs from 'qs';
 
             echo(await getTime() + "更新対象曲を取得します。");
             await scoreData.getScoreHtmlFromRecent(lastUpdate);
-            if ((await scoreData.GetUploadArray()).length === 0) {
+            if (await scoreData.GetUploadArrayLength() === 0) {
                 echo(await getTime() + "前回更新からのプレイ曲数が50曲を超えているか、プレイが行われていないため全曲取得を行います。");
             }
             await sleep(SLEEP_MSEC);
