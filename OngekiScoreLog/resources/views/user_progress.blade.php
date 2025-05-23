@@ -146,7 +146,9 @@ $difficulties = ['Total', 'Basic', 'Advanced', 'Expert', 'Master', 'Lunatic'];
                                 <span class="difference">{{$value['difference']['battle_high_score']}}</span>
                                 <br>
 
-                                <span class="score-title">Over Damage</span><span class="score">{{$value['new']->over_damage_high_score}}%</span><span class="difference">{{$value['difference']['over_damage_high_score']}}</span>
+                                <span class="score-title">Over Damage</span>
+                                <span class="score">{{$value['new']->over_damage_high_score}}%</span>
+                                <span class="difference">{{$value['difference']['over_damage_high_score']}}</span>
                                 <span class="score-rank {{$value['difference']['is_update_over_damage_high_score_rank']}}">{{$value['difference']['over_damage_high_score_rank']}}</span>
                                 <br>
 
