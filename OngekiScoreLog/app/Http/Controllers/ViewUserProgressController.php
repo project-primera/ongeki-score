@@ -58,13 +58,13 @@ class ViewUserProgressController extends Controller
 
         $filter = "";
         if($request->filter === "bs"){
-            $filter = "Battle Scoreのみ表示中";
+            $filter = "Battle Scoreの更新を表示中";
         }
         if($request->filter === "ts"){
-            $filter = "Technical Score、Platinum Score、クリアランプのみ表示中";
+            $filter = "レーティング関連（Technical Score, Platinum Score, クリアランプ）の更新を表示中";
         }
         if($request->filter === "od"){
-            $filter = "Over Damageのみ表示中";
+            $filter = "Over Damageの更新を表示中";
         }
 
         $version = (new ApplicationVersion())->getLatestVersion();

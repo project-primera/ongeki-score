@@ -53,9 +53,12 @@ $difficulties = ['Total', 'Basic', 'Advanced', 'Expert', 'Master', 'Lunatic'];
         <div>
             <label class="label">更新種別でフィルタリングする</label>
             <a href="{{$url}}">すべて表示</a> /
+            <a href="{{$url}}?filter=ts">レーティング関連の更新</a> /
             <a href="{{$url}}?filter=bs">Battle Score更新</a> /
-            <a href="{{$url}}?filter=ts">レート値更新</a> /
             <a href="{{$url}}?filter=od">Over Damage更新</a>
+        </div>
+
+        <div>
             @if ($filter !== "")
                 <br>{{$filter}}
             @endif
@@ -166,7 +169,7 @@ $difficulties = ['Total', 'Basic', 'Advanced', 'Expert', 'Master', 'Lunatic'];
                                 <span class="tag {{$value['difference']['old-lamp-is-fb']}}">FB</span>
                                 <span class="tag {{$value['difference']['old-lamp-is-fc']}}">FC</span>
                                 <span class="tag {{$value['difference']['old-lamp-is-ab']}}">AB</span>
-
+                                →
                                 <span class="tag {{$value['difference']['new-lamp-is-fb']}}">FB</span>
                                 <span class="tag {{$value['difference']['new-lamp-is-fc']}}">FC</span>
                                 <span class="tag {{$value['difference']['new-lamp-is-ab']}}">AB</span>
