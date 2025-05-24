@@ -660,13 +660,17 @@ import * as qs from 'qs';
             let length = 0;
 
             if (paymentStatus.IsPremiumPlan()) {
-                echo(await getTime() + "プラチナスコア枠対象曲を取得します。");
-                let ratingPlatinumMusicData = new RatingPlatinumMusicData;
-                await ratingPlatinumMusicData.getData();
-                echo(await getTime() + "プラチナスコア枠対象曲を送信します...");
-                console.log(ratingPlatinumMusicData);
-                await postData.Post(MethodType.RatingPlatinumMusic, ratingPlatinumMusicData);
-                await sleep(SLEEP_MSEC);
+                try {
+                    echo(await getTime() + "プラチナスコア枠対象曲を取得します。");
+                    let ratingPlatinumMusicData = new RatingPlatinumMusicData;
+                    await ratingPlatinumMusicData.getData();
+                    echo(await getTime() + "プラチナスコア枠対象曲を送信します...");
+                    console.log(ratingPlatinumMusicData);
+                    await postData.Post(MethodType.RatingPlatinumMusic, ratingPlatinumMusicData);
+                    await sleep(SLEEP_MSEC);
+                } catch (error) {
+                    echo(await getTime() + "プラチナスコア枠対象曲の取得に失敗しました。<br>対象曲が1曲以上あるかを確認してください。");
+                }
             } else {
                 echo(await getTime() + "スタンダードプランの為、レーティング対象曲情報取得をスキップします。");
             }
