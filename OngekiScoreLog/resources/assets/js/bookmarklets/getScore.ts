@@ -274,7 +274,9 @@ import * as qs from 'qs';
             let level = +($(element).find(".score_level").text().replace("+", ".5"));
             let artist = '';
 
+            // プレイ履歴から取得した曲があるかチェック
             if (this.songToUpload.length !== 0) {
+                // プレイ履歴に存在しない曲ならスキップする
                 if (this.songToUpload.indexOf(name) === -1) {
                     return;
                 }
