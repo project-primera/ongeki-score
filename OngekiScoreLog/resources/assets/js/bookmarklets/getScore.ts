@@ -334,85 +334,6 @@ import * as qs from 'qs';
         }
     }
 
-    class RecentMusicInfo {
-        title: string = "";
-        difficulty: number = 0;
-        technicalScore: number = 0;
-        genre: string = "";
-        artist: string = "";
-
-        constructor(title: string, difficulty: number, technicalScore: number, genre: string = "", artist: string = "") {
-            this.title = title;
-            this.difficulty = difficulty;
-            this.technicalScore = technicalScore;
-            this.genre = genre;
-            this.artist = artist;
-        }
-    }
-
-    class RatingRecentMusicData {
-        ratingRecentMusicObject: Array<RecentMusicInfo> = new Array<RecentMusicInfo>();
-
-        async getData() {
-            await this.getRatingRecentMusicDataFromNet();
-        }
-
-        private async getRatingRecentMusicDataFromNet() {
-            await axios.get(NET_URL + '/home/ratingTargetMusic/', {
-            }).then(async (response) => {
-                await this.parseRatingRecentMusicData(response.data);
-            }).catch(function (error) {
-                throw new Error("レーティング対象曲の取得に失敗しました。" + error);
-            });
-        }
-
-        private async parseRatingRecentMusicData(html: string) {
-            let sameNameList = await SameNameMusicList.get();
-            var parseHTML = $.parseHTML(html);
-            var $basic_btn = $(parseHTML).find(".basic_btn");
-
-            for await (const value of $basic_btn) {
-                if ($(value).html().match(/TECHNICAL SCORE/)) {
-                    var difficulty: number = -1;
-                    if ($(value).hasClass('lunatic_score_back')) {
-                        difficulty = 10;
-                    } else if ($(value).hasClass('master_score_back')) {
-                        difficulty = 3;
-                    } else if ($(value).hasClass('expert_score_back')) {
-                        difficulty = 2;
-                    } else if ($(value).hasClass('advanced_score_back')) {
-                        difficulty = 1;
-                    } else if ($(value).hasClass('basic_score_back')) {
-                        difficulty = 0;
-                    }
-
-                    let name = $(value).find(".music_label").text();
-                    let genre = "";
-                    let artist = "";
-                    if (sameNameList.indexOf(name) !== -1) {
-                        console.log("曲名が重複している楽曲名: " + name);
-                        await sleep(SLEEP_MSEC);
-                        let result = await axios.get(NET_URL + '/record/musicDetail/?idx=' + encodeURIComponent($(value).find("[name=idx]").prop("value")));
-                        var parse = $.parseHTML(result.data);
-                        genre = $(parse).find("div.t_r.f_12.main_color").text().trim();
-                        artist = $(parse).find("div.m_5.f_13.break").text().trim();
-                        artist = artist.substring(0, artist.indexOf('\n'));
-                        console.log(genre + ' / ' + artist);
-                    }
-
-                    var info: RecentMusicInfo = new RecentMusicInfo(
-                        name,
-                        difficulty,
-                        +$(value).find(".score_value").text().replace(/,/g, ""),
-                        genre,
-                        artist
-                    );
-                    this.ratingRecentMusicObject.push(info);
-                }
-            }
-        }
-    }
-
     /**
      * プラチナスコア枠
      */
@@ -526,8 +447,7 @@ import * as qs from 'qs';
 
         public async Post(methodType: MethodType, data: PaymentStatus
             | PlayerData | Array<SongInfo> | Array<TrophyInfo>
-            | CharacterFriendlyData | RatingRecentMusicData
-            | RatingPlatinumMusicData)
+            | CharacterFriendlyData | RatingPlatinumMusicData)
         {
             let d = {
                 'hash': this.hash,
