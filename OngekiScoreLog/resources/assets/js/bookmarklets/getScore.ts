@@ -28,7 +28,7 @@ import * as qs from 'qs';
                 if (level === 0) {
                     return 'ロケテスト譜面';
                 } else {
-                    return 'Re:MASTER譜面';
+                    return '通常譜面';
                 }
             }
 
