@@ -20,7 +20,22 @@ import * as qs from 'qs';
             let result = await axios.get(API_URL + "/music/samename");
             return result.data;
         }
+
+        // 曲名/アーティスト/ジャンルが同じ譜面の識別用アーティストを返す
+        static async getArtistOfSameNameAndGenre(name: string, level: number) {
+            // FIXME: 曲名ベタ打ち そのうち改善したいね
+            if (name == "Perfect Shining!!") {
+                if (level === 0) {
+                    return 'ロケテスト譜面';
+                } else {
+                    return '通常譜面';
+                }
+            }
+
+            return "";
+        }
     }
+
 
     class PaymentStatus {
         private isStandardPlan: boolean = false;
@@ -195,7 +210,6 @@ import * as qs from 'qs';
             if (this.sameNameList === null) {
                 this.sameNameList = await SameNameMusicList.get();
             }
-
             var parseHTML = $.parseHTML(html);
             var $innerContainer3 = $(parseHTML).find(".container3").find("div");
 
@@ -214,14 +228,20 @@ import * as qs from 'qs';
 
         private async parseSingleMusic(element, parentElement, difficulty, genre) {
             let name = $(element).find(".music_label").text();
+            let level = +($(element).find(".score_level").text().replace("+", ".5"));
             let artist = '';
+
             if (this.sameNameList.indexOf(name) !== -1) {
-                console.log("曲名が重複している楽曲名: " + name + ' / ' + genre + ' / ' + difficulty);
+                console.log("曲名が重複している楽曲名: " + name + ' / Lv' + level + ' / ' + genre + ' / ' + difficulty);
                 await sleep(SLEEP_MSEC);
-                let response = await axios.get(NET_URL + '/record/musicDetail/?idx=' + encodeURIComponent($(parentElement).find("[name=idx]").prop("value")));
-                let parse = $.parseHTML(response.data);
-                artist = $(parse).find("div.m_5.f_13.break").text().trim();
-                artist = artist.substring(0, artist.indexOf('\n'));
+
+                artist = await SameNameMusicList.getArtistOfSameNameAndGenre(name, level);
+                if (artist === "") {
+                    let response = await axios.get(NET_URL + '/record/musicDetail/?idx=' + encodeURIComponent($(parentElement).find("[name=idx]").prop("value")));
+                    let parse = $.parseHTML(response.data);
+                    artist = $(parse).find("div.m_5.f_13.break").text().trim();
+                    artist = artist.substring(0, artist.indexOf('\n'));
+                }
                 console.log(artist);
             }
 
@@ -236,7 +256,7 @@ import * as qs from 'qs';
                 name,
                 difficulty,
                 genre,
-                +($(element).find(".score_level").text().replace("+", ".5")),
+                level,
                 +$($(element).find(".score_value")[0]).text().replace(/,/g, "").replace(/%/g, ""),
                 +$($(element).find(".score_value")[1]).text().replace(/,/g, ""),
                 +$($(element).find(".score_value")[2]).text().replace(/,/g, ""),
@@ -401,14 +421,20 @@ import * as qs from 'qs';
                     let artist = "";
                     let platinumScore = +$($(value).find(".platinum_score_text_block")).text().replace(/,/g, "").split("/")[0];
                     let star = +($($(value).find(".platinum_high_score_star_block").find(".f_b")).text());
+
                     if (sameNameList.indexOf(name) !== -1) {
-                        console.log("曲名が重複している楽曲名: " + name);
+                        let level = +($(value).find(".score_level").text().replace("+", ".5"));
+                        console.log("曲名が重複している楽曲名: " + name + ' / Lv' + level + ' / ' + genre + ' / ' + difficulty);
                         await sleep(SLEEP_MSEC);
-                        let result = await axios.get(NET_URL + '/record/musicDetail/?idx=' + encodeURIComponent($(value).find("[name=idx]").prop("value")));
-                        let parse = $.parseHTML(result.data);
-                        genre = $(parse).find("div.t_r.f_12.main_color").text().trim();
-                        artist = $(parse).find("div.m_5.f_13.break").text().trim();
-                        artist = artist.substring(0, artist.indexOf('\n'));
+
+                        artist = await SameNameMusicList.getArtistOfSameNameAndGenre(name, level);
+                        if (artist === "") {
+                            let result = await axios.get(NET_URL + '/record/musicDetail/?idx=' + encodeURIComponent($(value).find("[name=idx]").prop("value")));
+                            let parse = $.parseHTML(result.data);
+                            genre = $(parse).find("div.t_r.f_12.main_color").text().trim();
+                            artist = $(parse).find("div.m_5.f_13.break").text().trim();
+                            artist = artist.substring(0, artist.indexOf('\n'));
+                        }
                         console.log(genre + ' / ' + artist);
                     }
 
