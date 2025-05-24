@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use App\Facades\Slack;
+use App\UserStatus;
 use Carbon\Carbon;
 use RuntimeException;
 
@@ -16,6 +17,7 @@ class UserController extends Controller{
         $result['name'] = null;
         $result['message'] = [];
         $result['hash'] = '';
+        $result['updateAt'] = null;
 
         if(Auth::user() === null){
             $result['message'][] = "ログイン情報が取得できませんでした。ブックマークレットの再生成をお試しください。";
@@ -39,6 +41,14 @@ class UserController extends Controller{
             $fields = ["IP Address" => \Request::ip(), "User id" => $user->id];
             \App\Facades\Slack::Warning($content, $fileContent, $fields, "success");
             return $result;
+        }
+        $userStatus = new UserStatus();
+        $status = $userStatus -> getRecentUserData(Auth::id());
+        // 最終更新日時を取得
+        if(count($status) === 0){
+            $result['updateAt'] = '1970-01-01 00:00:01';
+        }else {
+            $result['updateAt'] = $status[0]->updated_at;
         }
         $result['message'] = 'ok';
         $result['hash'] = hash('sha256', $result['id'] . '_' . microtime(true));
