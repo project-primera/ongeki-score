@@ -11,9 +11,4 @@ class MusicController extends Controller
     {
         return (new MusicData())->getSameMusicList();
     }
-
-    public function GetFirstDraftMusic()
-    {
-        return (new MusicData())->getFirstDraftMusicList();
-    }
 }
