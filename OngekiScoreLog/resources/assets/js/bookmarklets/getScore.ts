@@ -674,7 +674,10 @@ import * as qs from 'qs';
             echo(await getTime() + "更新対象曲を取得します。");
             await scoreData.getScoreHtmlFromRecent(lastUpdate);
             if (await scoreData.GetUploadArrayLength() === 0) {
-                echo(await getTime() + "前回更新からのプレイ曲数が50曲を超えているか、プレイが行われていないため全曲取得を行います。");
+                echo(await getTime() + "前回更新からのプレイ曲数が50曲を超えているか、プレイが行われていないため全件取得を行います。");
+            } else {
+                echo(await getTime() + "前回更新からの曲のみを取得します。<br>全件取得を行いたい場合はもう一度実行してください。");
+                console.log("前回更新からのプレイ曲数: " + await scoreData.GetUploadArrayLength() + "曲");
             }
             await sleep(SLEEP_MSEC);
 
