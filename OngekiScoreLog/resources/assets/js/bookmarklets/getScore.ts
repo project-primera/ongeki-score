@@ -221,15 +221,16 @@ import * as qs from 'qs';
             var $innerContainer3 = $(parseHTML).find(".container3").find("div");
 
             var genre: string = "";
-            await $innerContainer3.each((key, value) => {
+            for (var i = 0; i < $innerContainer3.length; ++i) {
+                var value = $innerContainer3.eq(i);
                 if ($(value).hasClass("p_5 f_20")) {
                     genre = $(value).text();
                 } else if ($(value).hasClass("basic_btn")) {
-                    $(value).each((k, v) => {
-                        this.parseSingleMusic(v, value, difficulty, genre);
-                    });
+                    for (var j = 0; j < $(value).length; ++j) {
+                        await this.parseSingleMusic($(value).eq(j), value, difficulty, genre);
+                    }
                 }
-            });
+            }
         }
 
         private async parseSingleMusic(element, parentElement, difficulty, genre) {
