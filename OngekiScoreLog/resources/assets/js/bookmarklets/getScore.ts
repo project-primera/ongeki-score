@@ -213,12 +213,12 @@ import * as qs from 'qs';
         }
 
         public async getScoreHtmlFromRecent(timestamp: Date) {
-            await axios.get(NET_URL + '/record/playlog/'
-            ).then(async (response) => {
+            try {
+                const response = await axios.get(NET_URL + '/record/playlog/');
                 await this.checkNewScoreFromRecent(response.data, timestamp);
-            }).catch(function (error) {
-                throw new Error("プレイ履歴からのスコア取得に失敗しました。" + error)
-            })
+            } catch (error) {
+                throw new Error("プレイ履歴からのスコア取得に失敗しました。" + error);
+            }
         }
 
         private async checkNewScoreFromRecent(html: string, timestamp: Date) {
