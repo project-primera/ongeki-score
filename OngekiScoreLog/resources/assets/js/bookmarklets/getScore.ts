@@ -176,7 +176,6 @@ import * as qs from 'qs';
     class ScoreData {
         private songInfos = new Array<SongInfo>();
         private sameNameList = null;
-        private firstDraftList = null;
 
         public async GetArrayLength() {
             return this.songInfos.length;
