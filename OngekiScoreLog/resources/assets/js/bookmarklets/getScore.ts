@@ -20,7 +20,22 @@ import * as qs from 'qs';
             let result = await axios.get(API_URL + "/music/samename");
             return result.data;
         }
+
+        // 曲名/アーティスト/ジャンルが同じ譜面の識別用アーティストを返す
+        static async getArtistOfSameNameAndGenre(name: string, level: number) {
+            // FIXME: 曲名ベタ打ち そのうち改善したいね
+            if (name == "Perfect Shining!!") {
+                if (level === 0) {
+                    return 'ロケテスト譜面';
+                } else {
+                    return '通常譜面';
+                }
+            }
+
+            return "";
+        }
     }
+
 
     class PaymentStatus {
         private isStandardPlan: boolean = false;
@@ -161,9 +176,15 @@ import * as qs from 'qs';
     class ScoreData {
         private songInfos = new Array<SongInfo>();
         private sameNameList = null;
+        // 空の場合は全曲取得のフラグとして扱う
+        private songToUpload = [];
 
         public async GetArrayLength() {
             return this.songInfos.length;
+        }
+
+        public async GetUploadArrayLength() {
+            return this.songToUpload.length;
         }
 
         public async GetPartialArray($page = 0) {
@@ -191,36 +212,87 @@ import * as qs from 'qs';
             });
         }
 
-        private async parseScoreData(html: string, difficulty: Difficulty) {
+        public async getScoreHtmlFromRecent(timestamp: Date) {
+            try {
+                const response = await axios.get(NET_URL + '/record/playlog/');
+                await this.checkNewScoreFromRecent(response.data, timestamp);
+            } catch (error) {
+                throw new Error("プレイ履歴からのスコア取得に失敗しました。" + error);
+            }
+        }
+
+        private async checkNewScoreFromRecent(html: string, timestamp: Date) {
             if (this.sameNameList === null) {
                 this.sameNameList = await SameNameMusicList.get();
             }
-
             var parseHTML = $.parseHTML(html);
-            var $innerContainer3 = $(parseHTML).find(".container3").find("div");
-
-            var genre: string = "";
-            await $innerContainer3.each((key, value) => {
-                if ($(value).hasClass("p_5 f_20")) {
-                    genre = $(value).text();
-                } else if ($(value).hasClass("basic_btn")) {
-                    $(value).each((k, v) => {
-                        this.parseSingleMusic(v, value, difficulty, genre);
-                    });
+            var $innerContainer3 = $(parseHTML).find(".container3").children(".m_10")
+            // 50曲存在するなら50曲目をとって、更新日時が最終更新日時以降なら全曲取得に変更
+            if ($innerContainer3.length === 50) {
+                let recentUpdate = new Date($innerContainer3.last().find("span.f_r.h_10").text());
+                if (recentUpdate > timestamp) {
+                    this.songToUpload = [];
+                    return;
+                }
+            }
+            $innerContainer3.each((key, value) => {
+                if ($(value).hasClass("m_10")){
+                    if (new Date($(value).find("span.f_r.h_10").text()) > timestamp) {
+                        var $elem = $(value).find(".m_5.l_h_10.break");
+                        // 履歴から取得した曲名には改行コードとタブ制御文字が含まれているので削除
+                        var songTitle = $elem.text().replace(/\n/g,"").replace(/\t/g,"");
+                        if (this.songToUpload.indexOf(songTitle) === -1) {
+                            this.songToUpload.push(songTitle);
+                        }
+                    }
                 }
             });
         }
 
+        private async parseScoreData(html: string, difficulty: Difficulty) {
+            if (this.sameNameList === null) {
+                this.sameNameList = await SameNameMusicList.get();
+            }
+            var parseHTML = $.parseHTML(html);
+            var $innerContainer3 = $(parseHTML).find(".container3").find("div");
+
+            var genre: string = "";
+            for (var i = 0; i < $innerContainer3.length; ++i) {
+                var value = $innerContainer3.eq(i);
+                if ($(value).hasClass("p_5 f_20")) {
+                    genre = $(value).text();
+                } else if ($(value).hasClass("basic_btn")) {
+                    for (var j = 0; j < $(value).length; ++j) {
+                        await this.parseSingleMusic($(value).eq(j), value, difficulty, genre);
+                    }
+                }
+            }
+        }
+
         private async parseSingleMusic(element, parentElement, difficulty, genre) {
             let name = $(element).find(".music_label").text();
+            let level = +($(element).find(".score_level").text().replace("+", ".5"));
             let artist = '';
+
+            // プレイ履歴から取得した曲があるかチェック
+            if (this.songToUpload.length !== 0) {
+                // プレイ履歴に存在しない曲ならスキップする
+                if (this.songToUpload.indexOf(name) === -1) {
+                    return;
+                }
+            }
+
             if (this.sameNameList.indexOf(name) !== -1) {
-                console.log("曲名が重複している楽曲名: " + name + ' / ' + genre + ' / ' + difficulty);
+                console.log("曲名が重複している楽曲名: " + name + ' / Lv' + level + ' / ' + genre + ' / ' + difficulty);
                 await sleep(SLEEP_MSEC);
-                let response = await axios.get(NET_URL + '/record/musicDetail/?idx=' + encodeURIComponent($(parentElement).find("[name=idx]").prop("value")));
-                let parse = $.parseHTML(response.data);
-                artist = $(parse).find("div.m_5.f_13.break").text().trim();
-                artist = artist.substring(0, artist.indexOf('\n'));
+
+                artist = await SameNameMusicList.getArtistOfSameNameAndGenre(name, level);
+                if (artist === "") {
+                    let response = await axios.get(NET_URL + '/record/musicDetail/?idx=' + encodeURIComponent($(parentElement).find("[name=idx]").prop("value")));
+                    let parse = $.parseHTML(response.data);
+                    artist = $(parse).find("div.m_5.f_13.break").text().trim();
+                    artist = artist.substring(0, artist.indexOf('\n'));
+                }
                 console.log(artist);
             }
 
@@ -235,7 +307,7 @@ import * as qs from 'qs';
                 name,
                 difficulty,
                 genre,
-                +($(element).find(".score_level").text().replace("+", ".5")),
+                level,
                 +$($(element).find(".score_value")[0]).text().replace(/,/g, "").replace(/%/g, ""),
                 +$($(element).find(".score_value")[1]).text().replace(/,/g, ""),
                 +$($(element).find(".score_value")[2]).text().replace(/,/g, ""),
@@ -333,85 +405,6 @@ import * as qs from 'qs';
         }
     }
 
-    class RecentMusicInfo {
-        title: string = "";
-        difficulty: number = 0;
-        technicalScore: number = 0;
-        genre: string = "";
-        artist: string = "";
-
-        constructor(title: string, difficulty: number, technicalScore: number, genre: string = "", artist: string = "") {
-            this.title = title;
-            this.difficulty = difficulty;
-            this.technicalScore = technicalScore;
-            this.genre = genre;
-            this.artist = artist;
-        }
-    }
-
-    class RatingRecentMusicData {
-        ratingRecentMusicObject: Array<RecentMusicInfo> = new Array<RecentMusicInfo>();
-
-        async getData() {
-            await this.getRatingRecentMusicDataFromNet();
-        }
-
-        private async getRatingRecentMusicDataFromNet() {
-            await axios.get(NET_URL + '/home/ratingTargetMusic/', {
-            }).then(async (response) => {
-                await this.parseRatingRecentMusicData(response.data);
-            }).catch(function (error) {
-                throw new Error("レーティング対象曲の取得に失敗しました。" + error);
-            });
-        }
-
-        private async parseRatingRecentMusicData(html: string) {
-            let sameNameList = await SameNameMusicList.get();
-            var parseHTML = $.parseHTML(html);
-            var $basic_btn = $(parseHTML).find(".basic_btn");
-
-            for await (const value of $basic_btn) {
-                if ($(value).html().match(/TECHNICAL SCORE/)) {
-                    var difficulty: number = -1;
-                    if ($(value).hasClass('lunatic_score_back')) {
-                        difficulty = 10;
-                    } else if ($(value).hasClass('master_score_back')) {
-                        difficulty = 3;
-                    } else if ($(value).hasClass('expert_score_back')) {
-                        difficulty = 2;
-                    } else if ($(value).hasClass('advanced_score_back')) {
-                        difficulty = 1;
-                    } else if ($(value).hasClass('basic_score_back')) {
-                        difficulty = 0;
-                    }
-
-                    let name = $(value).find(".music_label").text();
-                    let genre = "";
-                    let artist = "";
-                    if (sameNameList.indexOf(name) !== -1) {
-                        console.log("曲名が重複している楽曲名: " + name);
-                        await sleep(SLEEP_MSEC);
-                        let result = await axios.get(NET_URL + '/record/musicDetail/?idx=' + encodeURIComponent($(value).find("[name=idx]").prop("value")));
-                        var parse = $.parseHTML(result.data);
-                        genre = $(parse).find("div.t_r.f_12.main_color").text().trim();
-                        artist = $(parse).find("div.m_5.f_13.break").text().trim();
-                        artist = artist.substring(0, artist.indexOf('\n'));
-                        console.log(genre + ' / ' + artist);
-                    }
-
-                    var info: RecentMusicInfo = new RecentMusicInfo(
-                        name,
-                        difficulty,
-                        +$(value).find(".score_value").text().replace(/,/g, ""),
-                        genre,
-                        artist
-                    );
-                    this.ratingRecentMusicObject.push(info);
-                }
-            }
-        }
-    }
-
     /**
      * プラチナスコア枠
      */
@@ -479,14 +472,20 @@ import * as qs from 'qs';
                     let artist = "";
                     let platinumScore = +$($(value).find(".platinum_score_text_block")).text().replace(/,/g, "").split("/")[0];
                     let star = +($($(value).find(".platinum_high_score_star_block").find(".f_b")).text());
+
                     if (sameNameList.indexOf(name) !== -1) {
-                        console.log("曲名が重複している楽曲名: " + name);
+                        let level = +($(value).find(".score_level").text().replace("+", ".5"));
+                        console.log("曲名が重複している楽曲名: " + name + ' / Lv' + level + ' / ' + genre + ' / ' + difficulty);
                         await sleep(SLEEP_MSEC);
-                        let result = await axios.get(NET_URL + '/record/musicDetail/?idx=' + encodeURIComponent($(value).find("[name=idx]").prop("value")));
-                        let parse = $.parseHTML(result.data);
-                        genre = $(parse).find("div.t_r.f_12.main_color").text().trim();
-                        artist = $(parse).find("div.m_5.f_13.break").text().trim();
-                        artist = artist.substring(0, artist.indexOf('\n'));
+
+                        artist = await SameNameMusicList.getArtistOfSameNameAndGenre(name, level);
+                        if (artist === "") {
+                            let result = await axios.get(NET_URL + '/record/musicDetail/?idx=' + encodeURIComponent($(value).find("[name=idx]").prop("value")));
+                            let parse = $.parseHTML(result.data);
+                            genre = $(parse).find("div.t_r.f_12.main_color").text().trim();
+                            artist = $(parse).find("div.m_5.f_13.break").text().trim();
+                            artist = artist.substring(0, artist.indexOf('\n'));
+                        }
                         console.log(genre + ' / ' + artist);
                     }
 
@@ -525,8 +524,7 @@ import * as qs from 'qs';
 
         public async Post(methodType: MethodType, data: PaymentStatus
             | PlayerData | Array<SongInfo> | Array<TrophyInfo>
-            | CharacterFriendlyData | RatingRecentMusicData
-            | RatingPlatinumMusicData)
+            | CharacterFriendlyData | RatingPlatinumMusicData)
         {
             let d = {
                 'hash': this.hash,
@@ -611,6 +609,7 @@ import * as qs from 'qs';
         let userId: number = 0;
         let hash: string = "";
         let name: string = "";
+        let lastUpdate: Date = new Date();
 
         try {
             // メンテナンスチェック
@@ -627,6 +626,7 @@ import * as qs from 'qs';
                 userId = result.data.id;
                 hash = result.data.hash;
                 name = result.data.name;
+                lastUpdate = new Date(result.data.updateAt);
 
             }).catch(function (error) {
                     throw new Error(error + "<br>スコアツールサーバーへの接続に失敗しました。<br><br>まずは以下の手順をお試しください。<br>1)ブックマークレットの再生成を行い、現在ご利用のブックマークレットに上書きして再度実行してください。<br>２）メンテナンス情報をご確認ください。情報については<a href='https://twitter.com/ongeki_score' target='_blank' style='color:#222'>Twitter@ongeki_score</a>にてお知らせします。");
@@ -660,16 +660,30 @@ import * as qs from 'qs';
             let length = 0;
 
             if (paymentStatus.IsPremiumPlan()) {
-                echo(await getTime() + "プラチナスコア枠対象曲を取得します。");
-                let ratingPlatinumMusicData = new RatingPlatinumMusicData;
-                await ratingPlatinumMusicData.getData();
-                echo(await getTime() + "プラチナスコア枠対象曲を送信します...");
-                console.log(ratingPlatinumMusicData);
-                await postData.Post(MethodType.RatingPlatinumMusic, ratingPlatinumMusicData);
-                await sleep(SLEEP_MSEC);
+                try {
+                    echo(await getTime() + "プラチナスコア枠対象曲を取得します。");
+                    let ratingPlatinumMusicData = new RatingPlatinumMusicData;
+                    await ratingPlatinumMusicData.getData();
+                    echo(await getTime() + "プラチナスコア枠対象曲を送信します...");
+                    console.log(ratingPlatinumMusicData);
+                    await postData.Post(MethodType.RatingPlatinumMusic, ratingPlatinumMusicData);
+                    await sleep(SLEEP_MSEC);
+                } catch (error) {
+                    echo(await getTime() + "プラチナスコア枠対象曲の取得に失敗しました。<br>対象曲が1曲以上あるかを確認してください。");
+                }
             } else {
                 echo(await getTime() + "スタンダードプランの為、レーティング対象曲情報取得をスキップします。");
             }
+
+            echo(await getTime() + "更新対象曲を取得します。");
+            await scoreData.getScoreHtmlFromRecent(lastUpdate);
+            if (await scoreData.GetUploadArrayLength() === 0) {
+                echo(await getTime() + "前回更新からのプレイ曲数が50曲を超えているか、プレイが行われていないため全件取得を行います。");
+            } else {
+                echo(await getTime() + "前回更新からの曲のみを取得します。<br>全件取得を行いたい場合はもう一度実行してください。");
+                console.log("前回更新からのプレイ曲数: " + await scoreData.GetUploadArrayLength() + "曲");
+            }
+            await sleep(SLEEP_MSEC);
 
             echo(await getTime() + "Lunaticのスコアデータを取得します。");
             scoreData.Clear();
@@ -720,7 +734,7 @@ import * as qs from 'qs';
             await sleep(SLEEP_MSEC);
 
             echo(await getTime() + "Basicのスコアデータを取得します。");
-            scoreData = new ScoreData;
+            scoreData.Clear();
             await scoreData.GetDifficultyScoreData(Difficulty.Basic);
             echo(await getTime() + "スコアデータを送信します。");
             length = Math.ceil(await scoreData.GetArrayLength() / 50);
