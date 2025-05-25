@@ -16,9 +16,18 @@ class OngekiUtility {
         foreach ($temp as $value) {
             $title = $value['title'];
             if (array_key_exists($title, $sameNameList)) {
+                // 同名曲があるやつ: 主にSingularity / アーティストとジャンルが入る
                 $title .= "." . $value['artist'] . "." . $value['genre'];
+                $this::$MusicList[$title] = $value;
+
+                // 同名曲があるやつ: 主にPerfect Shining!! / アーティストのみが入る
+                $title .= "." . $value['artist'] . "." . "";
+                $this::$MusicList[$title] = $value;
+            }else{
+                // 同名曲がないやつ: そのまま
+                $this::$MusicList[$title] = $value;
             }
-            $this::$MusicList[$title] = $value;
+
             unset($this::$MusicList[$title]['title']);
         }
     }
