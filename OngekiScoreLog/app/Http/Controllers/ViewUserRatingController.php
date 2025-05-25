@@ -75,6 +75,18 @@ class ViewUserRatingController extends Controller
                     $scores[$index]->targetMusicRateUser = number_format($scores[$index]->technical_high_score - $scores[$index]->targetMusicRateUser);
                 }
 
+                // 新曲枠専用 レート寄与値 (/5する)
+                // 小数点3桁で四捨五入する
+                $singleRatingValue =  sprintf("%.3f", floor($scores[$index]->ratingValue / 5 * 1000) / 1000);
+
+                if (OngekiUtility::IsEstimatedRateValueFromTitle($scores[$index]->title, $scores[$index]->difficulty, $scores[$index]->genre, $scores[$index]->artist)) {
+                    $scores[$index]->singleRatingValue = "<i><span class='estimated-rating'>" . $singleRatingValue . "</span></i>";
+                }elseif($scores[$index]->technical_high_score == 1010000){
+                    $scores[$index]->singleRatingValue = "<i><span class='max-rating'>" . $singleRatingValue . "</span></i>";
+                }elseif($scores[$index]->technical_high_score >= 1007500){
+                    $scores[$index]->singleRatingValue = "<i><span class='upper-rating'>" . $singleRatingValue . "</span></i>";
+                }
+
                 // レート値が理論値 / 推定値なら文字装飾
                 if (OngekiUtility::IsEstimatedRateValueFromTitle($scores[$index]->title, $scores[$index]->difficulty, $scores[$index]->genre, $scores[$index]->artist)) {
                     $scores[$index]->extraLevelStr = "<i><span class='estimated-rating'>" . $scores[$index]->extraLevelStr . "?</span></i>";

@@ -99,7 +99,7 @@
             <a data-scroll href="#rating_statistics">▲統計</a>&nbsp;/&nbsp;■新曲枠&nbsp;/&nbsp;<a data-scroll href="#rating_old">▼ベスト枠</a>&nbsp;/&nbsp;<a data-scroll href="#rating_platinum">▼プラチナスコア枠</a><br>
             現在のバージョンに追加された楽曲のうち、テクニカルハイスコアから算出されたレート値が高い{{$statistics->newBestRatingCount}}曲が選出されます。
         </p>
-        @component('layouts/components/user_rating/rating_best_table', ['array' => $newScore, 'statistics' => $statistics, 'start' => 0, 'targetCount' => $statistics->newBestRatingCount, 'end' => count($newScore), 'id' => $id])
+        @component('layouts/components/user_rating/rating_new_table', ['array' => $newScore, 'statistics' => $statistics, 'start' => 0, 'targetCount' => $statistics->newBestRatingCount, 'end' => count($newScore), 'id' => $id])
         @endcomponent
     </article>
 
