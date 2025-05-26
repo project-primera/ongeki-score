@@ -23,7 +23,7 @@
 @endsection
 
 @php
-$difficulties = ['Total', 'Basic', 'Advanced', 'Expert', 'Master', 'Lunatic'];
+    $difficulties = ['Total', 'Basic', 'Advanced', 'Expert', 'Master', 'Lunatic'];
 @endphp
 
 @section('content')
@@ -45,7 +45,9 @@ $difficulties = ['Total', 'Basic', 'Advanced', 'Expert', 'Master', 'Lunatic'];
             <div id="select-generation" class="select">
                 <select>
                     @foreach ($display['select'] as $key => $value)
-                <option class="select-generations-option" value='{{$key}}'{{$value["selected"]}}>{{$key}}: {{$value["value"]}} ～</option>
+                        <option class="select-generations-option" value='{{$key}}'{{$value["selected"]}}>{{$key}}
+                            : {{$value["value"]}} ～
+                        </option>
                     @endforeach
                 </select>
             </div>
@@ -91,43 +93,44 @@ $difficulties = ['Total', 'Basic', 'Advanced', 'Expert', 'Master', 'Lunatic'];
 
             <table class="table is-narrow user-progress-total-table">
                 <thead>
-                    <tr>
-                        <th></th>
-                        <th colspan="2">Battle Score</th>
-                        <th colspan="2">Over Damage</th>
-                    </tr>
+                <tr>
+                    <th></th>
+                    <th colspan="2">Battle Score</th>
+                    <th colspan="2">Over Damage</th>
+                </tr>
                 </thead>
                 <tbody>
-                    @foreach ($difficulties as $difficulty)
-                        <tr>
-                            <td>{{$difficulty}}</td>
-                            <td class="right">{{number_format($score['new'][$difficulty]['battle_high_score'])}}</td>
-                            <td class="right difference">{{($score['difference'][$difficulty]['battle_high_score'] === 0) ? "" : "+" . number_format($score['difference'][$difficulty]['battle_high_score'])}}</td>
-                            <td class="right">{{number_format($score['new'][$difficulty]['over_damage_high_score'], 2)}}%</td>
-                            <td class="right difference">{{($score['difference'][$difficulty]['over_damage_high_score'] === 0.0) ? "" : "+" . number_format($score['difference'][$difficulty]['over_damage_high_score'], 2) . "%"}}</td>
-                        </tr>
-                    @endforeach
+                @foreach ($difficulties as $difficulty)
+                    <tr>
+                        <td>{{$difficulty}}</td>
+                        <td class="right">{{number_format($score['new'][$difficulty]['battle_high_score'])}}</td>
+                        <td class="right difference">{{($score['difference'][$difficulty]['battle_high_score'] === 0) ? "" : "+" . number_format($score['difference'][$difficulty]['battle_high_score'])}}</td>
+                        <td class="right">{{number_format($score['new'][$difficulty]['over_damage_high_score'], 2)}}%
+                        </td>
+                        <td class="right difference">{{($score['difference'][$difficulty]['over_damage_high_score'] === 0.0) ? "" : "+" . number_format($score['difference'][$difficulty]['over_damage_high_score'], 2) . "%"}}</td>
+                    </tr>
+                @endforeach
                 </tbody>
             </table>
 
             <table class="table is-narrow user-progress-total-table">
                 <thead>
-                    <tr>
-                        <th></th>
-                        <th colspan="2">Technical Score</th>
-                        <th colspan="2">Platinum Score</th>
-                    </tr>
+                <tr>
+                    <th></th>
+                    <th colspan="2">Technical Score</th>
+                    <th colspan="2">Platinum Score</th>
+                </tr>
                 </thead>
                 <tbody>
-                    @foreach ($difficulties as $difficulty)
-                        <tr>
-                            <td>{{$difficulty}}</td>
-                            <td class="right">{{number_format($score['new'][$difficulty]['technical_high_score'])}}</td>
-                            <td class="right difference">{{($score['difference'][$difficulty]['technical_high_score'] === 0) ? "" : "+" . number_format($score['difference'][$difficulty]['technical_high_score'])}}</td>
-                            <td class="right">{{number_format($score['new'][$difficulty]['platinum_score'])}}</td>
-                            <td class="right difference">{{($score['difference'][$difficulty]['platinum_score'] === 0) ? "" : "+" . number_format($score['difference'][$difficulty]['platinum_score'])}}</td>
-                        </tr>
-                    @endforeach
+                @foreach ($difficulties as $difficulty)
+                    <tr>
+                        <td>{{$difficulty}}</td>
+                        <td class="right">{{number_format($score['new'][$difficulty]['technical_high_score'])}}</td>
+                        <td class="right difference">{{($score['difference'][$difficulty]['technical_high_score'] === 0) ? "" : "+" . number_format($score['difference'][$difficulty]['technical_high_score'])}}</td>
+                        <td class="right">{{number_format($score['new'][$difficulty]['platinum_score'])}}</td>
+                        <td class="right difference">{{($score['difference'][$difficulty]['platinum_score'] === 0) ? "" : "+" . number_format($score['difference'][$difficulty]['platinum_score'])}}</td>
+                    </tr>
+                @endforeach
                 </tbody>
             </table>
 
@@ -141,7 +144,9 @@ $difficulties = ['Total', 'Basic', 'Advanced', 'Expert', 'Master', 'Lunatic'];
                     @foreach ($temp as $difficulty => $value)
                         <div class="node">
                             <div class="song-info">
-                                <span class="difficulty {{$value['new']->difficulty_str}}">[{{mb_strimwidth($value['new']->difficulty_str, 0, 3, "", "UTF-8")}}]</span>&nbsp;<span class="song-level">Lv.{{$value['new']->level_str}}</span><span class="song-title">{{$value['new']->title}}</span>
+                                <span class="difficulty {{$value['new']->difficulty_str}}">[{{mb_strimwidth($value['new']->difficulty_str, 0, 3, "", "UTF-8")}}]</span>&nbsp;<span
+                                    class="song-level">Lv.{{$value['new']->level_str}}</span><span
+                                    class="song-title">{{$value['new']->title}}</span>
                             </div>
                             <div class="score-info">
                                 <span class="score-title">Battle Score</span>
@@ -152,18 +157,28 @@ $difficulties = ['Total', 'Basic', 'Advanced', 'Expert', 'Master', 'Lunatic'];
                                 <span class="score-title">Over Damage</span>
                                 <span class="score">{{$value['new']->over_damage_high_score}}%</span>
                                 <span class="difference">{{$value['difference']['over_damage_high_score']}}</span>
-                                <span class="score-rank {{$value['difference']['is_update_over_damage_high_score_rank']}}">{{$value['difference']['over_damage_high_score_rank']}}</span>
+                                <span
+                                    class="score-rank {{$value['difference']['is_update_over_damage_high_score_rank']}}">{{$value['difference']['over_damage_high_score_rank']}}</span>
                                 <br>
 
                                 <span class="score-title">Technical Score</span>
                                 <span class="score">{{number_format($value['new']->technical_high_score)}}</span>
                                 <span class="difference">{{$value['difference']['technical_high_score']}}</span>
-                                <span class="score-rank {{$value['difference']['is_update_technical_high_score_rank']}}">{{$value['difference']['technical_high_score_rank']}}</span>
+                                <span
+                                    class="score-rank {{$value['difference']['is_update_technical_high_score_rank']}}">{{$value['difference']['technical_high_score_rank']}}</span>
                                 <br>
 
                                 <span class="score-title">Platinum Score</span>
                                 <span class="score">{{number_format($value['new']->platinum_score)}}</span>
                                 <span class="difference">{{$value['difference']['platinum_score']}}</span>
+                                <br>
+
+                                <span class="score-title">Normal Rating</span>
+                                <?php
+                                    Log::debug(print_r($value,true));
+                                    ?>
+                                <span class="score">{{$value['ratings']['normal_new']}}</span>
+                                <span class="difference">{{$value['difference']['normal_rating']}}</span>
                             </div>
                             <div class="lamp-info">
                                 <span class="tag {{$value['difference']['old-lamp-is-fb']}}">FB</span>
@@ -177,15 +192,15 @@ $difficulties = ['Total', 'Basic', 'Advanced', 'Expert', 'Master', 'Lunatic'];
                         </div>
                         <hr>
                         @if (++$count >= 9)
-                            </div>
-                            </div>
-                            <div class="user-progress">
-                            <div class="music">
-                            @php
-                                $count = 0;
-                            @endphp
-                        @endif
-                    @endforeach
+            </div>
+        </div>
+        <div class="user-progress">
+            <div class="music">
+                @php
+                    $count = 0;
+                @endphp
+                @endif
+                @endforeach
                 @endforeach
             </div>
         </div>

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Facades\OngekiUtility;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\User;
@@ -97,30 +98,35 @@ class ViewUserProgressController extends Controller
                     'technical_high_score' => 0,
                     'platinum_score' => 0,
                     'over_damage_high_score' => 0,
+                    'normal_rating' => 0,
                 ],
                 'Advanced' => [
                     'battle_high_score' => 0,
                     'technical_high_score' => 0,
                     'platinum_score' => 0,
                     'over_damage_high_score' => 0,
+                    'normal_rating' => 0,
                 ],
                 'Expert' => [
                     'battle_high_score' => 0,
                     'technical_high_score' => 0,
                     'platinum_score' => 0,
                     'over_damage_high_score' => 0,
+                    'normal_rating' => 0,
                 ],
                 'Master' => [
                     'battle_high_score' => 0,
                     'technical_high_score' => 0,
                     'platinum_score' => 0,
                     'over_damage_high_score' => 0,
+                    'normal_rating' => 0,
                 ],
                 'Lunatic' => [
                     'battle_high_score' => 0,
                     'technical_high_score' => 0,
                     'platinum_score' => 0,
                     'over_damage_high_score' => 0,
+                    'normal_rating' => 0,
                 ],
             ],
             'old' =>[
@@ -129,30 +135,35 @@ class ViewUserProgressController extends Controller
                     'technical_high_score' => 0,
                     'platinum_score' => 0,
                     'over_damage_high_score' => 0,
+                    'normal_rating' => 0,
                 ],
                 'Advanced' => [
                     'battle_high_score' => 0,
                     'technical_high_score' => 0,
                     'platinum_score' => 0,
                     'over_damage_high_score' => 0,
+                    'normal_rating' => 0,
                 ],
                 'Expert' => [
                     'battle_high_score' => 0,
                     'technical_high_score' => 0,
                     'platinum_score' => 0,
                     'over_damage_high_score' => 0,
+                    'normal_rating' => 0,
                 ],
                 'Master' => [
                     'battle_high_score' => 0,
                     'technical_high_score' => 0,
                     'platinum_score' => 0,
                     'over_damage_high_score' => 0,
+                    'normal_rating' => 0,
                 ],
                 'Lunatic' => [
                     'battle_high_score' => 0,
                     'technical_high_score' => 0,
                     'platinum_score' => 0,
                     'over_damage_high_score' => 0,
+                    'normal_rating' => 0,
                 ],
             ]
         ];
@@ -197,19 +208,19 @@ class ViewUserProgressController extends Controller
         }else{
             $date["old"] = "初回登録";
         }
-
         foreach ($new as $music => $temp) {
             foreach ($temp as $difficulty => $value) {
                 $score['new'][$difficultyToStr[$difficulty]]['battle_high_score'] += $value->battle_high_score;
                 $score['new'][$difficultyToStr[$difficulty]]['technical_high_score'] += $value->technical_high_score;
                 $score['new'][$difficultyToStr[$difficulty]]['platinum_score'] += $value->platinum_score;
                 $score['new'][$difficultyToStr[$difficulty]]['over_damage_high_score'] += $value->over_damage_high_score;
-
+                $newNormalRating = OngekiUtility::RateValueFromTitle($value->title, $value->difficulty, $value->technical_high_score, $value->lampForRating, $value->genre, $value->artist);
                 if(!array_key_exists($music, $old) || !array_key_exists($difficulty, $old[$music])){
                     if($value->battle_high_score !== 0){
                         // not implemented → played
                         // echo "[new] " . $value->title . " / " . $value->difficulty_str . "<br>";
                         $progress[$music][$difficulty]["new"] = $value;
+                        $progress[$music][$difficulty]["ratings"]["normal_new"] = $newNormalRating;
                         $progress[$music][$difficulty]["difference"]['battle_high_score'] = "+" . number_format($value->battle_high_score);
                         $progress[$music][$difficulty]["difference"]['technical_high_score'] = "+" . number_format($value->technical_high_score);
                         $progress[$music][$difficulty]["difference"]['platinum_score'] = "+" . number_format($value->platinum_score);
@@ -219,6 +230,7 @@ class ViewUserProgressController extends Controller
                         $progress[$music][$difficulty]["difference"]['over_damage_high_score_rank'] = "不可" . " → " . $value->over_damage_high_score_rank;
                         $progress[$music][$difficulty]["difference"]['is_update_over_damage_high_score_rank'] = "update";
                         $progress[$music][$difficulty]["difference"]['over_damage_high_score'] = "+" . ($value->over_damage_high_score) . "%";
+                        $progress[$music][$difficulty]["difference"]['normal_rating'] = "+" . sprintf("%.3f", $newNormalRating);
                         $progress[$music][$difficulty]["difference"]['old-lamp-is-fb'] = "not-light";
                         $progress[$music][$difficulty]["difference"]['old-lamp-is-fc'] = "not-light";
                         $progress[$music][$difficulty]["difference"]['old-lamp-is-ab'] = "not-light";
@@ -244,6 +256,7 @@ class ViewUserProgressController extends Controller
                             // noplay → played
                             // echo "[new*] " . $value->title . " / " . $value->difficulty_str . "<br>";
                             $progress[$music][$difficulty]["new"] = $value;
+                            $progress[$music][$difficulty]["ratings"]["normal_new"] = $newNormalRating;
                             $progress[$music][$difficulty]["difference"]['battle_high_score'] = "+" . number_format($value->battle_high_score);
                             $progress[$music][$difficulty]["difference"]['technical_high_score'] = "+" . number_format($value->technical_high_score);
                             $progress[$music][$difficulty]["difference"]['platinum_score'] = "+" . number_format($value->platinum_score);
@@ -253,6 +266,7 @@ class ViewUserProgressController extends Controller
                             $progress[$music][$difficulty]["difference"]['over_damage_high_score_rank'] = "N" . " → " . $value->over_damage_high_score_rank;
                             $progress[$music][$difficulty]["difference"]['is_update_over_damage_high_score_rank'] = "update";
                             $progress[$music][$difficulty]["difference"]['over_damage_high_score'] = "+" . ($value->over_damage_high_score) . "%";
+                            $progress[$music][$difficulty]["difference"]['normal_rating'] = "+" . sprintf("%.3f",$newNormalRating);
                             $progress[$music][$difficulty]["difference"]['old-lamp-is-fb'] = "not-light";
                             $progress[$music][$difficulty]["difference"]['old-lamp-is-fc'] = "not-light";
                             $progress[$music][$difficulty]["difference"]['old-lamp-is-ab'] = "not-light";
@@ -283,6 +297,33 @@ class ViewUserProgressController extends Controller
                                     continue;
                                 }
                             }
+                            // Rating計算はできるだけ少なくしたいので先に計算しておく。
+                            // ViewUserRatingController.php から引用。
+                            $oldLampForRating = "";
+                            if ($old[$music][$difficulty]->technical_high_score == 1010000){
+                                if ($old[$music][$difficulty]->full_bell == 1) {
+                                    $oldLampForRating = "FB/AB+";
+                                } else {
+                                    $oldLampForRating = "AB+";
+                                }
+                            } elseif ($old[$music][$difficulty]->all_break == 1) {
+                                if ($old[$music][$difficulty]->full_bell == 1) {
+                                    $oldLampForRating = "FB/AB";
+                                } else {
+                                    $oldLampForRating = "AB";
+                                }
+                            } elseif ($old[$music][$difficulty]->full_combo == 1) {
+                                if ($old[$music][$difficulty]->full_bell == 1) {
+                                    $oldLampForRating = "FB/FC";
+                                } else {
+                                    $oldLampForRating = "FC";
+                                }
+                            } else {
+                                if ($old[$music][$difficulty]->full_bell == 1) {
+                                    $oldLampForRating = "FB";
+                                }
+                            }
+                            $oldNormalRating = OngekiUtility::RateValueFromTitle($value->title, $old[$music][$difficulty]->difficulty, $old[$music][$difficulty]->technical_high_score, $oldLampForRating, $value->genre, $value->artist);
 
                             $progress[$music][$difficulty]["difference"]['battle_high_score'] = ($value->battle_high_score - $old[$music][$difficulty]->battle_high_score) != 0 ? "+" . number_format($value->battle_high_score - $old[$music][$difficulty]->battle_high_score) : "";
                             $progress[$music][$difficulty]["difference"]['technical_high_score'] = ($value->technical_high_score - $old[$music][$difficulty]->technical_high_score) != 0 ? "+" . number_format($value->technical_high_score - $old[$music][$difficulty]->technical_high_score) : "";
@@ -293,6 +334,7 @@ class ViewUserProgressController extends Controller
                             $progress[$music][$difficulty]["difference"]['over_damage_high_score_rank'] = $old[$music][$difficulty]->over_damage_high_score_rank . " → " . $value->over_damage_high_score_rank;
                             $progress[$music][$difficulty]["difference"]['is_update_over_damage_high_score_rank'] = ($old[$music][$difficulty]->over_damage_high_score_rank != $value->over_damage_high_score_rank) ? "update" : "";
                             $progress[$music][$difficulty]["difference"]['over_damage_high_score'] = ($value->over_damage_high_score - $old[$music][$difficulty]->over_damage_high_score) != 0 ? "+" . (floor(($value->over_damage_high_score - $old[$music][$difficulty]->over_damage_high_score) * 100) / 100) . "%" : "";
+                            $progress[$music][$difficulty]["difference"]['normal_rating'] = ($newNormalRating - $oldNormalRating) != 0 ? "+" . sprintf("%.3f",($newNormalRating - $oldNormalRating)) : "";
                             $progress[$music][$difficulty]["difference"]['old-lamp-is-fb'] = $old[$music][$difficulty]->full_bell ? "full-bell" : "not-light";
                             $progress[$music][$difficulty]["difference"]['old-lamp-is-fc'] = $old[$music][$difficulty]->full_combo ? "full-combo" : "not-light";
                             $progress[$music][$difficulty]["difference"]['old-lamp-is-ab'] = $old[$music][$difficulty]->all_break ? "all-break" : "not-light";
@@ -301,6 +343,7 @@ class ViewUserProgressController extends Controller
                             $progress[$music][$difficulty]["difference"]['new-lamp-is-ab'] = $value->all_break ? "all-break" : "not-light";
 
                             $progress[$music][$difficulty]["new"] = $value;
+                            $progress[$music][$difficulty]["ratings"]["normal_new"] = $newNormalRating;
                         }
                     }
                 }
