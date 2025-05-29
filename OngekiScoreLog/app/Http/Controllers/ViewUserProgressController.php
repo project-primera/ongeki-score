@@ -198,6 +198,7 @@ class ViewUserProgressController extends Controller
         }else{
             $date["old"] = "初回登録";
         }
+
         foreach ($new as $music => $temp) {
             foreach ($temp as $difficulty => $value) {
                 $score['new'][$difficultyToStr[$difficulty]]['battle_high_score'] += $value->battle_high_score;
@@ -205,6 +206,7 @@ class ViewUserProgressController extends Controller
                 $score['new'][$difficultyToStr[$difficulty]]['platinum_score'] += $value->platinum_score;
                 $score['new'][$difficultyToStr[$difficulty]]['over_damage_high_score'] += $value->over_damage_high_score;
                 // 負荷軽減のためRate計算はここではなく、$progressを構成するタイミングで行う。
+
                 if(!array_key_exists($music, $old) || !array_key_exists($difficulty, $old[$music])){
                     if($value->battle_high_score !== 0){
                         // not implemented → played
