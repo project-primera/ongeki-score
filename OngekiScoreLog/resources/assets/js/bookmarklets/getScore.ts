@@ -227,14 +227,13 @@ import * as qs from 'qs';
             }
             var parseHTML = $.parseHTML(html);
             var $innerContainer3 = $(parseHTML).find(".container3").children(".m_10")
-            // 50曲存在するなら50曲目をとって、更新日時が最終更新日時以降なら全曲取得に変更
-            if ($innerContainer3.length === 50) {
-                let recentUpdate = new Date($innerContainer3.last().find("span.f_r.h_10").text());
-                if (recentUpdate > timestamp) {
-                    this.songToUpload = [];
-                    return;
-                }
+            // もっとも古い履歴の更新日時が最終更新日時以降なら全曲取得に変更
+            let recentUpdate = new Date($innerContainer3.last().find("span.f_r.h_10").text());
+            if (recentUpdate > timestamp) {
+                this.songToUpload = [];
+                return;
             }
+
             $innerContainer3.each((key, value) => {
                 if ($(value).hasClass("m_10")){
                     if (new Date($(value).find("span.f_r.h_10").text()) > timestamp) {
