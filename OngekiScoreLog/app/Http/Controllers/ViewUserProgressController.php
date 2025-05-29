@@ -223,7 +223,7 @@ class ViewUserProgressController extends Controller
                         $progress[$music][$difficulty]["difference"]['is_update_over_damage_high_score_rank'] = "update";
                         $progress[$music][$difficulty]["difference"]['over_damage_high_score'] = "+" . ($value->over_damage_high_score) . "%";
                         $progress[$music][$difficulty]["difference"]['normal_rating'] = "+" . sprintf("%.3f", $newNormalRating);
-                        $progress[$music][$difficulty]["difference"]["new-normal-rating"] = $newNormalRating;
+                        $progress[$music][$difficulty]["difference"]["new-normal-rating"] = sprintf("%.3f", $newNormalRating);
                         $progress[$music][$difficulty]["difference"]['old-lamp-is-fb'] = "not-light";
                         $progress[$music][$difficulty]["difference"]['old-lamp-is-fc'] = "not-light";
                         $progress[$music][$difficulty]["difference"]['old-lamp-is-ab'] = "not-light";
@@ -260,7 +260,7 @@ class ViewUserProgressController extends Controller
                             $progress[$music][$difficulty]["difference"]['is_update_over_damage_high_score_rank'] = "update";
                             $progress[$music][$difficulty]["difference"]['over_damage_high_score'] = "+" . ($value->over_damage_high_score) . "%";
                             $progress[$music][$difficulty]["difference"]['normal_rating'] = "+" . sprintf("%.3f",$newNormalRating);
-                            $progress[$music][$difficulty]["difference"]["new-normal-rating"] = $newNormalRating;
+                            $progress[$music][$difficulty]["difference"]["new-normal-rating"] = sprintf("%.3f", $newNormalRating);
                             $progress[$music][$difficulty]["difference"]['old-lamp-is-fb'] = "not-light";
                             $progress[$music][$difficulty]["difference"]['old-lamp-is-fc'] = "not-light";
                             $progress[$music][$difficulty]["difference"]['old-lamp-is-ab'] = "not-light";
@@ -330,7 +330,7 @@ class ViewUserProgressController extends Controller
                             $progress[$music][$difficulty]["difference"]['is_update_over_damage_high_score_rank'] = ($old[$music][$difficulty]->over_damage_high_score_rank != $value->over_damage_high_score_rank) ? "update" : "";
                             $progress[$music][$difficulty]["difference"]['over_damage_high_score'] = ($value->over_damage_high_score - $old[$music][$difficulty]->over_damage_high_score) != 0 ? "+" . (floor(($value->over_damage_high_score - $old[$music][$difficulty]->over_damage_high_score) * 100) / 100) . "%" : "";
                             $progress[$music][$difficulty]["difference"]['normal_rating'] = ($newNormalRating - $oldNormalRating) != 0 ? "+" . sprintf("%.3f",($newNormalRating - $oldNormalRating)) : "";
-                            $progress[$music][$difficulty]["difference"]["new-normal-rating"] = $newNormalRating;
+                            $progress[$music][$difficulty]["difference"]["new-normal-rating"] = sprintf("%.3f", $newNormalRating);
                             $progress[$music][$difficulty]["difference"]['old-lamp-is-fb'] = $old[$music][$difficulty]->full_bell ? "full-bell" : "not-light";
                             $progress[$music][$difficulty]["difference"]['old-lamp-is-fc'] = $old[$music][$difficulty]->full_combo ? "full-combo" : "not-light";
                             $progress[$music][$difficulty]["difference"]['old-lamp-is-ab'] = $old[$music][$difficulty]->all_break ? "all-break" : "not-light";
