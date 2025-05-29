@@ -45,7 +45,7 @@ $difficulties = ['Total', 'Basic', 'Advanced', 'Expert', 'Master', 'Lunatic'];
             <div id="select-generation" class="select">
                 <select>
                     @foreach ($display['select'] as $key => $value)
-                        <option class="select-generations-option" value='{{$key}}'{{$value["selected"]}}>{{$key}}: {{$value["value"]}} ～</option>
+                <option class="select-generations-option" value='{{$key}}'{{$value["selected"]}}>{{$key}}: {{$value["value"]}} ～</option>
                     @endforeach
                 </select>
             </div>
@@ -98,15 +98,15 @@ $difficulties = ['Total', 'Basic', 'Advanced', 'Expert', 'Master', 'Lunatic'];
                     </tr>
                 </thead>
                 <tbody>
-                @foreach ($difficulties as $difficulty)
-                    <tr>
-                        <td>{{$difficulty}}</td>
-                        <td class="right">{{number_format($score['new'][$difficulty]['battle_high_score'])}}</td>
-                        <td class="right difference">{{($score['difference'][$difficulty]['battle_high_score'] === 0) ? "" : "+" . number_format($score['difference'][$difficulty]['battle_high_score'])}}</td>
-                        <td class="right">{{number_format($score['new'][$difficulty]['over_damage_high_score'], 2)}}%</td>
-                        <td class="right difference">{{($score['difference'][$difficulty]['over_damage_high_score'] === 0.0) ? "" : "+" . number_format($score['difference'][$difficulty]['over_damage_high_score'], 2) . "%"}}</td>
-                    </tr>
-                @endforeach
+                    @foreach ($difficulties as $difficulty)
+                        <tr>
+                            <td>{{$difficulty}}</td>
+                            <td class="right">{{number_format($score['new'][$difficulty]['battle_high_score'])}}</td>
+                            <td class="right difference">{{($score['difference'][$difficulty]['battle_high_score'] === 0) ? "" : "+" . number_format($score['difference'][$difficulty]['battle_high_score'])}}</td>
+                            <td class="right">{{number_format($score['new'][$difficulty]['over_damage_high_score'], 2)}}%</td>
+                            <td class="right difference">{{($score['difference'][$difficulty]['over_damage_high_score'] === 0.0) ? "" : "+" . number_format($score['difference'][$difficulty]['over_damage_high_score'], 2) . "%"}}</td>
+                        </tr>
+                    @endforeach
                 </tbody>
             </table>
 
