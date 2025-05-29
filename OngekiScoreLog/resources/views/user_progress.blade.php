@@ -167,9 +167,6 @@ $difficulties = ['Total', 'Basic', 'Advanced', 'Expert', 'Master', 'Lunatic'];
                                 <br>
 
                                 <span class="score-title">Normal Rating</span>
-                                <?php
-                                    Log::debug(print_r($value,true));
-                                    ?>
                                 <span class="score">{{$value['ratings']['normal_new']}}</span>
                                 <span class="difference">{{$value['difference']['normal_rating']}}</span>
                             </div>
