@@ -30,7 +30,7 @@
         "html2canvas": "^1.0.0-rc.5",
         "list.js": "^1.5.0",
         "node-sass": "^4.12.0",
-        "sass": "^1.20.1",
+        "sass": "^1.89.2",
         "sweet-scroll": "^3.0.1",
         "tar": "^4.4.8",
         "ts-loader": "^6.0.4",
