@@ -21,21 +21,36 @@ class SettingController extends Controller
             return view('require');
         }
 
-        $external = new ExternalServiceCoordination();
-        $ret = $external->get($user->id);
-
         $display = [];
-        if(count($ret) === 0){
-            $display['screenName'] = "認証していません";
-        }else{
-            $twitter = $external->getTwitter($ret[0]->twitter_access_token, $ret[0]->twitter_access_token_secret);
-            if(is_null($twitter)){
-                $display['screenName'] = "認証していません";
-            }else{
-                $display['screenName'] = $twitter->screen_name;
-            }
-        }
+        $display['private'] = $user->private;
+
         return view('setting', compact('display'));
+    }
+
+    public function getSettingPrivate(){
+        $user = \Auth::user();
+
+        if($user == null){
+            return view('require');
+        }
+
+        $user->private = 1;
+        $user->save();
+
+        return redirect("/setting");
+    }
+
+    public function getSettingPublic(){
+        $user = \Auth::user();
+
+        if($user == null){
+            return view('require');
+        }
+
+        $user->private = 0;
+        $user->save();
+
+        return redirect("/setting");
     }
 
     public function getTwitterAuthentication(){

@@ -6,10 +6,15 @@
 
 @section('content')
     <article class="box">
-        <h3 class="title is-3">Twitter連携</h3>
-        <p>Twitterを連携するとスコア更新を画像とともにツイートできます。<br>
-            認証中のアカウント: {{$display['screenName']}}<br>
-            <a href="/setting/twitter" class="button">連携する</a>
+        <h3 class="title is-3">プライベートモード</h3>
+        <p>プライベートモードにすると他人から見えなくなります。<br>
+            現在の状態: {{$display['private'] ? 'プライベート' : 'パブリック'}}モード<br>
+
+            @if ($display['private'])
+                <a href="/setting/public" class="button">パブリックモードに戻す</a>
+            @else
+                <a href="/setting/private" class="button">プライベートモードにする</a>
+            @endif
         </p>
     </article>
 
