@@ -291,8 +291,10 @@ class ViewUserProgressController extends Controller
                                     continue;
                                 }
                             }
+
                             // Rating計算はできるだけ少なくしたいので先に計算しておく。
                             // ViewUserRatingController.php から引用。
+                            // WARNING: レーティング処理を変えたら変更元も変更する！
                             $oldLampForRating = "";
                             if ($old[$music][$difficulty]->technical_high_score == 1010000){
                                 if ($old[$music][$difficulty]->full_bell == 1) {
@@ -317,6 +319,7 @@ class ViewUserProgressController extends Controller
                                     $oldLampForRating = "FB";
                                 }
                             }
+
                             $newNormalRating = OngekiUtility::RateValueFromTitle($value->title, $value->difficulty, $value->technical_high_score, $value->lampForRating, $value->genre, $value->artist);
                             $oldNormalRating = OngekiUtility::RateValueFromTitle($value->title, $old[$music][$difficulty]->difficulty, $old[$music][$difficulty]->technical_high_score, $oldLampForRating, $value->genre, $value->artist);
 
