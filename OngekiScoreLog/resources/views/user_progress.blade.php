@@ -166,7 +166,7 @@ $difficulties = ['Total', 'Basic', 'Advanced', 'Expert', 'Master', 'Lunatic'];
                                 <span class="difference">{{$value['difference']['platinum_score']}}</span>
                                 <br>
 
-                                <span class="score-title">Normal Rating</span>
+                                <span class="score-title">Single Rating</span>
                                 <span class="score">{{$value['difference']['new-normal-rating']}}</span>
                                 <span class="difference">{{$value['difference']['normal_rating']}}</span>
                             </div>
