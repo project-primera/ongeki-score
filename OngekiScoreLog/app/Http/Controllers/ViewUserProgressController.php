@@ -259,7 +259,7 @@ class ViewUserProgressController extends Controller
                             $progress[$music][$difficulty]["difference"]['over_damage_high_score_rank'] = "N" . " → " . $value->over_damage_high_score_rank;
                             $progress[$music][$difficulty]["difference"]['is_update_over_damage_high_score_rank'] = "update";
                             $progress[$music][$difficulty]["difference"]['over_damage_high_score'] = "+" . ($value->over_damage_high_score) . "%";
-                            $progress[$music][$difficulty]["difference"]['normal_rating'] = "+" . sprintf("%.3f",$newNormalRating);
+                            $progress[$music][$difficulty]["difference"]['normal_rating'] = "+" . sprintf("%.3f", $newNormalRating);
                             $progress[$music][$difficulty]["difference"]["new-normal-rating"] = sprintf("%.3f", $newNormalRating);
                             $progress[$music][$difficulty]["difference"]['old-lamp-is-fb'] = "not-light";
                             $progress[$music][$difficulty]["difference"]['old-lamp-is-fc'] = "not-light";
