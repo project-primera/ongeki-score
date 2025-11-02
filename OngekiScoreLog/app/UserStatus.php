@@ -8,16 +8,15 @@ use Illuminate\Support\Facades\DB;
 class UserStatus extends Model
 {
     protected $table = "user_status";
-    protected $guarded = ['id'];
 
     function getRecentUserData($id, $exclude_private = true)
     {
         $sql = DB::table($this->table)->select('*')
             ->from($this->table)->where('user_id', $id)->orderBy('id', 'desc')->limit(1);
 
-        # プライベートユーザを除外（自分自身以外）
-        if ($exclude_private) {
-            $me = \Auth::user();
+        $me = \Auth::user();
+        # プライベートユーザを除外（自分自身以外） 管理者権限がある場合は除外しない
+        if ($exclude_private && ($me === null || $me->role !== 7)) {
             if ($me === null || $id != $me->id) {
                 $sql = $sql
                     ->join('users', "$this->table.user_id", '=', 'users.id')
