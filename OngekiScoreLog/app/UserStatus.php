@@ -14,7 +14,7 @@ class UserStatus extends Model
         $sql = DB::table($this->table)->select('*')
             ->from($this->table)->where('user_id', $id)->orderBy('id', 'desc')->limit(1);
 
-        # ƒvƒ‰ƒCƒx[ƒgƒ†[ƒU‚ğœŠOi©•ª©gˆÈŠOj
+        # ãƒ—ãƒ©ã‚¤ãƒ™ãƒ¼ãƒˆãƒ¦ãƒ¼ã‚¶ã‚’é™¤å¤–ï¼ˆè‡ªåˆ†è‡ªèº«ä»¥å¤–ï¼‰
         if ($exclude_private){
             $me = \Auth::user();
             if ($me === null || $id != $me->id){
@@ -43,7 +43,7 @@ class UserStatus extends Model
                     ->on('t1.created_at', '=', 'latest.latest_created_at');
             });
 
-        # ƒvƒ‰ƒCƒx[ƒgƒ†[ƒU‚ğœŠO
+        # ãƒ—ãƒ©ã‚¤ãƒ™ãƒ¼ãƒˆãƒ¦ãƒ¼ã‚¶ã‚’é™¤å¤–
         if ($exclude_private){
             $sql_all_users = $sql_all_users
                 ->join('users', 't1.user_id', '=', 'users.id')
