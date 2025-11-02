@@ -47,7 +47,7 @@ class ViewMusicStatisticsController extends Controller
         $isExist->normal = !is_null($musicData->normal_added_version);
         $isExist->lunatic = !is_null($musicData->lunatic_added_version);
 
-        $users = (new UserStatus)->getRecentAllUserData();
+        $users = (new UserStatus)->getRecentAllUserData(false);
         $users = array_column($users, null, 'user_id');
 
         $statistics = new \stdClass;

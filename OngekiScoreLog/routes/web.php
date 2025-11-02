@@ -40,7 +40,9 @@ Route::get('/user', 'ViewAllUserController@getIndex');
 Route::get('/bookmarklet', 'BookmarkletGenerateController@getIndex');
 Route::get('/bookmarklet/agree', 'BookmarkletGenerateController@getBookmarklet');
 Route::get('/setting', 'SettingController@getSetting');
-Route::get('/setting/twitter', 'SettingController@getTwitterAuthentication');
+Route::get('/setting/private', 'SettingController@getSettingPrivate');
+Route::get('/setting/public', 'SettingController@getSettingPublic');
+#Route::get('/setting/twitter', 'SettingController@getTwitterAuthentication');
 
 Route::get('/howto', 'SimpleViewController@getHowto');
 Route::get('/faq', 'SimpleViewController@getFAQ');
