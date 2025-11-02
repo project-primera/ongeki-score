@@ -15,8 +15,14 @@ class UserStatus extends Model
             ->from($this->table)->where('user_id', $id)->orderBy('id', 'desc')->limit(1);
 
         $me = \Auth::user();
-        # プライベートユーザを除外（自分自身以外） 管理者権限がある場合は除外しない
-        if ($exclude_private && ($me === null || $me->role !== 7)) {
+
+        // 管理者には見せる
+        if ($me !== null && $me->role === 7) {
+            $exclude_private = false;
+        }
+
+        # プライベートユーザを除外（自分自身以外）
+        if ($exclude_private) {
             if ($me === null || $id != $me->id) {
                 $sql = $sql
                     ->join('users', "$this->table.user_id", '=', 'users.id')
