@@ -29,6 +29,11 @@
                 <a href="/setting/private" class="button is-info">プライベートモードを有効にする</a>
             @endif
         </p>
+
+        <h3 class="title is-3">Twitter連携</h3>
+        <p>提供を終了いたしました。</p>
+        <p><a href="#" class="button" disabled>連携する</a></p>
+
     </article>
 
 @endsection
