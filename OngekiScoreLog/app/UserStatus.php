@@ -50,7 +50,7 @@ class UserStatus extends Model
                 ->join('users', 't1.user_id', '=', 'users.id')
                 ->where('users.private', 0);
 
-            $sql = $sql_all_users->select('t1.*')->get();
+            $sql = $sql_all_users->select('t1.*')->orderBy('t1.created_at', 'desc')->get();
         } else {
             $sql = DB::select('SELECT * FROM user_status AS t1 WHERE created_at = (SELECT MAX(created_at) FROM user_status AS t2 WHERE t1.user_id = t2.user_id)');
         }
