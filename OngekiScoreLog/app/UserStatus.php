@@ -22,12 +22,10 @@ class UserStatus extends Model
         }
 
         # プライベートユーザを除外（自分自身以外）
-        if ($exclude_private) {
-            if ($me === null || $id != $me->id) {
-                $sql = $sql
-                    ->join('users', "$this->table.user_id", '=', 'users.id')
-                    ->where('users.private', 0);
-            }
+        if ($exclude_private && ($me === null || $id != $me->id)) {
+            $sql = $sql
+                ->join('users', "$this->table.user_id", '=', 'users.id')
+                ->where('users.private', 0);
         }
 
         return $sql->select("$this->table.*")->get();
