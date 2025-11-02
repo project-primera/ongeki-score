@@ -24,7 +24,8 @@ class ViewUserRatingController extends Controller
     private function editMusic($scores, int $totalMusicCount){
         for ($index = 0; $index < count($scores); $index++) {
             if (isset($scores[$index])) {
-                    // ランプ情報追加
+                // ランプ情報追加
+                // WARNING: OngekiScoreLog\app\Http\Controllers\ViewUserProgressController.php にてコピペで使用している！ 変更したらそっちも変更すること！
                 $scores[$index]->lampForRating = "";
                 if ($scores[$index]->technical_high_score == 1010000){
                     if ($scores[$index]->full_bell == 1) {
