@@ -236,7 +236,7 @@ import * as qs from 'qs';
                     return;
                 }
             } else {
-                // オンゲキnetに登録されてない曲50連奏したら引っかかる。
+                // 50連続でオンゲキnetに登録されていない曲をプレイすると履歴が空になり、全曲取得が必要になる。
                 this.songToUpload = [];
                 return;
             }
