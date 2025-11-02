@@ -56,7 +56,7 @@ class UserStatus extends Model
 
             $sql = $sql_all_users->select('t1.*')->orderBy('t1.created_at', 'desc')->get();
         } else {
-            $sql = DB::select('SELECT * FROM user_status AS t1 WHERE created_at = (SELECT MAX(created_at) FROM user_status AS t2 WHERE t1.user_id = t2.user_id)');
+            $sql = DB::select('SELECT * FROM user_status AS t1 WHERE created_at = (SELECT MAX(created_at) FROM user_status AS t2 WHERE t1.user_id = t2.user_id) ORDER BY t1.created_at DESC');
         }
 
         $users = [];
