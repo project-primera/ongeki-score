@@ -58,6 +58,10 @@
                 </div>
             </div>
             <div class="field">
+                <label for="private" class="label">プライベートモード</label>
+                <input id="private" type="checkbox" name="private" autofocus>
+            </div>
+            <div class="field">
                 <div class="control">
                     <button type="submit" class="button is-link">登録</button>
                 </div>

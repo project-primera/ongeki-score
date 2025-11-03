@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Facades\OngekiUtility;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\User;
@@ -9,7 +10,6 @@ use App\UserStatus;
 use App\ScoreData;
 use App\ApplicationVersion;
 use App\ExternalServiceCoordination;
-use App\Facades\OngekiUtility;
 
 class ViewUserProgressController extends Controller
 {
@@ -210,11 +210,13 @@ class ViewUserProgressController extends Controller
                 $score['new'][$difficultyToStr[$difficulty]]['technical_high_score'] += $value->technical_high_score;
                 $score['new'][$difficultyToStr[$difficulty]]['platinum_score'] += $value->platinum_score;
                 $score['new'][$difficultyToStr[$difficulty]]['over_damage_high_score'] += $value->over_damage_high_score;
+                // 負荷軽減のためRate計算はここではなく、$progressを構成するタイミングで行う。
 
                 if(!array_key_exists($music, $old) || !array_key_exists($difficulty, $old[$music])){
                     if($value->battle_high_score !== 0){
                         // not implemented → played
                         // echo "[new] " . $value->title . " / " . $value->difficulty_str . "<br>";
+                        $newNormalRating = OngekiUtility::RateValueFromTitle($value->title, $value->difficulty, $value->technical_high_score, $value->lampForRating, $value->genre, $value->artist);
                         $progress[$music][$difficulty]["new"] = $value;
                         $progress[$music][$difficulty]["difference"]['battle_high_score'] = "+" . number_format($value->battle_high_score);
                         $progress[$music][$difficulty]["difference"]['technical_high_score'] = "+" . number_format($value->technical_high_score);
@@ -254,6 +256,7 @@ class ViewUserProgressController extends Controller
                         if($old[$music][$difficulty]->battle_high_score === 0){
                             // noplay → played
                             // echo "[new*] " . $value->title . " / " . $value->difficulty_str . "<br>";
+                            $newNormalRating = OngekiUtility::RateValueFromTitle($value->title, $value->difficulty, $value->technical_high_score, $value->lampForRating, $value->genre, $value->artist);
                             $progress[$music][$difficulty]["new"] = $value;
                             $progress[$music][$difficulty]["difference"]['battle_high_score'] = "+" . number_format($value->battle_high_score);
                             $progress[$music][$difficulty]["difference"]['technical_high_score'] = "+" . number_format($value->technical_high_score);
