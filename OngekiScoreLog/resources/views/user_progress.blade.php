@@ -164,11 +164,13 @@ $difficulties = ['Total', 'Basic', 'Advanced', 'Expert', 'Master', 'Lunatic'];
                                 <span class="score-title">Platinum Score</span>
                                 <span class="score">{{number_format($value['new']->platinum_score)}}</span>
                                 <span class="difference">{{$value['difference']['platinum_score']}}</span>
-                                <br>
-
-                                <span class="score-title">Single Rating</span>
-                                <span class="score">{{$value['difference']['new-normal-rating']}}</span>
-                                <span class="difference">{{$value['difference']['normal_rating']}}</span>
+                                {{-- 該当ユーザーがプレミアムでない場合そもそもレーティング情報を表示しない --}}
+                                @if($isPremium)
+                                    <br>
+                                    <span class="score-title">Single Rating</span>
+                                    <span class="score">{{$value['difference']['new-normal-rating']}}</span>
+                                    <span class="difference">{{$value['difference']['normal_rating']}}</span>
+                                @endif
                             </div>
                             <div class="lamp-info">
                                 <span class="tag {{$value['difference']['old-lamp-is-fb']}}">FB</span>

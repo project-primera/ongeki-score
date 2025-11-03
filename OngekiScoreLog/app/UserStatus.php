@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\DB;
 class UserStatus extends Model
 {
     protected $table = "user_status";
+    protected $guarded = ['id'];
 
     function getRecentUserData($id, $exclude_private = true)
     {
