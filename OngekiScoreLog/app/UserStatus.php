@@ -9,23 +9,7 @@ class UserStatus extends Model
 {
     protected $table = "user_status";
 
-    protected $fillable = [
-        'user_id',
-        'trophy',
-        'level',
-        'name',
-        'battle_point',
-        'rating',
-        'rating_max',
-        'money',
-        'total_money',
-        'total_play',
-        'comment',
-        'friend_code',
-        'unique_id',
-        'created_at',
-        'updated_at',
-    ];
+    protected $guarded = ['id'];
 
     function getRecentUserData($id, $exclude_private = true)
     {
