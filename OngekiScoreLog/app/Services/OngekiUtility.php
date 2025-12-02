@@ -238,7 +238,7 @@ class OngekiUtility {
     public function getLampForRating(int $technicalScore, bool $fullBell, bool $fullCombo, bool $allBreak): string
     {
         if ($technicalScore == 1010000) {
-            if ($fullBell == 1) {
+            if ($fullBell) {
                 return "FB/AB+";
             } else {
                 return "AB+";
