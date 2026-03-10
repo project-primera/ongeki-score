@@ -197,7 +197,7 @@ class BookmarkletAccessController extends Controller
                             }
                             $userStatus->unique_id = $uniqueID;
                             $userStatus->save();
-                            $musicDataByTitle[$v['title']] = $userStatus;
+                            $musicDataByTitle->put($v['title'], $userStatus);
                         }
                     }
                     if(count($titles) !== 0){
