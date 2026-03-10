@@ -131,14 +131,14 @@ class BookmarkletAccessController extends Controller
             }
 
             if(!is_null($request->input('TrophyData'))){
+                $existingTrophyNames = DB::table('user_trophies')
+                    ->where('user_id', Auth::id())
+                    ->pluck('name')
+                    ->flip();
                 $trophyGrade = ["normalTrophyInfos" => 0,"silverTrophyInfos" => 1, "goldTrophyInfos" => 2, "platinumTrophyInfo" => 3, "rainbowTrophyInfo" => 4];
                 foreach ($request->input('TrophyData') as $key => $value) {
                     foreach ($value as $k => $v) {
-                        $record = DB::table('user_trophies')->where([
-                            ['user_id', '=', Auth::id()],
-                            ['name', '=', $v['name']],
-                        ])->get();
-                        if(count($record) > 0){
+                        if(isset($existingTrophyNames[$v['name']])){
                             continue;
                         }
 
@@ -158,6 +158,16 @@ class BookmarkletAccessController extends Controller
 
             if(!is_null($request->input('ScoreData'))){
 
+                $allRequestTitles = [];
+                $tempDiffKeys = ["basicSongInfos", "advancedSongInfos", "expertSongInfos", "masterSongInfos", "lunaticSongInfos"];
+                foreach ($tempDiffKeys as $dk) {
+                    foreach ($request->input('ScoreData')[$dk] as $item) {
+                        $allRequestTitles[] = $item['title'];
+                    }
+                }
+                $allRequestTitles = array_unique($allRequestTitles);
+                $musicDataByTitle = MusicData::whereIn('title', $allRequestTitles)->get()->keyBy('title');
+
                 if(Auth::user()->role >= 7){
                     $titles = [];
 
@@ -170,7 +180,7 @@ class BookmarkletAccessController extends Controller
                     ];
                     foreach ($difficultyArrayKey as $key => $value) {
                         foreach ($request->input('ScoreData')[$key] as $k => $v) {
-                            $userStatus = MusicData::where("title", $v['title'])->first();
+                            $userStatus = $musicDataByTitle->get($v['title']);
                             if(is_null($userStatus)){
                                 $userStatus = new MusicData();
                                 $userStatus->title = $v['title'];
@@ -187,6 +197,7 @@ class BookmarkletAccessController extends Controller
                             }
                             $userStatus->unique_id = $uniqueID;
                             $userStatus->save();
+                            $musicDataByTitle[$v['title']] = $userStatus;
                         }
                     }
                     if(count($titles) !== 0){
@@ -213,12 +224,28 @@ class BookmarkletAccessController extends Controller
                     "lunaticSongInfos" => 10,
                 ];
                 $generation = (new ScoreData())->getMaxGeneration(Auth::id()) + 1;
+                $allRecentScores = DB::table('score_datas AS t1')
+                    ->select('*')
+                    ->where('user_id', Auth::id())
+                    ->whereNotExists(function ($query) {
+                        $query->select(DB::raw('1'))
+                            ->from('score_datas AS t2')
+                            ->whereRaw('t1.user_id = t2.user_id')
+                            ->whereRaw('t1.song_id = t2.song_id')
+                            ->whereRaw('t1.difficulty = t2.difficulty')
+                            ->whereRaw('t1.generation < t2.generation');
+                    })
+                    ->get();
+                $recentScoreLookup = [];
+                foreach ($allRecentScores as $score) {
+                    $recentScoreLookup[$score->song_id . '_' . $score->difficulty] = $score;
+                }
                 foreach ($difficultyArrayKey as $key => $value) {
                     foreach ($request->input('ScoreData')[$key] as $k => $v) {
-                        $userStatus = MusicData::where("title", "=", $v['title'])->first();
+                        $userStatus = $musicDataByTitle->get($v['title']);
                         if(!is_null($userStatus)){
                             $scoreData = new ScoreData();
-                            $recentSong = $scoreData->getRecentGenerationOfScoreData(Auth::id(), $userStatus->id, $difficultyValue[$key])->getValue();
+                            $recentSong = $recentScoreLookup[$userStatus->id . '_' . $difficultyValue[$key]] ?? null;
                             $scoreData->generation = $generation;
                             $scoreData->user_id = Auth::id();
                             $scoreData->song_id = $userStatus->id;
