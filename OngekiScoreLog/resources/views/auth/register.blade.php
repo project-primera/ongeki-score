@@ -60,7 +60,7 @@
             <hr>
             <div class="field">
                 <label for="private" class="label">
-                <input id="private" type="checkbox" name="private" >
+                <input id="private" type="checkbox" name="private">
                     プライベートモードを有効にする
                 </label>
             </div>
