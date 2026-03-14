@@ -34,6 +34,7 @@
         <ul class="menu-list">
             <li><a href="/faq" class="@yield('sidemark_faq')">よくある質問</a></li>
             <li><a href="/eula" class="@yield('sidemark_eula')">利用規約<br>プライバシーポリシー</a></li>
+            <li><a href="/data-policy" class="@yield('sidemark_data_policy')">データの二次利用ポリシー</a></li>
         </ul>
     </aside>
     <aside class="box">

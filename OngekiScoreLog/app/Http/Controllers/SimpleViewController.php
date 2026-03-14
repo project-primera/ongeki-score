@@ -25,6 +25,11 @@ class SimpleViewController extends Controller
         return view('eula');
     }
 
+    public function getDataPolicy(){
+        return view('data-policy');
+    }
+
+
     public function getChangelog(){
         $v = new App\ApplicationVersion();
         $version = $v->getAllVersion();
