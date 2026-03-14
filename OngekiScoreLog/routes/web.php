@@ -47,6 +47,7 @@ Route::get('/setting/public', 'SettingController@getSettingPublic');
 Route::get('/howto', 'SimpleViewController@getHowto');
 Route::get('/faq', 'SimpleViewController@getFAQ');
 Route::get('/eula', 'SimpleViewController@getEula');
+Route::get('/data-policy', 'SimpleViewController@getDataPolicy');
 
 Route::get('/changelog', 'SimpleViewController@getChangelog');
 

@@ -57,10 +57,29 @@
                     <input id="password-confirm" type="password" class="input" name="password_confirmation" required autofocus>
                 </div>
             </div>
+            <hr>
             <div class="field">
-                <label for="private" class="label">プライベートモード</label>
-                <input id="private" type="checkbox" name="private" autofocus>
+                <label for="private" class="label">
+                <input id="private" type="checkbox" name="private" >
+                    プライベートモードを有効にする
+                </label>
             </div>
+            <p>
+                プライベートモードにすると自分のユーザーページが他のユーザーから閲覧できなくなります。
+            </p>
+            <ul>
+                <li>・「すべてのユーザー」に表示されなくなります</li>
+                <li>・スコアページやレーティングページ、獲得称号ページが自分以外のユーザーから見えなくなります</li>
+                <li>・副作用として、OngekiScoreLogのデータを利用した外部サイトが利用できなくなるかもしれません</li>
+                <li>※統計情報の集計対象からは外れません</li>
+                <li>※管理者はユーザーサポートのためプライベートモードのユーザーページにアクセスする可能性があります</li>
+            </ul>
+            <hr>
+            <p>
+                以下を確認の上、同意する場合のみご登録ください。<br>
+                ・<a href="/eula">利用規約 / プライバシーポリシー</a><br>
+                ・<a href="/data-policy">データの二次利用ポリシー</a>
+            </p>
             <div class="field">
                 <div class="control">
                     <button type="submit" class="button is-link">登録</button>
