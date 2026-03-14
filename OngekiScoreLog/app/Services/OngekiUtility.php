@@ -235,6 +235,34 @@ class OngekiUtility {
         return $this->calcPlatinumRatingValue($this::$MusicList[$title][$difficulty], $platinuScore, $starCount);
     }
 
+    public function getLampForRating(int $technicalScore, bool $fullBell, bool $fullCombo, bool $allBreak): string
+    {
+        if ($technicalScore == 1010000) {
+            if ($fullBell) {
+                return "FB/AB+";
+            } else {
+                return "AB+";
+            }
+        } elseif ($allBreak) {
+            if ($fullBell) {
+                return "FB/AB";
+            } else {
+                return "AB";
+            }
+        } elseif ($fullCombo) {
+            if ($fullBell) {
+                return "FB/FC";
+            } else {
+                return "FC";
+            }
+        } else {
+            if ($fullBell) {
+                return "FB";
+            }
+        }
+        return "";
+    }
+
     private function calcPlatinumRatingValue(float $extraLevel, int $platinumScore, int $starCount)
     {
         if($starCount > 5){

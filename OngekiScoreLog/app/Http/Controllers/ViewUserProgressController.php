@@ -216,7 +216,6 @@ class ViewUserProgressController extends Controller
                     if($value->battle_high_score !== 0){
                         // not implemented → played
                         // echo "[new] " . $value->title . " / " . $value->difficulty_str . "<br>";
-                        $newNormalRating = OngekiUtility::RateValueFromTitle($value->title, $value->difficulty, $value->technical_high_score, $value->lampForRating, $value->genre, $value->artist);
                         $progress[$music][$difficulty]["new"] = $value;
                         $progress[$music][$difficulty]["difference"]['battle_high_score'] = "+" . number_format($value->battle_high_score);
                         $progress[$music][$difficulty]["difference"]['technical_high_score'] = "+" . number_format($value->technical_high_score);
@@ -304,34 +303,8 @@ class ViewUserProgressController extends Controller
                             }
 
                             // Rating計算はできるだけ少なくしたいので先に計算しておく。
-                            // ViewUserRatingController.php から引用。
-                            // WARNING: レーティング処理を変えたら変更元も変更する！
                             if ($isPremium) {
-                                $oldLampForRating = "";
-                                if ($old[$music][$difficulty]->technical_high_score == 1010000){
-                                    if ($old[$music][$difficulty]->full_bell == 1) {
-                                        $oldLampForRating = "FB/AB+";
-                                    } else {
-                                        $oldLampForRating = "AB+";
-                                    }
-                                } elseif ($old[$music][$difficulty]->all_break == 1) {
-                                    if ($old[$music][$difficulty]->full_bell == 1) {
-                                        $oldLampForRating = "FB/AB";
-                                    } else {
-                                        $oldLampForRating = "AB";
-                                    }
-                                } elseif ($old[$music][$difficulty]->full_combo == 1) {
-                                    if ($old[$music][$difficulty]->full_bell == 1) {
-                                        $oldLampForRating = "FB/FC";
-                                    } else {
-                                        $oldLampForRating = "FC";
-                                    }
-                                } else {
-                                    if ($old[$music][$difficulty]->full_bell == 1) {
-                                        $oldLampForRating = "FB";
-                                    }
-                                }
-
+                                $oldLampForRating = OngekiUtility::getLampForRating($old[$music][$difficulty]->technical_high_score, $old[$music][$difficulty]->full_bell == 1, $old[$music][$difficulty]->full_combo == 1, $old[$music][$difficulty]->all_break == 1);
                                 $newNormalRating = OngekiUtility::RateValueFromTitle($value->title, $value->difficulty, $value->technical_high_score, $value->lampForRating, $value->genre, $value->artist);
                                 $oldNormalRating = OngekiUtility::RateValueFromTitle($value->title, $old[$music][$difficulty]->difficulty, $old[$music][$difficulty]->technical_high_score, $oldLampForRating, $value->genre, $value->artist);
                                 $progress[$music][$difficulty]["difference"]['normal_rating'] = ($newNormalRating - $oldNormalRating) != 0 ? "+" . sprintf("%.3f",($newNormalRating - $oldNormalRating)) : "";
