@@ -25,31 +25,7 @@ class ViewUserRatingController extends Controller
         for ($index = 0; $index < count($scores); $index++) {
             if (isset($scores[$index])) {
                 // ランプ情報追加
-                // WARNING: OngekiScoreLog\app\Http\Controllers\ViewUserProgressController.php にてコピペで使用している！ 変更したらそっちも変更すること！
-                $scores[$index]->lampForRating = "";
-                if ($scores[$index]->technical_high_score == 1010000){
-                    if ($scores[$index]->full_bell == 1) {
-                        $scores[$index]->lampForRating = "FB/AB+";
-                    } else {
-                        $scores[$index]->lampForRating = "AB+";
-                    }
-                } elseif ($scores[$index]->all_break == 1) {
-                    if ($scores[$index]->full_bell == 1) {
-                        $scores[$index]->lampForRating = "FB/AB";
-                    } else {
-                        $scores[$index]->lampForRating = "AB";
-                    }
-                } elseif ($scores[$index]->full_combo == 1) {
-                    if ($scores[$index]->full_bell == 1) {
-                        $scores[$index]->lampForRating = "FB/FC";
-                    } else {
-                        $scores[$index]->lampForRating = "FC";
-                    }
-                } else {
-                    if ($scores[$index]->full_bell == 1) {
-                        $scores[$index]->lampForRating = "FB";
-                    }
-                }
+                $scores[$index]->lampForRating = OngekiUtility::getLampForRating($scores[$index]->technical_high_score, $scores[$index]->full_bell == 1, $scores[$index]->full_combo == 1, $scores[$index]->all_break == 1);
 
                 // 単極レート値の取得
                 $scores[$index]->ratingValue = sprintf("%.3f", OngekiUtility::RateValueFromTitle($scores[$index]->title, $scores[$index]->difficulty, $scores[$index]->technical_high_score, $scores[$index]->lampForRating, $scores[$index]->genre, $scores[$index]->artist));

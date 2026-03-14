@@ -64,7 +64,7 @@
                 <a class="button filter_technical_rank_button">SS</a>
                 <a class="button filter_technical_rank_button">SSS</a>
                 <a class="button filter_technical_rank_button">SSS+</a>
-                <a class="button filter_technical_rank_button">P</a>
+                <a class="button filter_technical_rank_button">AB+</a>
             </div>
 
             <div class="filter-content">
