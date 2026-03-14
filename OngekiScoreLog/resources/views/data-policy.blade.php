@@ -116,11 +116,9 @@
     <p>
         集計データをテキストで公開する場合は、以下の文言を必ず含めてください。
     </p>
-    <p>
-        <blockquote>
-            『 非公式ツールOngekiScoreLog(ongeki-score.net)の情報を元に集計したデータです。公式のデータとは一致しない場合があります。』
-        </blockquote>
-    </p>
+    <blockquote>
+        『 非公式ツールOngekiScoreLog(ongeki-score.net)の情報を元に集計したデータです。公式のデータとは一致しない場合があります。』
+    </blockquote>
     <p>
         画像として公開する場合は、上記の文章を<strong>判読可能な形で必ず画像の中に含めて</strong>ください。
     </p>
