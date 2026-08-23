@@ -545,7 +545,6 @@ import * as pako from 'pako';
                 'data': b64Data,
             };
             let encodedSendData = qs.stringify(sendData);
-            echo(await getTime() + "送信...");
             await axios.post(API_URL + "/user/update", encodedSendData, {
                 headers: {
                     Authorization: "Bearer " + this.token,
