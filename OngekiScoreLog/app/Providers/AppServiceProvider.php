@@ -16,6 +16,9 @@ class AppServiceProvider extends ServiceProvider
     public function boot()
     {
         Schema::defaultStringLength(190);
+
+        // OAuth の認可（同意）画面は使わない。コントローラが要求するバインディングだけ用意する
+        Passport::authorizationView(fn () => abort(404));
     }
 
     /**

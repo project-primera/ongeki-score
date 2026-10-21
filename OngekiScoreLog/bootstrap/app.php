@@ -18,6 +18,8 @@ return Application::configure(basePath: dirname(__DIR__))
         // （セッション cookie が EncryptCookies の後に付与されるため平文の id のまま、という挙動を維持する）。
         $middleware->use([
             \Illuminate\Foundation\Http\Middleware\InvokeDeferredCallbacks::class,
+            // 旧 barryvdh/laravel-cors と同様に、プリフライト（OPTIONS）はルーティング前に応答する
+            \Illuminate\Http\Middleware\HandleCors::class,
             \Illuminate\Foundation\Http\Middleware\PreventRequestsDuringMaintenance::class,
             \Illuminate\Http\Middleware\ValidatePostSize::class,
             \Illuminate\Foundation\Http\Middleware\TrimStrings::class,

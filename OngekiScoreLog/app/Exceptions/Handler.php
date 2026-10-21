@@ -4,6 +4,7 @@ namespace App\Exceptions;
 
 use App\Facades\Slack;
 use Illuminate\Auth\AuthenticationException;
+use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Http\Request;
 use Illuminate\Session\TokenMismatchException;
 use Illuminate\Support\Facades\Auth;
@@ -107,7 +108,7 @@ class Handler
      */
     public static function render(Request $request, Throwable $exception)
     {
-        if ($exception instanceof ValidationException) {
+        if ($exception instanceof ValidationException || $exception instanceof HttpResponseException) {
             // 勝手に処理してくれるのでもともとのハンドラに丸投げする
             return null;
         }
