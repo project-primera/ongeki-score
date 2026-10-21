@@ -49,10 +49,6 @@ class SimpleViewController extends Controller
     public function versionUpdate(){
         (new App\ApplicationVersion())->fetchAllVersion();
     }
-
-    public function testTweet($s){
-        $res = (new App\AdminTweet())->tweet($s . rand());
-    }
     */
 
 }

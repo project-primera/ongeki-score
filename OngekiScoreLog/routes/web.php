@@ -7,7 +7,6 @@ use App\Http\Controllers\BookmarkletGenerateController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\SettingController;
 use App\Http\Controllers\SimpleViewController;
-use App\Http\Controllers\TweetController;
 use App\Http\Controllers\ViewAllUserController;
 use App\Http\Controllers\ViewMusicExtraLevelController;
 use App\Http\Controllers\ViewMusicStatisticsController;
@@ -59,7 +58,6 @@ Route::get('/bookmarklet/agree', [BookmarkletGenerateController::class, 'getBook
 Route::get('/setting', [SettingController::class, 'getSetting']);
 Route::get('/setting/private', [SettingController::class, 'getSettingPrivate']);
 Route::get('/setting/public', [SettingController::class, 'getSettingPublic']);
-#Route::get('/setting/twitter', [SettingController::class, 'getTwitterAuthentication']);
 
 Route::get('/howto', [SimpleViewController::class, 'getHowto']);
 Route::get('/faq', [SimpleViewController::class, 'getFAQ']);
@@ -71,8 +69,6 @@ Route::get('/changelog', [SimpleViewController::class, 'getChangelog']);
 Route::get('/home', [HomeController::class, 'index'])->name('home');
 Route::get('/logout', [SimpleViewController::class, 'getLogout']);
 
-Route::get('/tweet/image', [TweetController::class, 'getIndex']);
-Route::post('/tweet/image', [TweetController::class, 'postTweetImage']);
 
 // for admin
 Route::group(['middleware' => ['auth', 'can:admin']], function () {

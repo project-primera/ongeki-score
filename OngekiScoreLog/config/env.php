@@ -11,10 +11,6 @@ return [
 
     'is-maintenance-api-user-update' => env('IS_MAINTENANCE_API_USER_UPDATE'),
 
-    'twitter-consumer-key' => env('TWITTER_CONSUMER_KEY'),
-    'twitter-consumer-secret' => env('TWITTER_CONSUMER_SECRET'),
-    'twitter-admin-account-access-token' => env('TWITTER_ADMIN_ACCOUNT_ACCESS_TOKEN'),
-    'twitter-admin-account-access-token-secret' => env('TWITTER_ADMIN_ACCOUNT_ACCESS_TOKEN_SECRET'),
 
     'slack-webhook-url-debug' => env('SLACK_WEBHOOK_URL_DEBUG'),
     'slack-webhook-url-info' => env('SLACK_WEBHOOK_URL_INFO'),

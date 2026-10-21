@@ -11,6 +11,9 @@ class ResetPasswordNotification extends Notification
 {
     use Queueable;
 
+    /** @var string パスワードリセットトークン */
+    public $token;
+
     /**
      * Create a new notification instance.
      *

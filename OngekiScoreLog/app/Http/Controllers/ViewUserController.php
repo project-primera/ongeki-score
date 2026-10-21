@@ -13,7 +13,6 @@ use App\AggregateOverdamage;
 use App\Facades\OngekiUtility;
 use DateTime;
 
-use function GuzzleHttp\json_encode;
 
 class ViewUserController extends Controller
 {

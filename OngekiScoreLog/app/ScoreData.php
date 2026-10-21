@@ -20,6 +20,7 @@ class ScoreData extends Model
 
     function addMusicData(){
         $temp = MusicData::all();
+        $title = [];
 
         foreach ($temp as $key => $value) {
             $title[$value->id] = $value;
