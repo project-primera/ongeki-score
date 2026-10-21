@@ -5,7 +5,7 @@
     "license": "MIT",
     "type": "project",
     "require": {
-        "php": "^8.3",
+        "php": "^8.5",
         "guzzlehttp/guzzle": "^8.0",
         "laravel/framework": "^13.17",
         "laravel/passport": "^13.10",

@@ -3,7 +3,14 @@
 namespace App\Exceptions;
 
 use App\Facades\Slack;
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Auth\AuthenticationException;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Database\MultipleRecordsFoundException;
+use Illuminate\Database\RecordNotFoundException;
+use Illuminate\Database\RecordsNotFoundException;
+use Illuminate\Http\Exceptions\OriginMismatchException;
+use Illuminate\Routing\Exceptions\BackedEnumCaseNotFoundException;
 use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Http\Request;
 use Illuminate\Session\TokenMismatchException;
@@ -12,6 +19,7 @@ use Illuminate\Support\Facades\Cookie;
 use Illuminate\Validation\ValidationException;
 use League\OAuth2\Server\Exception\OAuthServerException;
 use Symfony\Component\HttpKernel\Exception\HttpException;
+use Symfony\Component\HttpFoundation\Exception\RequestExceptionInterface;
 use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Throwable;
@@ -42,6 +50,39 @@ class Handler
 
     /** 専用の view を持つステータスコード */
     private const VIEW_STATUS_CODES = [404, 418, 429, 500, 503];
+
+    /**
+     * フレームワークが既定で report() に回さない例外。
+     * 旧版は report() を上書きしていたので、これらも Slack 通知の分岐を通っていた（ログには出さない）。
+     * bootstrap/app.php の stopIgnoring() と、shouldLog() の両方で使う。
+     */
+    public const FRAMEWORK_IGNORED = [
+        AuthenticationException::class,
+        AuthorizationException::class,
+        BackedEnumCaseNotFoundException::class,
+        HttpException::class,
+        HttpResponseException::class,
+        ModelNotFoundException::class,
+        MultipleRecordsFoundException::class,
+        OriginMismatchException::class,
+        RecordNotFoundException::class,
+        RecordsNotFoundException::class,
+        RequestExceptionInterface::class,
+        TokenMismatchException::class,
+        ValidationException::class,
+    ];
+
+    /** 旧版と同じく、フレームワークが既定で無視する例外はログに書かない */
+    public static function shouldLog(Throwable $exception): bool
+    {
+        foreach (self::FRAMEWORK_IGNORED as $class) {
+            if ($exception instanceof $class) {
+                return false;
+            }
+        }
+
+        return true;
+    }
 
     public static function isSecurityPage(string $path): bool
     {

@@ -55,8 +55,14 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->redirectUsersTo('/home');
     })
     ->withExceptions(function (Exceptions $exceptions): void {
-        $exceptions->report(function (Throwable $e): void {
+        // 404 や認証失敗なども Slack 通知の分岐に通す（フレームワークの既定では report に回らない）
+        $exceptions->stopIgnoring(Handler::FRAMEWORK_IGNORED);
+
+        $exceptions->report(function (Throwable $e) {
             Handler::report($e);
+
+            // false を返すと既定のロガーに進まない。旧版はこれらをログに出していなかった
+            return Handler::shouldLog($e) ? null : false;
         });
 
         $exceptions->render(function (Throwable $e, Request $request) {

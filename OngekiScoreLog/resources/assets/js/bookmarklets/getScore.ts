@@ -17,7 +17,14 @@ import qs from 'qs';
 
     const NET_DOMAIN = "ongeki-net.com";
     const NET_URL = "https://" + NET_DOMAIN + "/ongeki-mobile";
-    const TOOL_URL = new URL(SCRIPT_URL).origin;
+    const TOOL_URL = (function () {
+        try {
+            return new URL(SCRIPT_URL).origin;
+        } catch (e) {
+            alert("ブックマークレットの読み込み元 URL を特定できませんでした。ブックマークレットを再生成してください。");
+            throw e;
+        }
+    })();
     const API_URL = TOOL_URL + "/api/v2";
 
     const REQUEST_KEY = "?t=";
