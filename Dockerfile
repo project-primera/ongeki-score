@@ -78,9 +78,8 @@ RUN set -ex \
         /app/storage/logs \
         /app/bootstrap/cache \
     && touch /app/storage/logs/laravel.log \
-    # 起動時に entrypoint（app ユーザー）が /etc/.env を書き込む先
-    && touch /app/.env \
-    && chown app:app /app/.env \
+    # 起動時に entrypoint（app ユーザー）が /app/.env を作れるようにする（.env 自体はイメージに含めない）
+    && chown app:app /app \
     && chown -R app:app /app/storage /app/bootstrap/cache \
     && chmod 755 /etc/docker-entrypoint.sh
 
