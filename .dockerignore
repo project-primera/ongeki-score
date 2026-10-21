@@ -7,15 +7,14 @@
 LICENSE
 README.md
 Makefile
-OngekiScoreLog/public/mix-manifest.json
 docker/oauth-private.key
 docker/oauth-public.key
-docker/nginx/conf.d/sample.conf
 docker-compose.yml
 OngekiScoreLog/node_modules
 OngekiScoreLog/vendor
 OngekiScoreLog/.env
 OngekiScoreLog/.env.example
+OngekiScoreLog/.phpunit.result.cache
 OngekiScoreLog/storage/*.key
 OngekiScoreLog/storage/app/log/*
 OngekiScoreLog/storage/app/public/*
@@ -24,3 +23,12 @@ OngekiScoreLog/storage/framework/sessions/*
 OngekiScoreLog/storage/framework/testing/*
 OngekiScoreLog/storage/framework/views/*
 OngekiScoreLog/storage/logs/*
+# フロントのビルド成果物はイメージ内で生成する
+OngekiScoreLog/public/build
+OngekiScoreLog/public/bookmarklets
+OngekiScoreLog/public/js
+OngekiScoreLog/public/img
+OngekiScoreLog/public/*.png
+OngekiScoreLog/public/*.ico
+OngekiScoreLog/public/manifest.json
+OngekiScoreLog/public/browserconfig.xml
