@@ -5,7 +5,7 @@
 @section('hero_title', $status[0]->name . "の更新差分")
 @section('additional_footer')
     <script type="text/javascript" src="/js/html2canvas.min.js"></script>
-    <script type="text/javascript" src="{{ mix('/js/userProgress.js') }}"></script>
+    @vite('resources/assets/js/userProgress.ts')
 @endsection
 @if(isset($sidemark) && !is_null($sidemark))
     @section($sidemark, "is-active")

@@ -1,17 +1,29 @@
-import * as $ from 'jquery';
+import $ from 'jquery';
 import axios from 'axios';
-import * as qs from 'qs';
+import qs from 'qs';
 
 (function () {
+    // このスクリプト自身の URL（<APP_URL>/bookmarklets/main.js?t=<token>）。
+    // token の切り出しとスコアツールの URL の導出に使う。document.currentScript は
+    // 同期実行中にしか参照できないので最初に保持しておく。
+    const SCRIPT_URL: string = (function () {
+        if (document.currentScript) {
+            return (document.currentScript as HTMLScriptElement).src;
+        }
+        const scripts = document.getElementsByTagName('script');
+        const script = scripts[scripts.length - 1];
+        return script && script.src ? script.src : "";
+    })();
+
     const NET_DOMAIN = "ongeki-net.com";
     const NET_URL = "https://" + NET_DOMAIN + "/ongeki-mobile";
-    const TOOL_URL = process.env.MIX_APP_URL;
+    const TOOL_URL = new URL(SCRIPT_URL).origin;
     const API_URL = TOOL_URL + "/api/v2";
 
     const REQUEST_KEY = "?t=";
-    const PRODUCT_NAME = process.env.MIX_APP_NAME;
-    const VERSION = process.env.MIX_APPLICATION_VERSION;
-    const COMMIT_HASH = process.env.MIX_COMMIT_HASH;
+    const PRODUCT_NAME = import.meta.env.VITE_APP_NAME || "OngekiScoreLog";
+    const VERSION = import.meta.env.VITE_APPLICATION_VERSION;
+    const COMMIT_HASH = import.meta.env.VITE_COMMIT_HASH;
 
     const SLEEP_MSEC = 1000;
 
@@ -590,18 +602,7 @@ import * as qs from 'qs';
     });
 
     var getToken = (function () {
-        let url: string;
-        if (document.currentScript) {
-            url = (document.currentScript as HTMLScriptElement).src;
-        } else {
-            var scripts = document.getElementsByTagName('script'),
-                script = scripts[scripts.length - 1];
-            if (script.src) {
-                url = script.src;
-            } else {
-                url = "";
-            }
-        }
+        const url = SCRIPT_URL;
         return url.slice(url.indexOf(REQUEST_KEY) + REQUEST_KEY.length);
     });
 

@@ -6,7 +6,7 @@
 @section('hero_title', "楽曲リスト")
 
 @section('additional_footer')
-    <script type="text/javascript" src="{{ mix('/js/sortMusic.js') }}"></script>
+    @vite('resources/assets/js/sortMusic.js')
 @endsection
 
 @section('content')

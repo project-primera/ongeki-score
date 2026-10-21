@@ -5,7 +5,7 @@
 @section('hero_title', 'ブックマークレットを生成')
 @section('sidemark_bookmarklet', "is-active")
 @section('additional_footer')
-    <script type="text/javascript" src="{{ mix('/js/clipboard.min.js') }}"></script>
+    <script type="text/javascript" src="{{ static_asset('/js/clipboard.min.js') }}"></script>
     <script>
         new ClipboardJS('.btn');
     </script>
