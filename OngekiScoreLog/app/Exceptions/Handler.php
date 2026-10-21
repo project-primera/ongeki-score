@@ -2,134 +2,131 @@
 
 namespace App\Exceptions;
 
-use Exception;
-use Request;
-use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use App\Facades\Slack;
+use Illuminate\Auth\AuthenticationException;
+use Illuminate\Http\Request;
+use Illuminate\Session\TokenMismatchException;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cookie;
-use App\Facades\Slack;
+use Illuminate\Validation\ValidationException;
+use League\OAuth2\Server\Exception\OAuthServerException;
+use Symfony\Component\HttpKernel\Exception\HttpException;
+use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Throwable;
 
-class Handler extends ExceptionHandler
+/**
+ * 例外の Slack 通知と、エラーページの描画。
+ * bootstrap/app.php の withExceptions() から呼ばれる。旧 Laravel 5.6 の Handler の挙動を保つ。
+ */
+class Handler
 {
-    /**
-     * A list of the exception types that are not reported.
-     *
-     * @var array
-     */
-    protected $dontReport = [
-        //
+    /** 存在しないページとして扱わず、攻撃とみなして 418 を返すパス */
+    private const SECURITY_PAGES = [
+        'administrator',
+        'security.txt',
+        '.well-known/security.txt',
     ];
 
-    /**
-     * A list of the inputs that are never flashed for validation exceptions.
-     *
-     * @var array
-     */
-    protected $dontFlash = [
-        'password',
-        'password_confirmation',
+    /** 通知しない 404 のパス */
+    private const IGNORE_PAGES = [
+        'apple-app-site-association',
+        'cross-platform-app-identifiers',
+        '.well-known/assetlinks.json',
+        'rss',
+        'atom',
+        'feed',
+        'blog',
     ];
 
-    /**
-     * Report or log an exception.
-     *
-     * @param  \Exception  $exception
-     * @return void
-     */
-    public function report(Exception $exception)
+    /** 専用の view を持つステータスコード */
+    private const VIEW_STATUS_CODES = [404, 418, 429, 500, 503];
+
+    public static function isSecurityPage(string $path): bool
+    {
+        return in_array($path, self::SECURITY_PAGES, true) || str_contains($path, 'ini_set');
+    }
+
+    public static function report(Throwable $exception): void
     {
         $user = Auth::user();
-        $ua = isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : "N/A";
-        if(strpos($ua, "+https://api.slack.com/robots") === false){
-            $content = $exception->getMessage() . "\n" . get_class($exception) . "\n" . url()->full();
-            $fileContent = "ip: " . \Request::ip() . "\nUser agent: " . $ua . "\nReferer: " . (isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : "N/A") . "\n\n";
-            if(!is_null($user)){
-                $fileContent .= "User:\nid: " . $user->id . "\nemail: " . $user->email . "\nrole: " . $user->role . "\n\n";
-                $fields = ["File" => $exception->getFile(), "Line" => $exception->getLine(), "IP Address" => \Request::ip(), "User id" => $user->id];
-            }else{
-                $fileContent .= "User: N/A\n\n";
-                $fields = ["File" => $exception->getFile(), "Line" => $exception->getLine(), "IP Address" => \Request::ip(), "User id" => "N/A"];
-            }
-            $fileContent .= "Cookie:\n" . var_export(Cookie::get(), true) . "\n\nRequest:\n" . var_export(Request::all(), true) . "\n\n" . $exception->__toString();
+        $ua = $_SERVER['HTTP_USER_AGENT'] ?? 'N/A';
+        if (strpos($ua, '+https://api.slack.com/robots') !== false) {
+            return;
+        }
 
-            $securityPages = [
-                "administrator" => "",
-                "security.txt" => "",
-                ".well-known/security.txt" => "",
-            ];
-            $ignorePages = [
-                "apple-app-site-association" => "",
-                "cross-platform-app-identifiers" => "",
-                ".well-known/assetlinks.json" => "",
-                "rss" => "",
-                "atom" => "",
-                "feed" => "",
-                "blog" => "",
-            ];
+        $content = $exception->getMessage()."\n".get_class($exception)."\n".url()->full();
+        $fileContent = 'ip: '.request()->ip()."\nUser agent: ".$ua."\nReferer: ".($_SERVER['HTTP_REFERER'] ?? 'N/A')."\n\n";
+        if (! is_null($user)) {
+            $fileContent .= "User:\nid: ".$user->id."\nemail: ".$user->email."\nrole: ".$user->role."\n\n";
+            $fields = ['File' => $exception->getFile(), 'Line' => $exception->getLine(), 'IP Address' => request()->ip(), 'User id' => $user->id];
+        } else {
+            $fileContent .= "User: N/A\n\n";
+            $fields = ['File' => $exception->getFile(), 'Line' => $exception->getLine(), 'IP Address' => request()->ip(), 'User id' => 'N/A'];
+        }
+        $fileContent .= "Cookie:\n".var_export(Cookie::get(), true)."\n\nRequest:\n".var_export(request()->all(), true)."\n\n".$exception->__toString();
 
-            switch (true) {
-                case ($exception instanceof \Illuminate\Foundation\Http\Exceptions\MaintenanceModeException):
-                    Slack::Notice($content, $fileContent, $fields, "warning");
-                    break;
+        $path = request()->path();
 
-                case ($exception instanceof \League\OAuth2\Server\Exception\OAuthServerException):
-                case ($exception instanceof \Illuminate\Auth\AuthenticationException):
-                case ($exception instanceof \Illuminate\Validation\ValidationException):
-                case ($exception instanceof \Illuminate\Session\TokenMismatchException):
-                Slack::Warning($content, $fileContent, $fields, "warning");
-                    break;
+        switch (true) {
+            // 旧 MaintenanceModeException。Laravel 11 以降はメンテナンス中の要求が 503 の HttpException になる
+            case ($exception instanceof HttpException && $exception->getStatusCode() === 503):
+                Slack::Notice($content, $fileContent, $fields, 'warning');
+                break;
 
-                case ($exception instanceof \Symfony\Component\HttpKernel\Exception\NotFoundHttpException):
-                    if(isset($securityPages[request()->path()]) || strpos(request()->path(), "ini_set") !== false){
-                        Slack::Error($content, $fileContent, $fields, "success");
-                        abort(418);
-                    }else if(!isset($ignorePages[request()->path()])){
-                        Slack::Warning($content, $fileContent, $fields, "warning");
-                    }
-                    break;
+            case ($exception instanceof OAuthServerException):
+            case ($exception instanceof AuthenticationException):
+            case ($exception instanceof ValidationException):
+            case ($exception instanceof TokenMismatchException):
+                Slack::Warning($content, $fileContent, $fields, 'warning');
+                break;
 
-                case ($exception instanceof \Symfony\Component\HttpKernel\Exception\HttpException):
-                if(isset($securityPages[request()->path()]) || strpos(request()->path(), "ini_set") !== false){
-                }else{
-                    Slack::Warning($content, $fileContent, $fields, "warning");
+            case ($exception instanceof NotFoundHttpException):
+                if (self::isSecurityPage($path)) {
+                    // 旧版はここで abort(418) していた。描画側（render）で 418 を返す
+                    Slack::Error($content, $fileContent, $fields, 'success');
+                } elseif (! in_array($path, self::IGNORE_PAGES, true)) {
+                    Slack::Warning($content, $fileContent, $fields, 'warning');
                 }
                 break;
 
-                default:
-                    Slack::Critical($content, $fileContent, $fields, "error");
-                    break;
-            }
+            case ($exception instanceof HttpException):
+                if (! self::isSecurityPage($path)) {
+                    Slack::Warning($content, $fileContent, $fields, 'warning');
+                }
+                break;
+
+            default:
+                Slack::Critical($content, $fileContent, $fields, 'error');
+                break;
         }
-        parent::report($exception);
     }
 
     /**
-     * Render an exception into an HTTP response.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \Exception  $exception
-     * @return \Illuminate\Http\Response
+     * @return \Symfony\Component\HttpFoundation\Response|null null を返すとフレームワーク既定の描画に委ねる
      */
-    public function render($request, Exception $exception)
+    public static function render(Request $request, Throwable $exception)
     {
-        if ($exception instanceof \Illuminate\Validation\ValidationException
-            || $exception instanceof \Illuminate\Foundation\Http\Exceptions\MaintenanceModeException){
+        if ($exception instanceof ValidationException) {
             // 勝手に処理してくれるのでもともとのハンドラに丸投げする
-            return parent::render($request, $exception);
+            return null;
         }
 
-        if($this->isHttpException($exception)){
-            $catchErrorCodes = [404, 418, 429, 500, 503];
-            if(in_array($exception->getStatusCode(), $catchErrorCodes)){
-                return response()->view('errors/' . $exception->getStatusCode(), [], $exception->getStatusCode());
+        if ($exception instanceof NotFoundHttpException && self::isSecurityPage($request->path())) {
+            return response()->view('errors/418', [], 418);
+        }
+
+        if ($exception instanceof HttpExceptionInterface) {
+            $status = $exception->getStatusCode();
+            if (in_array($status, self::VIEW_STATUS_CODES, true)) {
+                return response()->view('errors/'.$status, [], $status);
             }
         }
 
-        if(config('app.debug')){
-            return parent::render($request, $exception);
+        if (config('app.debug')) {
+            return null;
         }
 
         return response()->view('errors/500', [], 500);
-        // return parent::render($request, $exception);
     }
 }
