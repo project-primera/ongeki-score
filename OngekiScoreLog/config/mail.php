@@ -48,6 +48,10 @@ return [
             'port' => env('MAIL_PORT', 587),
             'username' => env('MAIL_USERNAME'),
             'password' => env('MAIL_PASSWORD'),
+            // 旧版は MAIL_ENCRYPTION=null だと平文で送っていた。STARTTLS で送れない中継に当たった場合の退避先として、
+            // MAIL_AUTO_TLS=false（STARTTLS を使わない）と MAIL_VERIFY_PEER=false（証明書検証を外す）を用意する。未設定なら既定（自動 STARTTLS・検証あり）
+            'auto_tls' => env('MAIL_AUTO_TLS'),
+            'verify_peer' => env('MAIL_VERIFY_PEER'),
             'timeout' => null,
             'local_domain' => env('MAIL_EHLO_DOMAIN', parse_url((string) env('APP_URL', 'http://localhost'), PHP_URL_HOST)),
         ],

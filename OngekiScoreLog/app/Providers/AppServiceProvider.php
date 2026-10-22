@@ -34,8 +34,7 @@ class AppServiceProvider extends ServiceProvider
         Passport::$clientUuids = false;
         // device code grant は使わない（oauth_device_codes テーブルを持たない）
         Passport::$deviceCodeGrantEnabled = false;
-        // 旧版が公開していた JSON API（oauth/clients など）のルートを維持する
-        Passport::$registersJsonApiRoutes = true;
-        //
+        // 旧版が公開していた JSON API（oauth/clients、oauth/tokens など）はアプリから使っていないため登録しない。
+        // ブックマークレットのトークンはサーバー側の createToken() で発行する
     }
 }
