@@ -59,8 +59,9 @@ COPY docker/nginx/conf.d/sample.conf /etc/nginx/conf.d/default.conf
 COPY docker/supervisor/supervisord.conf /etc/supervisord.conf
 COPY docker/docker-entrypoint.sh /etc/docker-entrypoint.sh
 
-COPY --from=vendor --chown=app:app /src /app
-COPY --from=assets --chown=app:app /src/public/ /app/public/
+# コード一式は root 所有のまま配置し、実行ユーザー（app）からは読み取り専用にする
+COPY --from=vendor /src /app
+COPY --from=assets /src/public/ /app/public/
 
 RUN set -ex \
     && mkdir -p /app/storage/app/log/Debug \
@@ -78,8 +79,11 @@ RUN set -ex \
         /app/storage/logs \
         /app/bootstrap/cache \
     && touch /app/storage/logs/laravel.log \
-    # 起動時に entrypoint（app ユーザー）が /app/.env を作れるようにする（.env 自体はイメージに含めない）
+    # composer が展開した vendor 配下には 0777 のディレクトリが多数ある（zip の属性由来）。group/other の書き込みを落として app から書き換えられないようにする
+    && find /app -perm /022 \( -type d -o -type f \) -exec chmod go-w {} + \
+    # /app ディレクトリだけ app 所有にし、entrypoint（app ユーザー）が /app/.env を作れるようにする（.env 自体はイメージに含めない）
     && chown app:app /app \
+    # 実行時に書き込むのは storage/ と bootstrap/cache だけなので、app 所有にするのはこの 2 つに限る
     && chown -R app:app /app/storage /app/bootstrap/cache \
     && chmod 755 /etc/docker-entrypoint.sh
 

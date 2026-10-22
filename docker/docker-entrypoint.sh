@@ -3,7 +3,7 @@
 set -eu
 
 # /etc/.env（マウント）を /app/.env へ。バージョン情報はビルド時の値で上書きする。
-# /app は root 所有のため、app ユーザーが書ける /app/.env へリダイレクトで書き込む
+# /app ディレクトリは app 所有（中身は root 所有）なので、/app/.env は app ユーザーが作成できる
 {
     grep -v -e '^APPLICATION_VERSION=' -e '^COMMIT_HASH=' /etc/.env
     printf 'APPLICATION_VERSION=%s\nCOMMIT_HASH=%s\n' "${APPLICATION_VERSION:-}" "${COMMIT_HASH:-}"

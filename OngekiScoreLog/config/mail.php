@@ -39,10 +39,13 @@ return [
 
         'smtp' => [
             'transport' => 'smtp',
+            // 旧版の MAIL_ENCRYPTION は読まれない（Laravel 11 以降は scheme と port で決まる）。
+            // 587 番では STARTTLS をサーバーが広告していれば自動で使う。強制するなら MAIL_SCHEME=smtps と MAIL_PORT=465
             'scheme' => env('MAIL_SCHEME'),
             'url' => env('MAIL_URL'),
-            'host' => env('MAIL_HOST', '127.0.0.1'),
-            'port' => env('MAIL_PORT', 2525),
+            // host / port の既定値は旧版（Laravel 5.6 の config/mail.php）に合わせる
+            'host' => env('MAIL_HOST', 'smtp.mailgun.org'),
+            'port' => env('MAIL_PORT', 587),
             'username' => env('MAIL_USERNAME'),
             'password' => env('MAIL_PASSWORD'),
             'timeout' => null,
