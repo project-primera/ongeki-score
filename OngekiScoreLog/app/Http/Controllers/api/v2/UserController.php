@@ -86,6 +86,9 @@ class UserController extends Controller{
             return $result;
         }
 
+        # デコード
+        $data = $this->inflateData($data);
+
         if(config('env.is-maintenance-api-user-update') && Auth::user()->role < 7){
             $result['message'][] = "<p>只今メンテナンスを行っています。スコアデータの登録は行なえません。</p><p>詳細は<a href='https://twitter.com/ongeki_score' target='_blank' style='color:#222'>Twitter@ongeki_score</a>にてお知らせします。</p>";
 
@@ -156,6 +159,19 @@ class UserController extends Controller{
         return $result;
     }
 
+    private function inflateData($data){
+        if ($data === null) {
+            return null;
+        }
+
+        $gz = base64_decode($data);
+        $json = gzdecode($gz);
+        $obj = json_decode($json, true);
+        logger($json);
+
+        return $obj;
+    }
+
     private function setPlayer($data, $dateTime, $uniqueID){
         $userId = Auth::id();
         \App\UserStatus::create([
@@ -180,7 +196,7 @@ class UserController extends Controller{
     private function setScore($data, $dateTime, $uniqueID, $generation){
         $message = [];
         foreach ($data as $key => $value) {
-            if($value['difficulty'] !== "0" && $value['difficulty'] !== "1" && $value['difficulty'] !== "2" && $value['difficulty'] !== "3" && $value['difficulty'] !== "10"){
+            if($value['difficulty'] !== 0 && $value['difficulty'] !== 1 && $value['difficulty'] !== 2 && $value['difficulty'] !== 3 && $value['difficulty'] !== 10){
                 throw new RuntimeException("未知の難易度が送信されました。(" . $value['difficulty'] . ")");
             }
             if (!array_key_exists('artist', $value)) {
@@ -324,19 +340,19 @@ class UserController extends Controller{
             $musicData->artist = $v['artist'];
 
             $difficulty = "";
-            if($v['difficulty'] === "0"){
+            if($v['difficulty'] === 0){
                 $difficulty = "basic";
                 $musicData->basic_level = $v['level'];
-            }else if($v['difficulty'] === "1"){
+            }else if($v['difficulty'] === 1){
                 $difficulty = "advanced";
                 $musicData->advanced_level = $v['level'];
-            }else if($v['difficulty'] === "2"){
+            }else if($v['difficulty'] === 2){
                 $difficulty = "expert";
                 $musicData->expert_level = $v['level'];
-            }else if($v['difficulty'] === "3"){
+            }else if($v['difficulty'] === 3){
                 $difficulty = "master";
                 $musicData->master_level = $v['level'];
-            }else if($v['difficulty'] === "10"){
+            }else if($v['difficulty'] === 10){
                 $difficulty = "lunatic";
                 $musicData->lunatic_level = $v['level'];
             }else{
