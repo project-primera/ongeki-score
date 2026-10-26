@@ -32,18 +32,22 @@ class AdminController extends Controller{
             }
             return $result;
         }
+        // password はどの接続（mysql / mariadb / redis / smtp など）でも隠す。
+        // Laravel 13 では database->connections->mariadb->password のように接続ごとに分かれたため、パスの末尾で判定する
+        $last_segment = ($pos = strrpos($key, '->')) === false ? $key : substr($key, $pos + 2);
+        if ($last_segment === 'password' && $value !== '') {
+            return [$key => '************'];
+        }
+        // 部分一致で隠すキー。旧 5.6 の mail->host などは mail->mailers->smtp->host に移った
         $secret_keys = [
             'key',
             'secret',
-            'mysql->password',
-            'pgsql->password',
-            'sqlsrv->password',
             'access-token',
             'slack-webhook-url',
-            'mail->host',
-            'mail->port',
-            'mail->username',
-            'mail->password'
+            'smtp->host',
+            'smtp->port',
+            'smtp->username',
+            'smtp->url',
         ];
         foreach ($secret_keys as $item) {
             if(strpos($key, $item) !== false && $value !== ''){
