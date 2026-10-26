@@ -2,6 +2,7 @@
     "private": true,
     "type": "module",
     "scripts": {
+        "predev": "npm run build",
         "dev": "vite",
         "build": "vite build && vite build --config vite.bookmarklet.config.js",
         "typecheck": "tsc --noEmit"
