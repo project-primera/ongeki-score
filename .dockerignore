@@ -23,7 +23,8 @@ OngekiScoreLog/storage/framework/sessions/*
 OngekiScoreLog/storage/framework/testing/*
 OngekiScoreLog/storage/framework/views/*
 OngekiScoreLog/storage/logs/*
-# フロントのビルド成果物はイメージ内で生成する
+# フロントのビルド成果物はイメージ内で生成する（hot は Vite dev サーバーの URL なので持ち込まない）
+OngekiScoreLog/public/hot
 OngekiScoreLog/public/build
 OngekiScoreLog/public/bookmarklets
 OngekiScoreLog/public/js

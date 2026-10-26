@@ -63,7 +63,9 @@ COPY docker/docker-entrypoint.sh /etc/docker-entrypoint.sh
 COPY --from=vendor /src /app
 COPY --from=assets /src/public/ /app/public/
 
+# Vite の hot ファイルがあると本番でも @vite が dev サーバーを指すので、混入していても必ず消す
 RUN set -ex \
+    && rm -f /app/public/hot \
     && mkdir -p /app/storage/app/log/Debug \
         /app/storage/app/log/Info \
         /app/storage/app/log/Notice \
