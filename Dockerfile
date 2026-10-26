@@ -30,7 +30,8 @@ RUN composer install --no-dev --no-scripts --no-autoloader --prefer-dist --no-in
 COPY OngekiScoreLog /src
 # --classmap-authoritative は付けない。付けると classmap に無いクラスを PSR-4 で探さなくなり、
 # 開発用 compose（app/ などを bind mount）でクラスを追加するたびにリビルドが要る。旧イメージと同じく --optimize だけにする
-RUN composer dump-autoload --no-dev --optimize \
+# dump-autoload は post-autoload-dump スクリプト（package:discover）を呼ぶので --no-scripts で止め、次の行で明示的に 1 回だけ実行する
+RUN composer dump-autoload --no-dev --optimize --no-scripts \
     && php artisan package:discover --ansi
 
 # ---------------------------------------------------------------------------

@@ -15,6 +15,9 @@ OngekiScoreLog/vendor
 OngekiScoreLog/.env
 OngekiScoreLog/.env.example
 OngekiScoreLog/.phpunit.result.cache
+# フレームワークのキャッシュ（services.php / packages.php / config.php など）はイメージ内で生成する。
+# ホストの古いファイルが入ると package:discover や artisan が壊れる
+OngekiScoreLog/bootstrap/cache/*.php
 OngekiScoreLog/storage/*.key
 OngekiScoreLog/storage/app/log/*
 OngekiScoreLog/storage/app/public/*
