@@ -16,9 +16,6 @@ class AppServiceProvider extends ServiceProvider
     public function boot()
     {
         Schema::defaultStringLength(190);
-
-        // OAuth の認可（同意）画面は使わない。コントローラが要求するバインディングだけ用意する
-        Passport::authorizationView(fn () => abort(404));
     }
 
     /**
@@ -34,7 +31,9 @@ class AppServiceProvider extends ServiceProvider
         Passport::$clientUuids = false;
         // device code grant は使わない（oauth_device_codes テーブルを持たない）
         Passport::$deviceCodeGrantEnabled = false;
-        // 旧版が公開していた JSON API（oauth/clients、oauth/tokens など）はアプリから使っていないため登録しない。
-        // ブックマークレットのトークンはサーバー側の createToken() で発行する
+        // /oauth/* のルート（token、authorize、JSON API）は登録しない。
+        // ブックマークレットのトークンはサーバー側の createToken() で発行し、検証は auth:api（TokenGuard）が行うので HTTP のルートは不要。
+        // 旧版は Passport::routes() で全部開けていたが、password grant を含め本番で使われた形跡が無い（判断 L、upgrade_review3 2.4 / 2.5）
+        Passport::ignoreRoutes();
     }
 }

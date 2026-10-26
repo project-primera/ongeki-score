@@ -45,6 +45,10 @@ class Handler
         'atom',
         'feed',
         'blog',
+        // 旧版が Passport::routes() で開けていた OAuth エンドポイント。登録をやめて 404 になったが、bot の走査を通知しない
+        'oauth/authorize',
+        'oauth/token',
+        'oauth/token/refresh',
     ];
 
     /** 専用の view を持つステータスコード */
