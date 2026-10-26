@@ -6,7 +6,6 @@ use App\Facades\Slack;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
-use Illuminate\Database\MultipleRecordsFoundException;
 use Illuminate\Database\RecordNotFoundException;
 use Illuminate\Database\RecordsNotFoundException;
 use Illuminate\Http\Exceptions\OriginMismatchException;
@@ -55,6 +54,10 @@ class Handler
      * フレームワークが既定で report() に回さない例外。
      * 旧版は report() を上書きしていたので、これらも Slack 通知の分岐を通っていた（ログには出さない）。
      * bootstrap/app.php の stopIgnoring() と、shouldLog() の両方で使う。
+     *
+     * vendor の Illuminate\Foundation\Exceptions\Handler::$internalDontReport と同じ内容にしておくこと
+     * （ずれると、増えた例外は Slack に出ず、余分な例外はログに出ない）。
+     * 一致は tests/Unit/ExceptionHandlerIgnoreListTest で確認している。
      */
     public const FRAMEWORK_IGNORED = [
         AuthenticationException::class,
@@ -63,7 +66,6 @@ class Handler
         HttpException::class,
         HttpResponseException::class,
         ModelNotFoundException::class,
-        MultipleRecordsFoundException::class,
         OriginMismatchException::class,
         RecordNotFoundException::class,
         RecordsNotFoundException::class,
