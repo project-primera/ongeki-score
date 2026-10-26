@@ -3,10 +3,11 @@
 set -eu
 
 # /etc/.env（マウント）を /app/.env へ。バージョン情報はビルド時の値で上書きする。
-# /app ディレクトリは app 所有（中身は root 所有）なので、/app/.env は app ユーザーが作成できる
+# /app ディレクトリは app 所有（中身は root 所有）なので、/app/.env は app ユーザーが作成できる。
+# 値は二重引用符で囲む。囲まないと空白や # を含む値（例: ローカルビルドの "Local build."）で .env の読み込みに失敗して起動できない
 {
     grep -v -e '^APPLICATION_VERSION=' -e '^COMMIT_HASH=' /etc/.env
-    printf 'APPLICATION_VERSION=%s\nCOMMIT_HASH=%s\n' "${APPLICATION_VERSION:-}" "${COMMIT_HASH:-}"
+    printf 'APPLICATION_VERSION="%s"\nCOMMIT_HASH="%s"\n' "${APPLICATION_VERSION:-}" "${COMMIT_HASH:-}"
 } > /app/.env
 
 # oauth 鍵は /etc/oauth/ にマウントされていれば storage/ へ複製する（所有者 app、600）。
