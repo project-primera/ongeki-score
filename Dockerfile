@@ -28,7 +28,9 @@ WORKDIR /src
 COPY OngekiScoreLog/composer.json OngekiScoreLog/composer.lock ./
 RUN composer install --no-dev --no-scripts --no-autoloader --prefer-dist --no-interaction --no-progress
 COPY OngekiScoreLog /src
-RUN composer dump-autoload --no-dev --optimize --classmap-authoritative \
+# --classmap-authoritative は付けない。付けると classmap に無いクラスを PSR-4 で探さなくなり、
+# 開発用 compose（app/ などを bind mount）でクラスを追加するたびにリビルドが要る。旧イメージと同じく --optimize だけにする
+RUN composer dump-autoload --no-dev --optimize \
     && php artisan package:discover --ansi
 
 # ---------------------------------------------------------------------------
