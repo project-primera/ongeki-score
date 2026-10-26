@@ -37,6 +37,24 @@ return Application::configure(basePath: dirname(__DIR__))
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
         ]);
 
+        // 実行順の優先一覧。Laravel 13 の既定は認証（auth）→ throttle の順だが、
+        // 旧 5.6 の一覧に throttle は無く、api グループの並びどおり throttle → auth:api の順で動いていた。
+        // 既定のままだと不正トークンの要求が 401 で止まって回数制限に到達しないので、throttle を認証より前に置く。
+        // 一覧は vendor Illuminate\Foundation\Http\Kernel::$middlewarePriority（v13.38.0）の並びを基にしている
+        $middleware->priority([
+            \Illuminate\Foundation\Http\Middleware\HandlePrecognitiveRequests::class,
+            \Illuminate\Cookie\Middleware\EncryptCookies::class,
+            \Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse::class,
+            \Illuminate\Session\Middleware\StartSession::class,
+            \Illuminate\View\Middleware\ShareErrorsFromSession::class,
+            \Illuminate\Routing\Middleware\ThrottleRequests::class,
+            \Illuminate\Routing\Middleware\ThrottleRequestsWithRedis::class,
+            \Illuminate\Contracts\Auth\Middleware\AuthenticatesRequests::class,
+            \Illuminate\Contracts\Session\Middleware\AuthenticatesSessions::class,
+            \Illuminate\Routing\Middleware\SubstituteBindings::class,
+            \Illuminate\Auth\Middleware\Authorize::class,
+        ]);
+
         $middleware->alias([
             'cors' => \Illuminate\Http\Middleware\HandleCors::class,
         ]);
