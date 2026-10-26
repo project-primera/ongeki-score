@@ -35,14 +35,15 @@ FROM php:8.5-fpm-alpine AS final
 LABEL maintainer="slime-hatena <Slime-hatena@aki-memo.net>"
 ARG application_version=""
 ARG commit_hash=""
-ARG nginx_version="1.30.4-r1"
-ARG supervisor_version="4.3.0-r1"
+# apk はパッチ版が更新されると古い版がリポジトリから消えるので、マイナー版までの前方一致で指定する
+ARG nginx_version="1.30"
+ARG supervisor_version="4.3"
 ENV APPLICATION_VERSION=${application_version} \
     COMMIT_HASH=${commit_hash}
 WORKDIR /app
 
 RUN set -ex \
-    && apk add --no-cache nginx=${nginx_version} supervisor=${supervisor_version} \
+    && apk add --no-cache "nginx~${nginx_version}" "supervisor~${supervisor_version}" \
     && docker-php-ext-install pdo_mysql mysqli >/dev/null \
     && mv "$PHP_INI_DIR/php.ini-production" "$PHP_INI_DIR/php.ini" \
     && addgroup -g 1000 app \
