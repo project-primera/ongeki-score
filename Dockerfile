@@ -19,7 +19,10 @@ RUN npm run build
 # ---------------------------------------------------------------------------
 # 2. PHP 依存の解決（実行イメージと同じ PHP で platform 要件を解決する）
 # ---------------------------------------------------------------------------
-FROM php:8.5-fpm-alpine AS vendor
+# Alpine の版はマイナーまで固定する。下の apk の nginx / supervisor の版指定は Alpine の版に依存するので、
+# ベースが別の Alpine に移ると解決できなくなる（3.23 は nginx 1.28、3.24 は 1.30）。
+# Alpine を上げるときは nginx_version / supervisor_version も一緒に見直す
+FROM php:8.5-fpm-alpine3.24 AS vendor
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 WORKDIR /src
 COPY OngekiScoreLog/composer.json OngekiScoreLog/composer.lock ./
@@ -31,7 +34,7 @@ RUN composer dump-autoload --no-dev --optimize --classmap-authoritative \
 # ---------------------------------------------------------------------------
 # 3. 実行イメージ: nginx + php-fpm + queue worker + scheduler を非 root で動かす
 # ---------------------------------------------------------------------------
-FROM php:8.5-fpm-alpine AS final
+FROM php:8.5-fpm-alpine3.24 AS final
 LABEL maintainer="slime-hatena <Slime-hatena@aki-memo.net>"
 ARG application_version=""
 ARG commit_hash=""
