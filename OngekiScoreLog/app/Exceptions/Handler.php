@@ -14,7 +14,6 @@ use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Http\Request;
 use Illuminate\Session\TokenMismatchException;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Cookie;
 use Illuminate\Validation\ValidationException;
 use League\OAuth2\Server\Exception\OAuthServerException;
 use Symfony\Component\HttpKernel\Exception\HttpException;
@@ -71,6 +70,16 @@ class Handler
         }
 
         return $input;
+    }
+
+    /**
+     * 添付用に、cookie の値を伏せ字にして名前だけ残す。
+     * remember_web_*（ログイン維持のトークン）とセッション ID は、復号後の平文でも暗号化されたままでも、
+     * そのままブラウザに入れれば本人になりすませる。このアプリ自身が読む cookie は無いので、値を残す意味もない
+     */
+    private static function maskedCookies(): array
+    {
+        return array_map(fn () => '********', request()->cookie());
     }
 
     /**
@@ -131,7 +140,7 @@ class Handler
             $fileContent .= "User: N/A\n\n";
             $fields = ['File' => $exception->getFile(), 'Line' => $exception->getLine(), 'IP Address' => request()->ip(), 'User id' => 'N/A'];
         }
-        $fileContent .= "Cookie:\n".var_export(Cookie::get(), true)."\n\nRequest:\n".var_export(self::maskedInput(), true)."\n\n".$exception->__toString();
+        $fileContent .= "Cookie:\n".var_export(self::maskedCookies(), true)."\n\nRequest:\n".var_export(self::maskedInput(), true)."\n\n".$exception->__toString();
 
         $path = request()->path();
 

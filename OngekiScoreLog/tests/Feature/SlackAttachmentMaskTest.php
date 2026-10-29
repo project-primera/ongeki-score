@@ -34,4 +34,42 @@ class SlackAttachmentMaskTest extends TestCase
             return true;
         });
     }
+
+    public function test_cookie_values_are_masked_in_the_attachment(): void
+    {
+        Slack::spy();
+
+        // 404 はルート用ミドルウェア（EncryptCookies）より前に起きるので、cookie は受信した値のまま report() に届く
+        $this->withUnencryptedCookie('remember_web_test', '1|secret-remember-token|secret-hash')
+            ->withUnencryptedCookie('ongeki_session_test', 'secret-session-id')
+            ->get('/no-such-page-for-cookie-test')
+            ->assertStatus(404);
+
+        Slack::shouldHaveReceived('Warning')->once()->withArgs(function (string $content, string $file) {
+            $this->assertStringNotContainsString('secret-', $file);
+            $this->assertStringContainsString("'remember_web_test' => '********'", $file);
+            $this->assertStringContainsString("'ongeki_session_test' => '********'", $file);
+
+            return true;
+        });
+    }
+
+    public function test_decrypted_cookie_values_are_masked_in_the_attachment(): void
+    {
+        Slack::spy();
+
+        // web ルートでは EncryptCookies が復号した後の平文が request に載る。
+        // パスワード再設定メールの送信フォームの入力エラー → ValidationException → Warning
+        $this->withCookie('remember_web_test', '1|secret-remember-token|secret-hash')
+            ->post('/password/email', ['email' => 'not-an-email'])
+            ->assertStatus(302);
+
+        Slack::shouldHaveReceived('Warning')->once()->withArgs(function (string $content, string $file) {
+            $this->assertStringContainsString('ValidationException', $content);
+            $this->assertStringNotContainsString('secret-', $file);
+            $this->assertStringContainsString("'remember_web_test' => '********'", $file);
+
+            return true;
+        });
+    }
 }
