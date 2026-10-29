@@ -195,7 +195,9 @@ class Handler
         if ($exception instanceof HttpExceptionInterface) {
             $status = $exception->getStatusCode();
             if (in_array($status, self::VIEW_STATUS_CODES, true)) {
-                return response()->view('errors/'.$status, [], $status);
+                // 例外が持つヘッダを引き継ぐ。メンテナンス中（artisan down --retry / --refresh）の Retry-After と Refresh、
+                // 429 の Retry-After と X-RateLimit-*。旧 5.6 はメンテナンス例外を親の render() に委ねていたので 503 には付いていた
+                return response()->view('errors/'.$status, [], $status, $exception->getHeaders());
             }
         }
 
