@@ -11,6 +11,9 @@ class ResetPasswordNotification extends Notification
 {
     use Queueable;
 
+    /** @var string パスワードリセットトークン */
+    public $token;
+
     /**
      * Create a new notification instance.
      *
@@ -41,7 +44,7 @@ class ResetPasswordNotification extends Notification
     public function toMail($notifiable)
     {
         return (new MailMessage)
-            ->from(config('mail.username'), config('app.name'))
+            ->from(config('mail.mailers.smtp.username') ?: config('mail.from.address'), config('app.name'))
             ->subject('パスワードの再設定')
             ->line('パスワード再発行のリクエストがありましたのでメールをお送りしました。')
             ->action('パスワード再設定', url(config('app.url').route('password.reset', $this->token, false)))

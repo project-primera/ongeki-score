@@ -10,7 +10,7 @@
 @section('additional_footer')
     {!!$highcharts!!}
     {!!$highcharts_sp!!}
-    <script type="text/javascript" src="{{ mix('/js/changeGraphSize.js') }}"></script>
+    @vite('resources/assets/js/changeGraphSize.js')
 @endsection
 @if(isset($sidemark) && !is_null($sidemark))
     @section($sidemark, "is-active")

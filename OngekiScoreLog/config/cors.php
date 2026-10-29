@@ -4,20 +4,28 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Laravel CORS
+    | Cross-Origin Resource Sharing (CORS) Configuration
     |--------------------------------------------------------------------------
     |
-    | allowedOrigins, allowedHeaders and allowedMethods can be set to array('*')
-    | to accept any value.
+    | ブックマークレットは ongeki-net.com 上で動作し、/api/* を呼び出す。
+    | 旧 barryvdh/laravel-cors の設定（allowedOrigins / supportsCredentials）と同じ値。
     |
     */
 
-    'supportsCredentials' => true,
-    'allowedOrigins' => ['https://ongeki-net.com'],
-    'allowedOriginsPatterns' => [],
-    'allowedHeaders' => ['*'],
-    'allowedMethods' => ['*'],
-    'exposedHeaders' => [],
-    'maxAge' => 0,
+    'paths' => ['api/*'],
+
+    'allowed_methods' => ['*'],
+
+    'allowed_origins' => ['https://ongeki-net.com'],
+
+    'allowed_origins_patterns' => [],
+
+    'allowed_headers' => ['*'],
+
+    'exposed_headers' => [],
+
+    'max_age' => 0,
+
+    'supports_credentials' => true,
 
 ];

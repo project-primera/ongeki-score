@@ -1,9 +1,7 @@
 <?php
 return [
     'application-version' => env('APPLICATION_VERSION'),
-    'mix-application-version' => env('MIX_APPLICATION_VERSION'),
     'commit-hash' => env('COMMIT_HASH'),
-    'mix-commit-hash' => env('MIX_COMMIT_HASH'),
     'github-repo-url' => env('GITHUB_REPO_URL'),
 
     'ongeki-version' => env('ONGEKI_VERSION'),
@@ -11,10 +9,6 @@ return [
 
     'is-maintenance-api-user-update' => env('IS_MAINTENANCE_API_USER_UPDATE'),
 
-    'twitter-consumer-key' => env('TWITTER_CONSUMER_KEY'),
-    'twitter-consumer-secret' => env('TWITTER_CONSUMER_SECRET'),
-    'twitter-admin-account-access-token' => env('TWITTER_ADMIN_ACCOUNT_ACCESS_TOKEN'),
-    'twitter-admin-account-access-token-secret' => env('TWITTER_ADMIN_ACCOUNT_ACCESS_TOKEN_SECRET'),
 
     'slack-webhook-url-debug' => env('SLACK_WEBHOOK_URL_DEBUG'),
     'slack-webhook-url-info' => env('SLACK_WEBHOOK_URL_INFO'),

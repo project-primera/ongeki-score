@@ -9,7 +9,7 @@
         <meta name="description" content="SEGAのアーケード音楽ゲーム「オンゲキ」のスコアを集計し、見やすくソートしたりできる非公式ツールです。他のユーザーにスコアを共有することが出来ます。">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.4/css/bulma.css">
         <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.2.0/css/all.css" integrity="sha384-hWVjflwFxL6sNzntih27bfxkr27PmbbK/iSvJ+a4+0owXq79v+lsFkW54bOGbiDQ" crossorigin="anonymous">
-        <link rel="stylesheet" href="{{ mix('/css/style.css') }}">
+        @vite('resources/assets/sass/style.scss')
         <script src="https://code.highcharts.com/highcharts.js"></script>
         <!-- favicons -->
         <meta name="msapplication-TileColor" content="#2d88ef">
@@ -56,7 +56,7 @@
         <!-- Open Graph protocol -->
         <meta property="og:title" content="@yield('title') - OngekiScoreLog" />
         <meta property="og:type" content="website" />
-        <meta property="og:url" content="{{(empty($_SERVER["HTTPS"]) ? "http://" : "https://") . $_SERVER["HTTP_HOST"] . $_SERVER["REQUEST_URI"]}}" />
+        <meta property="og:url" content="{{(empty(request()->server('HTTPS')) ? 'http://' : 'https://') . request()->server('HTTP_HOST', '') . request()->server('REQUEST_URI', '')}}" />
         <meta property="og:image" content="https://ongeki-score.net/icon-512x512.png" />
         <meta property="og:site_name" content="OngekiScoreLog" />
         <meta property="og:description" content="SEGAのアーケード音楽ゲーム「オンゲキ」のスコアを集計し、見やすくソートしたりできる非公式ツールです。他のユーザーにスコアを共有することが出来ます。" />
@@ -186,9 +186,9 @@
             });
         </script>
         <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha256-3edrmyuQ0w65f8gfBsqowzjJe2iM6n0nKciPUp8y+7E=" crossorigin="anonymous"></script>
-        <script type="text/javascript" src="{{ mix('/js/list.min.js') }}"></script>
-        <script type="text/javascript" src="{{ mix('/js/sweet-scroll.min.js') }}"></script>
-        <script type="text/javascript" src="{{ mix('/js/app.js') }}"></script>
+        <script type="text/javascript" src="{{ static_asset('/js/list.min.js') }}"></script>
+        <script type="text/javascript" src="{{ static_asset('/js/sweet-scroll.min.js') }}"></script>
+        @vite('resources/assets/js/app.js')
         @section('additional_footer')
         @show
     </body>

@@ -1,5 +1,6 @@
 /node_modules
 /public/hot
+/public/build
 /public/storage
 /storage/*.key
 /vendor
@@ -27,3 +28,5 @@ yarn-error.log
 /public/favicon.ico
 /public/browserconfig.xml
 /public/manifest.json
+# phpunit
+/.phpunit.result.cache

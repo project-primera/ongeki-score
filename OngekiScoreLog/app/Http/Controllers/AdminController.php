@@ -32,18 +32,30 @@ class AdminController extends Controller{
             }
             return $result;
         }
+        // password はどの接続（mysql / mariadb / redis / smtp など）でも隠す。
+        // Laravel 13 では database->connections->mariadb->password のように接続ごとに分かれたため、パスの末尾で判定する。
+        // あわせて、Laravel 13 で増えた「接続情報やトークンを 1 つの値に持つ」キーも隠す:
+        //   database-> 配下の url（DB_URL / REDIS_URL。パスワード入りの接続 URL）
+        //   末尾が token のキー（services->slack->notifications->bot_user_oauth_token など）
+        //   logging->channels->slack->url（LOG_SLACK_WEBHOOK_URL）
+        $last_segment = ($pos = strrpos($key, '->')) === false ? $key : substr($key, $pos + 2);
+        $is_secret = $last_segment === 'password'
+            || ($last_segment === 'url' && str_starts_with($key, 'database->'))
+            || str_ends_with($key, 'token')
+            || $key === 'logging->channels->slack->url';
+        if ($is_secret && $value !== '') {
+            return [$key => '************'];
+        }
+        // 部分一致で隠すキー。旧 5.6 の mail->host などは mail->mailers->smtp->host に移った
         $secret_keys = [
             'key',
             'secret',
-            'mysql->password',
-            'pgsql->password',
-            'sqlsrv->password',
             'access-token',
             'slack-webhook-url',
-            'mail->host',
-            'mail->port',
-            'mail->username',
-            'mail->password'
+            'smtp->host',
+            'smtp->port',
+            'smtp->username',
+            'smtp->url',
         ];
         foreach ($secret_keys as $item) {
             if(strpos($key, $item) !== false && $value !== ''){

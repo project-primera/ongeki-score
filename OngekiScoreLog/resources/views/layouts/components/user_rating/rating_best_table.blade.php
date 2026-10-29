@@ -27,7 +27,7 @@
             @for ($i = $start; $i < $targetCount; $i++)
                 <tr>
                     <td>{{$i + 1}}</td>
-                    @if (array_key_exists($i, $array) && array_key_exists('song_id', $array[$i]))
+                    @if (array_key_exists($i, $array) && property_exists($array[$i], 'song_id'))
                         <td class="sort_title"><a href="{{url("/user/" . $id . "/music/" . $array[$i]->song_id . "/" . strtolower($array[$i]->difficulty_str))}}">{{$array[$i]->title}}</a></td>
                     @else
                         <td class="sort_title">{{$array[$i]->title}}</td>
@@ -82,7 +82,7 @@
                 @for ($i = $targetCount; $i < $end; $i++)
                     @if($array[$i]->minDifferenceScore !== "" && $array[$i]->technical_high_score !== 0 && $array[$i]->minDifferenceRate >= -1.0)
                         <tr>
-                            @if (array_key_exists($i, $array) && array_key_exists('song_id', $array[$i]))
+                            @if (array_key_exists($i, $array) && property_exists($array[$i], 'song_id'))
                                 <td class="sort_title"><a href="{{url("/user/" . $id . "/music/" . $array[$i]->song_id . "/" . strtolower($array[$i]->difficulty_str))}}">{{$array[$i]->title}}</a></td>
                             @else
                                 <td class="sort_title">{{$array[$i]->title}}</td>

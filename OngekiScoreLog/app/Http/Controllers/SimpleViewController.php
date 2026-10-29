@@ -42,16 +42,16 @@ class SimpleViewController extends Controller
     }
 
     public function getLogFile($path, $fileName){
-        return "<html><body><div style='font-size: 0.25rem'>\n" . str_replace("\n", "<br>\n", Storage::get('log/' . $path . '/' . $fileName)) . "\n</div></body></html>";
+        $file = 'log/' . $path . '/' . $fileName;
+        if (!Storage::exists($file)) {
+            throw new \Illuminate\Contracts\Filesystem\FileNotFoundException("File does not exist at path {$file}.");
+        }
+        return "<html><body><div style='font-size: 0.25rem'>\n" . str_replace("\n", "<br>\n", Storage::get($file)) . "\n</div></body></html>";
     }
 
     /* for debug
     public function versionUpdate(){
         (new App\ApplicationVersion())->fetchAllVersion();
-    }
-
-    public function testTweet($s){
-        $res = (new App\AdminTweet())->tweet($s . rand());
     }
     */
 
