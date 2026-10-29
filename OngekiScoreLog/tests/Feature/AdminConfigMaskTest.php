@@ -24,6 +24,13 @@ class AdminConfigMaskTest extends TestCase
         'mail.mailers.smtp.username' => 'smtp-user',
         'mail.mailers.smtp.password' => 'smtp-password',
         'env.slack-webhook-url-error' => 'https://hooks.slack.test/error',
+        // Laravel 13 で増えた、接続情報やトークンを 1 つの値に持つキー
+        'database.connections.mysql.url' => 'mysql://db-user:db-url-password@db.example.test/ongeki',
+        'database.connections.mariadb.url' => 'mysql://db-user:db-url-password-mariadb@db.example.test/ongeki',
+        'database.redis.default.url' => 'redis://:redis-url-password@redis.example.test:6379',
+        'database.redis.cache.url' => 'redis://:redis-cache-url-password@redis.example.test:6379/1',
+        'services.slack.notifications.bot_user_oauth_token' => 'xoxb-test-bot-token',
+        'logging.channels.slack.url' => 'https://hooks.slack.test/logging',
     ];
 
     public function test_secret_values_are_masked(): void
@@ -53,6 +60,8 @@ class AdminConfigMaskTest extends TestCase
             'app.url' => 'https://ongeki-score.test',
             'database.connections.mysql.host' => 'db.example.test',
             'mail.mailers.smtp.scheme' => 'smtps',
+            // 秘密を含まない url は表示したまま
+            'filesystems.disks.public.url' => 'https://ongeki-score.test/storage',
         ]);
 
         $rows = $this->parseAll();
@@ -60,6 +69,7 @@ class AdminConfigMaskTest extends TestCase
         $this->assertSame('https://ongeki-score.test', $rows['app->url']);
         $this->assertSame('db.example.test', $rows['database->connections->mysql->host']);
         $this->assertSame('smtps', $rows['mail->mailers->smtp->scheme']);
+        $this->assertSame('https://ongeki-score.test/storage', $rows['filesystems->disks->public->url']);
     }
 
     /** AdminController::GetConfig() と同じ手順で config 全体を平坦化する */
