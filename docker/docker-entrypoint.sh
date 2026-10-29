@@ -4,6 +4,12 @@ set -eu
 
 # /etc/.env（マウント）を /app/.env へ。バージョン情報はビルド時の値で上書きする。
 # /app ディレクトリは app 所有（中身は root 所有）なので、/app/.env は app ユーザーが作成できる。
+# .env が無い・読めない・空（バージョン行しか無い場合も含む）なら、理由を出して起動を止める。
+# 設定無しのまま起動して後で分かりにくく落ちるより、ここで止める方が原因を追いやすい
+if [ ! -r /etc/.env ] || ! grep -q -v -e '^APPLICATION_VERSION=' -e '^COMMIT_HASH=' /etc/.env; then
+    echo "ERROR: /etc/.env が無いか空です。アプリの .env を /etc/.env にマウントしてください。" >&2
+    exit 1
+fi
 # 値は二重引用符で囲む。囲まないと空白や # を含む値（例: ローカルビルドの "Local build."）で .env の読み込みに失敗して起動できない
 {
     grep -v -e '^APPLICATION_VERSION=' -e '^COMMIT_HASH=' /etc/.env
