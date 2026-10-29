@@ -55,6 +55,25 @@ class Handler
     private const VIEW_STATUS_CODES = [404, 418, 429, 500, 503];
 
     /**
+     * Slack の添付に値を載せない入力。ログイン失敗やパスワード再設定の失敗で平文のパスワードが届いていた。
+     * token はパスワード再設定フォームのトークン（_token（CSRF）は対象外）
+     */
+    private const MASKED_INPUTS = ['password', 'password_confirmation', 'current_password', 'token'];
+
+    /** 添付用に、秘密の入力を伏せ字にしたリクエスト内容を返す */
+    private static function maskedInput(): array
+    {
+        $input = request()->all();
+        foreach (self::MASKED_INPUTS as $key) {
+            if (array_key_exists($key, $input)) {
+                $input[$key] = '********';
+            }
+        }
+
+        return $input;
+    }
+
+    /**
      * フレームワークが既定で report() に回さない例外。
      * 旧版は report() を上書きしていたので、これらも Slack 通知の分岐を通っていた（ログには出さない）。
      * bootstrap/app.php の stopIgnoring() と、shouldLog() の両方で使う。
@@ -112,7 +131,7 @@ class Handler
             $fileContent .= "User: N/A\n\n";
             $fields = ['File' => $exception->getFile(), 'Line' => $exception->getLine(), 'IP Address' => request()->ip(), 'User id' => 'N/A'];
         }
-        $fileContent .= "Cookie:\n".var_export(Cookie::get(), true)."\n\nRequest:\n".var_export(request()->all(), true)."\n\n".$exception->__toString();
+        $fileContent .= "Cookie:\n".var_export(Cookie::get(), true)."\n\nRequest:\n".var_export(self::maskedInput(), true)."\n\n".$exception->__toString();
 
         $path = request()->path();
 
