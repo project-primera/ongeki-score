@@ -19,7 +19,16 @@ class SettingController extends Controller
         return view('setting', compact('display'));
     }
 
-    public function getSettingPrivate(){
+    /**
+     * 切り替えは CSRF トークン付きの POST でだけ受け付ける。
+     * 旧版は GET だったので、他サイトのリンクを踏ませるだけでログイン中の利用者の公開/非公開を変えられた。
+     * GET で直接開かれたときは設定ページへ戻す
+     */
+    public function redirectToSetting(){
+        return redirect("/setting");
+    }
+
+    public function postSettingPrivate(){
         $user = \Auth::user();
 
         if($user == null){
@@ -32,7 +41,7 @@ class SettingController extends Controller
         return redirect("/setting");
     }
 
-    public function getSettingPublic(){
+    public function postSettingPublic(){
         $user = \Auth::user();
 
         if($user == null){

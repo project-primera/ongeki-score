@@ -58,8 +58,11 @@ Route::get('/bookmarklet', [BookmarkletGenerateController::class, 'getIndex']);
 Route::get('/bookmarklet/agree', [BookmarkletGenerateController::class, 'getAgree']);
 Route::post('/bookmarklet/agree', [BookmarkletGenerateController::class, 'postBookmarklet']);
 Route::get('/setting', [SettingController::class, 'getSetting']);
-Route::get('/setting/private', [SettingController::class, 'getSettingPrivate']);
-Route::get('/setting/public', [SettingController::class, 'getSettingPublic']);
+// 公開/非公開の切り替えは CSRF 付きの POST。GET で直接開かれた場合は設定ページへ戻す
+Route::get('/setting/private', [SettingController::class, 'redirectToSetting']);
+Route::post('/setting/private', [SettingController::class, 'postSettingPrivate']);
+Route::get('/setting/public', [SettingController::class, 'redirectToSetting']);
+Route::post('/setting/public', [SettingController::class, 'postSettingPublic']);
 
 Route::get('/howto', [SimpleViewController::class, 'getHowto']);
 Route::get('/faq', [SimpleViewController::class, 'getFAQ']);

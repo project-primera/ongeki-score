@@ -23,10 +23,11 @@
             {{$display['private'] ? '現在の状態: 有効' : ''}}
         </p>
         <p>
+            {{-- 切り替えは CSRF 付きの POST。GET のリンクだと他サイトから踏ませるだけで切り替えられてしまう --}}
             @if ($display['private'])
-                <a href="/setting/public" class="button is-danger">プライベートモードを無効にする</a>
+                <form method="post" action="/setting/public">@csrf<button type="submit" class="button is-danger">プライベートモードを無効にする</button></form>
             @else
-                <a href="/setting/private" class="button is-info">プライベートモードを有効にする</a>
+                <form method="post" action="/setting/private">@csrf<button type="submit" class="button is-info">プライベートモードを有効にする</button></form>
             @endif
         </p>
 
