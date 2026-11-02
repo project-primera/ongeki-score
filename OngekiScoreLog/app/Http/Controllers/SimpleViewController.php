@@ -36,9 +36,13 @@ class SimpleViewController extends Controller
         return view('changelog', compact('version'));
     }
 
+    /**
+     * ログアウトは CSRF 付きの POST /logout（Auth::routes() が登録、LoginController::loggedOut() が画面を返す）でだけ行う。
+     * 旧版は GET でログアウトしていたので、他サイトのリンクを踏ませるだけでログアウトさせられた。
+     * GET で直接開かれたときはトップへ戻す
+     */
     public function getLogout(){
-        Auth::logout();
-        return view('logout');
+        return redirect('/');
     }
 
     public function getLogFile($path, $fileName){

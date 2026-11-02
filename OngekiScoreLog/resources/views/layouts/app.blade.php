@@ -99,9 +99,11 @@
                                     ログイン
                                 </a>
                             @else
-                                <a class="button is-light" href="/logout">
-                                    ログアウト
-                                </a>
+                                {{-- ログアウトは CSRF 付きの POST。GET のリンクだと他サイトから踏ませるだけでログアウトさせられる --}}
+                                <form method="post" action="/logout">
+                                    @csrf
+                                    <button type="submit" class="button is-light">ログアウト</button>
+                                </form>
                             @endif
                             @if (!is_null(\Auth::user()) && \Auth::user()->role >= 7)
                                 <a class="button is-primary" href="/admin">

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
+use Illuminate\Http\Request;
 
 class LoginController extends Controller
 {
@@ -35,5 +36,11 @@ class LoginController extends Controller
     public function __construct()
     {
         $this->middleware('guest')->except('logout');
+    }
+
+    /** POST /logout（Auth::routes()）の後は、旧版の GET /logout と同じ「ログアウトしました」の画面を出す */
+    protected function loggedOut(Request $request)
+    {
+        return view('logout');
     }
 }

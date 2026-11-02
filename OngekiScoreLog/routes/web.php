@@ -72,6 +72,7 @@ Route::get('/data-policy', [SimpleViewController::class, 'getDataPolicy']);
 Route::get('/changelog', [SimpleViewController::class, 'getChangelog']);
 
 Route::get('/home', [HomeController::class, 'index'])->name('home');
+// ログアウトは Auth::routes() の POST /logout（CSRF 付き）。GET で直接開かれた場合はトップへ戻す
 Route::get('/logout', [SimpleViewController::class, 'getLogout']);
 
 
