@@ -50,8 +50,12 @@ class Handler
         'oauth/token/refresh',
     ];
 
-    /** 専用の view を持つステータスコード */
-    private const VIEW_STATUS_CODES = [404, 418, 429, 500, 503];
+    /**
+     * 専用の view を持つステータスコード。
+     * 419 は CSRF トークン不一致（TokenMismatchException をフレームワークが 419 の HttpException に変換する）。
+     * 旧版は 500 ページを出していたが、利用者にはサイトの故障に見えるので「有効期限切れ」の案内を出す
+     */
+    private const VIEW_STATUS_CODES = [404, 418, 419, 429, 500, 503];
 
     /**
      * Slack の添付に値を載せない入力。ログイン失敗やパスワード再設定の失敗で平文のパスワードが届いていた。
