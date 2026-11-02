@@ -54,7 +54,9 @@ Route::redirect('/alluser', '/user', 301);
 Route::get('/user', [ViewAllUserController::class, 'getIndex']);
 
 Route::get('/bookmarklet', [BookmarkletGenerateController::class, 'getIndex']);
-Route::get('/bookmarklet/agree', [BookmarkletGenerateController::class, 'getBookmarklet']);
+// 生成は CSRF 付きの POST。GET で直接開かれた場合は同意ページへ戻す
+Route::get('/bookmarklet/agree', [BookmarkletGenerateController::class, 'getAgree']);
+Route::post('/bookmarklet/agree', [BookmarkletGenerateController::class, 'postBookmarklet']);
 Route::get('/setting', [SettingController::class, 'getSetting']);
 Route::get('/setting/private', [SettingController::class, 'getSettingPrivate']);
 Route::get('/setting/public', [SettingController::class, 'getSettingPublic']);
