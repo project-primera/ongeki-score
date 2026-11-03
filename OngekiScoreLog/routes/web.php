@@ -82,9 +82,13 @@ Route::group(['middleware' => ['auth', 'can:admin']], function () {
     Route::get('/admin/config', [AdminController::class, 'GetConfig']);
     Route::get('/admin/battle', [AdminController::class, 'GetBattle']);
     Route::get('/admin/overdamage', [AdminController::class, 'GetOverDamage']);
-    Route::get('/admin/apply/{type}/{action?}', [AdminController::class, 'GetApply']);
-    Route::get('/admin/generate/battle-score', [AdminController::class, 'GetGenerateBattleScore']);
-    Route::get('/admin/generate/over-damage', [AdminController::class, 'GetGenerateOverDamage']);
+    // キャッシュ操作と統計生成は CSRF 付きの POST。GET で直接開かれた場合は管理ページへ戻す（旧版は GET で実行していた）
+    Route::get('/admin/apply/{type}/{action?}', [AdminController::class, 'RedirectToIndex']);
+    Route::post('/admin/apply/{type}/{action?}', [AdminController::class, 'PostApply']);
+    Route::get('/admin/generate/battle-score', [AdminController::class, 'RedirectToIndex']);
+    Route::post('/admin/generate/battle-score', [AdminController::class, 'PostGenerateBattleScore']);
+    Route::get('/admin/generate/over-damage', [AdminController::class, 'RedirectToIndex']);
+    Route::post('/admin/generate/over-damage', [AdminController::class, 'PostGenerateOverDamage']);
     Route::get('/admin/log/{path}/{fileName}', [SimpleViewController::class, 'getLogFile']);
 });
 

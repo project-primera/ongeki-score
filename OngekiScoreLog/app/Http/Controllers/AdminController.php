@@ -126,7 +126,12 @@ class AdminController extends Controller{
      * @param string $action 処理内容
      * @return \Illuminate\Routing\Redirector|\Illuminate\Http\RedirectResponse
      */
-    public function GetApply($type, $action = null){
+    /** 実行系の URL を GET で開かれたときは何もせず管理ページへ戻す（実行は CSRF 付きの POST のみ） */
+    public function RedirectToIndex(){
+        return redirect('/admin');
+    }
+
+    public function PostApply($type, $action = null){
         $message = "パスが間違っています。";
 
         if($type === 'all'){
@@ -174,13 +179,13 @@ class AdminController extends Controller{
         return redirect('/admin?message=' . $message);
     }
 
-    public function GetGenerateBattleScore(){
+    public function PostGenerateBattleScore(){
         ini_set("max_execution_time", 0);
         \App\AggregateBattleScore::execute();
         return redirect('/admin?message=' . "Generate Battle Score: max. 実行しました！");
     }
 
-    public function GetGenerateOverDamage(){
+    public function PostGenerateOverDamage(){
         ini_set("max_execution_time", 0);
         \App\AggregateOverdamage::execute();
         return redirect('/admin?message=' . "Generate Over Damage: max. 実行しました！");
