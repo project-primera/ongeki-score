@@ -33,7 +33,8 @@ class AppServiceProvider extends ServiceProvider
         Passport::$deviceCodeGrantEnabled = false;
         // /oauth/* のルート（token、authorize、JSON API）は登録しない。
         // ブックマークレットのトークンはサーバー側の createToken() で発行し、検証は auth:api（TokenGuard）が行うので HTTP のルートは不要。
-        // 旧版は Passport::routes() で全部開けていたが、password grant を含め本番で使われた形跡が無い（判断 L、upgrade_review3 2.4 / 2.5）
+        // 旧版は Passport::routes() で全部開けていたが、password grant を含めて本番で使われた形跡は無く（発行済みトークン 0 件）、
+        // 開けておくと不正な要求のたびにエラー通知が飛ぶだけなので登録しない
         Passport::ignoreRoutes();
     }
 }
