@@ -6,7 +6,7 @@ use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
 use Illuminate\Http\Request;
 
-return Application::configure(basePath: dirname(__DIR__))
+$app = Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
         web: __DIR__.'/../routes/web.php',
         api: __DIR__.'/../routes/api.php',
@@ -87,3 +87,12 @@ return Application::configure(basePath: dirname(__DIR__))
             return Handler::render($request, $e);
         });
     })->create();
+
+// コンテナでは .env をコード配置先（/app、root 所有・読み取り専用）の外に置く（Dockerfile の APP_ENV_PATH に entrypoint が書く）。
+// 未設定（ローカル開発・テスト）なら従来どおり base path の .env を読む
+$envPath = getenv('APP_ENV_PATH');
+if ($envPath !== false && $envPath !== '') {
+    $app->useEnvironmentPath($envPath);
+}
+
+return $app;

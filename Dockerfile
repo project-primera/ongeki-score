@@ -46,6 +46,8 @@ ARG nginx_version="1.30"
 ARG supervisor_version="4.3"
 ENV APPLICATION_VERSION=${application_version} \
     COMMIT_HASH=${commit_hash}
+# .env はコード配置先（/app、root 所有・読み取り専用）の外に置く。entrypoint がここに書き、bootstrap/app.php が読む
+ENV APP_ENV_PATH=/home/app
 WORKDIR /app
 
 RUN set -ex \
@@ -90,9 +92,8 @@ RUN set -ex \
     && touch /app/storage/logs/laravel.log \
     # composer が展開した vendor 配下には 0777 のディレクトリが多数ある（zip の属性由来）。group/other の書き込みを落として app から書き換えられないようにする
     && find /app -perm /022 \( -type d -o -type f \) -exec chmod go-w {} + \
-    # /app ディレクトリだけ app 所有にし、entrypoint（app ユーザー）が /app/.env を作れるようにする（.env 自体はイメージに含めない）
-    && chown app:app /app \
-    # 実行時に書き込むのは storage/ と bootstrap/cache だけなので、app 所有にするのはこの 2 つに限る
+    # /app は root 所有のまま。app ユーザーは直下にファイルを作ったり artisan を差し替えたりできない
+    # （.env は APP_ENV_PATH に entrypoint が書く）。実行時に書き込むのは storage/ と bootstrap/cache だけなので、app 所有にするのはこの 2 つに限る
     && chown -R app:app /app/storage /app/bootstrap/cache \
     && chmod 755 /etc/docker-entrypoint.sh
 
