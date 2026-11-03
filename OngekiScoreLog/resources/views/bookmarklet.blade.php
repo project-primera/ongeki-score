@@ -18,9 +18,9 @@
             ブックマークレットを生成します。<br>
             すでに生成した後に再生成すると以前のブックマークレットは使用できなくなります。
         </p>
-        <p>
+        <div>
             {!! $content !!}
-        </p>
+        </div>
 
         <div class="notification is-warning">
             <p>
