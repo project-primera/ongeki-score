@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Facades\Slack;
 use App\User;
 use Tests\TestCase;
 
@@ -43,5 +44,16 @@ class BookmarkletGenerateTest extends TestCase
     {
         $this->get('/bookmarklet')->assertStatus(200)->assertViewIs('require');
         $this->post('/bookmarklet/agree')->assertStatus(200)->assertViewIs('require');
+    }
+
+    public function test_cross_site_post_without_token_is_rejected(): void
+    {
+        // テスト実行中は CSRF 検証が飛ばされる（env が testing）ので、このテストだけ有効にする
+        $this->app['env'] = 'local';
+        Slack::spy();
+
+        $this->actingAs($this->user())
+            ->post('/bookmarklet/agree', [], ['Sec-Fetch-Site' => 'cross-site'])
+            ->assertStatus(419);
     }
 }
