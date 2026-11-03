@@ -51,6 +51,8 @@ ENV APP_ENV_PATH=/home/app
 WORKDIR /app
 
 RUN set -ex \
+    # ベースイメージに含まれる OS パッケージの修正版を取り込む（curl / expat / brotli などの修正はベースイメージの更新より先に出る）
+    && apk upgrade --no-cache \
     && apk add --no-cache "nginx~${nginx_version}" "supervisor~${supervisor_version}" \
     && docker-php-ext-install pdo_mysql mysqli >/dev/null \
     && mv "$PHP_INI_DIR/php.ini-production" "$PHP_INI_DIR/php.ini" \
