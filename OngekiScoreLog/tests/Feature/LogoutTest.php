@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Facades\Slack;
 use App\User;
 use Tests\TestCase;
 
@@ -37,12 +38,26 @@ class LogoutTest extends TestCase
         $this->assertAuthenticated();
     }
 
-    public function test_post_logout_logs_out_and_shows_the_logout_page(): void
+    public function test_post_logout_logs_out_and_redirects_to_the_logout_page(): void
     {
-        $this->actingAs($this->user())->post('/logout')
-            ->assertStatus(200)
-            ->assertViewIs('logout');
+        // POST の応答は GET /logout へのリダイレクト（再読み込みで再送確認が出ないように）
+        $this->actingAs($this->user())->post('/logout')->assertRedirect('/logout');
 
         $this->assertGuest();
+
+        $this->get('/logout')->assertStatus(200)->assertViewIs('logout');
+    }
+
+    public function test_cross_site_post_without_token_is_rejected_and_keeps_the_session(): void
+    {
+        // テスト実行中は CSRF 検証が飛ばされる（env が testing）ので、このテストだけ有効にする
+        $this->app['env'] = 'local';
+        Slack::spy();
+
+        $this->actingAs($this->user())
+            ->post('/logout', [], ['Sec-Fetch-Site' => 'cross-site'])
+            ->assertStatus(419);
+
+        $this->assertAuthenticated();
     }
 }
