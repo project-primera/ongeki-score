@@ -5,10 +5,10 @@ set -eu
 # /etc/.env（マウント）を ${APP_ENV_PATH}/.env へ。バージョン情報はビルド時の値で上書きする。
 # .env はコード配置先（/app、root 所有・読み取り専用）の外に置く（Dockerfile の APP_ENV_PATH、bootstrap/app.php が読む）。
 # config:cache 以降は bootstrap/cache/config.php だけが読まれるので、php-fpm や artisan が .env を直接見ることはない。
-# .env が無い・読めない・空（バージョン行しか無い場合も含む）なら、理由を出して起動を止める。
+# .env が無い・読めない・空（バージョン行、空行、コメント行しか無い場合も含む）なら、理由を出して起動を止める。
 # 設定無しのまま起動して後で分かりにくく落ちるより、ここで止める方が原因を追いやすい
 : "${APP_ENV_PATH:?APP_ENV_PATH が未設定です（Dockerfile の ENV）}"
-if [ ! -r /etc/.env ] || ! grep -q -v -e '^APPLICATION_VERSION=' -e '^COMMIT_HASH=' /etc/.env; then
+if [ ! -r /etc/.env ] || ! grep -q -v -e '^APPLICATION_VERSION=' -e '^COMMIT_HASH=' -e '^[[:space:]]*$' -e '^[[:space:]]*#' /etc/.env; then
     echo "ERROR: /etc/.env が無いか空です。アプリの .env を /etc/.env にマウントしてください。" >&2
     exit 1
 fi
