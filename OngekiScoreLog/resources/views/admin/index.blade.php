@@ -15,41 +15,42 @@
                 {{ $message }}
             </div>
         @endif
+        {{-- 実行は CSRF 付きの POST。GET のリンクだと他サイトから踏ませるだけでキャッシュ消去や重い集計を走らせられる --}}
         <h3 class="title is-3">キャッシュ系クリア</h3>
         <h4 class="title is-4">すべて</h4>
-        <p>
-            <a href="/admin/apply/all/clear"><button class="button is-danger">all:clear</button></a>
-            <a href="/admin/apply/all/cache"><button class="button is-warning">all:cache</button></a>
-        </p>
+        <div class="buttons">
+            <form method="post" action="/admin/apply/all/clear">@csrf<button type="submit" class="button is-danger">all:clear</button></form>
+            <form method="post" action="/admin/apply/all/cache">@csrf<button type="submit" class="button is-warning">all:cache</button></form>
+        </div>
         <h4 class="title is-4">config</h4>
-        <p>
-            <a href="/admin/apply/config/clear"><button class="button is-danger">config:clear</button></a>
-            <a href="/admin/apply/config/cache"><button class="button is-warning">config:cache</button></a>
-        </p>
+        <div class="buttons">
+            <form method="post" action="/admin/apply/config/clear">@csrf<button type="submit" class="button is-danger">config:clear</button></form>
+            <form method="post" action="/admin/apply/config/cache">@csrf<button type="submit" class="button is-warning">config:cache</button></form>
+        </div>
         <h4 class="title is-4">route</h4>
-        <p>
-            <a href="/admin/apply/route/clear"><button class="button is-danger">route:clear</button></a>
-            <a href="/admin/apply/route/cache"><button class="button is-warning">route:cache</button></a>
-        </p>
+        <div class="buttons">
+            <form method="post" action="/admin/apply/route/clear">@csrf<button type="submit" class="button is-danger">route:clear</button></form>
+            <form method="post" action="/admin/apply/route/cache">@csrf<button type="submit" class="button is-warning">route:cache</button></form>
+        </div>
         <h4 class="title is-4">view</h4>
-        <p>
-            <a href="/admin/apply/view/clear"><button class="button is-danger">view:clear</button></a>
-            <a href="/admin/apply/view/cache"><button class="button is-warning">view:cache</button></a>
-        </p>
+        <div class="buttons">
+            <form method="post" action="/admin/apply/view/clear">@csrf<button type="submit" class="button is-danger">view:clear</button></form>
+            <form method="post" action="/admin/apply/view/cache">@csrf<button type="submit" class="button is-warning">view:cache</button></form>
+        </div>
         <h4 class="title is-4">cache</h4>
-        <p>
-            <a href="/admin/apply/cache"><button class="button is-danger">cache:clear</button></a>
-        </p>
+        <div class="buttons">
+            <form method="post" action="/admin/apply/cache">@csrf<button type="submit" class="button is-danger">cache:clear</button></form>
+        </div>
         <hr>
         <h3 class="title is-3">統計データ生成</h3>
         <p>超絶重いので実行する時間とタイミングに注意！</p>
         <h4 class="title is-4">Battle Score</h4>
-        <p>
-            <a href="/admin/generate/battle-score"><button class="button is-danger">max</button></a>
-        </p>
+        <div class="buttons">
+            <form method="post" action="/admin/generate/battle-score">@csrf<button type="submit" class="button is-danger">max</button></form>
+        </div>
         <h4 class="title is-4">Over Damage</h4>
-        <p>
-            <a href="/admin/generate/over-damage"><button class="button is-danger">max</button></a>
-        </p>
+        <div class="buttons">
+            <form method="post" action="/admin/generate/over-damage">@csrf<button type="submit" class="button is-danger">max</button></form>
+        </div>
     </article>
 @endsection

@@ -7,8 +7,8 @@
     <meta name="robots" content="noindex">
 @endsection
 @section('additional_footer')
-    <script type="text/javascript" src="{{ mix('/js/sortTable.js') }}"></script>
-    <script type="text/javascript" src="{{ mix('/js/tableScalable.js') }}"></script>
+    @vite('resources/assets/js/sortTable.js')
+    @vite('resources/assets/js/tableScalable.js')
 @endsection
 @section('sidemark_mypage_battle', "is-active")
 

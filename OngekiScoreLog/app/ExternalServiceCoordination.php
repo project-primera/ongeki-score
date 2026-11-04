@@ -4,10 +4,6 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
-use mpyw\Co\Co;
-use mpyw\Co\CURLException;
-use mpyw\Cowitter\Client;
-use mpyw\Cowitter\HttpException;
 use Log;
 
 class ExternalServiceCoordination extends Model{
@@ -20,17 +16,4 @@ class ExternalServiceCoordination extends Model{
         return $value;
     }
 
-    function getTwitter($twitter_access_token, $twitter_access_token_secret){
-        try{
-            $cowitter = new Client([
-                config('env.twitter-consumer-key'),
-                config('env.twitter-consumer-secret'),
-                $twitter_access_token,
-                $twitter_access_token_secret
-            ], [CURLOPT_CAINFO => __DIR__ . '/../resources/cacert.pem']);
-            return $cowitter->get('account/verify_credentials');
-        }catch(\RuntimeException $ignore){
-            return null;
-        }
-    }
 }

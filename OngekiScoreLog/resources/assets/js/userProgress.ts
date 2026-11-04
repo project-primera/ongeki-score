@@ -8,7 +8,7 @@ function noscroll(e){
 
 async function convert(element: HTMLElement, index: number) {
     try {
-        let pr: Html2CanvasPromise<HTMLCanvasElement> = html2canvas(element, {
+        let pr = html2canvas(element, {
             width: 640,
         });
 

@@ -54,3 +54,7 @@ b {
 .title.is-3:not(:first-child),.title.is-4:not(:first-child){
     margin-top: 1em;
 }
+// .buttons の中に form（CSRF 付き POST のボタン）を置くと、Bulma の .button 同士の間隔（margin-right）がフォームの境界で効かないので補う
+.buttons > form:not(:last-child) {
+    margin-right: 0.5rem;
+}

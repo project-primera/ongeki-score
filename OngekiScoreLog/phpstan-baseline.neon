@@ -1,0 +1,55 @@
+parameters:
+	ignoreErrors:
+		-
+			message: '#^Method App\\Http\\Controllers\\UserStatusController\:\:create\(\) should return Illuminate\\Http\\Response but return statement is missing\.$#'
+			identifier: return.missing
+			count: 1
+			path: app/Http/Controllers/UserStatusController.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\UserStatusController\:\:destroy\(\) should return Illuminate\\Http\\Response but return statement is missing\.$#'
+			identifier: return.missing
+			count: 1
+			path: app/Http/Controllers/UserStatusController.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\UserStatusController\:\:edit\(\) should return Illuminate\\Http\\Response but return statement is missing\.$#'
+			identifier: return.missing
+			count: 1
+			path: app/Http/Controllers/UserStatusController.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\UserStatusController\:\:index\(\) should return Illuminate\\Http\\Response but return statement is missing\.$#'
+			identifier: return.missing
+			count: 1
+			path: app/Http/Controllers/UserStatusController.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\UserStatusController\:\:show\(\) should return Illuminate\\Http\\Response but return statement is missing\.$#'
+			identifier: return.missing
+			count: 1
+			path: app/Http/Controllers/UserStatusController.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\UserStatusController\:\:store\(\) should return Illuminate\\Http\\Response but return statement is missing\.$#'
+			identifier: return.missing
+			count: 1
+			path: app/Http/Controllers/UserStatusController.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\UserStatusController\:\:update\(\) should return Illuminate\\Http\\Response but return statement is missing\.$#'
+			identifier: return.missing
+			count: 1
+			path: app/Http/Controllers/UserStatusController.php
+
+		-
+			message: '#^Result of static method App\\Services\\OngekiUtility\:\:IsEstimatedRateValueFromTitle\(\) \(void\) is used\.$#'
+			identifier: staticMethod.void
+			count: 1
+			path: app/Http/Controllers/ViewUserController.php
+
+		-
+			message: '#^Result of static method App\\Services\\OngekiUtility\:\:IsEstimatedRateValueFromTitle\(\) \(void\) is used\.$#'
+			identifier: staticMethod.void
+			count: 2
+			path: app/Http/Controllers/ViewUserRatingController.php

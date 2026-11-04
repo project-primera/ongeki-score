@@ -1,6 +1,8 @@
 <?php
 
-use Illuminate\Http\Request;
+use App\Http\Controllers\api\v2\MusicController;
+use App\Http\Controllers\api\v2\UserController;
+use Illuminate\Support\Facades\Route;
 
 /*
 |--------------------------------------------------------------------------
@@ -8,19 +10,14 @@ use Illuminate\Http\Request;
 |--------------------------------------------------------------------------
 |
 | Here is where you can register API routes for your application. These
-| routes are loaded by the RouteServiceProvider within a group which
-| is assigned the "api" middleware group. Enjoy building your API!
+| routes are loaded by the framework within a group which is assigned
+| the "api" middleware group and the "api" prefix.
 |
 */
 
 // From Bookmarklet
-Route::middleware('cors')->match(['post', 'options'], '/user/update', 'BookmarkletAccessController@postUserUpdate')->middleware('auth:api');
-
-Route::namespace('api')->group(function(){
-    Route::namespace('v2')->prefix('v2')->group(function(){
-        Route::middleware('cors')->get('/user/update/status', 'UserController@GetUpdateStatus')->middleware('auth:api');
-        Route::middleware('cors')->match(['post', 'options'], '/user/update', 'UserController@PostUpdate')->middleware('auth:api');
-
-        Route::middleware('cors')->get('/music/samename', 'MusicController@GetSameNameMusic');
-    });
+Route::prefix('v2')->group(function () {
+    Route::middleware('cors')->get('/user/update/status', [UserController::class, 'GetUpdateStatus'])->middleware('auth:api');
+    Route::middleware('cors')->match(['post', 'options'], '/user/update', [UserController::class, 'PostUpdate'])->middleware('auth:api');
+    Route::middleware('cors')->get('/music/samename', [MusicController::class, 'GetSameNameMusic']);
 });
