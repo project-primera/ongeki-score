@@ -39,8 +39,8 @@ return [
 
         'smtp' => [
             'transport' => 'smtp',
-            // 旧版の MAIL_ENCRYPTION は読まれない（Laravel 11 以降は scheme と port で決まる）。
-            // 587 番では STARTTLS をサーバーが広告していれば自動で使う。強制するなら MAIL_SCHEME=smtps と MAIL_PORT=465
+            // 旧版の MAIL_ENCRYPTION は接続方式には使われない（Laravel 11 以降は scheme と port で決まる。tls のときだけ下の require_tls に反映）。
+            // 587 番では STARTTLS をサーバーが広告していれば自動で使う。暗黙 TLS にするなら MAIL_SCHEME=smtps と MAIL_PORT=465
             'scheme' => env('MAIL_SCHEME'),
             'url' => env('MAIL_URL'),
             // host / port の既定値は旧版（Laravel 5.6 の config/mail.php）に合わせる
@@ -52,6 +52,10 @@ return [
             // MAIL_AUTO_TLS=false（STARTTLS を使わない）と MAIL_VERIFY_PEER=false（証明書検証を外す）を用意する。未設定なら既定（自動 STARTTLS・検証あり）
             'auto_tls' => env('MAIL_AUTO_TLS'),
             'verify_peer' => env('MAIL_VERIFY_PEER'),
+            // 旧版は MAIL_ENCRYPTION=tls なら STARTTLS を必須にしていた。自動 STARTTLS は「広告があれば使う」なので、
+            // tls を残している設定では必須のまま（広告が無ければ平文に落とさず送信失敗にする）。本番は未設定なので従来どおり自動。
+            // MAIL_REQUIRE_TLS で明示的に上書きできる
+            'require_tls' => env('MAIL_REQUIRE_TLS', env('MAIL_ENCRYPTION') === 'tls'),
             'timeout' => null,
             'local_domain' => env('MAIL_EHLO_DOMAIN', parse_url((string) env('APP_URL', 'http://localhost'), PHP_URL_HOST)),
         ],
