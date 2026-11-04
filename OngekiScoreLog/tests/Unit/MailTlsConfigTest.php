@@ -40,12 +40,23 @@ class MailTlsConfigTest extends TestCase
 
     public function test_require_tls_follows_the_legacy_mail_encryption_setting(): void
     {
-        $this->assertFalse($this->smtpConfig([])['require_tls']);
-        $this->assertFalse($this->smtpConfig(['MAIL_ENCRYPTION' => 'null'])['require_tls']);
+        // 旧版の既定は MAIL_ENCRYPTION=tls（STARTTLS 必須）。キーが無ければ必須のまま
+        $this->assertTrue($this->smtpConfig([])['require_tls']);
         $this->assertTrue($this->smtpConfig(['MAIL_ENCRYPTION' => 'tls'])['require_tls']);
-        // 明示的な指定が優先される
+        // null（本番の設定）・ssl・空は任意
+        $this->assertFalse($this->smtpConfig(['MAIL_ENCRYPTION' => 'null'])['require_tls']);
+        $this->assertFalse($this->smtpConfig(['MAIL_ENCRYPTION' => 'ssl'])['require_tls']);
+        $this->assertFalse($this->smtpConfig(['MAIL_ENCRYPTION' => ''])['require_tls']);
+    }
+
+    public function test_explicit_mail_require_tls_overrides_but_null_counts_as_unset(): void
+    {
         $this->assertFalse($this->smtpConfig(['MAIL_ENCRYPTION' => 'tls', 'MAIL_REQUIRE_TLS' => 'false'])['require_tls']);
-        $this->assertTrue($this->smtpConfig(['MAIL_REQUIRE_TLS' => 'true'])['require_tls']);
+        $this->assertTrue($this->smtpConfig(['MAIL_ENCRYPTION' => 'null', 'MAIL_REQUIRE_TLS' => 'true'])['require_tls']);
+        // =null は「外す」ではなく未設定扱い。明示した MAIL_ENCRYPTION=tls と旧版の既定を上書きしない
+        $this->assertTrue($this->smtpConfig(['MAIL_ENCRYPTION' => 'tls', 'MAIL_REQUIRE_TLS' => 'null'])['require_tls']);
+        $this->assertTrue($this->smtpConfig(['MAIL_REQUIRE_TLS' => 'null'])['require_tls']);
+        $this->assertFalse($this->smtpConfig(['MAIL_ENCRYPTION' => 'null', 'MAIL_REQUIRE_TLS' => 'null'])['require_tls']);
     }
 
     public function test_require_tls_reaches_the_smtp_transport(): void

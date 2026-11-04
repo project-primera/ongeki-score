@@ -52,10 +52,10 @@ return [
             // MAIL_AUTO_TLS=false（STARTTLS を使わない）と MAIL_VERIFY_PEER=false（証明書検証を外す）を用意する。未設定なら既定（自動 STARTTLS・検証あり）
             'auto_tls' => env('MAIL_AUTO_TLS'),
             'verify_peer' => env('MAIL_VERIFY_PEER'),
-            // 旧版は MAIL_ENCRYPTION=tls なら STARTTLS を必須にしていた。自動 STARTTLS は「広告があれば使う」なので、
-            // tls を残している設定では必須のまま（広告が無ければ平文に落とさず送信失敗にする）。本番は未設定なので従来どおり自動。
-            // MAIL_REQUIRE_TLS で明示的に上書きできる
-            'require_tls' => env('MAIL_REQUIRE_TLS', env('MAIL_ENCRYPTION') === 'tls'),
+            // 旧版は MAIL_ENCRYPTION（既定 tls）が tls なら STARTTLS を必須にしていた。自動 STARTTLS は「広告があれば使う」なので、
+            // 旧版の意味を引き継ぐ: キー無しと tls は必須（広告が無ければ平文に落とさず送信失敗）、null / ssl / 空は任意。
+            // MAIL_REQUIRE_TLS=true|false で明示的に上書きできる（null は未設定と同じ扱い。本番は MAIL_ENCRYPTION=null なので任意のまま）
+            'require_tls' => env('MAIL_REQUIRE_TLS') ?? env('MAIL_ENCRYPTION', 'tls') === 'tls',
             'timeout' => null,
             'local_domain' => env('MAIL_EHLO_DOMAIN', parse_url((string) env('APP_URL', 'http://localhost'), PHP_URL_HOST)),
         ],
