@@ -52,10 +52,11 @@ class Handler
 
     /**
      * 専用の view を持つステータスコード。
-     * 419 は CSRF トークン不一致（TokenMismatchException をフレームワークが 419 の HttpException に変換する）。
-     * 旧版は 500 ページを出していたが、利用者にはサイトの故障に見えるので「有効期限切れ」の案内を出す
+     * 403 は認可の失敗（can:admin の AuthorizationException をフレームワークが 403 の HttpException に変換する）、
+     * 419 は CSRF トークン不一致（TokenMismatchException を同じく 419 に変換する）。
+     * 旧版はどちらも 500 ページを出していたが、利用者にはサイトの故障に見えるので内容に合った案内を出す
      */
-    private const VIEW_STATUS_CODES = [404, 418, 419, 429, 500, 503];
+    private const VIEW_STATUS_CODES = [403, 404, 418, 419, 429, 500, 503];
 
     /**
      * Slack の添付に値を載せない入力。ログイン失敗やパスワード再設定の失敗で平文のパスワードが届いていた。
@@ -194,6 +195,17 @@ class Handler
 
         if ($exception instanceof NotFoundHttpException && self::isSecurityPage($request->path())) {
             return response()->view('errors/418', [], 418);
+        }
+
+        if ($exception instanceof AuthenticationException) {
+            // 未認証。旧版は 500 ページを出していた。
+            // API は常に 401 の JSON（ブックマークレットが原因を判別できるように）、
+            // 画面はフレームワーク既定の処理に任せて /login へ redirect する（bootstrap/app.php の redirectGuestsTo）
+            if ($request->is('api/*')) {
+                return response()->json(['message' => $exception->getMessage()], 401);
+            }
+
+            return null;
         }
 
         if ($exception instanceof HttpExceptionInterface) {

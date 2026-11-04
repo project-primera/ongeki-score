@@ -71,6 +71,8 @@ $app = Application::configure(basePath: dirname(__DIR__))
         );
 
         $middleware->redirectUsersTo('/home');
+        // 未ログインで auth 付きのページを開いたときの行き先（旧版は例外ハンドラが 500 ページを出していた）
+        $middleware->redirectGuestsTo('/login');
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         // 404 や認証失敗なども Slack 通知の分岐に通す（フレームワークの既定では report に回らない）
