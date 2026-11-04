@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Facades\Slack;
 use App\User;
 use Illuminate\Support\Facades\Artisan;
 use Tests\TestCase;
@@ -31,9 +32,29 @@ class AdminActionsTest extends TestCase
         $this->assertStringContainsString('<form method="post" action="/admin/apply/cache">', $html);
         $this->assertStringContainsString('<form method="post" action="/admin/generate/battle-score">', $html);
         $this->assertStringContainsString('<form method="post" action="/admin/generate/over-damage">', $html);
-        $this->assertStringContainsString('name="_token"', $html);
+        // 管理ページの 11 フォーム全てに CSRF トークンが入っていること（ナビのログアウトフォームの分では満たされないように、フォームごとに見る）
+        preg_match_all('/<form method="post" action="\/admin\/(?:apply|generate)\/[^"]+">(.*?)<\/form>/s', $html, $forms);
+        $this->assertCount(11, $forms[1]);
+        foreach ($forms[1] as $inner) {
+            $this->assertStringContainsString('name="_token"', $inner);
+        }
         $this->assertStringNotContainsString('href="/admin/apply/', $html);
         $this->assertStringNotContainsString('href="/admin/generate/', $html);
+    }
+
+    public function test_cross_site_post_without_token_is_rejected_and_runs_nothing(): void
+    {
+        // テスト実行中は CSRF 検証が飛ばされる（env が testing）ので、このテストだけ有効にする
+        $this->app['env'] = 'local';
+        Slack::spy();
+        Artisan::shouldReceive('call')->never();
+
+        $this->actingAs($this->admin())
+            ->post('/admin/apply/all/clear', [], ['Sec-Fetch-Site' => 'cross-site'])
+            ->assertStatus(419);
+        $this->actingAs($this->admin())
+            ->post('/admin/generate/battle-score', [], ['Sec-Fetch-Site' => 'cross-site'])
+            ->assertStatus(419);
     }
 
     public function test_get_only_redirects_to_the_admin_page_without_running_anything(): void

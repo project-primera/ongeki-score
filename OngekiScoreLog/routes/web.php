@@ -72,7 +72,8 @@ Route::get('/data-policy', [SimpleViewController::class, 'getDataPolicy']);
 Route::get('/changelog', [SimpleViewController::class, 'getChangelog']);
 
 Route::get('/home', [HomeController::class, 'index'])->name('home');
-// ログアウトは Auth::routes() の POST /logout（CSRF 付き）。GET で直接開かれた場合はトップへ戻す
+// ログアウトは Auth::routes() の POST /logout（CSRF 付き）。その後ここへ redirect され、未ログインなら「ログアウトしました」を出す。
+// ログイン中に GET で直接開かれた場合は何もせずトップへ戻す
 Route::get('/logout', [SimpleViewController::class, 'getLogout']);
 
 

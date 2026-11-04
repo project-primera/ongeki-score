@@ -118,19 +118,19 @@ class AdminController extends Controller{
         return view('admin/overdamage', compact(['result', 'musics', 'difficultyToStr']));
     }
 
-    /**
-     * '/config'にgetリクエストがあったときに呼び出されます。
-     * パラメータに合致する処理を行い、'/'にリダイレクトします。
-     *
-     * @param string $type 処理内容
-     * @param string $action 処理内容
-     * @return \Illuminate\Routing\Redirector|\Illuminate\Http\RedirectResponse
-     */
     /** 実行系の URL を GET で開かれたときは何もせず管理ページへ戻す（実行は CSRF 付きの POST のみ） */
     public function RedirectToIndex(){
         return redirect('/admin');
     }
 
+    /**
+     * '/admin/apply/{type}/{action?}' に POST リクエスト（CSRF 付き）があったときに呼び出されます。
+     * パラメータに合致するキャッシュ操作を行い、'/admin' にリダイレクトします。
+     *
+     * @param string $type 処理内容
+     * @param string $action 処理内容
+     * @return \Illuminate\Routing\Redirector|\Illuminate\Http\RedirectResponse
+     */
     public function PostApply($type, $action = null){
         $message = "パスが間違っています。";
 
