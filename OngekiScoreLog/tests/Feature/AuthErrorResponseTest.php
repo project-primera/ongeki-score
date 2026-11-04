@@ -41,8 +41,12 @@ class AuthErrorResponseTest extends TestCase
         Slack::spy();
 
         $this->get('/home')->assertRedirect('/login');
-        $this->get('/admin')->assertRedirect('/login');
         $this->get('/admin/config')->assertRedirect('/login');
+
+        // ログイン後に元のページへ戻れるよう、開こうとした URL がセッションに残ること
+        $this->get('/admin')
+            ->assertRedirect('/login')
+            ->assertSessionHas('url.intended', url('/admin'));
     }
 
     public function test_non_admin_gets_the_403_page_on_admin_pages(): void
