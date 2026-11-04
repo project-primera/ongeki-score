@@ -1,5 +1,21 @@
 <?php
 
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\AdminController;
+use App\Http\Controllers\BookmarkletGenerateController;
+use App\Http\Controllers\HomeController;
+use App\Http\Controllers\SettingController;
+use App\Http\Controllers\SimpleViewController;
+use App\Http\Controllers\ViewAllUserController;
+use App\Http\Controllers\ViewMusicExtraLevelController;
+use App\Http\Controllers\ViewMusicStatisticsController;
+use App\Http\Controllers\ViewUserController;
+use App\Http\Controllers\ViewUserMusicController;
+use App\Http\Controllers\ViewUserProgressController;
+use App\Http\Controllers\ViewUserRatingController;
+use App\Http\Controllers\ViewUserTrophyController;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -13,63 +29,71 @@
 
 Auth::routes();
 
-Route::get('/', 'SimpleViewController@getIndex');
+Route::get('/', [SimpleViewController::class, 'getIndex']);
 
-Route::get('/user/{id}/progress/{generation?}', 'ViewUserProgressController@getIndex')->where(['id' => '\d+', 'generation' => '\d+']);
-Route::get('/user/{id}/rating', 'ViewUserRatingController@getIndex')->where(['id' => '\d+']);
-Route::get('/user/{id}/trophy', 'ViewUserTrophyController@getIndex')->where(['id' => '\d+']);
-Route::get('/user/{id}/music/{music}/{difficulty}', 'ViewUserMusicController@getIndex')->where(['id' => '\d+', 'music' => '\d+', 'difficulty' => '\w+']);
-Route::get('/user/{id}/music/{music}', 'ViewUserMusicController@getRedirect')->where(['id' => '\d+', 'music' => '\d+']);
-Route::get('/user/{id}/battlescore/{difficulty?}', 'ViewUserController@getBattleScorePage')->where(['id' => '\d+', 'difficulty' => '\w+']);
-Route::get('/user/{id}/overdamage/{difficulty?}', 'ViewUserController@getOverDamegePage')->where(['id' => '\d+', 'difficulty' => '\w+']);
-Route::get('/user/{id}/{mode?}', 'ViewUserController@getUserPage')->where(['id' => '\d+']);
+Route::get('/user/{id}/progress/{generation?}', [ViewUserProgressController::class, 'getIndex'])->where(['id' => '\d+', 'generation' => '\d+']);
+Route::get('/user/{id}/rating', [ViewUserRatingController::class, 'getIndex'])->where(['id' => '\d+']);
+Route::get('/user/{id}/trophy', [ViewUserTrophyController::class, 'getIndex'])->where(['id' => '\d+']);
+Route::get('/user/{id}/music/{music}/{difficulty}', [ViewUserMusicController::class, 'getIndex'])->where(['id' => '\d+', 'music' => '\d+', 'difficulty' => '\w+']);
+Route::get('/user/{id}/music/{music}', [ViewUserMusicController::class, 'getRedirect'])->where(['id' => '\d+', 'music' => '\d+']);
+Route::get('/user/{id}/battlescore/{difficulty?}', [ViewUserController::class, 'getBattleScorePage'])->where(['id' => '\d+', 'difficulty' => '\w+']);
+Route::get('/user/{id}/overdamage/{difficulty?}', [ViewUserController::class, 'getOverDamegePage'])->where(['id' => '\d+', 'difficulty' => '\w+']);
+Route::get('/user/{id}/{mode?}', [ViewUserController::class, 'getUserPage'])->where(['id' => '\d+']);
 
 Route::middleware('throttle:1,1')->group(function () {
-    Route::get('/music/{music}/{difficulty}', 'ViewMusicStatisticsController@getIndex')->where(['music' => '\d+', 'difficulty' => '\w+']);
-    Route::get('/music/{music}', 'ViewMusicStatisticsController@getRedirect')->where(['music' => '\d+']);
+    Route::get('/music/{music}/{difficulty}', [ViewMusicStatisticsController::class, 'getIndex'])->where(['music' => '\d+', 'difficulty' => '\w+']);
+    Route::get('/music/{music}', [ViewMusicStatisticsController::class, 'getRedirect'])->where(['music' => '\d+']);
 });
 
-Route::get('/music', 'ViewMusicExtraLevelController@getIndex');
+Route::get('/music', [ViewMusicExtraLevelController::class, 'getIndex']);
 
-Route::get('/random', 'ViewUserController@redirectRandomUserPage');
-Route::get('/mypage/{path?}', 'ViewUserController@getMyUserPage');
+Route::get('/random', [ViewUserController::class, 'redirectRandomUserPage']);
+Route::get('/mypage/{path?}', [ViewUserController::class, 'getMyUserPage']);
 
 Route::redirect('/alluser', '/user', 301);
-Route::get('/user', 'ViewAllUserController@getIndex');
+Route::get('/user', [ViewAllUserController::class, 'getIndex']);
 
-Route::get('/bookmarklet', 'BookmarkletGenerateController@getIndex');
-Route::get('/bookmarklet/agree', 'BookmarkletGenerateController@getBookmarklet');
-Route::get('/setting', 'SettingController@getSetting');
-Route::get('/setting/private', 'SettingController@getSettingPrivate');
-Route::get('/setting/public', 'SettingController@getSettingPublic');
-#Route::get('/setting/twitter', 'SettingController@getTwitterAuthentication');
+Route::get('/bookmarklet', [BookmarkletGenerateController::class, 'getIndex']);
+// 生成は CSRF 付きの POST。GET で直接開かれた場合は同意ページへ戻す
+Route::get('/bookmarklet/agree', [BookmarkletGenerateController::class, 'getAgree']);
+Route::post('/bookmarklet/agree', [BookmarkletGenerateController::class, 'postBookmarklet']);
+Route::get('/setting', [SettingController::class, 'getSetting']);
+// 公開/非公開の切り替えは CSRF 付きの POST。GET で直接開かれた場合は設定ページへ戻す
+Route::get('/setting/private', [SettingController::class, 'redirectToSetting']);
+Route::post('/setting/private', [SettingController::class, 'postSettingPrivate']);
+Route::get('/setting/public', [SettingController::class, 'redirectToSetting']);
+Route::post('/setting/public', [SettingController::class, 'postSettingPublic']);
 
-Route::get('/howto', 'SimpleViewController@getHowto');
-Route::get('/faq', 'SimpleViewController@getFAQ');
-Route::get('/eula', 'SimpleViewController@getEula');
-Route::get('/data-policy', 'SimpleViewController@getDataPolicy');
+Route::get('/howto', [SimpleViewController::class, 'getHowto']);
+Route::get('/faq', [SimpleViewController::class, 'getFAQ']);
+Route::get('/eula', [SimpleViewController::class, 'getEula']);
+Route::get('/data-policy', [SimpleViewController::class, 'getDataPolicy']);
 
-Route::get('/changelog', 'SimpleViewController@getChangelog');
+Route::get('/changelog', [SimpleViewController::class, 'getChangelog']);
 
-Route::get('/home', 'HomeController@index')->name('home');
-Route::get('/logout', 'SimpleViewController@getLogout');
+Route::get('/home', [HomeController::class, 'index'])->name('home');
+// ログアウトは Auth::routes() の POST /logout（CSRF 付き）。その後ここへ redirect され、未ログインなら「ログアウトしました」を出す。
+// ログイン中に GET で直接開かれた場合は何もせずトップへ戻す
+Route::get('/logout', [SimpleViewController::class, 'getLogout']);
 
-Route::get('/tweet/image', 'TweetController@getIndex');
-Route::post('/tweet/image', 'TweetController@postTweetImage');
 
 // for admin
 Route::group(['middleware' => ['auth', 'can:admin']], function () {
-    Route::get('/admin', 'AdminController@GetIndex');
-    Route::get('/admin/config', 'AdminController@GetConfig');
-    Route::get('/admin/battle', 'AdminController@GetBattle');
-    Route::get('/admin/overdamage', 'AdminController@GetOverDamage');
-    Route::get('/admin/apply/{type}/{action?}', 'AdminController@GetApply');
-    Route::get('/admin/generate/battle-score', 'AdminController@GetGenerateBattleScore');
-    Route::get('/admin/generate/over-damage', 'AdminController@GetGenerateOverDamage');
-    Route::get('/admin/log/{path}/{fileName}', 'SimpleViewController@getLogFile');
+    Route::get('/admin', [AdminController::class, 'GetIndex']);
+    Route::get('/admin/config', [AdminController::class, 'GetConfig']);
+    Route::get('/admin/battle', [AdminController::class, 'GetBattle']);
+    Route::get('/admin/overdamage', [AdminController::class, 'GetOverDamage']);
+    // キャッシュ操作と統計生成は CSRF 付きの POST。GET で直接開かれた場合は管理ページへ戻す（旧版は GET で実行していた）
+    Route::get('/admin/apply/{type}/{action?}', [AdminController::class, 'RedirectToIndex']);
+    Route::post('/admin/apply/{type}/{action?}', [AdminController::class, 'PostApply']);
+    Route::get('/admin/generate/battle-score', [AdminController::class, 'RedirectToIndex']);
+    Route::post('/admin/generate/battle-score', [AdminController::class, 'PostGenerateBattleScore']);
+    Route::get('/admin/generate/over-damage', [AdminController::class, 'RedirectToIndex']);
+    Route::post('/admin/generate/over-damage', [AdminController::class, 'PostGenerateOverDamage']);
+    Route::get('/admin/log/{path}/{fileName}', [SimpleViewController::class, 'getLogFile']);
 });
 
 /*  for debug
-Route::get('/version/update', 'SimpleViewController@versionUpdate');
-Route::get('/t/{s}', 'SimpleViewController@testTweet');
+Route::get('/version/update', [SimpleViewController::class, 'versionUpdate']);
+Route::get('/t/{s}', [SimpleViewController::class, 'testTweet']);
 */

@@ -9,7 +9,7 @@
 @endsection
 
 @section('additional_footer')
-    <script type="text/javascript" src="{{ mix('/js/sortTable.js') }}"></script>
+    @vite('resources/assets/js/sortTable.js')
 @endsection
 
 @section('content')

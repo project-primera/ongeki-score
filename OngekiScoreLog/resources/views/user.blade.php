@@ -4,8 +4,8 @@
 @section('hero_subtitle', $status[0]->trophy)
 @section('hero_title', $status[0]->name)
 @section('additional_footer')
-    <script type="text/javascript" src="{{ mix('/js/sortTable.js') }}"></script>
-    <script type="text/javascript" src="{{ mix('/js/tableScalable.js') }}"></script>
+    @vite('resources/assets/js/sortTable.js')
+    @vite('resources/assets/js/tableScalable.js')
 @endsection
 @if(isset($sidemark) && !is_null($sidemark))
     @section($sidemark, "is-active")

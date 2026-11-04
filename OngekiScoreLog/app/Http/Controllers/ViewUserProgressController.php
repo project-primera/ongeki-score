@@ -9,18 +9,17 @@ use App\User;
 use App\UserStatus;
 use App\ScoreData;
 use App\ApplicationVersion;
-use App\ExternalServiceCoordination;
 
 class ViewUserProgressController extends Controller
 {
-    function getIndex(Request $request, int $id, int $generation = null){
-        function shapingKeys($array){
+    function getIndex(Request $request, int $id, ?int $generation = null){
+        $shapingKeys = function ($array) {
             $ret = [];
             foreach ($array as $value) {
                 $ret[$value->song_id][$value->difficulty] = $value;
             }
             return $ret;
-        }
+        };
 
         $userStatus = new UserStatus();
         $status = $userStatus->getRecentUserData($id);
@@ -79,16 +78,6 @@ class ViewUserProgressController extends Controller
         $user = \Auth::user();
         if($user !== null){
             $isLoggedIn = true;
-            $external = new ExternalServiceCoordination();
-            $ret = $external->get($user->id);
-            if(count($ret) !== 0){
-                // Twitterの連携情報を実際に使ってみて確認
-                $twitter = $external->getTwitter($ret[0]->twitter_access_token, $ret[0]->twitter_access_token_secret);
-                if($twitter !== null){
-                    $isTwitterEnabled = true;
-                    $twitterScreenName = $twitter->screen_name;
-                }
-            }
         }
         # レーティングの計算を行うのでプレミアムかどうかの確認をする。
         $isPremium = false;
@@ -191,8 +180,8 @@ class ViewUserProgressController extends Controller
             }
         }
 
-        $old = shapingKeys((new ScoreData)->getSpecifiedGenerationUserScore($id, $generation - $fixedGeneration)->addDetailedData()->getValue());
-        $new = shapingKeys((new ScoreData)->getRecentUserScore($id)->addMusicData()->addDetailedData()->getValue());
+        $old = $shapingKeys((new ScoreData)->getSpecifiedGenerationUserScore($id, $generation - $fixedGeneration)->addDetailedData()->getValue());
+        $new = $shapingKeys((new ScoreData)->getRecentUserScore($id)->addMusicData()->addDetailedData()->getValue());
 
         $date["new"] = date("Y/m/d H:i", strtotime($display['select_last']["value"]));
         if($date["new"] === date("Y/m/d H:i", strtotime(0))){

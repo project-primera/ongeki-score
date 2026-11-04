@@ -31,9 +31,8 @@ jobs:
           sudo dpkg -i dockle.deb
           rm dockle.deb
       - name: Check image with dockle
-        # CIS-DI-0001: Create a user for the container
         # DKL-DI-0006: Avoid latest tag
-        run: dockle -i CIS-DI-0001 -i DKL-DI-0006 ${IMAGE_NAME}
+        run: dockle -i DKL-DI-0006 ${IMAGE_NAME}
       - name: Slack Notification
         uses: 8398a7/action-slack@v2
         if: cancelled() || failure()
