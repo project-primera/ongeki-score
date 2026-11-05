@@ -19,7 +19,7 @@
         "larastan/larastan": "^3.13",
         "mockery/mockery": "^1.6",
         "nunomaduro/collision": "^8.8",
-        "phpunit/phpunit": "^12.5"
+        "phpunit/phpunit": "^13.4"
     },
     "autoload": {
         "files": [
