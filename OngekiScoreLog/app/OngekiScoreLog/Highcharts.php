@@ -1,5 +1,5 @@
 <?php
-namespace app\OngekiScoreLog;
+namespace App\OngekiScoreLog;
 
 class Highcharts
 {
@@ -53,7 +53,7 @@ class Highcharts
         return $this;
     }
 
-    public function addXAxis(string $title, array $data = [], bool $isRight = false, int $width = null, string $formatter = null, bool $hideAxis = false, int $min = null, $max = null, int $tickInterval = null)
+    public function addXAxis(string $title, array $data = [], bool $isRight = false, ?int $width = null, ?string $formatter = null, bool $hideAxis = false, ?int $min = null, $max = null, ?int $tickInterval = null)
     {
         $c = new \stdClass();
         $c->title = $title;
@@ -68,7 +68,7 @@ class Highcharts
         $this->xAxis[] = $c;
         return $this;
     }
-    public function addYAxis(string $title, array $data = [], bool $isRight = false, int $width = null, string $formatter = null, bool $hideAxis = false, int $min = null, $max = null, int $tickInterval = null)
+    public function addYAxis(string $title, array $data = [], bool $isRight = false, ?int $width = null, ?string $formatter = null, bool $hideAxis = false, ?int $min = null, $max = null, ?int $tickInterval = null)
     {
         $c = new \stdClass();
         $c->title = $title;
@@ -84,7 +84,7 @@ class Highcharts
         return $this;
     }
 
-    public function addSeries(string $name, array $a, int $axis = 0, string $type = null, string $color = null)
+    public function addSeries(string $name, array $a, int $axis = 0, ?string $type = null, ?string $color = null)
     {
         $c = new \stdClass();
         $c->name = $name;

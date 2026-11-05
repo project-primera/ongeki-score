@@ -4,7 +4,7 @@
 @section('sidemark_alluser', "is-active")
 @section('hero_title', "すべてのユーザー")
 @section('additional_footer')
-    <script type="text/javascript" src="{{ mix('/js/sortAllUserTable.js') }}"></script>
+    @vite('resources/assets/js/sortAllUserTable.js')
 @endsection
 
 @section('content')

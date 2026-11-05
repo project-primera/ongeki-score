@@ -68,9 +68,8 @@ jobs:
           sudo dpkg -i dockle.deb
           rm dockle.deb
       - name: Check image with dockle
-        # CIS-DI-0001: Create a user for the container
         # DKL-DI-0006: Avoid latest tag
-        run: dockle --exit-code 1 --exit-level warn -i CIS-DI-0001 -i DKL-DI-0006 ${IMAGE_NAME}
+        run: dockle --exit-code 1 --exit-level warn -i DKL-DI-0006 ${IMAGE_NAME}
       - name: Slack Notification
         uses: 8398a7/action-slack@v2
         if: cancelled() || failure()
@@ -94,8 +93,8 @@ jobs:
       - name: Install trivy
         run: |
           sudo apt-get install apt-transport-https gnupg
-          wget -qO - https://aquasecurity.github.io/trivy-repo/deb/public.key | sudo apt-key add -
-          echo deb https://aquasecurity.github.io/trivy-repo/deb $(lsb_release -cs) main | sudo tee -a /etc/apt/sources.list.d/trivy.list
+          wget -qO - https://aquasecurity.github.io/trivy-repo/deb/public.key | sudo gpg --dearmor --yes -o /usr/share/keyrings/trivy.gpg
+          echo "deb [signed-by=/usr/share/keyrings/trivy.gpg] https://aquasecurity.github.io/trivy-repo/deb $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/trivy.list
           sudo apt-get update
           sudo apt-get install trivy
       - name: Vulnerability scan with trivy

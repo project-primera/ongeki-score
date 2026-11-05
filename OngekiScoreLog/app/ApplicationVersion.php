@@ -7,7 +7,6 @@ use DateTime;
 use DateTimeZone;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
-use App\AdminTweet;
 
 class ApplicationVersion extends Model
 {

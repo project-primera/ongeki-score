@@ -27,6 +27,7 @@ class NotifySlack extends Model
 
     public function routeNotificationForSlack()
     {
-        return $this->webhook;
+        // webhook が未設定のときは送信しない（false を返すと Slack チャネルが何もしない）
+        return $this->webhook ?: false;
     }
 }

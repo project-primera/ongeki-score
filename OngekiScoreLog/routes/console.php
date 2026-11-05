@@ -1,18 +1,29 @@
 <?php
 
-use Illuminate\Foundation\Inspiring;
+use Illuminate\Support\Facades\Schedule;
 
 /*
 |--------------------------------------------------------------------------
-| Console Routes
+| Console Routes / Schedule
 |--------------------------------------------------------------------------
 |
-| This file is where you may define all of your Closure based console
-| commands. Each Closure is bound to a command instance allowing a
-| simple approach to interacting with each command's IO methods.
+| 旧 app/Console/Kernel.php の schedule() をここへ移した。
+| コマンドクラスは app/Console/Commands 以下から自動で登録される。
 |
 */
 
-Artisan::command('inspire', function () {
-    $this->comment(Inspiring::quote());
-})->describe('Display an inspiring quote');
+// 毎月 1 日 7:00 に全ユーザーの課金状態をリセットする
+Schedule::call(function () {
+    \App\UserInformation::ResetAllUserPaymentState();
+    \App\Facades\Slack::Info("<!here> すべてのユーザーの課金情報をリセットしました。");
+})->monthlyOn(1, '7:00');
+
+// バトルスコア集計
+Schedule::call(function () {
+    \App\AggregateBattleScore::execute();
+})->dailyAt('4:10');
+
+// オーバーダメージ集計
+Schedule::call(function () {
+    \App\AggregateOverdamage::execute();
+})->dailyAt('4:10');

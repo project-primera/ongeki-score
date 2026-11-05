@@ -4,7 +4,7 @@
 @section('hero_subtitle', $status[0]->trophy)
 @section('hero_title', $status[0]->name)
 @section('additional_footer')
-    <script type="text/javascript" src="{{ mix('/js/sortTrophy.js') }}"></script>
+    @vite('resources/assets/js/sortTrophy.js')
 @endsection
 
 @if(isset($sidemark) && !is_null($sidemark))

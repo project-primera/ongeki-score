@@ -53,7 +53,7 @@ class OngekiUtility {
             ];
             $difficulty = $keys[$difficulty];
         }else if(!is_string($difficulty)){
-            throw new InvalidArgumentException();
+            throw new \InvalidArgumentException();
         }
 
         $sameNameList = array_flip($this::$MusicData->getSameMusicList());
@@ -86,7 +86,7 @@ class OngekiUtility {
             ];
             $difficulty = $keys[$difficulty];
         }else if(!is_string($difficulty)){
-            throw new InvalidArgumentException();
+            throw new \InvalidArgumentException();
         }
 
         $sameNameList = array_flip($this::$MusicData->getSameMusicList());
@@ -113,7 +113,7 @@ class OngekiUtility {
             ];
             $difficulty = $keys[$difficulty];
         }else if(!is_string($difficulty)){
-            throw new InvalidArgumentException();
+            throw new \InvalidArgumentException();
         }
 
         $sameNameList = array_flip($this::$MusicData->getSameMusicList());
@@ -209,7 +209,7 @@ class OngekiUtility {
             ];
             $difficulty = $keys[$difficulty];
         }elseif(!is_string($difficulty)){
-            throw new InvalidArgumentException();
+            throw new \InvalidArgumentException();
         }
 
         // ☆6以上は5として扱う

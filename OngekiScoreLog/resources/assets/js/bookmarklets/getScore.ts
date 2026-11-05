@@ -1,18 +1,37 @@
-import * as $ from 'jquery';
+import $ from 'jquery';
 import axios from 'axios';
-import * as qs from 'qs';
+import qs from 'qs';
 import * as pako from 'pako';
 
 (function () {
+    // このスクリプト自身の URL（<APP_URL>/bookmarklets/main.js?t=<token>）。
+    // token の切り出しとスコアツールの URL の導出に使う。document.currentScript は
+    // 同期実行中にしか参照できないので最初に保持しておく。
+    const SCRIPT_URL: string = (function () {
+        if (document.currentScript) {
+            return (document.currentScript as HTMLScriptElement).src;
+        }
+        const scripts = document.getElementsByTagName('script');
+        const script = scripts[scripts.length - 1];
+        return script && script.src ? script.src : "";
+    })();
+
     const NET_DOMAIN = "ongeki-net.com";
     const NET_URL = "https://" + NET_DOMAIN + "/ongeki-mobile";
-    const TOOL_URL = process.env.MIX_APP_URL;
+    const TOOL_URL = (function () {
+        try {
+            return new URL(SCRIPT_URL).origin;
+        } catch (e) {
+            alert("ブックマークレットの読み込み元 URL を特定できませんでした。ブックマークレットを再生成してください。");
+            throw e;
+        }
+    })();
     const API_URL = TOOL_URL + "/api/v2";
 
     const REQUEST_KEY = "?t=";
-    const PRODUCT_NAME = process.env.MIX_APP_NAME;
-    const VERSION = process.env.MIX_APPLICATION_VERSION;
-    const COMMIT_HASH = process.env.MIX_COMMIT_HASH;
+    const PRODUCT_NAME = import.meta.env.VITE_APP_NAME || "OngekiScoreLog";
+    const VERSION = import.meta.env.VITE_APPLICATION_VERSION;
+    const COMMIT_HASH = import.meta.env.VITE_COMMIT_HASH;
 
     const SLEEP_MSEC = 1000;
     const PAGE_SIZE = 500;
@@ -174,15 +193,23 @@ import * as pako from 'pako';
         Master = 3,
         Lunatic = 10,
     }
-
+    enum UpdateState {
+        NoUpdate = 0, // 前回更新からプレイ無し
+        PartialUpdate = 1, // 前回更新からプレイあり、且つ超過していない
+        HistoryExceeded = 2, // 最古履歴が前回更新より後
+        HistoryEmpty = 3, // 履歴が空 オンゲキNet自体に登録されていない曲を50曲プレイすると起こりえる。
+        TimeParseError = 4, // 時間パースに失敗
+    }
     class ScoreData {
         private songInfos = new Array<SongInfo>();
         private sameNameList = null;
-        // 空の場合は全曲取得のフラグとして扱う
         private songToUpload = [];
-
+        private updateState: UpdateState = UpdateState.NoUpdate;
         public async GetArrayLength() {
             return this.songInfos.length;
+        }
+        public async GetUpdateState() {
+            return this.updateState;
         }
 
         public async GetUploadArrayLength() {
@@ -228,28 +255,47 @@ import * as pako from 'pako';
                 this.sameNameList = await SameNameMusicList.get();
             }
             var parseHTML = $.parseHTML(html);
-            var $innerContainer3 = $(parseHTML).find(".container3").children(".m_10")
+            var $innerContainer3 = $(parseHTML).find(".container3").children(".m_10");
             // 履歴があるなら履歴参照。なければ全曲取得
+            if (isNaN(timestamp.getTime())) {
+                this.updateState = UpdateState.TimeParseError;
+                this.songToUpload = [];
+                return;
+            }
             if ($innerContainer3.length > 0) {
                 // もっとも古い履歴の更新日時が最終更新日時以降なら全曲取得に変更
                 let recentUpdate = new Date($innerContainer3.last().find("span.f_r.h_10").text());
+                if (isNaN(recentUpdate.getTime())) {
+                    this.updateState = UpdateState.TimeParseError;
+                    this.songToUpload = [];
+                    return;
+                }
                 if (recentUpdate > timestamp) {
+                    this.updateState = UpdateState.HistoryExceeded;
                     this.songToUpload = [];
                     return;
                 }
             } else {
                 // 50連続でオンゲキnetに登録されていない曲をプレイすると履歴が空になり、全曲取得が必要になる。
+                this.updateState = UpdateState.HistoryEmpty;
                 this.songToUpload = [];
                 return;
             }
 
             $innerContainer3.each((key, value) => {
                 if ($(value).hasClass("m_10")){
-                    if (new Date($(value).find("span.f_r.h_10").text()) > timestamp) {
+                    let playDate = new Date($(value).find("span.f_r.h_10").text());
+                    if (isNaN(playDate.getTime())) {
+                        this.updateState = UpdateState.TimeParseError;
+                        this.songToUpload = [];
+                        return false;
+                    }
+                    if (playDate > timestamp) {
                         var $elem = $(value).find(".m_5.l_h_10.break");
                         // 履歴から取得した曲名には改行コードとタブ制御文字が含まれているので削除
                         var songTitle = $elem.text().replace(/\n/g,"").replace(/\t/g,"");
                         if (this.songToUpload.indexOf(songTitle) === -1) {
+                            this.updateState = UpdateState.PartialUpdate;
                             this.songToUpload.push(songTitle);
                         }
                     }
@@ -283,7 +329,7 @@ import * as pako from 'pako';
             let artist = '';
 
             // プレイ履歴から取得した曲があるかチェック
-            if (this.songToUpload.length !== 0) {
+            if (this.updateState === UpdateState.PartialUpdate) {
                 // プレイ履歴に存在しない曲ならスキップする
                 if (this.songToUpload.indexOf(name) === -1) {
                     return;
@@ -571,18 +617,7 @@ import * as pako from 'pako';
     });
 
     var getToken = (function () {
-        let url: string;
-        if (document.currentScript) {
-            url = (document.currentScript as HTMLScriptElement).src;
-        } else {
-            var scripts = document.getElementsByTagName('script'),
-                script = scripts[scripts.length - 1];
-            if (script.src) {
-                url = script.src;
-            } else {
-                url = "";
-            }
-        }
+        const url = SCRIPT_URL;
         return url.slice(url.indexOf(REQUEST_KEY) + REQUEST_KEY.length);
     });
 
@@ -691,8 +726,15 @@ import * as pako from 'pako';
 
             echo(await getTime() + "更新対象曲を取得します。");
             await scoreData.getScoreHtmlFromRecent(lastUpdate);
-            if (await scoreData.GetUploadArrayLength() === 0) {
-                echo(await getTime() + "前回更新からのプレイ曲数が50曲を超えているか、プレイが行われていないため全件取得を行います。");
+            let scoreDataUpdateState = await scoreData.GetUpdateState();
+            if (scoreDataUpdateState === UpdateState.NoUpdate) {
+                echo(await getTime() + "前回更新からプレイが行われていないため、全件取得を行います。");
+            } else if(scoreDataUpdateState === UpdateState.HistoryExceeded) {
+                echo(await getTime() + "前回更新以降のプレイ履歴をすべて確認できないため、全件取得を行います。");
+            } else if(scoreDataUpdateState === UpdateState.HistoryEmpty) {
+                echo(await getTime() + "履歴が空であるため、全件取得を行います。");
+            } else if(scoreDataUpdateState === UpdateState.TimeParseError) {
+                echo(await getTime() + "プレイ時間の取得に失敗したため、全件取得を行います。")
             } else {
                 echo(await getTime() + "前回更新からの曲のみを取得します。<br>全件取得を行いたい場合はもう一度実行してください。");
                 console.log("前回更新からのプレイ曲数: " + await scoreData.GetUploadArrayLength() + "曲");
