@@ -26,7 +26,7 @@ import * as pako from 'pako';
             throw e;
         }
     })();
-    const API_URL = TOOL_URL + "/api/v2";
+    const API_URL = TOOL_URL + "/api/v3";
 
     const REQUEST_KEY = "?t=";
     const PRODUCT_NAME = import.meta.env.VITE_APP_NAME || "OngekiScoreLog";
