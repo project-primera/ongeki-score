@@ -1,6 +1,7 @@
 import $ from 'jquery';
 import axios from 'axios';
 import qs from 'qs';
+import * as pako from 'pako';
 
 (function () {
     // このスクリプト自身の URL（<APP_URL>/bookmarklets/main.js?t=<token>）。
@@ -25,7 +26,7 @@ import qs from 'qs';
             throw e;
         }
     })();
-    const API_URL = TOOL_URL + "/api/v2";
+    const API_URL = TOOL_URL + "/api/v3";
 
     const REQUEST_KEY = "?t=";
     const PRODUCT_NAME = import.meta.env.VITE_APP_NAME || "OngekiScoreLog";
@@ -33,6 +34,7 @@ import qs from 'qs';
     const COMMIT_HASH = import.meta.env.VITE_COMMIT_HASH;
 
     const SLEEP_MSEC = 1000;
+    const PAGE_SIZE = 500;
 
     class SameNameMusicList {
         static async get() {
@@ -215,7 +217,7 @@ import qs from 'qs';
         }
 
         public async GetPartialArray($page = 0) {
-            return this.songInfos.slice($page * 50, $page * 50 + 50);
+            return this.songInfos.slice($page * PAGE_SIZE, $page * PAGE_SIZE + PAGE_SIZE);
         }
 
         public async Clear() {
@@ -394,7 +396,7 @@ import qs from 'qs';
         }
 
         public async GetPartialArray($page = 0) {
-            return this.trophyInfos.slice($page * 50, $page * 50 + 50);
+            return this.trophyInfos.slice($page * PAGE_SIZE, $page * PAGE_SIZE + PAGE_SIZE);
         }
 
         async getData() {
@@ -578,12 +580,18 @@ import qs from 'qs';
             | PlayerData | Array<SongInfo> | Array<TrophyInfo>
             | CharacterFriendlyData | RatingPlatinumMusicData)
         {
-            let d = {
+            // 圧縮して送信
+            let jsonData = JSON.stringify(data);
+            let gzData = pako.gzip(jsonData);
+            let b64Data = toBase64(gzData);
+
+            let sendData = {
                 'hash': this.hash,
                 'methodType': methodType,
-                'data': data,
+                'data': b64Data,
             };
-            await axios.post(API_URL + "/user/update", qs.stringify(d), {
+            let encodedSendData = qs.stringify(sendData);
+            await axios.post(API_URL + "/user/update", encodedSendData, {
                 headers: {
                     Authorization: "Bearer " + this.token,
                 }
@@ -606,6 +614,19 @@ import qs from 'qs';
         return new Promise<void>(resolve => {
             setTimeout(() => resolve(), milliseconds);
         });
+    });
+
+    /**
+     * バイト列を base64 文字列にする。
+     * String.fromCharCode に一度に渡せる引数の数には上限があるため、分割して変換する。
+     */
+    var toBase64 = (function (bytes: Uint8Array) {
+        const CHUNK_SIZE = 0x8000;
+        let binary = "";
+        for (let i = 0; i < bytes.length; i += CHUNK_SIZE) {
+            binary += String.fromCharCode(...bytes.subarray(i, i + CHUNK_SIZE));
+        }
+        return btoa(binary);
     });
 
     var getToken = (function () {
@@ -737,7 +758,7 @@ import qs from 'qs';
             scoreData.Clear();
             await scoreData.GetDifficultyScoreData(Difficulty.Lunatic);
             echo(await getTime() + "スコアデータを送信します。");
-            length = Math.ceil(await scoreData.GetArrayLength() / 50);
+            length = Math.ceil(await scoreData.GetArrayLength() / PAGE_SIZE);
             for (let index = 0; index < length; ++index) {
                 echo(await getTime() + " " + (index + 1) + ": 送信...");
                 await postData.Post(MethodType.Score, await scoreData.GetPartialArray(index));
@@ -749,7 +770,7 @@ import qs from 'qs';
             scoreData.Clear();
             await scoreData.GetDifficultyScoreData(Difficulty.Master);
             echo(await getTime() + "スコアデータを送信します。");
-            length = Math.ceil(await scoreData.GetArrayLength() / 50);
+            length = Math.ceil(await scoreData.GetArrayLength() / PAGE_SIZE);
             for (let index = 0; index < length; ++index) {
                 echo(await getTime() + " " + (index + 1) + ": 送信...");
                 await postData.Post(MethodType.Score, await scoreData.GetPartialArray(index));
@@ -761,7 +782,7 @@ import qs from 'qs';
             scoreData.Clear();
             await scoreData.GetDifficultyScoreData(Difficulty.Expert);
             echo(await getTime() + "スコアデータを送信します。");
-            length = Math.ceil(await scoreData.GetArrayLength() / 50);
+            length = Math.ceil(await scoreData.GetArrayLength() / PAGE_SIZE);
             for (let index = 0; index < length; ++index) {
                 echo(await getTime() + " " + (index + 1) + ": 送信...");
                 await postData.Post(MethodType.Score, await scoreData.GetPartialArray(index));
@@ -773,7 +794,7 @@ import qs from 'qs';
             scoreData.Clear();
             await scoreData.GetDifficultyScoreData(Difficulty.Advanced);
             echo(await getTime() + "スコアデータを送信します。");
-            length = Math.ceil(await scoreData.GetArrayLength() / 50);
+            length = Math.ceil(await scoreData.GetArrayLength() / PAGE_SIZE);
             for (let index = 0; index < length; ++index) {
                 echo(await getTime() + " " + (index + 1) + ": 送信...");
                 await postData.Post(MethodType.Score, await scoreData.GetPartialArray(index));
@@ -785,7 +806,7 @@ import qs from 'qs';
             scoreData.Clear();
             await scoreData.GetDifficultyScoreData(Difficulty.Basic);
             echo(await getTime() + "スコアデータを送信します。");
-            length = Math.ceil(await scoreData.GetArrayLength() / 50);
+            length = Math.ceil(await scoreData.GetArrayLength() / PAGE_SIZE);
             for (let index = 0; index < length; ++index) {
                 echo(await getTime() + " " + (index + 1) + ": 送信...");
                 await postData.Post(MethodType.Score, await scoreData.GetPartialArray(index));
@@ -797,7 +818,7 @@ import qs from 'qs';
             let trophyData = new TrophyData;
             await trophyData.getData();
             echo(await getTime() + "称号獲得状況を送信します。");
-            length = Math.ceil(await trophyData.GetArrayLength() / 50);
+            length = Math.ceil(await trophyData.GetArrayLength() / PAGE_SIZE);
             for (let index = 0; index < length; ++index) {
                 echo(await getTime() + " " + index + ": 送信...");
                 await postData.Post(MethodType.Trophy, await trophyData.GetPartialArray(index));
