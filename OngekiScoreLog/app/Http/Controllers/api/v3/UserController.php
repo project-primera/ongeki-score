@@ -15,7 +15,8 @@ use RuntimeException;
  *
  * v2 との違いは、data を JSON → gzip → base64 した文字列で受け取り、
  * inflateData() で復元してから v2 と同じ処理に渡すこと。
- * JSON 経由のため difficulty は整数で届き、整数で判定する。
+ * JSON 経由のため difficulty は整数、full_bell などのフラグは boolean で届くので、
+ * それぞれ整数・boolean のまま判定する。
  */
 class UserController extends Controller{
     public function GetUpdateStatus(Request $request){
@@ -242,9 +243,9 @@ class UserController extends Controller{
             $recentScore = (new \App\ScoreData())->getRecentGenerationOfScoreData(Auth::id(), $music->id, $value['difficulty'])->getValue();
             $isUpdate = false;
 
-            $full_bell = ($value['full_bell'] === "true" ? 1 : 0);
-            $full_combo = ($value['full_combo'] === "true" ? 1 : 0);
-            $all_break = ($value['all_break'] === "true" ? 1 : 0);
+            $full_bell = ($value['full_bell'] === true ? 1 : 0);
+            $full_combo = ($value['full_combo'] === true ? 1 : 0);
+            $all_break = ($value['all_break'] === true ? 1 : 0);
 
             $platinum_score = 0;
             // 最悪取れなくてもいいように値チェック
@@ -483,8 +484,8 @@ class UserController extends Controller{
     private function setPaymentStatus($data, $dateTime, $uniqueID){
         \App\UserInformation ::updateOrCreate(
             ['user_id' => Auth::id()], [
-                'is_standard_plan' => $data['isStandardPlan'] === "true" ? 1 : 0,
-                'is_premium_plan' => $data['isPremiumPlan'] === "true" ? 1 : 0,
+                'is_standard_plan' => $data['isStandardPlan'] === true ? 1 : 0,
+                'is_premium_plan' => $data['isPremiumPlan'] === true ? 1 : 0,
                 'unique_id' => $uniqueID,
                 'created_at' => $dateTime,
                 'updated_at' => $dateTime

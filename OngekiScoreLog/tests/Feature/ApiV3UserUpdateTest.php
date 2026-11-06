@@ -16,7 +16,7 @@ use Tests\TestCase;
  * API v3 のスコア登録。
  * data は JSON → gzip → base64 の文字列で届き、復元後は v2 と同じ処理で保存される。
  * v3 の復元処理はコントリビューターの実装をそのまま移したものなので、
- * ここでは現状の挙動（JSON の boolean が 0 で保存される、gzip でないデータで 500 になる）も記録する。
+ * ここでは現状の挙動（gzip でないデータで 500 になる）も記録する。
  */
 class ApiV3UserUpdateTest extends TestCase
 {
@@ -201,13 +201,24 @@ class ApiV3UserUpdateTest extends TestCase
         $this->assertDatabaseCount('score_datas', 0);
     }
 
-    /**
-     * 現状の実装は JSON の boolean を文字列 "true" と比較しているため、true を送っても 0 で保存される。
-     * 判定を直したらこのテストは期待値を 1 に変える。
-     */
-    public function test_boolean_flags_are_stored_as_zero_in_the_current_implementation(): void
+    /** JSON の boolean は 1 / 0 で保存される */
+    public function test_boolean_flags_are_stored_as_integers(): void
     {
-        $this->postScores([$this->song(['full_bell' => true, 'full_combo' => true, 'all_break' => true])])
+        $this->postScores([$this->song(['full_bell' => true, 'full_combo' => false, 'all_break' => true])])
+            ->assertJsonPath('isError', false);
+
+        $this->assertDatabaseHas('score_datas', [
+            'song_id' => $this->music->id,
+            'full_bell' => 1,
+            'full_combo' => 0,
+            'all_break' => 1,
+        ]);
+    }
+
+    /** v3 のフラグは boolean で受け取るので、v2 形式の文字列 "true" は true 扱いしない */
+    public function test_string_true_is_not_treated_as_a_flag(): void
+    {
+        $this->postScores([$this->song(['full_bell' => 'true', 'full_combo' => 'true', 'all_break' => 'true'])])
             ->assertJsonPath('isError', false);
 
         $this->assertDatabaseHas('score_datas', [
@@ -215,6 +226,22 @@ class ApiV3UserUpdateTest extends TestCase
             'full_bell' => 0,
             'full_combo' => 0,
             'all_break' => 0,
+        ]);
+    }
+
+    public function test_payment_status_booleans_are_stored(): void
+    {
+        $response = $this->postUpdate([
+            'hash' => self::HASH,
+            'methodType' => '5',
+            'data' => $this->gz(['isStandardPlan' => true, 'isPremiumPlan' => false]),
+        ]);
+
+        $response->assertStatus(200)->assertJsonPath('isError', false);
+        $this->assertDatabaseHas('user_informations', [
+            'user_id' => $this->user->id,
+            'is_standard_plan' => 1,
+            'is_premium_plan' => 0,
         ]);
     }
 
