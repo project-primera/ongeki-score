@@ -16,8 +16,7 @@ use Tests\TestCase;
 /**
  * API v3 のスコア登録。
  * data は JSON → gzip → base64 の文字列で届き、復元後は v2 と同じ処理で保存される。
- * v3 の復元処理はコントリビューターの実装をそのまま移したものなので、
- * ここでは現状の挙動（gzip でないデータで 500 になる）も記録する。
+ * 復元できない data は、data が無い場合と同じ「送信内容を確認できませんでした。」になる。
  */
 class ApiV3UserUpdateTest extends TestCase
 {
@@ -185,13 +184,53 @@ class ApiV3UserUpdateTest extends TestCase
             ->assertJsonPath('message', ['送信内容を確認できませんでした。']);
     }
 
-    /** gzip でないデータは gzdecode() の警告が例外になり、現状は 500 で返る */
-    public function test_payload_that_is_not_gzip_causes_a_server_error(): void
+    /** gzip でないデータは gzdecode() が警告を出すが、500 にも Slack 通知にもしない */
+    public function test_payload_that_is_not_gzip_is_rejected(): void
     {
         $this->postUpdate(['hash' => self::HASH, 'methodType' => '1', 'data' => base64_encode('hello')])
-            ->assertStatus(500);
+            ->assertStatus(200)
+            ->assertJsonPath('isError', true)
+            ->assertJsonPath('message', ['送信内容を確認できませんでした。']);
 
+        Slack::shouldNotHaveReceived('Critical');
         $this->assertDatabaseCount('score_datas', 0);
+    }
+
+    public function test_payload_that_is_not_base64_is_rejected(): void
+    {
+        $this->postUpdate(['hash' => self::HASH, 'methodType' => '1', 'data' => 'これは base64 ではない'])
+            ->assertStatus(200)
+            ->assertJsonPath('isError', true)
+            ->assertJsonPath('message', ['送信内容を確認できませんでした。']);
+    }
+
+    public function test_data_that_is_not_a_string_is_rejected(): void
+    {
+        $this->postUpdate(['hash' => self::HASH, 'methodType' => '1', 'data' => ['x']])
+            ->assertStatus(200)
+            ->assertJsonPath('isError', true)
+            ->assertJsonPath('message', ['送信内容を確認できませんでした。']);
+    }
+
+    public function test_json_that_is_not_an_array_is_rejected(): void
+    {
+        $this->postUpdate(['hash' => self::HASH, 'methodType' => '1', 'data' => $this->gz('text')])
+            ->assertStatus(200)
+            ->assertJsonPath('isError', true)
+            ->assertJsonPath('message', ['送信内容を確認できませんでした。']);
+    }
+
+    /** 小さな gzip が上限を超えて展開される data は受け付けない */
+    public function test_payload_that_inflates_beyond_the_limit_is_rejected(): void
+    {
+        $json = json_encode([str_repeat('0', 4 * 1024 * 1024)]);
+
+        $this->postUpdate(['hash' => self::HASH, 'methodType' => '1', 'data' => base64_encode(gzencode($json))])
+            ->assertStatus(200)
+            ->assertJsonPath('isError', true)
+            ->assertJsonPath('message', ['送信内容を確認できませんでした。']);
+
+        Slack::shouldNotHaveReceived('Critical');
     }
 
     public function test_unknown_hash_is_rejected(): void

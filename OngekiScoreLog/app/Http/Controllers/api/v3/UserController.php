@@ -167,15 +167,41 @@ class UserController extends Controller{
         return $result;
     }
 
+    /**
+     * 展開後の data の上限（バイト）。
+     * 500 曲分のスコアでも JSON は 200 KB 程度なので十分な余裕があり、
+     * 小さな gzip が巨大に展開されてメモリを使い切るのを防ぐ。
+     */
+    private const MAX_INFLATED_BYTES = 4 * 1024 * 1024;
+
+    /**
+     * data を base64 → gzip → JSON の順に復元する。
+     * 復元できない data は null を返し、data が無い場合と同じ「送信内容を確認できませんでした。」になる。
+     */
     private function inflateData($data){
-        if ($data === null) {
+        if (!is_string($data)) {
             return null;
         }
 
-        $gz = base64_decode($data);
-        $json = gzdecode($gz);
+        $gz = base64_decode($data, true);
+        if ($gz === false) {
+            return null;
+        }
 
-        return json_decode($json, true);
+        try {
+            $json = gzdecode($gz, self::MAX_INFLATED_BYTES);
+        } catch (\ErrorException) {
+            // gzip でない・壊れている・上限を大きく超えた場合の警告を Laravel が例外に変換する
+            return null;
+        }
+        // gzdecode() の max_length はバッファ単位の判定で少し超過しうるので、長さでも確認する
+        if ($json === false || strlen($json) > self::MAX_INFLATED_BYTES) {
+            return null;
+        }
+
+        $obj = json_decode($json, true);
+
+        return is_array($obj) ? $obj : null;
     }
 
     private function setPlayer($data, $dateTime, $uniqueID){
