@@ -8,6 +8,7 @@ use App\User;
 use App\UserUpdateStatus;
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Testing\TestResponse;
 use Laravel\Passport\Passport;
 use Tests\TestCase;
@@ -97,6 +98,17 @@ class ApiV3UserUpdateTest extends TestCase
             'platinum_score' => 1234,
         ]);
         $this->assertDatabaseHas('score_datas', ['song_id' => $this->music->id, 'difficulty' => 10]);
+    }
+
+    /** 復元したスコアデータはログに書かない */
+    public function test_decoded_payload_is_not_written_to_the_log(): void
+    {
+        Log::spy();
+
+        $this->postScores([$this->song(['difficulty' => 3])])->assertJsonPath('isError', false);
+
+        Log::shouldNotHaveReceived('debug');
+        Log::shouldNotHaveReceived('info');
     }
 
     public function test_response_echoes_the_decoded_data(): void

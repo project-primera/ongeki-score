@@ -174,10 +174,8 @@ class UserController extends Controller{
 
         $gz = base64_decode($data);
         $json = gzdecode($gz);
-        $obj = json_decode($json, true);
-        logger($json);
 
-        return $obj;
+        return json_decode($json, true);
     }
 
     private function setPlayer($data, $dateTime, $uniqueID){
