@@ -583,7 +583,7 @@ import * as pako from 'pako';
             // 圧縮して送信
             let jsonData = JSON.stringify(data);
             let gzData = pako.gzip(jsonData);
-            let b64Data = btoa(String.fromCharCode(...gzData));
+            let b64Data = toBase64(gzData);
 
             let sendData = {
                 'hash': this.hash,
@@ -614,6 +614,19 @@ import * as pako from 'pako';
         return new Promise<void>(resolve => {
             setTimeout(() => resolve(), milliseconds);
         });
+    });
+
+    /**
+     * バイト列を base64 文字列にする。
+     * String.fromCharCode に一度に渡せる引数の数には上限があるため、分割して変換する。
+     */
+    var toBase64 = (function (bytes: Uint8Array) {
+        const CHUNK_SIZE = 0x8000;
+        let binary = "";
+        for (let i = 0; i < bytes.length; i += CHUNK_SIZE) {
+            binary += String.fromCharCode(...bytes.subarray(i, i + CHUNK_SIZE));
+        }
+        return btoa(binary);
     });
 
     var getToken = (function () {
