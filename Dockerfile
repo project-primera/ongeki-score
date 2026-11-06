@@ -3,7 +3,7 @@
 # ---------------------------------------------------------------------------
 # 1. フロントエンドのビルド（Vite）。実行イメージには Node を含めない
 # ---------------------------------------------------------------------------
-FROM node:24-alpine AS assets
+FROM node:25-alpine AS assets
 ARG application_version=""
 ARG commit_hash=""
 WORKDIR /src
