@@ -110,6 +110,43 @@ class ApiV3UserUpdateTest extends TestCase
         Log::shouldNotHaveReceived('info');
     }
 
+    /** v2 のフォーム送信では TrimStrings ミドルウェアが掛かるので、復元後の文字列も同じように trim する */
+    public function test_strings_are_trimmed_like_v2(): void
+    {
+        $response = $this->postScores([$this->song(['title' => " テスト曲\n", 'artist' => "\u{3000}テストアーティスト\u{3000}", 'genre' => "\tPOPS＆ANIME "])]);
+
+        $response->assertJsonPath('isError', false)
+            ->assertJsonPath('message', [])
+            ->assertJsonPath('data.0.title', 'テスト曲')
+            ->assertJsonPath('data.0.artist', 'テストアーティスト');
+        $this->assertDatabaseHas('score_datas', ['song_id' => $this->music->id, 'difficulty' => 3]);
+    }
+
+    /** v2 は空文字を null にして NOT NULL 列で失敗するが、v3 は空文字のまま保存する */
+    public function test_empty_strings_are_stored_as_is(): void
+    {
+        $response = $this->postUpdate([
+            'hash' => self::HASH,
+            'methodType' => '0',
+            'data' => $this->gz([
+                'trophy' => '称号',
+                'level' => 50,
+                'name' => 'tester',
+                'battle_point' => 12345,
+                'rating' => 15.5,
+                'rating_max' => 16.0,
+                'money' => 100,
+                'total_money' => 2000,
+                'total_play' => 300,
+                'comment' => '',
+                'friend_code' => 123456789012,
+            ]),
+        ]);
+
+        $response->assertStatus(200)->assertJsonPath('isError', false);
+        $this->assertDatabaseHas('user_status', ['user_id' => $this->user->id, 'comment' => '']);
+    }
+
     public function test_response_echoes_the_decoded_data(): void
     {
         $this->postScores([$this->song(['difficulty' => 3])])

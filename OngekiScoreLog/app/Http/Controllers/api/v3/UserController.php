@@ -4,6 +4,7 @@ namespace App\Http\Controllers\api\v3;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Facades\Slack;
 use App\UserStatus;
@@ -17,6 +18,8 @@ use RuntimeException;
  * inflateData() で復元してから v2 と同じ処理に渡すこと。
  * JSON 経由のため difficulty は整数、full_bell などのフラグは boolean で届くので、
  * それぞれ整数・boolean のまま判定する。
+ * JSON の中身には TrimStrings ミドルウェアが掛からないので、復元後に同じ trim を行う。
+ * 空文字は v2 と違って null にせず、そのまま扱う。
  */
 class UserController extends Controller{
     public function GetUpdateStatus(Request $request){
@@ -201,7 +204,22 @@ class UserController extends Controller{
 
         $obj = json_decode($json, true);
 
-        return is_array($obj) ? $obj : null;
+        return is_array($obj) ? $this->trimStrings($obj) : null;
+    }
+
+    /**
+     * 復元した配列の中の文字列を、v2 のフォーム送信で TrimStrings ミドルウェアが行うのと同じように trim する。
+     * 曲名などの前後に空白が付いていると楽曲が見つからなくなるため。
+     */
+    private function trimStrings($value){
+        if (is_array($value)) {
+            return array_map([$this, 'trimStrings'], $value);
+        }
+        if (is_string($value)) {
+            return Str::trim($value);
+        }
+
+        return $value;
     }
 
     private function setPlayer($data, $dateTime, $uniqueID){
