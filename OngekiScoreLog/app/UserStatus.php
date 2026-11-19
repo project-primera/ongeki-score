@@ -81,7 +81,7 @@ class UserStatus extends Model
      * user_id のインデックスだけで最大の id が引けるので、履歴の全行は読まない。
      *
      * @param string|null $currentVersionFrom 現行バージョンの開始日時（Y-m-d H:i:s）。null なら全員を現行バージョンとして扱う
-     * @return \Illuminate\Contracts\Pagination\LengthAwarePaginator
+     * @return \Illuminate\Pagination\LengthAwarePaginator
      */
     function paginateLatestOfPublicUsers(UserListCondition $condition, ?string $currentVersionFrom, int $perPage)
     {
