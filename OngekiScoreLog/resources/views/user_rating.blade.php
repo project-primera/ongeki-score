@@ -45,37 +45,37 @@
                 <tbody>
                     <tr>
                         <td>新曲枠</td>
-                        <td class="table-number">{{sprintf("%.3f", $statistics->newRatingAverage)}}</td>
+                        <td class="table-number">{{$statistics->newRatingAverage}}</td>
                         <td class="table-number">{{$statistics->newBestRatingCount}}</td>
-                        <td class="table-number">{{sprintf("%.3f", $statistics->newBestRatingTop)}}</td>
-                        <td class="table-number">{{sprintf("%.3f", $statistics->newBestRatingMin)}}</td>
-                        <td class="table-number">{{sprintf("%.3f", $statistics->newBestRatingTotal)}}</td>
-                        <td class="table-number">{{sprintf("%.3f", $statistics->newRatingContribute)}}</td>
+                        <td class="table-number">{{$statistics->newBestRatingTop}}</td>
+                        <td class="table-number">{{$statistics->newBestRatingMin}}</td>
+                        <td class="table-number">{{$statistics->newBestRatingTotal}}</td>
+                        <td class="table-number">{{$statistics->newRatingContribute}}</td>
                     </tr>
                     <tr>
                         <td>ベスト枠</td>
-                        <td class="table-number">{{sprintf("%.3f", $statistics->oldBestRatingAverage)}}</td>
+                        <td class="table-number">{{$statistics->oldBestRatingAverage}}</td>
                         <td class="table-number">{{$statistics->oldBestRatingCount}}</td>
-                        <td class="table-number">{{sprintf("%.3f", $statistics->oldBestRatingTop)}}</td>
-                        <td class="table-number">{{sprintf("%.3f", $statistics->oldBestRatingMin)}}</td>
-                        <td class="table-number">{{sprintf("%.3f", $statistics->oldBestRatingTotal)}}</td>
-                        <td class="table-number">{{sprintf("%.3f", $statistics->oldBestRatingContribute)}}</td>
+                        <td class="table-number">{{$statistics->oldBestRatingTop}}</td>
+                        <td class="table-number">{{$statistics->oldBestRatingMin}}</td>
+                        <td class="table-number">{{$statistics->oldBestRatingTotal}}</td>
+                        <td class="table-number">{{$statistics->oldBestRatingContribute}}</td>
                     </tr>
                     <tr>
                         <td>プラチナスコア枠</td>
-                        <td class="table-number">{{sprintf("%.3f", $statistics->platinumRatingAverage)}}</td>
+                        <td class="table-number">{{$statistics->platinumRatingAverage}}</td>
                         <td class="table-number">{{$statistics->platinumRatingCount}}</td>
-                        <td class="table-number">{{sprintf("%.3f", $statistics->platinumRatingTop)}}</td>
-                        <td class="table-number">{{sprintf("%.3f", $statistics->platinumRatingMin)}}</td>
-                        <td class="table-number">{{sprintf("%.3f", $statistics->platinumRatingTotal)}}</td>
-                        <td class="table-number">{{sprintf("%.3f", $statistics->platinumRatingContribute)}}</td>
+                        <td class="table-number">{{$statistics->platinumRatingTop}}</td>
+                        <td class="table-number">{{$statistics->platinumRatingMin}}</td>
+                        <td class="table-number">{{$statistics->platinumRatingTotal}}</td>
+                        <td class="table-number">{{$statistics->platinumRatingContribute}}</td>
                     </tr>
                 </tbody>
             </table>
         </div>
         </p>
         <p>
-            <span style="font-size: 1.2em">RATING: {{sprintf("%.3f", $statistics->ratingCalc)}}</span><span style="font-size: .9em"> = ({{$statistics->newRatingContribute}} + {{sprintf("%.3f", $statistics->oldBestRatingContribute)}} + {{sprintf("%.3f", $statistics->platinumRatingContribute)}})</span>
+            <span style="font-size: 1.2em">RATING: {{$statistics->ratingCalc}}</span><span style="font-size: .9em"> = ({{$statistics->newRatingContribute}} + {{$statistics->oldBestRatingContribute}} + {{$statistics->platinumRatingContribute}})</span>
         </p>
         @foreach ($messages as $message)
             <p>
