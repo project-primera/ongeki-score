@@ -19,6 +19,8 @@
     </source>
     <php>
         <env name="APP_ENV" value="testing"/>
+        <!-- テスト専用の固定値（32 バイトの 0）。.env が無いクローン直後や CI でも暗号化を使うテストが動くようにする -->
+        <env name="APP_KEY" value="base64:AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="/>
         <!-- 例外ハンドラは debug=true だと既定の描画に逃がすので、本番と同じ false で走らせる -->
         <env name="APP_DEBUG" value="false" force="true"/>
         <env name="APP_MAINTENANCE_DRIVER" value="file"/>
