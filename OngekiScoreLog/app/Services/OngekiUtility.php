@@ -271,33 +271,6 @@ class OngekiUtility {
         return $extraLevel * $extraLevel * $starCount / 1000;
     }
 
-    /**
-     * 指定した譜面定数と目標レート値から、必要なスコアを予測して返します。
-     *
-     * @param float $extraLevel 譜面定数
-     * @param float $targetExtraLevel 目指すレート値
-     * @return mixed 必要スコア 到達不能であればfalseを返します
-     */
-    public function ExpectedScoreFromExtraLevel(float $extraLevel, float $targetExtraLevel){
-        $differenceMaxRate = ($extraLevel + 2) - $targetExtraLevel;
-        if($differenceMaxRate < 0){
-            // 譜面定数+2超過 到達不可
-            return false;
-        }else if($differenceMaxRate == 0){
-            // 譜面定数+2 レート値理論値
-            return 1007500;
-        }else if($differenceMaxRate <= 0.5){
-            // 譜面定数+1.5 1007500からレート値0.01毎に150点減点
-            return 1007500 - ($differenceMaxRate / 0.01 * 150);
-        }else if($differenceMaxRate <= 2){
-            // 譜面定数+0.0 1000000からレート値0.01毎に200点減点
-            return 1000000 - (($differenceMaxRate - 0.5) / 0.01 * 200);
-        }else{
-            // 譜面定数+0未満 970000からレート値0.01毎に175点減点
-            return 970000 - (($differenceMaxRate - 2.0) / 0.01 * 175);
-        }
-    }
-
     public function GetMusicLevel(string $title, $difficulty, bool $isStr = false){
         if(is_int($difficulty)){
             $keys = [
