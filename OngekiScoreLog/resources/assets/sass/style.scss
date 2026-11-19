@@ -94,6 +94,11 @@ th.sort a{
     margin-bottom: 0.75rem;
 }
 
+// ページ送りは、表の上でも下でも表から同じだけ離す
+.pagination:not(:last-child){
+    margin-bottom: 1rem;
+}
+
 .table_wrap + .pagination{
     margin-top: 1rem;
 }
