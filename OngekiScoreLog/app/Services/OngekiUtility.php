@@ -100,6 +100,76 @@ class OngekiUtility {
         return $this::$MusicList[$title][$difficulty];
     }
 
+    /**
+     * テクニカルスコアから求める単曲のレート値を、1/1000 単位の整数で返します（17.400 なら 17400）。
+     * その難易度の譜面定数が無いときは 0 を返します。
+     *
+     * @param string $title 楽曲タイトル
+     * @param integer|string $difficulty 難易度
+     * @param string $lampForRating getLampForRating() の戻り値
+     * @throws \OutOfBoundsException 楽曲が登録されていない
+     */
+    public function technicalRatingMilli(string $title, $difficulty, int $technicalScore, string $lampForRating, $genre, $artist): int
+    {
+        $extraLevel = $this->extraLevelCenti($title, $difficulty, $genre, $artist);
+        if($extraLevel === null){
+            // 既に入ってる曲に後からlunatic追加されると起きがち
+            return 0;
+        }
+        return RatingCalculator::technical($extraLevel, $technicalScore, $lampForRating);
+    }
+
+    /**
+     * プラチナスコア枠の単曲のレート値を、1/1000 単位の整数で返します（1.065 なら 1065）。
+     * その難易度の譜面定数が無いときは 0 を返します。
+     *
+     * @param string $title 楽曲タイトル
+     * @param integer|string $difficulty 難易度
+     * @param integer $starCount ☆の数
+     * @throws \OutOfBoundsException 楽曲が登録されていない
+     */
+    public function platinumRatingMilli(string $title, $difficulty, int $starCount, $genre, $artist): int
+    {
+        $extraLevel = $this->extraLevelCenti($title, $difficulty, $genre, $artist);
+        if($extraLevel === null){
+            return 0;
+        }
+        return RatingCalculator::platinum($extraLevel, $starCount);
+    }
+
+    /**
+     * 譜面定数を 1/100 単位の整数で返します（14.7 なら 1470）。その難易度が無いときは null を返します。
+     *
+     * @param integer|string $difficulty 難易度
+     * @throws \OutOfBoundsException 楽曲が登録されていない
+     */
+    private function extraLevelCenti(string $title, $difficulty, $genre, $artist): ?int
+    {
+        if(is_int($difficulty)){
+            $keys = [
+                0 => "basic_extra_level",
+                1 => "advanced_extra_level",
+                2 => "expert_extra_level",
+                3 => "master_extra_level",
+                10 => "lunatic_extra_level",
+            ];
+            $difficulty = $keys[$difficulty];
+        }else if(!is_string($difficulty)){
+            throw new \InvalidArgumentException();
+        }
+
+        $sameNameList = array_flip($this::$MusicData->getSameMusicList());
+        if (array_key_exists($title, $sameNameList)) {
+            $title .= "." . $artist . "." . $genre;
+        }
+
+        if(!array_key_exists($title, $this::$MusicList)){
+            throw new \OutOfBoundsException("title: " . $title . " / artist:" . $artist . " / difficulty:" . $difficulty);
+        }
+
+        return RatingCalculator::extraLevelToCenti($this::$MusicList[$title][$difficulty]);
+    }
+
     public function RateValueFromTitle(string $title, $difficulty,
         int $technicalScore, string $lampForRating, $genre, $artist
     ) {

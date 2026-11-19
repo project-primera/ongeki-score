@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Facades\OngekiUtility;
+use App\Services\RatingCalculator;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\User;
@@ -216,9 +217,9 @@ class ViewUserProgressController extends Controller
                         $progress[$music][$difficulty]["difference"]['is_update_over_damage_high_score_rank'] = "update";
                         $progress[$music][$difficulty]["difference"]['over_damage_high_score'] = "+" . ($value->over_damage_high_score) . "%";
                         if ($isPremium) {
-                            $newNormalRating = OngekiUtility::RateValueFromTitle($value->title, $value->difficulty, $value->technical_high_score, $value->lampForRating, $value->genre, $value->artist);
-                            $progress[$music][$difficulty]["difference"]['normal_rating'] = "+" . sprintf("%.3f", $newNormalRating);
-                            $progress[$music][$difficulty]["difference"]["new-normal-rating"] = sprintf("%.3f", $newNormalRating);
+                            $newNormalRating = OngekiUtility::technicalRatingMilli($value->title, $value->difficulty, $value->technical_high_score, $value->lampForRating, $value->genre, $value->artist);
+                            $progress[$music][$difficulty]["difference"]['normal_rating'] = "+" . RatingCalculator::formatMilli($newNormalRating);
+                            $progress[$music][$difficulty]["difference"]["new-normal-rating"] = RatingCalculator::formatMilli($newNormalRating);
                         }
                         $progress[$music][$difficulty]["difference"]['old-lamp-is-fb'] = "not-light";
                         $progress[$music][$difficulty]["difference"]['old-lamp-is-fc'] = "not-light";
@@ -244,7 +245,7 @@ class ViewUserProgressController extends Controller
                         if($old[$music][$difficulty]->battle_high_score === 0){
                             // noplay → played
                             // echo "[new*] " . $value->title . " / " . $value->difficulty_str . "<br>";
-                            $newNormalRating = OngekiUtility::RateValueFromTitle($value->title, $value->difficulty, $value->technical_high_score, $value->lampForRating, $value->genre, $value->artist);
+                            $newNormalRating = OngekiUtility::technicalRatingMilli($value->title, $value->difficulty, $value->technical_high_score, $value->lampForRating, $value->genre, $value->artist);
                             $progress[$music][$difficulty]["new"] = $value;
                             $progress[$music][$difficulty]["difference"]['battle_high_score'] = "+" . number_format($value->battle_high_score);
                             $progress[$music][$difficulty]["difference"]['technical_high_score'] = "+" . number_format($value->technical_high_score);
@@ -256,9 +257,9 @@ class ViewUserProgressController extends Controller
                             $progress[$music][$difficulty]["difference"]['is_update_over_damage_high_score_rank'] = "update";
                             $progress[$music][$difficulty]["difference"]['over_damage_high_score'] = "+" . ($value->over_damage_high_score) . "%";
                             if ($isPremium) {
-                                $newNormalRating = OngekiUtility::RateValueFromTitle($value->title, $value->difficulty, $value->technical_high_score, $value->lampForRating, $value->genre, $value->artist);
-                                $progress[$music][$difficulty]["difference"]['normal_rating'] = "+" . sprintf("%.3f", $newNormalRating);
-                                $progress[$music][$difficulty]["difference"]["new-normal-rating"] = sprintf("%.3f", $newNormalRating);
+                                $newNormalRating = OngekiUtility::technicalRatingMilli($value->title, $value->difficulty, $value->technical_high_score, $value->lampForRating, $value->genre, $value->artist);
+                                $progress[$music][$difficulty]["difference"]['normal_rating'] = "+" . RatingCalculator::formatMilli($newNormalRating);
+                                $progress[$music][$difficulty]["difference"]["new-normal-rating"] = RatingCalculator::formatMilli($newNormalRating);
                             }
                             $progress[$music][$difficulty]["difference"]['old-lamp-is-fb'] = "not-light";
                             $progress[$music][$difficulty]["difference"]['old-lamp-is-fc'] = "not-light";
@@ -294,10 +295,10 @@ class ViewUserProgressController extends Controller
                             // Rating計算はできるだけ少なくしたいので先に計算しておく。
                             if ($isPremium) {
                                 $oldLampForRating = OngekiUtility::getLampForRating($old[$music][$difficulty]->technical_high_score, $old[$music][$difficulty]->full_bell == 1, $old[$music][$difficulty]->full_combo == 1, $old[$music][$difficulty]->all_break == 1);
-                                $newNormalRating = OngekiUtility::RateValueFromTitle($value->title, $value->difficulty, $value->technical_high_score, $value->lampForRating, $value->genre, $value->artist);
-                                $oldNormalRating = OngekiUtility::RateValueFromTitle($value->title, $old[$music][$difficulty]->difficulty, $old[$music][$difficulty]->technical_high_score, $oldLampForRating, $value->genre, $value->artist);
-                                $progress[$music][$difficulty]["difference"]['normal_rating'] = ($newNormalRating - $oldNormalRating) != 0 ? "+" . sprintf("%.3f",($newNormalRating - $oldNormalRating)) : "";
-                                $progress[$music][$difficulty]["difference"]["new-normal-rating"] = sprintf("%.3f", $newNormalRating);
+                                $newNormalRating = OngekiUtility::technicalRatingMilli($value->title, $value->difficulty, $value->technical_high_score, $value->lampForRating, $value->genre, $value->artist);
+                                $oldNormalRating = OngekiUtility::technicalRatingMilli($value->title, $old[$music][$difficulty]->difficulty, $old[$music][$difficulty]->technical_high_score, $oldLampForRating, $value->genre, $value->artist);
+                                $progress[$music][$difficulty]["difference"]['normal_rating'] = ($newNormalRating - $oldNormalRating) != 0 ? "+" . RatingCalculator::formatMilli($newNormalRating - $oldNormalRating) : "";
+                                $progress[$music][$difficulty]["difference"]["new-normal-rating"] = RatingCalculator::formatMilli($newNormalRating);
                             }
                             $progress[$music][$difficulty]["difference"]['battle_high_score'] = ($value->battle_high_score - $old[$music][$difficulty]->battle_high_score) != 0 ? "+" . number_format($value->battle_high_score - $old[$music][$difficulty]->battle_high_score) : "";
                             $progress[$music][$difficulty]["difference"]['technical_high_score'] = ($value->technical_high_score - $old[$music][$difficulty]->technical_high_score) != 0 ? "+" . number_format($value->technical_high_score - $old[$music][$difficulty]->technical_high_score) : "";
