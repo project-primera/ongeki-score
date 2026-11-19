@@ -4,7 +4,9 @@ namespace Tests\Feature;
 
 use App\Facades\Slack;
 use App\User;
+use Illuminate\Contracts\Filesystem\FileNotFoundException;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Testing\TestResponse;
 use Tests\TestCase;
 
 /**
@@ -23,6 +25,15 @@ class AdminLogFileTest extends TestCase
         $user->role = 9;
 
         return $user;
+    }
+
+    /** getContent() は空白だけの本文を空文字にして返すので、本文が空であることは実際に送られる内容で確かめる */
+    private function sentBody(TestResponse $response): string
+    {
+        ob_start();
+        $response->baseResponse->sendContent();
+
+        return (string) ob_get_clean();
     }
 
     public function test_multiline_log_is_returned_exactly_as_saved(): void
@@ -104,7 +115,7 @@ class AdminLogFileTest extends TestCase
         $response = $this->actingAs($this->admin())->get('/admin/log/Notice/1700000000_2');
 
         $response->assertStatus(200);
-        $this->assertSame('', $response->getContent());
+        $this->assertSame('', $this->sentBody($response));
         $response->assertHeader('Content-Type', 'text/plain; charset=UTF-8');
     }
 
@@ -117,7 +128,7 @@ class AdminLogFileTest extends TestCase
         $response = $this->actingAs($this->admin())->get('/admin/log/Warning/1700000000_3');
 
         $response->assertStatus(200);
-        $this->assertSame('', $response->getContent());
+        $this->assertSame('', $this->sentBody($response));
     }
 
     public function test_invalid_utf8_bytes_are_returned_unchanged(): void
@@ -192,7 +203,11 @@ class AdminLogFileTest extends TestCase
         Slack::spy();
         Storage::fake();
 
-        $this->actingAs($this->admin())->get('/admin/log/Info/nonexistent.txt')->assertStatus(500);
+        $response = $this->actingAs($this->admin())->get('/admin/log/Info/nonexistent.txt');
+
+        $response->assertStatus(500);
+        // 別の原因の 500 ではなく、ファイルが無いことによるもの
+        $this->assertInstanceOf(FileNotFoundException::class, $response->exception);
     }
 
     public function test_path_pointing_at_a_directory_returns_200_with_an_empty_body(): void
@@ -203,6 +218,6 @@ class AdminLogFileTest extends TestCase
         $response = $this->actingAs($this->admin())->get('/admin/log/Warning/1700000000_9');
 
         $response->assertStatus(200);
-        $this->assertSame('', $response->getContent());
+        $this->assertSame('', $this->sentBody($response));
     }
 }
