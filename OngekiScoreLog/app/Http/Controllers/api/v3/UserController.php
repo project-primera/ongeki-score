@@ -172,10 +172,15 @@ class UserController extends Controller{
 
     /**
      * 展開後の data の上限（バイト）。
-     * 500 曲分のスコアでも JSON は 200 KB 程度なので十分な余裕があり、
      * 小さな gzip が巨大に展開されてメモリを使い切るのを防ぐ。
+     *
+     * json_decode() が作る配列は JSON の文字列よりずっと大きく、`[0]` のような小さな配列を並べた JSON だと
+     * 1 MB あたり約 60 MB、trimStrings() の分も合わせると約 120 MB になる。
+     * memory_limit（128M）に収まるように 512 KiB（最悪でも約 60 MB）で止める。
+     * 500 件分のスコアや称号でも JSON は 200 KB 程度なので余裕がある。
+     * ブックマークレットの PAGE_SIZE を増やすときは、この上限も見直すこと。
      */
-    private const MAX_INFLATED_BYTES = 4 * 1024 * 1024;
+    private const MAX_INFLATED_BYTES = 512 * 1024;
 
     /**
      * data を base64 → gzip → JSON の順に復元する。

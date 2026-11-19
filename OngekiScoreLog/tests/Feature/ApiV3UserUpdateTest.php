@@ -260,7 +260,7 @@ class ApiV3UserUpdateTest extends TestCase
     /** 小さな gzip が上限を超えて展開される data は受け付けない */
     public function test_payload_that_inflates_beyond_the_limit_is_rejected(): void
     {
-        $json = json_encode([str_repeat('0', 4 * 1024 * 1024)]);
+        $json = json_encode([str_repeat('0', 512 * 1024)]);
 
         $this->postUpdate(['hash' => self::HASH, 'methodType' => '1', 'data' => base64_encode(gzencode($json))])
             ->assertStatus(200)
