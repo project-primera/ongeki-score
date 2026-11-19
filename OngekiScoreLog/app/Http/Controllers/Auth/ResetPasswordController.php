@@ -45,8 +45,9 @@ class ResetPasswordController extends Controller
     /**
      * ResetsPasswords::reset() と同じ処理。
      * トレイト版はクロージャと resetPassword() / setUserPassword() の $password に SensitiveParameter が無く、
-     * 再設定の途中で例外が出ると、引数付きトレース（docker/php/zz-app.ini の zend.exception_ignore_args = Off）に
+     * 再設定の途中で例外が出ると、引数付きトレース（zend.exception_ignore_args = Off。PHP の既定）に
      * 平文の先頭 15 文字が残り、Handler がそれを Slack に添付してしまう。
+     * 本番イメージは docker/php/zz-app.ini で On にしていて引数は残らないが、設定が Off に戻っても漏れないようにしておく。
      * ここで上書きして属性を付け、トレースでは Object(SensitiveParameterValue) になるようにする。処理内容はトレイトと同じ
      *
      * @param  \Illuminate\Http\Request  $request
