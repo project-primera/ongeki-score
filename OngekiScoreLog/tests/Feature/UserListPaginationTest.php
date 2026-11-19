@@ -175,6 +175,129 @@ class UserListPaginationTest extends TestCase
         $this->assertSame(array_slice($ids, 100), $this->listedUserIds($this->get('/user?page=2')));
     }
 
+    /** ページ送りのリンクのうち、文字列が $text のもの */
+    private function pagerLink($response, string $text): ?array
+    {
+        foreach ($this->pagerAnchors($response) as $anchor) {
+            if ($anchor['text'] === $text) {
+                return $anchor;
+            }
+        }
+
+        return null;
+    }
+
+    public function test_pager_links_to_the_previous_and_next_pages(): void
+    {
+        $this->createUsers(1500);
+
+        $response = $this->get('/user?page=8')->assertStatus(200);
+
+        $this->assertSame('/user?page=7', $this->pagerLink($response, '前へ')['href']);
+        $this->assertSame('/user?page=9', $this->pagerLink($response, '次へ')['href']);
+        $this->assertSame('/user?page=1', $this->pagerLink($response, '1')['href']);
+        $this->assertSame('/user?page=15', $this->pagerLink($response, '15')['href']);
+
+        $current = $this->pagerLink($response, '8');
+        $this->assertStringContainsString('is-current', $current['class']);
+        $this->assertSame('page', $current['aria-current']);
+        $this->assertArrayNotHasKey('href', $current);
+    }
+
+    public function test_pager_is_shown_above_and_below_the_table(): void
+    {
+        $this->createUsers(250);
+
+        $html = $this->get('/user')->assertStatus(200)->getContent();
+
+        $this->assertSame(2, substr_count($html, '<nav class="pagination'));
+        $this->assertLessThan(strpos($html, '<table'), strpos($html, '<nav class="pagination'));
+        $this->assertGreaterThan(strpos($html, '</table>'), strrpos($html, '<nav class="pagination'));
+    }
+
+    public function test_pager_disables_previous_on_the_first_page_and_next_on_the_last_page(): void
+    {
+        $this->createUsers(250);
+
+        $first = $this->get('/user');
+        $this->assertArrayHasKey('disabled', $this->pagerLink($first, '前へ'));
+        $this->assertArrayNotHasKey('href', $this->pagerLink($first, '前へ'));
+        $this->assertSame('/user?page=2', $this->pagerLink($first, '次へ')['href']);
+
+        $last = $this->get('/user?page=3');
+        $this->assertSame('/user?page=2', $this->pagerLink($last, '前へ')['href']);
+        $this->assertArrayHasKey('disabled', $this->pagerLink($last, '次へ'));
+        $this->assertArrayNotHasKey('href', $this->pagerLink($last, '次へ'));
+    }
+
+    public function test_pager_is_hidden_when_everything_fits_in_one_page(): void
+    {
+        $this->createUsers(50);
+
+        $this->get('/user')->assertStatus(200)->assertDontSee('<nav class="pagination', false);
+    }
+
+    public function test_pager_omits_distant_page_numbers(): void
+    {
+        $this->createUsers(1500);
+
+        $response = $this->get('/user?page=8')->assertStatus(200);
+        $numbers = array_values(array_filter(array_column($this->pagerAnchors($response), 'text'), 'is_numeric'));
+
+        $this->assertSame(['1', '2', '7', '8', '9', '14', '15'], $numbers);
+        $response->assertSee('pagination-ellipsis', false);
+    }
+
+    public function test_count_shows_the_total_and_the_range_on_the_page(): void
+    {
+        $this->createUsers(250);
+
+        $this->get('/user')->assertSee('250 人中 1〜100 人目');
+        $this->get('/user?page=3')->assertSee('250 人中 201〜250 人目');
+    }
+
+    public function test_count_uses_thousands_separators(): void
+    {
+        $this->createUsers(1500);
+
+        $this->get('/user?page=11')->assertSee('1,500 人中 1,001〜1,100 人目');
+    }
+
+    public function test_page_beyond_the_last_shows_a_message_and_the_pager(): void
+    {
+        $this->createUsers(250);
+
+        $response = $this->get('/user?page=9999')->assertStatus(200);
+
+        $response->assertSee('該当するユーザーがいません');
+        $response->assertSee('250 人');
+        $response->assertDontSee('人目');
+        $this->assertSame([], $this->listedUserIds($response));
+        // 最終ページへ戻れる
+        $this->assertSame('/user?page=3', $this->pagerLink($response, '前へ')['href']);
+        $this->assertSame('/user?page=3', $this->pagerLink($response, '3')['href']);
+        $this->assertArrayNotHasKey('href', $this->pagerLink($response, '次へ'));
+    }
+
+    public function test_page_beyond_the_only_page_still_links_back(): void
+    {
+        $this->createUsers(50);
+
+        $response = $this->get('/user?page=2')->assertStatus(200);
+
+        $response->assertSee('該当するユーザーがいません');
+        $this->assertSame('/user?page=1', $this->pagerLink($response, '前へ')['href']);
+    }
+
+    public function test_no_users_shows_only_the_message(): void
+    {
+        $response = $this->get('/user')->assertStatus(200);
+
+        $response->assertSee('該当するユーザーがいません');
+        $response->assertDontSee('<nav class="pagination', false);
+        $response->assertDontSee('<table', false);
+    }
+
     public function test_page_has_no_client_side_sort_markup(): void
     {
         $this->createUser();

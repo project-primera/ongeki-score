@@ -124,6 +124,38 @@ trait CreatesUserStatus
         }, $rows[1]);
     }
 
+    /**
+     * ページ内のリンク（a 要素）を、属性と文字列の配列にして返す。
+     * href などの属性値は HTML エスケープを戻した形（&amp; → &）にする。
+     *
+     * @return array<int, array<string, string>> 各要素は属性名 => 値。リンクの文字列は 'text'
+     */
+    protected function anchors(TestResponse $response, ?string $html = null): array
+    {
+        preg_match_all('#<a\b([^>]*)>(.*?)</a>#s', $html ?? $response->getContent(), $matches, PREG_SET_ORDER);
+
+        return array_map(function (array $match): array {
+            preg_match_all('#([\w-]+)(?:="([^"]*)")?#', $match[1], $attributes, PREG_SET_ORDER);
+
+            $anchor = ['text' => trim(html_entity_decode(strip_tags($match[2])))];
+            foreach ($attributes as $attribute) {
+                $anchor[$attribute[1]] = html_entity_decode($attribute[2] ?? '');
+            }
+
+            return $anchor;
+        }, $matches);
+    }
+
+    /** ページ送り（nav.pagination）の中のリンクを、1 つ目の nav について返す */
+    protected function pagerAnchors(TestResponse $response): array
+    {
+        if (!preg_match('#<nav class="pagination[^>]*>(.*?)</nav>#s', $response->getContent(), $match)) {
+            return [];
+        }
+
+        return $this->anchors($response, $match[1]);
+    }
+
     private function tableBody(TestResponse $response): string
     {
         if (!preg_match('#<tbody[^>]*>(.*?)</tbody>#s', $response->getContent(), $match)) {

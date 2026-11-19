@@ -14,7 +14,12 @@ class ViewAllUserController extends Controller
         $condition = UserListCondition::fromRequest($request);
         $currentVersionFrom = $this->currentVersionFrom();
 
-        $users = (new UserStatus())->paginateLatestOfPublicUsers($condition, $currentVersionFrom, self::PER_PAGE);
+        // ページ送りのリンクは、ほかのリンクと同じくホスト名を含まない形（/user?page=2）にする
+        $users = (new UserStatus())
+            ->paginateLatestOfPublicUsers($condition, $currentVersionFrom, self::PER_PAGE)
+            ->withPath('/user')
+            ->appends($condition->query())
+            ->onEachSide(1);
 
         return view('alluser', compact('users', 'currentVersionFrom'));
     }
