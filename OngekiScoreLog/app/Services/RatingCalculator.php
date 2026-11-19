@@ -7,11 +7,10 @@ namespace App\Services;
  *
  * すべて整数で計算し、割り切れない桁は切り捨てる。小数（float）で計算すると、
  * 3.054 + 16.203 + 0.659 が 19.915999… になるような誤差で最後の桁が変わるため。
- * 譜面定数は 1/100、単曲のレート値は 1/1000 を単位にする（定数 14.7 は 1470、レート値 17.400 は 17400）。
- * 枠の平均値・寄与値・RATING は、単曲値の合計を割って求めるので、さらに 2 桁細かい 1/100000 を単位にする。
- * 小数 3 桁の合計を 50 で割った値は、小数 5 桁でちょうど割り切れる。
+ * 譜面定数は 1/100、レート値は 1/1000 を単位にする（定数 14.7 は 1470、レート値 17.400 は 17400）。
  *
- * 計算式は公式には公開されていない。ここにあるのは有志の検証による暫定の式。
+ * 計算式は公式には公開されていない。単曲のレート値は有志の検証による暫定の式で、
+ * 枠の集計（どこで切り捨てるか）は、オンゲキNET のレーティング値と一致するように決めたもの。
  */
 final class RatingCalculator
 {
@@ -29,11 +28,8 @@ final class RatingCalculator
     /** プラチナスコア枠で数える☆の上限 */
     private const MAX_STAR = 5;
 
-    /** RATING は、3 つの枠の単曲値の合計をこの数で割った値。枠ごとの寄与値も同じ数で割る */
-    public const RATING_DIVISOR = 50;
-
-    /** 単曲値の単位（1/1000）を、集計値の単位（1/100000）に直すときに掛ける数 */
-    private const AGGREGATE_PER_MILLI = 100;
+    /** 新曲枠は、10 曲の平均の 5 分の 1 が RATING に入る。この割り算を 1 曲ごとに行う */
+    private const NEW_FRAME_DIVISOR = 5;
 
     /**
      * DB の譜面定数を 1/100 単位の整数にする。その難易度が無い（null）ときは null
@@ -79,38 +75,43 @@ final class RatingCalculator
     }
 
     /**
-     * 単曲値やその合計（1/1000 単位）を、集計値と同じ 1/100000 単位にする
-     */
-    public static function milliToAggregate(int $milli): int
-    {
-        return $milli * self::AGGREGATE_PER_MILLI;
-    }
-
-    /**
-     * 枠の平均値（1/100000 単位）。曲が足りない枠でも、枠の曲数で割る
+     * 枠の平均値（1/1000 単位）。小数 4 桁目以下は切り捨てる。曲が足りない枠でも、枠の曲数で割る
+     *
+     * ベスト枠とプラチナスコア枠は、この値がそのまま RATING への寄与値になる。
      *
      * @param int $totalMilli 枠に入った曲の単曲値の合計（1/1000 単位）
-     * @param int $count 枠の曲数
+     * @param int $frameSize 枠の曲数
      */
-    public static function average(int $totalMilli, int $count): int
+    public static function average(int $totalMilli, int $frameSize): int
     {
-        return intdiv(self::milliToAggregate($totalMilli), $count);
+        return intdiv($totalMilli, $frameSize);
     }
 
     /**
-     * その枠が RATING に寄与する値（1/100000 単位）
+     * 新曲枠が RATING に寄与する値（1/1000 単位）
+     *
+     * 1 曲ごとに単曲値を 5 で割って小数 4 桁目以下を切り捨て、その平均をもう一度切り捨てる。
+     * 合計をまとめて割ると、1 曲ごとに捨てた分だけ大きくなり、オンゲキNET の値と合わない。
+     *
+     * @param int[] $ratingsMilli 枠に入った曲の単曲値（1/1000 単位）
+     * @param int $frameSize 枠の曲数
      */
-    public static function contribution(int $totalMilli): int
+    public static function newFrameContribution(array $ratingsMilli, int $frameSize): int
     {
-        return self::average($totalMilli, self::RATING_DIVISOR);
+        $total = 0;
+        foreach ($ratingsMilli as $rating) {
+            $total += intdiv($rating, self::NEW_FRAME_DIVISOR);
+        }
+
+        return intdiv($total, $frameSize);
     }
 
     /**
-     * RATING（1/100000 単位）。各枠の単曲値の合計を渡す
+     * RATING（1/1000 単位）。3 つの枠の寄与値を足す
      */
-    public static function rating(int ...$totalsMilli): int
+    public static function rating(int $newFrameContribution, int $bestFrameContribution, int $platinumFrameContribution): int
     {
-        return self::contribution(array_sum($totalsMilli));
+        return $newFrameContribution + $bestFrameContribution + $platinumFrameContribution;
     }
 
     /**
@@ -118,29 +119,13 @@ final class RatingCalculator
      */
     public static function formatMilli(int $milli): string
     {
-        return self::format($milli, 3);
-    }
+        // 整数のまま整数部と小数部に分ける。float を経由しないので、丸めは起きない
+        $absolute = abs($milli);
 
-    /**
-     * 1/100000 単位の値を、小数 5 桁の文字列にする（2163874 → "21.63874"）
-     */
-    public static function formatAggregate(int $value): string
-    {
-        return self::format($value, 5);
-    }
-
-    /**
-     * 整数のまま整数部と小数部に分けて文字列にする。float を経由しないので、丸めは起きない
-     */
-    private static function format(int $value, int $decimals): string
-    {
-        $unit = 10 ** $decimals;
-        $absolute = abs($value);
-
-        return ($value < 0 ? '-' : '')
-            . intdiv($absolute, $unit)
+        return ($milli < 0 ? '-' : '')
+            . intdiv($absolute, 1000)
             . '.'
-            . str_pad((string) ($absolute % $unit), $decimals, '0', STR_PAD_LEFT);
+            . str_pad((string) ($absolute % 1000), 3, '0', STR_PAD_LEFT);
     }
 
     /**

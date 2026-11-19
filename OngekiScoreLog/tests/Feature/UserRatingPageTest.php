@@ -10,8 +10,9 @@ use Tests\TestCase;
 /**
  * Rating ページ（/user/{id}/rating）に出る統計と RATING を確認する。
  *
- * 単曲のレート値は小数 3 桁、枠の平均値・合計・寄与値と RATING は小数 5 桁で出る。
- * RATING は 3 つの枠の合計を 50 で割った値で、枠ごとの寄与値を足したものと一致する。
+ * どの値も小数 3 桁で、4 桁目以下は切り捨てる。
+ * RATING は 3 つの枠の寄与値を足した値。ベスト枠とプラチナスコア枠の寄与値は 50 曲の平均で、
+ * 新曲枠の寄与値は「単曲値 ÷ 5 を 1 曲ごとに切り捨てた値」の 10 曲の平均。
  */
 class UserRatingPageTest extends TestCase
 {
@@ -164,11 +165,94 @@ class UserRatingPageTest extends TestCase
         $text = $this->text($this->ratingPage());
 
         // 列は 平均値 | 対象曲数 | Max | Min | 合計レート値 | レート寄与値。曲が足りない枠も、枠の曲数で割る
-        $this->assertStringContainsString('新曲枠|1.67510|10|16.751|16.751|16.75100|0.33502|', $text);
-        $this->assertStringContainsString('ベスト枠|0.66800|50|17.300|16.100|33.40000|0.66800|', $text);
-        $this->assertStringContainsString('プラチナスコア枠|0.02130|50|1.065|1.065|1.06500|0.02130|', $text);
-        // (16.751 + 33.400 + 1.065) / 50
-        $this->assertStringContainsString('RATING:1.02432=(0.33502+0.66800+0.02130)', $text);
+        // 新曲枠: 16.751 ÷ 10 = 1.6751、寄与値は 16.751 ÷ 5 = 3.3502 → 3.350 を 10 で割る
+        $this->assertStringContainsString('新曲枠|1.675|10|16.751|16.751|16.751|0.335|', $text);
+        // ベスト枠: 33.400 ÷ 50 = 0.668
+        $this->assertStringContainsString('ベスト枠|0.668|50|17.300|16.100|33.400|0.668|', $text);
+        // プラチナスコア枠: 1.065 ÷ 50 = 0.0213
+        $this->assertStringContainsString('プラチナスコア枠|0.021|50|1.065|1.065|1.065|0.021|', $text);
+        $this->assertStringContainsString('RATING:1.024=(0.335+0.668+0.021)', $text);
+    }
+
+    public function test_new_frame_contribution_truncates_each_song_before_averaging(): void
+    {
+        // 定数 14.7 の 10 曲。969,999 点は 14.699、970,240 点は 14.709
+        $scores = [969999, 970240, 970240, 970240, 970240, 970240, 970240, 970240, 970240, 970240];
+        foreach ($scores as $i => $score) {
+            $this->addMasterScore($this->addMusic('New ' . $i, 14.7, self::CURRENT_VERSION), $score);
+        }
+
+        $text = $this->text($this->ratingPage());
+
+        // 14.709 ÷ 5 = 2.9418 → 2.941 が 9 曲、14.699 ÷ 5 → 2.939。合計 29.408 ÷ 10 = 2.9408 → 2.940。
+        // 合計 147.080 をまとめて 50 で割った 2.941 にはならない
+        $this->assertStringContainsString('新曲枠|14.708|10|14.709|14.699|147.080|2.940|', $text);
+        $this->assertStringContainsString('RATING:2.940=(2.940+0.000+0.000)', $text);
+    }
+
+    public function test_each_frame_is_truncated_before_the_three_are_added(): void
+    {
+        // 定数 14.6・971,307 点は 14.649。ベスト枠はこの 2 曲、プラチナスコア枠は 14.6・☆5（1.065）の 1 曲
+        $oldA = $this->addMusic('Old A', 14.6, 1);
+        $oldB = $this->addMusic('Old B', 14.6, 1);
+        $this->addMasterScore($oldA, 971307);
+        $this->addMasterScore($oldB, 971307);
+        $this->addPlatinum(1, 'Old A', 5);
+
+        $text = $this->text($this->ratingPage());
+
+        // ベスト枠: 29.298 ÷ 50 = 0.58596 → 0.585（1 曲ごとに 50 で割って切り捨てると 0.292 × 2 = 0.584）
+        $this->assertStringContainsString('ベスト枠|0.585|50|14.649|14.649|29.298|0.585|', $text);
+        $this->assertStringContainsString('プラチナスコア枠|0.021|50|1.065|1.065|1.065|0.021|', $text);
+        // 枠ごとに切り捨ててから足す。合計してから割ると (29.298 + 1.065) ÷ 50 = 0.60726 → 0.607 になる
+        $this->assertStringContainsString('RATING:0.606=(0.000+0.585+0.021)', $text);
+    }
+
+    public function test_best_frame_is_averaged_without_truncating_each_song(): void
+    {
+        // 新曲枠なら 1 曲ごとに切り捨てて 2.940 になる組み合わせ（定数 14.7 の 14.709 が 9 曲と 14.699 が 1 曲）
+        $scores = [969999, 970240, 970240, 970240, 970240, 970240, 970240, 970240, 970240, 970240];
+        foreach ($scores as $i => $score) {
+            $this->addMasterScore($this->addMusic('Old ' . $i, 14.7, 1), $score);
+        }
+
+        $text = $this->text($this->ratingPage());
+
+        // ベスト枠は合計 147.080 を 50 で割るだけ: 2.9416 → 2.941
+        $this->assertStringContainsString('ベスト枠|2.941|50|14.709|14.699|147.080|2.941|', $text);
+        $this->assertStringContainsString('RATING:2.941=(0.000+2.941+0.000)', $text);
+    }
+
+    public function test_songs_are_ranked_by_the_rate_itself_not_by_how_it_is_shown(): void
+    {
+        // 定数 10.0・1,007,500 点は 12.050 で、スコアが高いので装飾付きで表示される
+        $this->addMasterScore($this->addMusic('New Decorated', 10.0, self::CURRENT_VERSION), 1007500);
+        for ($i = 1; $i <= 10; $i++) {
+            $this->addMasterScore($this->addMusic('New ' . $i, 15.0, self::CURRENT_VERSION), 970000);
+        }
+
+        $html = $this->ratingPage();
+        $text = $this->text($html);
+
+        // 15.000 の 10 曲が枠に入り、12.050 の曲は入らない
+        $this->assertStringContainsString('新曲枠|15.000|10|15.000|15.000|150.000|3.000|', $text);
+        $this->assertStringNotContainsString('NewDecorated', $text);
+        $this->assertStringNotContainsString('12.050', $html);
+    }
+
+    public function test_best_frame_is_ranked_by_the_rate_itself_too(): void
+    {
+        $this->addMasterScore($this->addMusic('Old Decorated', 10.0, 1), 1007500);
+        for ($i = 1; $i <= 50; $i++) {
+            $this->addMasterScore($this->addMusic('Old ' . $i, 15.0, 1), 970000);
+        }
+
+        $html = $this->ratingPage();
+        $text = $this->text($html);
+
+        $this->assertStringContainsString('ベスト枠|15.000|50|15.000|15.000|750.000|15.000|', $text);
+        $this->assertStringNotContainsString('OldDecorated', $text);
+        $this->assertStringNotContainsString('12.050', $html);
     }
 
     public function test_lists_songs_of_each_frame_with_three_decimals(): void
@@ -213,8 +297,8 @@ class UserRatingPageTest extends TestCase
         $text = $this->text($this->ratingPage());
 
         // 14.700 × 50 = 735.000
-        $this->assertStringContainsString('ベスト枠|14.70000|50|14.700|14.700|735.00000|14.70000|', $text);
-        $this->assertStringContainsString('RATING:14.70000=(0.00000+14.70000+0.00000)', $text);
+        $this->assertStringContainsString('ベスト枠|14.700|50|14.700|14.700|735.000|14.700|', $text);
+        $this->assertStringContainsString('RATING:14.700=(0.000+14.700+0.000)', $text);
     }
 
     public function test_only_the_top_10_songs_count_in_the_new_frame(): void
@@ -227,7 +311,7 @@ class UserRatingPageTest extends TestCase
         $text = $this->text($this->ratingPage());
 
         // 14.1 から 15.0 までの 10 曲で 145.500。14.0 の曲は入らない
-        $this->assertStringContainsString('新曲枠|14.55000|10|15.000|14.100|145.50000|2.91000|', $text);
+        $this->assertStringContainsString('新曲枠|14.550|10|15.000|14.100|145.500|2.910|', $text);
         $this->assertStringContainsString('1|New10|Mas|15.0|970,000||15.000|2|New9|Mas|14.9|970,000||14.900|', $text);
         $this->assertStringContainsString('10|New1|Mas|14.1|970,000||14.100|', $text);
         $this->assertStringNotContainsString('New0|', $text);
@@ -242,8 +326,8 @@ class UserRatingPageTest extends TestCase
 
         // 15.0² × 3 / 1000 = 0.675
         $this->assertStringContainsString('2|OldB|Mas|15.0|1,000|3|0.675|', $text);
-        // 1.065 + 0.675 = 1.740
-        $this->assertStringContainsString('プラチナスコア枠|0.03480|50|1.065|0.675|1.74000|0.03480|', $text);
+        // 1.065 + 0.675 = 1.740、1.740 ÷ 50 = 0.0348
+        $this->assertStringContainsString('プラチナスコア枠|0.034|50|1.065|0.675|1.740|0.034|', $text);
     }
 
     public function test_only_50_songs_count_in_the_platinum_frame(): void
@@ -255,8 +339,8 @@ class UserRatingPageTest extends TestCase
 
         $text = $this->text($this->ratingPage());
 
-        // 14.6² × 1 / 1000 = 0.21316 → 0.213。50 曲で 10.650
-        $this->assertStringContainsString('プラチナスコア枠|0.21300|50|0.213|0.213|10.65000|0.21300|', $text);
+        // 14.6² × 1 / 1000 = 0.21316 → 0.213。50 曲で 10.650（51 曲なら 10.863 で、平均は 0.217 になる）
+        $this->assertStringContainsString('プラチナスコア枠|0.213|50|0.213|0.213|10.650|0.213|', $text);
     }
 
     public function test_estimated_extra_level_is_marked(): void
@@ -274,10 +358,10 @@ class UserRatingPageTest extends TestCase
     {
         $text = $this->text($this->ratingPage());
 
-        $this->assertStringContainsString('新曲枠|0.00000|10|0.000|0.000|0.00000|0.00000|', $text);
-        $this->assertStringContainsString('ベスト枠|0.00000|50|0.000|0.000|0.00000|0.00000|', $text);
-        $this->assertStringContainsString('プラチナスコア枠|0.00000|50|0.000|0.000|0.00000|0.00000|', $text);
-        $this->assertStringContainsString('RATING:0.00000=(0.00000+0.00000+0.00000)', $text);
+        $this->assertStringContainsString('新曲枠|0.000|10|0.000|0.000|0.000|0.000|', $text);
+        $this->assertStringContainsString('ベスト枠|0.000|50|0.000|0.000|0.000|0.000|', $text);
+        $this->assertStringContainsString('プラチナスコア枠|0.000|50|0.000|0.000|0.000|0.000|', $text);
+        $this->assertStringContainsString('RATING:0.000=(0.000+0.000+0.000)', $text);
     }
 
     public function test_unknown_song_in_the_platinum_frame_counts_as_zero(): void
@@ -291,7 +375,7 @@ class UserRatingPageTest extends TestCase
 
         $this->assertStringContainsString('プラチナスコア枠に未知の楽曲が含まれるため、正常に計算を行えませんでした。', $html);
         $this->assertStringContainsString('2|(未知の楽曲)RatingNeverRegistered|-|-|1,000|5|0.000|', $text);
-        $this->assertStringContainsString('プラチナスコア枠|0.02130|50|1.065|0.000|1.06500|0.02130|', $text);
+        $this->assertStringContainsString('プラチナスコア枠|0.021|50|1.065|0.000|1.065|0.021|', $text);
         Slack::shouldHaveReceived('Notice')->once();
     }
 

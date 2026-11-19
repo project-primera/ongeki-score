@@ -54,23 +54,23 @@ class ViewUserRatingController extends Controller
     }
 
     /**
-     * 枠に入った曲の単曲レート値から、統計表の 1 行ぶんの値を表示用の文字列で返す
-     * 平均値・合計・寄与値は小数 5 桁、最大・最小は単曲レート値そのものなので小数 3 桁
+     * 枠に入った曲の単曲レート値から、統計表の 1 行ぶんの値を表示用の文字列（小数 3 桁）で返す
      *
      * @param int[] $ratings 枠に入った曲の単曲レート値（1/1000 単位） 曲が足りない枠は、ある分だけ
      * @param int $count 枠の曲数
+     * @param int $contribution その枠の RATING への寄与値（1/1000 単位）
      * @return array{average: string, top: string, min: string, total: string, contribute: string}
      */
-    private function summarizeFrame(array $ratings, int $count): array
+    private function summarizeFrame(array $ratings, int $count, int $contribution): array
     {
         $total = array_sum($ratings);
 
         return [
-            'average' => RatingCalculator::formatAggregate(RatingCalculator::average($total, $count)),
+            'average' => RatingCalculator::formatMilli(RatingCalculator::average($total, $count)),
             'top' => RatingCalculator::formatMilli($ratings === [] ? 0 : max($ratings)),
             'min' => RatingCalculator::formatMilli($ratings === [] ? 0 : min($ratings)),
-            'total' => RatingCalculator::formatAggregate(RatingCalculator::milliToAggregate($total)),
-            'contribute' => RatingCalculator::formatAggregate(RatingCalculator::contribution($total)),
+            'total' => RatingCalculator::formatMilli($total),
+            'contribute' => RatingCalculator::formatMilli($contribution),
         ];
     }
 
@@ -203,30 +203,35 @@ class ViewUserRatingController extends Controller
             return view("user_rating_error", compact('id', 'status', 'sidemark', 'message'));
         }
 
+        // レート寄与値 新曲枠は 1 曲ごとに 1/5 にして切り捨ててから平均する ベスト枠とプラチナスコア枠は平均がそのまま寄与値
+        $newContribution = RatingCalculator::newFrameContribution($newRatings, $statistics->newBestRatingCount);
+        $oldContribution = RatingCalculator::average(array_sum($oldRatings), $statistics->oldBestRatingCount);
+        $platinumContribution = RatingCalculator::average(array_sum($platinumRatings), $statistics->platinumRatingCount);
+
         // レート統計 表示用の文字列にする
-        $newFrame = $this->summarizeFrame($newRatings, $statistics->newBestRatingCount);
+        $newFrame = $this->summarizeFrame($newRatings, $statistics->newBestRatingCount, $newContribution);
         $statistics->newRatingAverage = $newFrame['average'];
         $statistics->newBestRatingTop = $newFrame['top'];
         $statistics->newBestRatingMin = $newFrame['min'];
         $statistics->newBestRatingTotal = $newFrame['total'];
         $statistics->newRatingContribute = $newFrame['contribute'];
 
-        $oldFrame = $this->summarizeFrame($oldRatings, $statistics->oldBestRatingCount);
+        $oldFrame = $this->summarizeFrame($oldRatings, $statistics->oldBestRatingCount, $oldContribution);
         $statistics->oldBestRatingAverage = $oldFrame['average'];
         $statistics->oldBestRatingTop = $oldFrame['top'];
         $statistics->oldBestRatingMin = $oldFrame['min'];
         $statistics->oldBestRatingTotal = $oldFrame['total'];
         $statistics->oldBestRatingContribute = $oldFrame['contribute'];
 
-        $platinumFrame = $this->summarizeFrame($platinumRatings, $statistics->platinumRatingCount);
+        $platinumFrame = $this->summarizeFrame($platinumRatings, $statistics->platinumRatingCount, $platinumContribution);
         $statistics->platinumRatingAverage = $platinumFrame['average'];
         $statistics->platinumRatingTop = $platinumFrame['top'];
         $statistics->platinumRatingMin = $platinumFrame['min'];
         $statistics->platinumRatingTotal = $platinumFrame['total'];
         $statistics->platinumRatingContribute = $platinumFrame['contribute'];
 
-        // レーティング 3 枠の合計を 50 で割る 枠ごとの寄与値を足した値と一致する
-        $statistics->ratingCalc = RatingCalculator::formatAggregate(RatingCalculator::rating(array_sum($newRatings), array_sum($oldRatings), array_sum($platinumRatings)));
+        // レーティング 3 枠の寄与値を足す
+        $statistics->ratingCalc = RatingCalculator::formatMilli(RatingCalculator::rating($newContribution, $oldContribution, $platinumContribution));
 
         return view("user_rating", compact('messages', 'status', 'id', 'sidemark', 'statistics', 'newScore', 'oldScore', 'platinumMusic'));
     }
