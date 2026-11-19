@@ -99,6 +99,21 @@ class OngekiUtilityRatingTest extends TestCase
         OngekiUtility::platinumRatingMilli('Utility Never Registered', 3, 5, 'genre', 'artist');
     }
 
+    public function test_song_list_is_rebuilt_from_the_database_for_each_instance(): void
+    {
+        $this->addMusic('Utility F', ['master_level' => 14.5, 'master_extra_level' => 14.7]);
+        $this->assertSame(14700, OngekiUtility::technicalRatingMilli('Utility F', 3, 970000, '', 'genre', 'artist'));
+
+        // 曲を消してから、次のリクエストと同じように作り直す。前のインスタンスが読んだ曲を覚えていてはいけない
+        DB::table('music_datas')->delete();
+        OngekiUtility::clearResolvedInstance('OngekiUtility');
+
+        // 曲が 1 つも無いときも、未知の楽曲として扱う
+        $this->expectException(\OutOfBoundsException::class);
+
+        OngekiUtility::technicalRatingMilli('Utility F', 3, 970000, '', 'genre', 'artist');
+    }
+
     public function test_difficulty_must_be_an_integer_or_a_column_name(): void
     {
         $this->addMusic('Utility E', ['master_level' => 14.5, 'master_extra_level' => 14.7]);

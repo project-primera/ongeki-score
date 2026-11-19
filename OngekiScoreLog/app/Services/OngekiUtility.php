@@ -11,6 +11,8 @@ class OngekiUtility {
     function __construct()
     {
         $this::$MusicData = new MusicData;
+        // 楽曲が1つもないときも配列にしておく 前に作ったインスタンスが読み込んだ楽曲も引き継がない
+        $this::$MusicList = [];
         $temp = $this::$MusicData->getEstimateExtraLevel();
         $sameNameList = array_flip($this::$MusicData->getSameMusicList());
         foreach ($temp as $value) {
