@@ -176,6 +176,21 @@ class UserListSortTest extends TestCase
         $this->assertSame('(18.000)', $rows[$justBefore->id][4]);
     }
 
+    public function test_status_without_update_time_is_grouped_with_older_users(): void
+    {
+        $current = $this->createUser(['rating' => 10, 'updated_at' => self::CURRENT]);
+        $oldHigh = $this->createUser(['rating' => 18, 'updated_at' => self::OLD]);
+        $unknown = $this->createUser(['rating' => 17, 'updated_at' => null]);
+        $oldLow = $this->createUser(['rating' => 16, 'updated_at' => self::OLD]);
+
+        $response = $this->get('/user?sort=rating&order=desc')->assertStatus(200);
+
+        // 更新日時が無い行は括弧付きで出るので、並びも括弧付きの側に入れる
+        $this->assertSame('(17.000)', array_column($this->listedRows($response), null, 0)[$unknown->id][4]);
+        $this->assertSame([$current->id, $oldHigh->id, $unknown->id, $oldLow->id], $this->listedUserIds($response));
+        $this->assertSame([$current->id, $oldLow->id, $unknown->id, $oldHigh->id], $this->listedIds('sort=rating&order=asc'));
+    }
+
     public function test_rating_sort_works_when_everyone_is_on_the_same_side(): void
     {
         $low = $this->createUser(['rating' => 10, 'updated_at' => self::OLD]);

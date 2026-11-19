@@ -98,8 +98,11 @@ class UserListSearchTest extends TestCase
         $this->createUser(['name' => 'axb']);
         $this->createUser(['name' => 'a_b']);
         $this->createUser(['name' => 'a!b']);
+        $this->createUser(['name' => 'a\\b']);
 
         $this->assertSame(['a%b'], $this->listedNames('q='.urlencode('%')));
+        $this->assertSame(['a\\b'], $this->listedNames('q='.urlencode('\\')));
+        $this->assertSame(['a\\b'], $this->listedNames('q='.urlencode('a\\b')));
         $this->assertSame(['a_b'], $this->listedNames('q=_'));
         $this->assertSame(['a!b'], $this->listedNames('q='.urlencode('!')));
         $this->assertSame(['a%b'], $this->listedNames('q='.urlencode('a%b')));

@@ -110,6 +110,13 @@ class UserListConditionTest extends TestCase
         $this->assertNull($this->condition(['q' => null])->keyword());
     }
 
+    public function test_keyword_is_trimmed_of_full_width_spaces_too(): void
+    {
+        $this->assertSame('ali', $this->condition(['q' => "\u{3000}ali\u{3000}"])->keyword());
+        $this->assertSame("a\u{3000}b", $this->condition(['q' => "a\u{3000}b"])->keyword());
+        $this->assertNull($this->condition(['q' => "\u{3000} \u{3000}"])->keyword());
+    }
+
     public function test_keyword_is_cut_to_100_characters(): void
     {
         $this->assertSame(str_repeat('a', 100), $this->condition(['q' => str_repeat('a', 100)])->keyword());

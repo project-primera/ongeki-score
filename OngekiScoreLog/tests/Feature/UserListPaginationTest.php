@@ -157,6 +157,10 @@ class UserListPaginationTest extends TestCase
         $this->assertSame([$public->id], $this->listedUserIds($this->get('/user')));
         $this->assertSame([$public->id], $this->listedUserIds($this->actingAs($private)->get('/user')));
         $this->assertSame([$public->id], $this->listedUserIds($this->actingAs($admin)->get('/user')));
+
+        // 件数にも数えない
+        $this->get('/user')->assertSee('1 人中 1〜1 人目');
+        $this->actingAs($admin)->get('/user')->assertSee('1 人中 1〜1 人目');
     }
 
     public function test_users_without_status_are_not_listed(): void
@@ -279,6 +283,22 @@ class UserListPaginationTest extends TestCase
         $this->assertArrayNotHasKey('href', $this->pagerLink($response, '次へ'));
     }
 
+    public function test_extremely_large_page_number_does_not_fail(): void
+    {
+        $this->createUsers(250);
+
+        // 100 件ずつの位置の計算が整数に収まらない大きさでも、最終ページより先として扱う
+        foreach (['92233720368547759', '92233720368547760', '9223372036854775807'] as $page) {
+            $response = $this->get('/user?page='.$page)->assertStatus(200);
+
+            $response->assertSee('該当するユーザーがいません');
+            $this->assertSame('/user?page=3', $this->pagerLink($response, '前へ')['href'], $page);
+        }
+
+        // 整数として読めない大きさは、ほかの不正な値と同じく 1 ページ目
+        $this->assertCount(100, $this->listedUserIds($this->get('/user?page=9223372036854775808')->assertStatus(200)));
+    }
+
     public function test_page_beyond_the_only_page_still_links_back(): void
     {
         $this->createUsers(50);
@@ -304,10 +324,11 @@ class UserListPaginationTest extends TestCase
 
         $html = $this->get('/user')->assertStatus(200)->getContent();
 
-        $this->assertStringNotContainsString('sortAllUserTable', $html);
         $this->assertStringNotContainsString('data-sort', $html);
         $this->assertStringNotContainsString('sort-key', $html);
         $this->assertStringNotContainsString('id="sort_table"', $html);
+        // テストでは Vite の出力を止めているので、スクリプトを読み込んでいないことは view のソースで確かめる
+        $this->assertStringNotContainsString('@vite', file_get_contents(resource_path('views/alluser.blade.php')));
     }
 
     public function test_alluser_redirects_to_user(): void

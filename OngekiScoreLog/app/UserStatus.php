@@ -4,6 +4,7 @@ namespace App;
 
 use App\OngekiScoreLog\UserListCondition;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\DB;
 
 class UserStatus extends Model
@@ -102,8 +103,9 @@ class UserStatus extends Model
         }
 
         if ($condition->prioritizesCurrentVersion() && $currentVersionFrom !== null) {
-            // 現行バージョンで更新したユーザー（式の値が 1）を、向きに関係なく先に並べる
-            $query->orderByRaw('(s.updated_at >= ?) DESC', [$currentVersionFrom]);
+            // 現行バージョンで更新したユーザー（1）を、向きに関係なく先に並べる。
+            // 更新日時が無い行は画面で括弧付きになるので、並びもそれより前の更新（0）の側に入れる
+            $query->orderByRaw('CASE WHEN s.updated_at >= ? THEN 1 ELSE 0 END DESC', [$currentVersionFrom]);
         }
         $query->orderBy('s.' . $condition->column(), $condition->order());
         if ($condition->column() !== 'user_id') {
@@ -111,6 +113,10 @@ class UserStatus extends Model
             $query->orderBy('s.user_id', 'asc');
         }
 
-        return $query->paginate($perPage);
+        // ページ番号が極端に大きいと、取り出し位置（(ページ - 1) × 件数）が整数に収まらず例外になる。
+        // 収まる範囲で止めて、最終ページより先を開いたときと同じ扱い（該当なし）にする
+        $page = min(Paginator::resolveCurrentPage(), intdiv(PHP_INT_MAX, $perPage));
+
+        return $query->paginate($perPage, ['*'], 'page', $page);
     }
 }

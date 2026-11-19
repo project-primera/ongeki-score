@@ -2,6 +2,7 @@
 namespace App\OngekiScoreLog;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 
 /**
  * ユーザー一覧（/user）の並び順と検索語。
@@ -58,7 +59,7 @@ final class UserListCondition
     }
 
     /**
-     * 前後の空白を除いて先頭 100 文字に切り詰める。
+     * 前後の空白（全角空白を含む）を除いて先頭 100 文字に切り詰める。
      * 文字列でない値（配列など）・UTF-8 として不正な値・空文字は検索なしとして扱う。
      */
     private static function normalizeKeyword($value): ?string
@@ -67,7 +68,7 @@ final class UserListCondition
             return null;
         }
 
-        $keyword = mb_substr(trim($value), 0, self::KEYWORD_MAX_LENGTH, 'UTF-8');
+        $keyword = mb_substr(Str::trim($value), 0, self::KEYWORD_MAX_LENGTH, 'UTF-8');
 
         return $keyword === '' ? null : $keyword;
     }
