@@ -2,6 +2,7 @@
 
 namespace App;
 
+use App\OngekiScoreLog\UserListCondition;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 
@@ -69,5 +70,34 @@ class UserStatus extends Model
             }
         }
         return $sql;
+    }
+
+    /**
+     * 公開ユーザーの最新ステータスを、指定の並び順で 1 ページ分取得する。
+     * 最新ステータスは、そのユーザーの行のうち id が最大のもの（getRecentUserData と同じ決め方）。
+     * user_id のインデックスだけで最大の id が引けるので、履歴の全行は読まない。
+     *
+     * @param string|null $currentVersionFrom 現行バージョンの開始日時（Y-m-d H:i:s）。null なら全員を現行バージョンとして扱う
+     * @return \Illuminate\Contracts\Pagination\LengthAwarePaginator
+     */
+    function paginateLatestOfPublicUsers(UserListCondition $condition, ?string $currentVersionFrom, int $perPage)
+    {
+        $latest = DB::table($this->table)
+            ->selectRaw('MAX(id) as id')
+            ->groupBy('user_id');
+
+        $query = DB::table("$this->table as s")
+            ->joinSub($latest, 'l', 'l.id', '=', 's.id')
+            ->join('users as u', 'u.id', '=', 's.user_id')
+            ->where('u.private', 0)
+            ->select('s.user_id', 's.name', 's.trophy', 's.level', 's.rating', 's.rating_max', 's.battle_point', 's.updated_at');
+
+        $query->orderBy('s.' . $condition->column(), $condition->order());
+        if ($condition->column() !== 'user_id') {
+            // 同じ値が並んでも、ページをまたいで順序が変わらないようにする
+            $query->orderBy('s.user_id', 'asc');
+        }
+
+        return $query->paginate($perPage);
     }
 }
