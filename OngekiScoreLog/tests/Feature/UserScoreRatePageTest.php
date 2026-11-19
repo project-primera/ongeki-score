@@ -10,6 +10,7 @@ use Tests\TestCase;
  * 詳細・Technical・更新差分ページに出る単曲のレート値を確認する。
  *
  * 譜面定数 14.7 の譜面で、983,333 点は 14.700 + 0.499 = 15.199、990,000 点は 14.700 + 0.750 + 0.100 = 15.550。
+ * FULL BELL が付くと 0.050 上がる。
  */
 class UserScoreRatePageTest extends TestCase
 {
@@ -69,9 +70,12 @@ class UserScoreRatePageTest extends TestCase
         ]);
     }
 
-    private function addMasterScore(int $generation, int $technicalScore): void
+    /**
+     * @param array{full_bell?: int, battle_high_score?: int} $columns
+     */
+    private function addMasterScore(int $generation, int $technicalScore, array $columns = []): void
     {
-        DB::table('score_datas')->insert([
+        DB::table('score_datas')->insert($columns + [
             'user_id' => self::USER_ID,
             'song_id' => self::MUSIC_ID,
             'difficulty' => 3,
@@ -114,6 +118,14 @@ class UserScoreRatePageTest extends TestCase
         $this->assertStringContainsString('<td class="table-hidden-data sort_rate">15.199</td>', $html);
     }
 
+    public function test_details_page_adds_the_lamp_bonus(): void
+    {
+        $this->setPremiumPlan(true);
+        $this->addMasterScore(1, 983333, ['full_bell' => 1]);
+
+        $this->assertStringContainsString('<td class="table-hidden-data sort_rate">15.249</td>', $this->page('details'));
+    }
+
     public function test_technical_page_shows_the_rate_with_three_decimals(): void
     {
         $this->setPremiumPlan(true);
@@ -146,6 +158,42 @@ class UserScoreRatePageTest extends TestCase
 
         // 15.550 - 15.199
         $this->assertStringContainsString('SingleRating15.550+0.351', $text);
+    }
+
+    public function test_progress_page_uses_the_lamp_of_each_generation(): void
+    {
+        $this->setPremiumPlan(true);
+        $this->addMasterScore(1, 983333);
+        $this->addMasterScore(2, 983333, ['full_bell' => 1]);
+
+        $text = $this->text($this->page('progress'));
+
+        // スコアは同じで、FULL BELL の 0.050 だけ上がる
+        $this->assertStringContainsString('SingleRating15.249+0.050', $text);
+    }
+
+    public function test_progress_page_shows_no_difference_when_the_rate_is_unchanged(): void
+    {
+        $this->setPremiumPlan(true);
+        $this->addMasterScore(1, 983333);
+        $this->addMasterScore(2, 983333, ['battle_high_score' => 2000]);
+
+        $text = $this->text($this->page('progress'));
+
+        $this->assertStringContainsString('SingleRating15.199', $text);
+        $this->assertStringNotContainsString('SingleRating15.199+', $text);
+    }
+
+    public function test_progress_page_shows_the_rate_itself_for_a_chart_played_for_the_first_time(): void
+    {
+        $this->setPremiumPlan(true);
+        // 曲は取得済みで、まだプレイしていなかった譜面
+        $this->addMasterScore(1, 0, ['battle_high_score' => 0]);
+        $this->addMasterScore(2, 983333);
+
+        $text = $this->text($this->page('progress'));
+
+        $this->assertStringContainsString('SingleRating15.199+15.199', $text);
     }
 
     public function test_progress_page_shows_the_rate_itself_for_a_newly_played_chart(): void

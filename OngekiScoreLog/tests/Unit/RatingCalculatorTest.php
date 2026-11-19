@@ -22,8 +22,10 @@ class RatingCalculatorTest extends TestCase
             'MySQL の decimal（文字列）' => ['14.70', 1470],
             '小数（sqlite・推定値）' => [14.7, 1470],
             '整数' => [15, 1500],
-            '2 進数で表せない小数（1.1）' => [1.1, 110],
-            '2 進数で表せない小数（13.9）' => ['13.90', 1390],
+            // 8.2 * 100 は 819.999…、10.2 * 100 は 1019.999… になる。切り捨てると 1 小さくなる
+            '100 倍すると誤差が出る小数（8.2）' => [8.2, 820],
+            '100 倍すると誤差が出る小数（"10.20"）' => ['10.20', 1020],
+            '100 倍すると誤差が出る小数（2.3）' => [2.3, 230],
             '0' => ['0.00', 0],
             '未登録' => [null, null],
         ];
@@ -107,6 +109,22 @@ class RatingCalculatorTest extends TestCase
         $this->assertSame($expected, RatingCalculator::technical(1470, $technicalScore, ''));
     }
 
+    public function test_every_score_between_970000_and_990000_is_truncated(): void
+    {
+        $wrong = [];
+
+        for ($points = 0; $points < 20000; $points++) {
+            $rise = RatingCalculator::technical(1470, 970000 + $points, '') - 14700;
+
+            // 上昇分 r が「points × 0.750 / 20,000 の切り捨て」なら、r ≦ points × 3 / 80 < r + 1
+            if (!($rise * 80 <= $points * 3 && $points * 3 < ($rise + 1) * 80)) {
+                $wrong[] = 970000 + $points;
+            }
+        }
+
+        $this->assertSame([], $wrong);
+    }
+
     /**
      * @return array<string, array{string, int}>
      */
@@ -163,9 +181,12 @@ class RatingCalculatorTest extends TestCase
     {
         return [
             '1.0' => [100],
+            '5.0' => [500],
             '5.9' => [590],
             '6.0' => [600],
             '6.1' => [610],
+            '7.0' => [700],
+            '10.0' => [1000],
             '14.7' => [1470],
             '15.9' => [1590],
         ];
@@ -203,6 +224,7 @@ class RatingCalculatorTest extends TestCase
             '15.0 ☆3（0.67500）' => [1500, 3, 675],
             '☆6 以上は 5 として扱う' => [1570, 6, 1232],
             '☆0 は 0' => [1570, 0, 0],
+            '☆が負でも 0' => [1570, -1, 0],
             '1.0 ☆1（0.00100）' => [100, 1, 1],
             '定数 0 は 0' => [0, 5, 0],
         ];

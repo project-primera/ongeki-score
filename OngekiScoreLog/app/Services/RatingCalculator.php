@@ -46,7 +46,7 @@ final class RatingCalculator
             return null;
         }
 
-        // 13.9 * 100 が 1389.999… になるような誤差を消すために、整数へ直すこの 1 か所だけ四捨五入する
+        // 8.2 * 100 が 819.999… になるような誤差を消すために、整数へ直すこの 1 か所だけ四捨五入する
         return (int) round((float) $extraLevel * 100);
     }
 
@@ -165,7 +165,8 @@ final class RatingCalculator
             $technicalScore >= 900000 => $extraLevelMilli - 4000 + intdiv(($technicalScore - 900000) * 2, 35),
             // 100,000 点で +2.000（50 点ごと）
             $technicalScore >= 800000 => $extraLevelMilli - 6000 + intdiv($technicalScore - 800000, 50),
-            // 500,000 点の 0 から、800,000 点の「定数 - 6.000」まで上がる。ここだけは定数からの差ではなく値そのもの
+            // 500,000 点の 0 から、800,000 点の「定数 - 6.000」まで上がる。ここだけは定数からの差ではなく値そのもの。
+            // intdiv は負の数を 0 の向きに丸めるので、定数が 6.0 未満のときは割る前に 0 にしておく
             $technicalScore >= 500000 => intdiv(max(0, $extraLevelMilli - 6000) * ($technicalScore - 500000), 300000),
             default => 0,
         };

@@ -113,6 +113,7 @@ class UserRatingPageTest extends TestCase
             'genre' => 'genre',
             'artist' => 'artist',
             'difficulty' => 3,
+            // レート値に使うのは☆の数で、プラチナスコアそのものは使わない
             'platinum_score' => 1000,
             'star' => $star,
             'unique_id' => 'platinum' . $rank,
@@ -214,6 +215,48 @@ class UserRatingPageTest extends TestCase
         // 14.700 × 50 = 735.000
         $this->assertStringContainsString('ベスト枠|14.70000|50|14.700|14.700|735.00000|14.70000|', $text);
         $this->assertStringContainsString('RATING:14.70000=(0.00000+14.70000+0.00000)', $text);
+    }
+
+    public function test_only_the_top_10_songs_count_in_the_new_frame(): void
+    {
+        // 定数 14.0, 14.1, …, 15.0 の 11 曲を低い順に登録する。970,000 点のレート値は定数と同じ
+        for ($i = 0; $i <= 10; $i++) {
+            $this->addMasterScore($this->addMusic('New ' . $i, (140 + $i) / 10, self::CURRENT_VERSION), 970000);
+        }
+
+        $text = $this->text($this->ratingPage());
+
+        // 14.1 から 15.0 までの 10 曲で 145.500。14.0 の曲は入らない
+        $this->assertStringContainsString('新曲枠|14.55000|10|15.000|14.100|145.50000|2.91000|', $text);
+        $this->assertStringContainsString('1|New10|Mas|15.0|970,000||15.000|2|New9|Mas|14.9|970,000||14.900|', $text);
+        $this->assertStringContainsString('10|New1|Mas|14.1|970,000||14.100|', $text);
+        $this->assertStringNotContainsString('New0|', $text);
+    }
+
+    public function test_platinum_rate_depends_on_the_number_of_stars(): void
+    {
+        $this->addSampleScores();
+        $this->addPlatinum(2, 'Old B', 3);
+
+        $text = $this->text($this->ratingPage());
+
+        // 15.0² × 3 / 1000 = 0.675
+        $this->assertStringContainsString('2|OldB|Mas|15.0|1,000|3|0.675|', $text);
+        // 1.065 + 0.675 = 1.740
+        $this->assertStringContainsString('プラチナスコア枠|0.03480|50|1.065|0.675|1.74000|0.03480|', $text);
+    }
+
+    public function test_only_50_songs_count_in_the_platinum_frame(): void
+    {
+        $this->addMusic('Old A', 14.6, 1);
+        for ($rank = 1; $rank <= 51; $rank++) {
+            $this->addPlatinum($rank, 'Old A', 1);
+        }
+
+        $text = $this->text($this->ratingPage());
+
+        // 14.6² × 1 / 1000 = 0.21316 → 0.213。50 曲で 10.650
+        $this->assertStringContainsString('プラチナスコア枠|0.21300|50|0.213|0.213|10.65000|0.21300|', $text);
     }
 
     public function test_estimated_extra_level_is_marked(): void

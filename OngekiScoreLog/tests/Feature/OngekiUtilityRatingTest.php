@@ -72,6 +72,8 @@ class OngekiUtilityRatingTest extends TestCase
 
         // 14.6² × 5 / 1000 = 1.06580
         $this->assertSame(1065, OngekiUtility::platinumRatingMilli('Utility D', 3, 5, 'genre', 'artist'));
+        // 14.6² × 3 / 1000 = 0.63948
+        $this->assertSame(639, OngekiUtility::platinumRatingMilli('Utility D', 3, 3, 'genre', 'artist'));
     }
 
     public function test_songs_with_the_same_title_are_told_apart_by_artist_and_genre(): void
