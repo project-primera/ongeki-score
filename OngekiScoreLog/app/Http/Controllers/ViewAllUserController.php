@@ -21,7 +21,7 @@ class ViewAllUserController extends Controller
             ->appends($condition->query())
             ->onEachSide(1);
 
-        return view('alluser', compact('users', 'currentVersionFrom'));
+        return view('alluser', compact('users', 'condition', 'currentVersionFrom'));
     }
 
     /**

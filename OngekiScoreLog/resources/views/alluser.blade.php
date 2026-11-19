@@ -5,6 +5,20 @@
 @section('hero_title', "すべてのユーザー")
 
 @section('content')
+    @php
+        // 並び替えのキー（?sort= の値）=> 列見出し
+        $columns = [
+            'id' => 'ID',
+            'name' => 'Name',
+            'trophy' => 'Trophy',
+            'lv' => 'Lv',
+            'rating' => 'Rating',
+            'max' => '(Max)',
+            'bp' => 'BP',
+            'update' => 'Update',
+        ];
+    @endphp
+
     <article class="box">
         @if ($users->total() > 0)
             <p class="user-list-count">
@@ -23,28 +37,19 @@
         @else
             <div class="table_wrap">
                 <table class="table">
+                    {{-- 列見出しは並び替えのリンク。現在の列には向きの印（.sort.asc / .sort.desc の ▲▼）が付く --}}
                     <thead>
                         <tr>
-                            <th>ID</th>
-                            <th>Name</th>
-                            <th>Trophy</th>
-                            <th>Lv</th>
-                            <th>Rating</th>
-                            <th>(Max)</th>
-                            <th>BP</th>
-                            <th>Update</th>
+                            @foreach ($columns as $sort => $label)
+                                <th class="{{trim('sort ' . $condition->orderOf($sort))}}"><a href="/user?{{http_build_query($condition->sortQuery($sort))}}" rel="nofollow">{{$label}}</a></th>
+                            @endforeach
                         </tr>
                     </thead>
                     <tfoot>
                         <tr>
-                            <th>ID</th>
-                            <th>Name</th>
-                            <th>Trophy</th>
-                            <th>Lv</th>
-                            <th>Rating</th>
-                            <th>(Max)</th>
-                            <th>BP</th>
-                            <th>Update</th>
+                            @foreach ($columns as $sort => $label)
+                                <th class="{{trim('sort ' . $condition->orderOf($sort))}}"><a href="/user?{{http_build_query($condition->sortQuery($sort))}}" rel="nofollow">{{$label}}</a></th>
+                            @endforeach
                         </tr>
                     </tfoot>
                     <tbody>
