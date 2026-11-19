@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Facades\Slack;
 use App\User;
 use Illuminate\Support\Facades\Storage;
 use Tests\TestCase;
@@ -9,6 +10,7 @@ use Tests\TestCase;
 /**
  * 管理者用のログ閲覧が、保存された内容をそのまま text/plain で返すことを確認する。
  * ログには訪問者が決められる文字列が入るので、HTML として解釈させない。
+ * あわせて、管理者だけが開けることと、ファイルが無いときの応答を確認する。
  */
 class AdminLogFileTest extends TestCase
 {
@@ -130,5 +132,77 @@ class AdminLogFileTest extends TestCase
 
         $response->assertStatus(200);
         $this->assertSame($content, $response->getContent());
+    }
+
+    public function test_text_sent_by_a_visitor_is_returned_as_plain_text_after_being_logged(): void
+    {
+        Slack::spy();
+        Storage::fake();
+        $marker = '<b>log-marker-query</b>';
+
+        // 存在しないページへの要求 → 404 → Handler::report() が、入力を含む添付本文を Warning で送る
+        $this->get('/no-such-page-for-log-view-test?q='.urlencode($marker))->assertStatus(404);
+
+        $logged = null;
+        Slack::shouldHaveReceived('Warning')->once()->withArgs(function (string $content, string $file) use (&$logged) {
+            $logged = $file;
+
+            return true;
+        });
+        $this->assertStringContainsString($marker, $logged);
+
+        // 通知が保存するのと同じ場所に置いて、管理者として開く
+        Storage::put('log/Warning/1700000000_11', $logged);
+        $response = $this->actingAs($this->admin())->get('/admin/log/Warning/1700000000_11');
+
+        $response->assertStatus(200);
+        $response->assertHeader('Content-Type', 'text/plain; charset=UTF-8');
+        $this->assertSame($logged, $response->getContent());
+    }
+
+    public function test_guest_is_redirected_to_login_without_the_log(): void
+    {
+        Slack::spy();
+        Storage::fake();
+        Storage::put('log/Warning/1700000000_12', 'log-marker-guest');
+
+        $response = $this->get('/admin/log/Warning/1700000000_12');
+
+        $response->assertRedirect('/login');
+        $this->assertStringNotContainsString('log-marker-guest', $response->getContent());
+    }
+
+    public function test_non_admin_gets_the_403_page_without_the_log(): void
+    {
+        Slack::spy();
+        Storage::fake();
+        Storage::put('log/Warning/1700000000_13', 'log-marker-non-admin');
+        // 管理者は role が 7 以上
+        $user = $this->admin();
+        $user->role = 0;
+
+        $response = $this->actingAs($user)->get('/admin/log/Warning/1700000000_13');
+
+        $response->assertStatus(403);
+        $this->assertStringNotContainsString('log-marker-non-admin', $response->getContent());
+    }
+
+    public function test_missing_log_returns_the_500_page(): void
+    {
+        Slack::spy();
+        Storage::fake();
+
+        $this->actingAs($this->admin())->get('/admin/log/Info/nonexistent.txt')->assertStatus(500);
+    }
+
+    public function test_path_pointing_at_a_directory_returns_200_with_an_empty_body(): void
+    {
+        Storage::fake();
+        Storage::makeDirectory('log/Warning/1700000000_9');
+
+        $response = $this->actingAs($this->admin())->get('/admin/log/Warning/1700000000_9');
+
+        $response->assertStatus(200);
+        $this->assertSame('', $response->getContent());
     }
 }
