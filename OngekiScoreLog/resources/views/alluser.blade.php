@@ -17,17 +17,44 @@
             'bp' => 'BP',
             'update' => 'Update',
         ];
+
+        $searching = $condition->keyword() !== null;
+
+        // 「11,593 人中 101〜200 人目」。該当が無いページ（最終ページより先）では人数だけ出す
+        $count = number_format($users->total()) . ' 人';
+        if ($users->isNotEmpty()) {
+            $count .= '中 ' . number_format($users->firstItem()) . '〜' . number_format($users->lastItem()) . ' 人目';
+        }
+        if ($searching) {
+            $count = '検索結果 ' . $count;
+        }
+
+        $clearQuery = http_build_query($condition->queryWithoutKeyword());
     @endphp
 
     <article class="box">
+        {{-- 検索すると 1 ページ目に戻る。並び替えている場合は、その並びのまま検索する --}}
+        <form method="get" action="/user" class="user-list-search">
+            @if ($condition->isSorted())
+                <input type="hidden" name="sort" value="{{$condition->sort()}}">
+                <input type="hidden" name="order" value="{{$condition->order()}}">
+            @endif
+            <div class="field has-addons">
+                <div class="control is-expanded">
+                    <input class="input" type="search" name="q" value="{{$condition->keyword()}}" maxlength="{{\App\OngekiScoreLog\UserListCondition::KEYWORD_MAX_LENGTH}}" placeholder="名前で検索" aria-label="名前で検索">
+                </div>
+                <div class="control">
+                    <button class="button is-info" type="submit">検索</button>
+                </div>
+            </div>
+        </form>
+
+        @if ($searching)
+            <p class="user-list-clear"><a href="/user{{$clearQuery === '' ? '' : '?' . $clearQuery}}" rel="nofollow">検索を解除</a></p>
+        @endif
+
         @if ($users->total() > 0)
-            <p class="user-list-count">
-                @if ($users->isNotEmpty())
-                    {{number_format($users->total())}} 人中 {{number_format($users->firstItem())}}〜{{number_format($users->lastItem())}} 人目
-                @else
-                    {{number_format($users->total())}} 人
-                @endif
-            </p>
+            <p class="user-list-count">{{$count}}</p>
         @endif
 
         {{ $users->links('layouts.components.pagination') }}

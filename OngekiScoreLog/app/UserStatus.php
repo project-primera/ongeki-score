@@ -74,6 +74,7 @@ class UserStatus extends Model
 
     /**
      * 公開ユーザーの最新ステータスを、指定の並び順で 1 ページ分取得する。
+     * 検索語があれば、最新ステータスの名前にそれを含むユーザーだけに絞る。
      * Rating / Max で並べるときは、現行バージョンで更新したユーザーを先に、それより前の更新のユーザーを後ろにまとめる。
      * 最新ステータスは、そのユーザーの行のうち id が最大のもの（getRecentUserData と同じ決め方）。
      * user_id のインデックスだけで最大の id が引けるので、履歴の全行は読まない。
@@ -92,6 +93,13 @@ class UserStatus extends Model
             ->join('users as u', 'u.id', '=', 's.user_id')
             ->where('u.private', 0)
             ->select('s.user_id', 's.name', 's.trophy', 's.level', 's.rating', 's.rating_max', 's.battle_point', 's.updated_at');
+
+        if ($condition->keyword() !== null) {
+            // 検索語の % と _ をワイルドカードにしない。エスケープ文字を ! にしているのは、
+            // バックスラッシュだと MariaDB と SQLite で書き方が分かれるため
+            $pattern = '%' . str_replace(['!', '%', '_'], ['!!', '!%', '!_'], $condition->keyword()) . '%';
+            $query->whereRaw("s.name LIKE ? ESCAPE '!'", [$pattern]);
+        }
 
         if ($condition->prioritizesCurrentVersion() && $currentVersionFrom !== null) {
             // 現行バージョンで更新したユーザー（式の値が 1）を、向きに関係なく先に並べる
