@@ -10,6 +10,9 @@ class ViewAllUserController extends Controller
 {
     private const PER_PAGE = 100;
 
+    /** 一覧の表示を変える URL クエリ */
+    private const LIST_PARAMETERS = ['page', 'sort', 'order', 'q'];
+
     public function getIndex(Request $request){
         $condition = UserListCondition::fromRequest($request);
         $currentVersionFrom = $this->currentVersionFrom();
@@ -21,7 +24,10 @@ class ViewAllUserController extends Controller
             ->appends($condition->query())
             ->onEachSide(1);
 
-        return view('alluser', compact('users', 'condition', 'currentVersionFrom'));
+        // 並び替え・ページ・検索の組み合わせで URL が大量にできるので、検索エンジンに載せるのは /user そのものだけにする
+        $noindex = count(array_intersect(self::LIST_PARAMETERS, $request->query->keys())) > 0;
+
+        return view('alluser', compact('users', 'condition', 'currentVersionFrom', 'noindex'));
     }
 
     /**

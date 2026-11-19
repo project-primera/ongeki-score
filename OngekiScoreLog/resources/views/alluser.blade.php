@@ -3,6 +3,11 @@
 @section('title', 'すべてのユーザー')
 @section('sidemark_alluser', "is-active")
 @section('hero_title', "すべてのユーザー")
+@if ($noindex)
+    @section('additional_head')
+        <meta name="robots" content="noindex">
+    @endsection
+@endif
 
 @section('content')
     @php
