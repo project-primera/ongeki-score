@@ -37,7 +37,6 @@ export default defineConfig({
                 'resources/assets/js/app.js',
                 'resources/assets/js/sortTable.js',
                 'resources/assets/js/tableScalable.js',
-                'resources/assets/js/sortAllUserTable.js',
                 'resources/assets/js/sortMusic.js',
                 'resources/assets/js/sortTrophy.js',
                 'resources/assets/js/changeGraphSize.js',

@@ -2,7 +2,9 @@
 
 namespace App;
 
+use App\OngekiScoreLog\UserListCondition;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\DB;
 
 class UserStatus extends Model
@@ -69,5 +71,52 @@ class UserStatus extends Model
             }
         }
         return $sql;
+    }
+
+    /**
+     * 公開ユーザーの最新ステータスを、指定の並び順で 1 ページ分取得する。
+     * 検索語があれば、最新ステータスの名前にそれを含むユーザーだけに絞る。
+     * Rating / Max で並べるときは、現行バージョンで更新したユーザーを先に、それより前の更新のユーザーを後ろにまとめる。
+     * 最新ステータスは、そのユーザーの行のうち id が最大のもの（getRecentUserData と同じ決め方）。
+     * user_id のインデックスだけで最大の id が引けるので、履歴の全行は読まない。
+     *
+     * @param string|null $currentVersionFrom 現行バージョンの開始日時（Y-m-d H:i:s）。null なら全員を現行バージョンとして扱う
+     * @return \Illuminate\Contracts\Pagination\LengthAwarePaginator
+     */
+    function paginateLatestOfPublicUsers(UserListCondition $condition, ?string $currentVersionFrom, int $perPage)
+    {
+        $latest = DB::table($this->table)
+            ->selectRaw('MAX(id) as id')
+            ->groupBy('user_id');
+
+        $query = DB::table("$this->table as s")
+            ->joinSub($latest, 'l', 'l.id', '=', 's.id')
+            ->join('users as u', 'u.id', '=', 's.user_id')
+            ->where('u.private', 0)
+            ->select('s.user_id', 's.name', 's.trophy', 's.level', 's.rating', 's.rating_max', 's.battle_point', 's.updated_at');
+
+        if ($condition->keyword() !== null) {
+            // 検索語の % と _ をワイルドカードにしない。エスケープ文字を ! にしているのは、
+            // バックスラッシュだと MariaDB と SQLite で書き方が分かれるため
+            $pattern = '%' . str_replace(['!', '%', '_'], ['!!', '!%', '!_'], $condition->keyword()) . '%';
+            $query->whereRaw("s.name LIKE ? ESCAPE '!'", [$pattern]);
+        }
+
+        if ($condition->prioritizesCurrentVersion() && $currentVersionFrom !== null) {
+            // 現行バージョンで更新したユーザー（1）を、向きに関係なく先に並べる。
+            // 更新日時が無い行は画面で括弧付きになるので、並びもそれより前の更新（0）の側に入れる
+            $query->orderByRaw('CASE WHEN s.updated_at >= ? THEN 1 ELSE 0 END DESC', [$currentVersionFrom]);
+        }
+        $query->orderBy('s.' . $condition->column(), $condition->order());
+        if ($condition->column() !== 'user_id') {
+            // 同じ値が並んでも、ページをまたいで順序が変わらないようにする
+            $query->orderBy('s.user_id', 'asc');
+        }
+
+        // ページ番号が極端に大きいと、取り出し位置（(ページ - 1) × 件数）が整数に収まらず例外になる。
+        // 収まる範囲で止めて、最終ページより先を開いたときと同じ扱い（該当なし）にする
+        $page = min(Paginator::resolveCurrentPage(), intdiv(PHP_INT_MAX, $perPage));
+
+        return $query->paginate($perPage, ['*'], 'page', $page);
     }
 }
