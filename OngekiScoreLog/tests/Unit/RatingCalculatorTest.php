@@ -9,6 +9,7 @@ use PHPUnit\Framework\TestCase;
 /**
  * レート値の計算を確認する。
  * 値はすべて整数で、譜面定数は 1/100、単曲値は 1/1000 を単位にしている（定数 14.7 は 1470、レート値 17.400 は 17400）。
+ * 枠の平均値・寄与値・RATING は 1/100000 を単位にしている（21.63874 は 2163874）。
  */
 class RatingCalculatorTest extends TestCase
 {
@@ -211,5 +212,105 @@ class RatingCalculatorTest extends TestCase
     public function test_platinum_rating_is_truncated_to_three_decimals(int $extraLevelCenti, int $star, int $expected): void
     {
         $this->assertSame($expected, RatingCalculator::platinum($extraLevelCenti, $star));
+    }
+
+    /**
+     * 枠ごとの単曲値の合計と、そこから求める値。新曲枠は 10 曲、ベスト枠とプラチナスコア枠は 50 曲
+     *
+     * @return array<string, array{int, int, int, int, int, int, int, int}>
+     */
+    public static function frameTotals(): array
+    {
+        return [
+            // 新曲枠の合計, ベスト枠の合計, プラチナスコア枠の合計, 新曲枠の平均, 新曲枠の寄与, ベスト枠の寄与, プラチナスコア枠の寄与, RATING
+            '170.123 / 850.457 / 61.357' => [170123, 850457, 61357, 1701230, 340246, 1700914, 122714, 2163874],
+            'float で足すと 19.915999… になる 3.054 + 16.203 + 0.659' => [152700, 810150, 32950, 1527000, 305400, 1620300, 65900, 1991600],
+            '177.000 / 885.000 / 61.622' => [177000, 885000, 61622, 1770000, 354000, 1770000, 123244, 2247244],
+            'すべて 0' => [0, 0, 0, 0, 0, 0, 0, 0],
+        ];
+    }
+
+    #[DataProvider('frameTotals')]
+    public function test_rating_is_the_sum_of_three_frames_divided_by_50(
+        int $new,
+        int $best,
+        int $platinum,
+        int $newAverage,
+        int $newContribution,
+        int $bestContribution,
+        int $platinumContribution,
+        int $rating,
+    ): void {
+        $this->assertSame($newAverage, RatingCalculator::average($new, 10));
+        $this->assertSame($newContribution, RatingCalculator::contribution($new));
+        $this->assertSame($bestContribution, RatingCalculator::average($best, 50));
+        $this->assertSame($bestContribution, RatingCalculator::contribution($best));
+        $this->assertSame($platinumContribution, RatingCalculator::average($platinum, 50));
+        $this->assertSame($platinumContribution, RatingCalculator::contribution($platinum));
+        $this->assertSame($rating, RatingCalculator::rating($new, $best, $platinum));
+
+        // 小数 3 桁の合計を 50 で割った値は小数 5 桁で割り切れるので、枠ごとの寄与を足すと RATING になる
+        $this->assertSame($rating, $newContribution + $bestContribution + $platinumContribution);
+    }
+
+    public function test_average_divides_by_the_size_of_the_frame_even_when_songs_are_missing(): void
+    {
+        // 10 曲の枠に 16.750 の 1 曲だけ
+        $this->assertSame(167500, RatingCalculator::average(16750, 10));
+    }
+
+    public function test_digits_below_the_fifth_decimal_are_truncated(): void
+    {
+        // 0.001 / 3 = 0.000333…
+        $this->assertSame(33, RatingCalculator::average(1, 3));
+        // 0.002 / 3 = 0.000666…（四捨五入なら 67）
+        $this->assertSame(66, RatingCalculator::average(2, 3));
+    }
+
+    public function test_total_is_expressed_in_the_unit_of_aggregated_values(): void
+    {
+        $this->assertSame(85045700, RatingCalculator::milliToAggregate(850457));
+    }
+
+    /**
+     * @return array<string, array{int, string}>
+     */
+    public static function milliValues(): array
+    {
+        return [
+            '17.400' => [17400, '17.400'],
+            '100.000' => [100000, '100.000'],
+            '1 未満' => [50, '0.050'],
+            '最小の刻み' => [1, '0.001'],
+            '0' => [0, '0.000'],
+            '負の値' => [-1, '-0.001'],
+            '負の値（整数部あり）' => [-1500, '-1.500'],
+        ];
+    }
+
+    #[DataProvider('milliValues')]
+    public function test_single_rating_is_formatted_with_three_decimals(int $milli, string $expected): void
+    {
+        $this->assertSame($expected, RatingCalculator::formatMilli($milli));
+    }
+
+    /**
+     * @return array<string, array{int, string}>
+     */
+    public static function aggregateValues(): array
+    {
+        return [
+            '21.63874' => [2163874, '21.63874'],
+            '850.45700' => [85045700, '850.45700'],
+            '1 未満' => [66, '0.00066'],
+            '0' => [0, '0.00000'],
+            '負の値' => [-5, '-0.00005'],
+        ];
+    }
+
+    #[DataProvider('aggregateValues')]
+    public function test_aggregated_value_is_formatted_with_five_decimals(int $value, string $expected): void
+    {
+        $this->assertSame($expected, RatingCalculator::formatAggregate($value));
     }
 }
