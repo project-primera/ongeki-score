@@ -78,6 +78,31 @@ p{
     display: none;
 }
 
+// 並び替えのリンクになっている列見出し（ユーザー一覧）は、ほかの表の見出しと同じ色で出す
+th.sort a{
+    color: inherit;
+
+    &:hover{
+        text-decoration: underline;
+    }
+}
+
+// ユーザー一覧の検索欄・件数・ページ送りの間隔
+.user-list-search,
+.user-list-clear,
+.user-list-count{
+    margin-bottom: 0.75rem;
+}
+
+// ページ送りは、表の上でも下でも表から同じだけ離す
+.pagination:not(:last-child){
+    margin-bottom: 1rem;
+}
+
+.table_wrap + .pagination{
+    margin-top: 1rem;
+}
+
 td.table-tag{
     padding-left: 0.15em;
     padding-right: 0.15em;

@@ -14,8 +14,9 @@ use Tests\TestCase;
  * パスワード再設定の途中で例外が出たとき、Slack に添付されるトレース（$exception->__toString()）に
  * 平文のパスワードが残らないことを確認する。
  * laravel/ui の ResetsPasswords::reset() のクロージャと resetPassword() / setUserPassword() は $password に
- * SensitiveParameter を付けていないので、引数付きトレース（docker/php/zz-app.ini の zend.exception_ignore_args = Off）
+ * SensitiveParameter を付けていないので、引数付きトレース（zend.exception_ignore_args = Off。PHP の既定）
  * では先頭 15 文字が残る。ResetPasswordController で上書きして属性を付けている。
+ * 本番イメージは docker/php/zz-app.ini で On にしていて引数は残らない。ここでは設定が Off に戻った場合を確認する。
  */
 class PasswordResetTraceMaskTest extends TestCase
 {
@@ -23,7 +24,7 @@ class PasswordResetTraceMaskTest extends TestCase
     {
         $plain = 'SuperSecretPassw0rd!';
 
-        // 本番イメージと同じ条件（引数付きトレース、文字列は 15 文字まで）
+        // 引数付きトレースになる条件にそろえる（引数を残す、文字列は 15 文字まで）
         $ignoreArgs = ini_get('zend.exception_ignore_args');
         $maxLen = ini_get('zend.exception_string_param_max_len');
         ini_set('zend.exception_ignore_args', '0');

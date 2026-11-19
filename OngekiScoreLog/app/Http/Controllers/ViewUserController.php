@@ -18,7 +18,10 @@ class ViewUserController extends Controller
 {
     public function redirectRandomUserPage(){
         $users = (new UserStatus())->getRecentAllUserData();
-        return redirect("/user/" . $users[array_rand($users)]->user_id);
+        if($users->isEmpty()){
+            return redirect("/");
+        }
+        return redirect("/user/" . $users->random()->user_id);
     }
 
     public function getMyUserPage($path = ""){

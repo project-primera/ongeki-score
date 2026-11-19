@@ -37,7 +37,7 @@ class UserController extends Controller{
                 $name = "<Unknown>";
             }
             $content = "スコア登録: " . $name . "(" . $user->id . ")\n" . url("/user/" . $user->id);
-            $fileContent = "ip: " . \Request::ip() . "\nUser agent: " . $_SERVER['HTTP_USER_AGENT'] . "\n\nUser:\nid: " . $user->id . "\nemail: " . $user->email . "\nrole: " . $user->role . "\n\nRequest:\n" . var_export($request, true);
+            $fileContent = "ip: " . \Request::ip() . "\nUser agent: " . $_SERVER['HTTP_USER_AGENT'] . "\n\nUser:\nid: " . $user->id . "\nemail: " . $user->email . "\nrole: " . $user->role . "\n";
             $fields = ["IP Address" => \Request::ip(), "User id" => $user->id];
             \App\Facades\Slack::Warning($content, $fileContent, $fields, "success");
             return $result;
@@ -63,7 +63,7 @@ class UserController extends Controller{
 
         $user = Auth::user();
         $content = "スコア登録: " . "<" . url("/user/" . $user->id) . "|" . $result['name'] . "(" . $user->id . ")>";
-        $fileContent = "ip: " . \Request::ip() . "\nUser agent: " . $_SERVER['HTTP_USER_AGENT'] . "\n\nUser:\nid: " . $user->id . "\nemail: " . $user->email . "\nrole: " . $user->role . "\n\nRequest:\n" . var_export($request, true);
+        $fileContent = "ip: " . \Request::ip() . "\nUser agent: " . $_SERVER['HTTP_USER_AGENT'] . "\n\nUser:\nid: " . $user->id . "\nemail: " . $user->email . "\nrole: " . $user->role . "\n";
         $fields = ["IP Address" => \Request::ip(), "User id" => $user->id];
         Slack::Info($content, $fileContent, $fields, "success");
 
@@ -96,7 +96,7 @@ class UserController extends Controller{
                 $name = "<Unknown>";
             }
             $content = "スコア登録(post): " . $name . "(" . $user->id . ")\n" . url("/user/" . $user->id);
-            $fileContent = "ip: " . \Request::ip() . "\nUser agent: " . $_SERVER['HTTP_USER_AGENT'] . "\n\nUser:\nid: " . $user->id . "\nemail: " . $user->email . "\nrole: " . $user->role . "\n\nRequest:\n" . var_export($request, true);
+            $fileContent = "ip: " . \Request::ip() . "\nUser agent: " . $_SERVER['HTTP_USER_AGENT'] . "\n\nUser:\nid: " . $user->id . "\nemail: " . $user->email . "\nrole: " . $user->role . "\n";
             $fields = ["IP Address" => \Request::ip(), "User id" => $user->id];
             \App\Facades\Slack::Warning($content, $fileContent, $fields, "success");
             return $result;
