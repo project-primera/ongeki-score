@@ -54,6 +54,16 @@ b {
 .title.is-3:not(:first-child),.title.is-4:not(:first-child){
     margin-top: 1em;
 }
+
+// h5 の見出しも、上の本文から離して下の本文に寄せる（Bulma の既定は上 0・下 1.5rem）
+// .title.is-5 は見出し以外（span）でも使っているので、h5 に限る
+h5.title.is-5{
+    margin-bottom: 0.3em;
+}
+
+h5.title.is-5:not(:first-child){
+    margin-top: 1em;
+}
 // .buttons の中に form（CSRF 付き POST のボタン）を置くと、Bulma の .button 同士の間隔（margin-right）がフォームの境界で効かないので補う
 .buttons > form:not(:last-child) {
     margin-right: 0.5rem;
