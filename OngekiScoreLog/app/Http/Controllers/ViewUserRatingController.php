@@ -10,6 +10,7 @@ use App\RatingRecentMusic;
 use App\Facades\OngekiUtility;
 use App\Facades\Slack;
 use App\RatingPlatinumMusic;
+use App\Services\RatingCalculator;
 
 class ViewUserRatingController extends Controller
 {
@@ -21,36 +22,19 @@ class ViewUserRatingController extends Controller
         10 => 'Lunatic',
     ];
 
-    private function editMusic($scores, int $totalMusicCount){
+    private function editMusic($scores){
         for ($index = 0; $index < count($scores); $index++) {
             if (isset($scores[$index])) {
                 // ランプ情報追加
                 $scores[$index]->lampForRating = OngekiUtility::getLampForRating($scores[$index]->technical_high_score, $scores[$index]->full_bell == 1, $scores[$index]->full_combo == 1, $scores[$index]->all_break == 1);
 
-                // 単極レート値の取得
-                $scores[$index]->ratingValue = sprintf("%.3f", OngekiUtility::RateValueFromTitle($scores[$index]->title, $scores[$index]->difficulty, $scores[$index]->technical_high_score, $scores[$index]->lampForRating, $scores[$index]->genre, $scores[$index]->artist));
-                $scores[$index]->rawRatingValue = $scores[$index]->ratingValue;
+                // 単曲レート値の取得 並べ替えと集計には整数（1/1000 単位）の ratingMilli を使う
+                $scores[$index]->ratingMilli = OngekiUtility::technicalRatingMilli($scores[$index]->title, $scores[$index]->difficulty, $scores[$index]->technical_high_score, $scores[$index]->lampForRating, $scores[$index]->genre, $scores[$index]->artist);
+                $scores[$index]->ratingValue = RatingCalculator::formatMilli($scores[$index]->ratingMilli);
 
-                // レート値上昇推定スコア計算
+                // 譜面定数
                 $scores[$index]->extraLevel = OngekiUtility::ExtraLevelFromTitle($scores[$index]->title, $scores[$index]->difficulty, $scores[$index]->genre, $scores[$index]->artist);
                 $scores[$index]->extraLevelStr = sprintf("%.1f", $scores[$index]->extraLevel);
-
-                $scores[$index]->targetMusicRateMusic = OngekiUtility::ExpectedScoreFromExtraLevel($scores[$index]->extraLevel, $scores[$index]->rawRatingValue + 0.01);
-                if($scores[$index]->targetMusicRateMusic !== false){
-                    $scores[$index]->targetMusicRateMusic = number_format($scores[$index]->technical_high_score - $scores[$index]->targetMusicRateMusic);
-                }
-
-                // この曲のレート値が0.xのしきい値になるために必要なスコア 例) 15.25→15.30
-                $targetRating = ceil(($scores[$index]->rawRatingValue + 0.01) * 10) / 10;
-                $scores[$index]->targetMusicRateBorder = OngekiUtility::ExpectedScoreFromExtraLevel($scores[$index]->extraLevel, $targetRating);
-                if($scores[$index]->targetMusicRateBorder !== false){
-                    $scores[$index]->targetMusicRateBorder = number_format($scores[$index]->technical_high_score - $scores[$index]->targetMusicRateBorder);
-                }
-
-                $scores[$index]->targetMusicRateUser = OngekiUtility::ExpectedScoreFromExtraLevel($scores[$index]->extraLevel, $scores[$index]->rawRatingValue + sprintf("%.2f", $totalMusicCount / 100));
-                if($scores[$index]->targetMusicRateUser !== false){
-                    $scores[$index]->targetMusicRateUser = number_format($scores[$index]->technical_high_score - $scores[$index]->targetMusicRateUser);
-                }
 
                 // レート値が理論値 / 推定値なら文字装飾
                 if (OngekiUtility::IsEstimatedRateValueFromTitle($scores[$index]->title, $scores[$index]->difficulty, $scores[$index]->genre, $scores[$index]->artist)) {
@@ -67,6 +51,27 @@ class ViewUserRatingController extends Controller
         }
 
         return $scores;
+    }
+
+    /**
+     * 枠に入った曲の単曲レート値から、統計表の 1 行ぶんの値を表示用の文字列（小数 3 桁）で返す
+     *
+     * @param int[] $ratings 枠に入った曲の単曲レート値（1/1000 単位） 曲が足りない枠は、ある分だけ
+     * @param int $count 枠の曲数
+     * @param int $contribution その枠の RATING への寄与値（1/1000 単位）
+     * @return array{average: string, top: string, min: string, total: string, contribute: string}
+     */
+    private function summarizeFrame(array $ratings, int $count, int $contribution): array
+    {
+        $total = array_sum($ratings);
+
+        return [
+            'average' => RatingCalculator::formatMilli(RatingCalculator::average($total, $count)),
+            'top' => RatingCalculator::formatMilli($ratings === [] ? 0 : max($ratings)),
+            'min' => RatingCalculator::formatMilli($ratings === [] ? 0 : min($ratings)),
+            'total' => RatingCalculator::formatMilli($total),
+            'contribute' => RatingCalculator::formatMilli($contribution),
+        ];
     }
 
     public function getIndex($id){
@@ -97,25 +102,13 @@ class ViewUserRatingController extends Controller
 
         $statistics = new \stdClass;
         $statistics->newBestRatingCount = 10;
-        $statistics->newBestRatingTotal = 0;
-        $statistics->newBestRatingTop = 0;
-        $statistics->newBestRatingMin = null;
-
         $statistics->oldBestRatingCount = 50;
-        $statistics->oldBestRatingTotal = 0;
-        $statistics->oldBestRatingTop = 0;
-        $statistics->oldBestRatingMin = null;
-
         $statistics->platinumRatingCount = 50;
-        $statistics->platinumRatingTotal = 0;
-        $statistics->platinumRatingTop = 0;
-        $statistics->platinumRatingMin = null;
 
-        $statistics->totalRatingCount = $statistics->newBestRatingCount + $statistics->oldBestRatingCount + $statistics->platinumRatingCount;
-        $statistics->totalRatingTotal = 0;
-        $statistics->totalRatingTop = 0;
-        $statistics->totalRatingMin = null;
-        $statistics->potentialRatingTop = null;
+        // 各枠に入った曲の単曲レート値（1/1000 単位の整数）
+        $newRatings = [];
+        $oldRatings = [];
+        $platinumRatings = [];
 
         $notExistMusic = new \stdClass;
         $notExistMusic->title = "-";
@@ -127,12 +120,8 @@ class ViewUserRatingController extends Controller
         $notExistMusic->star = 0;
         $notExistMusic->extraLevelStr = "-";
         $notExistMusic->ratingValue = "-";
-        $notExistMusic->rawRatingValue = 0;
         $notExistMusic->lamp = "";
         $notExistMusic->lampForRating = "";
-        $notExistMusic->targetMusicRateMusic = "";
-        $notExistMusic->targetMusicRateBorder = "";
-        $notExistMusic->targetMusicRateUser = "";
         $notExistMusic->updated_at = date("Y/m/d");
 
 
@@ -142,29 +131,19 @@ class ViewUserRatingController extends Controller
 
         try {
             // 新曲枠のレート計算
-            $newScore = $this->editMusic($newScore, $statistics->totalRatingCount);
-            array_multisort(array_column($newScore, 'rawRatingValue'), SORT_DESC, $newScore);
+            $newScore = $this->editMusic($newScore);
+            array_multisort(array_column($newScore, 'ratingMilli'), SORT_DESC, $newScore);
 
             // 旧曲枠のレート計算
-            $oldScore = $this->editMusic($oldScore, $statistics->totalRatingCount);
-            array_multisort(array_column($oldScore, 'rawRatingValue'), SORT_DESC, $oldScore);
+            $oldScore = $this->editMusic($oldScore);
+            array_multisort(array_column($oldScore, 'ratingMilli'), SORT_DESC, $oldScore);
 
             // 新曲枠対象曲 統計情報の処理
             for ($i = 0; $i < $statistics->newBestRatingCount; ++$i) {
                 if(!array_key_exists($i, $newScore)){
                     $newScore[] = $notExistMusic;
                 }else{
-                    $statistics->newBestRatingTotal += $newScore[$i]->rawRatingValue;
-                    if($statistics->newBestRatingTop < $newScore[$i]->rawRatingValue){
-                        $statistics->newBestRatingTop = $newScore[$i]->rawRatingValue;
-                    }
-                    if(is_null($statistics->newBestRatingMin) || $statistics->newBestRatingMin > $newScore[$i]->rawRatingValue){
-                        $statistics->newBestRatingMin = $newScore[$i]->rawRatingValue;
-                    }
-
-                    if($statistics->potentialRatingTop < $newScore[$i]->rawRatingValue && $newScore[$i]->difficulty != 10){
-                        $statistics->potentialRatingTop = $newScore[$i]->rawRatingValue;
-                    }
+                    $newRatings[] = $newScore[$i]->ratingMilli;
                 }
             }
 
@@ -173,41 +152,9 @@ class ViewUserRatingController extends Controller
                 if(!array_key_exists($i, $oldScore)){
                     $oldScore[] = $notExistMusic;
                 }else{
-                    $statistics->oldBestRatingTotal += $oldScore[$i]->rawRatingValue;
-                    if($statistics->oldBestRatingTop < $oldScore[$i]->rawRatingValue){
-                        $statistics->oldBestRatingTop = $oldScore[$i]->rawRatingValue;
-                    }
-                    if(is_null($statistics->oldBestRatingMin) || $statistics->oldBestRatingMin > $oldScore[$i]->rawRatingValue){
-                        $statistics->oldBestRatingMin = $oldScore[$i]->rawRatingValue;
-                    }
-
-                    if($statistics->potentialRatingTop < $oldScore[$i]->rawRatingValue && $oldScore[$i]->difficulty != 10){
-                        $statistics->potentialRatingTop = $oldScore[$i]->rawRatingValue;
-                    }
+                    $oldRatings[] = $oldScore[$i]->ratingMilli;
                 }
             }
-
-            // 新曲枠対象外曲 統計情報の処理
-            // for ($i = $statistics->newBestRatingCount; $i < count($newScore); ++$i) {
-            //     $newScore[$i]->minDifferenceRate = $newScore[$i]->rawRatingValue - $statistics->newBestRatingMin;
-            //     $newScore[$i]->minDifferenceScore = OngekiUtility::ExpectedScoreFromExtraLevel($newScore[$i]->extraLevel, $statistics->newBestRatingMin + 0.01);
-            //     if($newScore[$i]->minDifferenceScore !== false){
-            //         $newScore[$i]->minDifferenceScore = number_format($newScore[$i]->technical_high_score - $newScore[$i]->minDifferenceScore);
-            //     }else{
-            //         $newScore[$i]->minDifferenceScore = "";
-            //     }
-            // }
-
-            // 旧曲枠対象外曲 統計情報の処理
-            // for ($i = $statistics->oldBestRatingCount; $i < count($oldScore); ++$i) {
-            //     $oldScore[$i]->minDifferenceRate = $oldScore[$i]->rawRatingValue - $statistics->oldBestRatingMin;
-            //     $oldScore[$i]->minDifferenceScore = OngekiUtility::ExpectedScoreFromExtraLevel($oldScore[$i]->extraLevel, $statistics->oldBestRatingMin + 0.01);
-            //     if($oldScore[$i]->minDifferenceScore !== false){
-            //         $oldScore[$i]->minDifferenceScore = number_format($oldScore[$i]->technical_high_score - $oldScore[$i]->minDifferenceScore);
-            //     }else{
-            //         $oldScore[$i]->minDifferenceScore = "";
-            //     }
-            // }
 
             // プラチナスコア枠のレート計算
             $notExistMusic = json_decode(json_encode($notExistMusic), true);
@@ -216,19 +163,13 @@ class ViewUserRatingController extends Controller
                     $platinumMusic[] = $notExistMusic;
                 }else{
                     try {
-                        $platinumMusic[$i]['ratingValue'] = sprintf("%.3f", OngekiUtility::RateValueFromTitleForPlatinum($platinumMusic[$i]['title'], $platinumMusic[$i]['difficulty'], $platinumMusic[$i]['platinum_score'], $platinumMusic[$i]['star'], $platinumMusic[$i]['genre'], $platinumMusic[$i]['artist']));
-                        $platinumMusic[$i]['rawRatingValue'] = $platinumMusic[$i]['ratingValue'];
+                        $ratingMilli = OngekiUtility::platinumRatingMilli($platinumMusic[$i]['title'], $platinumMusic[$i]['difficulty'], $platinumMusic[$i]['star'], $platinumMusic[$i]['genre'], $platinumMusic[$i]['artist']);
+                        $platinumMusic[$i]['ratingValue'] = RatingCalculator::formatMilli($ratingMilli);
                         $platinumMusic[$i]['song_id'] = OngekiUtility::GetIDFromTitle($platinumMusic[$i]['title'], $platinumMusic[$i]['genre'], $platinumMusic[$i]['artist']);
                         $platinumMusic[$i]['difficulty_str'] = $this->difficultyToStr[$platinumMusic[$i]['difficulty']];
                         $platinumMusic[$i]['level_str'] = sprintf("%.1f", OngekiUtility::ExtraLevelFromTitle($platinumMusic[$i]['title'], $platinumMusic[$i]['difficulty'], $platinumMusic[$i]['genre'], $platinumMusic[$i]['artist']));
 
-                        $statistics->platinumRatingTotal += $platinumMusic[$i]['rawRatingValue'];
-                        if($statistics->platinumRatingTop < $platinumMusic[$i]['rawRatingValue']){
-                            $statistics->platinumRatingTop = $platinumMusic[$i]['rawRatingValue'];
-                        }
-                        if(is_null($statistics->platinumRatingMin) || $statistics->platinumRatingMin > $platinumMusic[$i]['rawRatingValue']){
-                            $statistics->platinumRatingMin = $platinumMusic[$i]['rawRatingValue'];
-                        }
+                        $platinumRatings[] = $ratingMilli;
 
                         // レート値が理論値 / 推定値なら文字装飾
                         if (OngekiUtility::IsEstimatedRateValueFromTitle($platinumMusic[$i]['title'], $platinumMusic[$i]['difficulty'], $platinumMusic[$i]['genre'], $platinumMusic[$i]['artist'])) {
@@ -249,7 +190,8 @@ class ViewUserRatingController extends Controller
                         $platinumMusic[$i]['platinum_score'] = $recent['platinum_score'];
                         $platinumMusic[$i]['star'] = $recent['star'];
                         $platinumMusic[$i]['ratingValue'] = "<i><span class='estimated-rating'>0.000</span></i>";
-                        $statistics->platinumRatingMin = 0;
+                        // 未知の楽曲は 0 として数える
+                        $platinumRatings[] = 0;
                         $messages[] = "プラチナスコア枠に未知の楽曲が含まれるため、正常に計算を行えませんでした。この画面の情報は間違っている可能性があります。 対象: " . $recent['title'];
                     }
                 }
@@ -261,26 +203,35 @@ class ViewUserRatingController extends Controller
             return view("user_rating_error", compact('id', 'status', 'sidemark', 'message'));
         }
 
-        // トータルの計算
-        $statistics->totalRatingCount = $statistics->newBestRatingCount + $statistics->oldBestRatingCount; // TODO: 上で代入してるんだけど間違っているので入れ直し そのへんの処理なおしたら統合してください
-        $statistics->totalRatingTotal = $statistics->newBestRatingTotal + $statistics->oldBestRatingTotal;
-        $statistics->totalRatingTop = max([$statistics->newBestRatingTop, $statistics->oldBestRatingTop]);
-        $statistics->totalRatingMin = min([$statistics->newBestRatingMin, $statistics->oldBestRatingMin]);
+        // レート寄与値 新曲枠は 1 曲ごとに 1/5 にして切り捨ててから平均する ベスト枠とプラチナスコア枠は平均がそのまま寄与値
+        $newContribution = RatingCalculator::newFrameContribution($newRatings, $statistics->newBestRatingCount);
+        $oldContribution = RatingCalculator::average(array_sum($oldRatings), $statistics->oldBestRatingCount);
+        $platinumContribution = RatingCalculator::average(array_sum($platinumRatings), $statistics->platinumRatingCount);
 
-        // レート統計 平均値計算
-        $statistics->newRatingAverage = floor($statistics->newBestRatingTotal / $statistics->newBestRatingCount * 1000) / 1000;
-        $statistics->oldBestRatingAverage = floor($statistics->oldBestRatingTotal / $statistics->oldBestRatingCount * 1000) / 1000;
-        $statistics->totalRatingAverage = floor(($statistics->newBestRatingTotal + $statistics->oldBestRatingTotal) / $statistics->totalRatingCount * 1000) / 1000;
-        $statistics->platinumRatingAverage = floor($statistics->platinumRatingTotal / $statistics->platinumRatingCount * 1000) / 1000;
+        // レート統計 表示用の文字列にする
+        $newFrame = $this->summarizeFrame($newRatings, $statistics->newBestRatingCount, $newContribution);
+        $statistics->newRatingAverage = $newFrame['average'];
+        $statistics->newBestRatingTop = $newFrame['top'];
+        $statistics->newBestRatingMin = $newFrame['min'];
+        $statistics->newBestRatingTotal = $newFrame['total'];
+        $statistics->newRatingContribute = $newFrame['contribute'];
 
-        // レート統計 レート寄与値
-        $statistics->newRatingContribute = floor($statistics->newRatingAverage / 5 * 1000) / 1000;
-        $statistics->oldBestRatingContribute = $statistics->oldBestRatingAverage;
-        $statistics->totalRatingContribute = $statistics->newRatingContribute + $statistics->oldBestRatingContribute;
-        $statistics->platinumRatingContribute = $statistics->platinumRatingAverage;
+        $oldFrame = $this->summarizeFrame($oldRatings, $statistics->oldBestRatingCount, $oldContribution);
+        $statistics->oldBestRatingAverage = $oldFrame['average'];
+        $statistics->oldBestRatingTop = $oldFrame['top'];
+        $statistics->oldBestRatingMin = $oldFrame['min'];
+        $statistics->oldBestRatingTotal = $oldFrame['total'];
+        $statistics->oldBestRatingContribute = $oldFrame['contribute'];
 
-        // レーティング
-        $statistics->ratingCalc = floor(($statistics->newRatingContribute + $statistics->oldBestRatingContribute + $statistics->platinumRatingContribute) * 1000) / 1000;
+        $platinumFrame = $this->summarizeFrame($platinumRatings, $statistics->platinumRatingCount, $platinumContribution);
+        $statistics->platinumRatingAverage = $platinumFrame['average'];
+        $statistics->platinumRatingTop = $platinumFrame['top'];
+        $statistics->platinumRatingMin = $platinumFrame['min'];
+        $statistics->platinumRatingTotal = $platinumFrame['total'];
+        $statistics->platinumRatingContribute = $platinumFrame['contribute'];
+
+        // レーティング 3 枠の寄与値を足す
+        $statistics->ratingCalc = RatingCalculator::formatMilli(RatingCalculator::rating($newContribution, $oldContribution, $platinumContribution));
 
         return view("user_rating", compact('messages', 'status', 'id', 'sidemark', 'statistics', 'newScore', 'oldScore', 'platinumMusic'));
     }
