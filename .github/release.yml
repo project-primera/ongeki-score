@@ -1,0 +1,5 @@
+# リリースノートの自動生成の設定。リリース PR 自身（develop -> master）は変更点の一覧に出さない
+changelog:
+  exclude:
+    labels:
+      - "Type: Release"

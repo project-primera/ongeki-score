@@ -140,17 +140,19 @@ jobs:
             exit 1
           fi
       - name: Create GitHub Release
-        id: create_release
-        uses: actions/create-release@v1
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          tag_name: ${{ steps.validate.outputs.version }}
-          release_name: Release ${{ steps.validate.outputs.version }}
-          draft: false
-          prerelease: false
-          body: |
-            Docker Image: `projectprimera/ongeki-score:${{ steps.validate.outputs.version }}`
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          VERSION: ${{ steps.validate.outputs.version }}
+        # 既定ブランチが develop なので、--target を省くとタグが develop の先頭に付く
+        # 本文は Docker Image の行に続けて、前回リリース以降の PR の一覧を GitHub に生成させる
+        run: |
+          PREVIOUS_TAG=$(gh release view --json tagName --jq '.tagName')
+          gh release create "${VERSION}" \
+            --target "${GITHUB_SHA}" \
+            --title "Release ${VERSION}" \
+            --notes "Docker Image: \`projectprimera/ongeki-score:${VERSION}\`" \
+            --generate-notes \
+            --notes-start-tag "${PREVIOUS_TAG}"
       - name: Merge master into develop
         run: |
           git config --global user.name 'github-actions'
